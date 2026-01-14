@@ -1,11 +1,13 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Sparkles, Skull, Home } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { X, Sparkles, Skull, Home, ChevronRight } from "lucide-react";
 import type { Hex, Location, TerrainType, Dwelling, DwellingType } from "~/models";
 
 interface LocationPanelProps {
   location: Location | null;
   hex: Hex | null;
   dwelling: Dwelling | null;
+  worldId: string;
   onClose: () => void;
 }
 
@@ -26,7 +28,7 @@ const DWELLING_LABELS: Record<DwellingType, string> = {
   roadside_inn: "Roadside Inn",
 };
 
-export function LocationPanel({ location, hex, dwelling, onClose }: LocationPanelProps) {
+export function LocationPanel({ location, hex, dwelling, worldId, onClose }: LocationPanelProps) {
   const isOpen = hex !== null;
 
   return (
@@ -155,6 +157,22 @@ export function LocationPanel({ location, hex, dwelling, onClose }: LocationPane
                 </div>
               )}
             </div>
+          )}
+
+          {/* View Details Button */}
+          {hex && (
+            <Link
+              to="/world/$worldId/hex/$q/$r"
+              params={{
+                worldId,
+                q: String(hex.coord.q),
+                r: String(hex.coord.r),
+              }}
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-amber-600 px-4 py-3 font-medium text-stone-900 hover:bg-amber-500"
+            >
+              View Details
+              <ChevronRight size={18} />
+            </Link>
           )}
         </motion.div>
       )}

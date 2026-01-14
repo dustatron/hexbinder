@@ -63,52 +63,52 @@ const SETTLEMENT_EVENTS = [
 
 const FACTION_ACTIVITIES: Record<string, string[]> = {
   cult: [
-    "{faction} gathers in secret to conduct a dark ritual",
-    "Hooded figures of {faction} are spotted near the {location}",
-    "{faction} recruits new acolytes in the shadows",
-    "Strange chanting echoes from {faction}'s meeting place",
-    "{faction} makes a blood sacrifice under the {moon} moon",
+    "{faction} conducts dark ritual",
+    "{faction} spotted near {location}",
+    "{faction} recruiting acolytes",
+    "Chanting heard from {faction}",
+    "{faction} holds {moon} moon rite",
   ],
   militia: [
-    "{faction} begins training exercises outside {settlement}",
-    "{faction} patrols increase along the roads",
-    "{faction} holds a recruitment drive in {settlement}",
-    "Officers of {faction} inspect the local defenses",
-    "{faction} escorts a valuable shipment through the region",
+    "{faction} training near {settlement}",
+    "{faction} increases patrols",
+    "{faction} recruiting in {settlement}",
+    "{faction} inspecting defenses",
+    "{faction} escorting shipment",
   ],
   syndicate: [
-    "{faction} collects 'protection' fees in {settlement}",
-    "Agents of {faction} are seen making deals in dark alleys",
-    "{faction} expands their smuggling operation",
-    "A rival of {faction} is found beaten in {settlement}",
-    "{faction} hosts a secret meeting of criminal lords",
+    "{faction} collecting fees in {settlement}",
+    "{faction} making deals",
+    "{faction} expanding operations",
+    "{faction} rival beaten in {settlement}",
+    "{faction} meeting with crime lords",
   ],
   guild: [
-    "{faction} opens their doors for new apprentices",
-    "Master craftsmen of {faction} display their wares",
-    "{faction} negotiates trade agreements in {settlement}",
-    "A delegation from {faction} arrives seeking rare materials",
-    "{faction} celebrates the completion of a grand project",
+    "{faction} taking apprentices",
+    "{faction} displaying wares",
+    "{faction} negotiating in {settlement}",
+    "{faction} seeking materials",
+    "{faction} project completed",
   ],
   tribe: [
-    "Scouts from {faction} are spotted in the wilderness",
-    "{faction} performs an ancestral ceremony",
-    "Hunting parties of {faction} range through the {terrain}",
-    "{faction} sends emissaries seeking parley",
-    "War drums of {faction} echo in the distance",
+    "{faction} scouts in wilderness",
+    "{faction} ceremony underway",
+    "{faction} hunting in {terrain}",
+    "{faction} seeks parley",
+    "{faction} war drums heard",
   ],
 };
 
 // === Arrival Event Templates ===
 
 const ARRIVAL_EVENTS = [
-  "A mysterious stranger arrives in {settlement}, asking questions",
-  "A wounded traveler stumbles into {settlement} with dire news",
-  "A merchant caravan from the {direction} reaches {settlement}",
-  "A group of adventurers passes through {settlement}",
-  "A royal messenger arrives in {settlement} bearing a proclamation",
-  "Refugees fleeing {danger} seek shelter in {settlement}",
-  "A renowned {profession} visits {settlement}",
+  "Stranger arrives in {settlement}",
+  "Wounded traveler reaches {settlement}",
+  "Caravan from {direction} at {settlement}",
+  "Adventurers pass through {settlement}",
+  "Royal messenger in {settlement}",
+  "Refugees from {danger} at {settlement}",
+  "{profession} visits {settlement}",
 ];
 
 const PROFESSIONS = ["healer", "sage", "bard", "knight", "wizard", "merchant prince"];
@@ -118,33 +118,33 @@ const DANGERS = ["bandits", "monsters", "a fire", "flooding", "plague", "war"];
 
 const WORLD_EVENTS = [
   // Natural disasters
-  "A violent earthquake shakes the region, toppling structures in {settlement}",
-  "A hurricane sweeps through the {terrain}, leaving destruction in its wake",
-  "A devastating flood washes away roads and bridges near {location}",
-  "A wildfire spreads rapidly through the {terrain}, threatening nearby settlements",
-  "A landslide blocks the mountain pass near {location}",
-  "A sinkhole opens up near {settlement}, swallowing several buildings",
+  "Earthquake damages {settlement}",
+  "Hurricane hits the {terrain}",
+  "Flood near {location}",
+  "Wildfire in {terrain}",
+  "Landslide near {location}",
+  "Sinkhole opens near {settlement}",
 
   // Celestial events
-  "A solar eclipse darkens the sky, filling people with dread",
-  "A meteor streaks across the night sky, crashing somewhere in the {terrain}",
-  "The aurora dances with unusual intensity, a sign of powerful magic",
-  "A comet appears in the sky, heralding great change",
-  "The stars align in an ominous pattern recognized by sages",
+  "Solar eclipse",
+  "Meteor crashes in {terrain}",
+  "Strange aurora sighted",
+  "Comet appears",
+  "Ominous star alignment",
 
   // Magical phenomena
-  "A wave of wild magic surges through the region, causing strange effects",
-  "The veil between worlds grows thin - spirits are seen in {settlement}",
-  "An ancient ward fails, releasing something long imprisoned",
-  "Magical creatures behave strangely, fleeing toward the {direction}",
-  "All magic temporarily fails throughout the region",
+  "Wild magic surge",
+  "Spirits seen in {settlement}",
+  "Ancient ward fails",
+  "Creatures fleeing {direction}",
+  "Magic fails temporarily",
 
   // Political/Social upheaval
-  "War is declared between neighboring realms",
-  "A plague outbreak begins in {settlement}",
-  "The ruler issues a controversial decree affecting all settlements",
-  "A massive migration of refugees streams into the region",
-  "A dragon is spotted flying over {settlement}",
+  "War declared nearby",
+  "Plague in {settlement}",
+  "Controversial decree issued",
+  "Refugees flooding in",
+  "Dragon over {settlement}",
 ];
 
 export interface DayEventGeneratorOptions {
@@ -310,7 +310,7 @@ function generateRumorEvent(rng: SeededRandom, world: WorldData): DayEvent {
   return {
     id: `event-${nanoid(8)}`,
     type: "rumor",
-    description: `Word spreads of ${text}`,
+    description: text,
   };
 }
 
@@ -338,7 +338,7 @@ function generateEncounterSighting(rng: SeededRandom, world: WorldData): DayEven
   return {
     id: `event-${nanoid(8)}`,
     type: "encounter",
-    description: `Travelers report sighting ${text}`,
+    description: text,
   };
 }
 

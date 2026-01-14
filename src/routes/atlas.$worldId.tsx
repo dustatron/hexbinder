@@ -285,7 +285,13 @@ function AtlasPage() {
                 <li key={faction.id} className="rounded bg-stone-700/50 p-3">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="font-medium">{faction.name}</p>
+                      <Link
+                        to="/world/$worldId/faction/$factionId"
+                        params={{ worldId: world.id, factionId: faction.id }}
+                        className="font-medium hover:text-amber-400"
+                      >
+                        {faction.name}
+                      </Link>
                       <p className="text-sm text-stone-400">
                         {faction.factionType} &middot; {faction.purpose}
                       </p>
@@ -330,7 +336,13 @@ function AtlasPage() {
                   className="flex items-center justify-between rounded bg-stone-700/50 px-3 py-2"
                 >
                   <div>
-                    <p className="font-medium">{settlement.name}</p>
+                    <Link
+                      to="/world/$worldId/location/$locationId"
+                      params={{ worldId: world.id, locationId: settlement.id }}
+                      className="font-medium hover:text-amber-400"
+                    >
+                      {settlement.name}
+                    </Link>
                     <p className="text-sm capitalize text-stone-400">
                       {settlement.size}
                     </p>
@@ -360,7 +372,13 @@ function AtlasPage() {
                   className="flex items-center justify-between rounded bg-stone-700/50 px-3 py-2"
                 >
                   <div>
-                    <p className="font-medium">{dungeon.name}</p>
+                    <Link
+                      to="/world/$worldId/location/$locationId"
+                      params={{ worldId: world.id, locationId: dungeon.id }}
+                      className="font-medium hover:text-amber-400"
+                    >
+                      {dungeon.name}
+                    </Link>
                     <p className="text-sm capitalize text-stone-400">
                       {dungeon.theme} &middot; {dungeon.size}
                     </p>

@@ -139,6 +139,7 @@ function WorldPage() {
           location={selectedLocation || null}
           hex={selectedHex || null}
           dwelling={selectedDwelling || null}
+          worldId={world.id}
           onClose={() => setSelectedCoord(null)}
         />
       </div>

@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorldWorldIdRouteImport } from './routes/world.$worldId'
 import { Route as AtlasWorldIdRouteImport } from './routes/atlas.$worldId'
+import { Route as WorldWorldIdLocationLocationIdRouteImport } from './routes/world.$worldId_.location.$locationId'
+import { Route as WorldWorldIdFactionFactionIdRouteImport } from './routes/world.$worldId_.faction.$factionId'
+import { Route as WorldWorldIdHexQRRouteImport } from './routes/world.$worldId_.hex.$q.$r'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +31,83 @@ const AtlasWorldIdRoute = AtlasWorldIdRouteImport.update({
   path: '/atlas/$worldId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorldWorldIdLocationLocationIdRoute =
+  WorldWorldIdLocationLocationIdRouteImport.update({
+    id: '/world/$worldId_/location/$locationId',
+    path: '/world/$worldId/location/$locationId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const WorldWorldIdFactionFactionIdRoute =
+  WorldWorldIdFactionFactionIdRouteImport.update({
+    id: '/world/$worldId_/faction/$factionId',
+    path: '/world/$worldId/faction/$factionId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const WorldWorldIdHexQRRoute = WorldWorldIdHexQRRouteImport.update({
+  id: '/world/$worldId_/hex/$q/$r',
+  path: '/world/$worldId/hex/$q/$r',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/atlas/$worldId': typeof AtlasWorldIdRoute
   '/world/$worldId': typeof WorldWorldIdRoute
+  '/world/$worldId/faction/$factionId': typeof WorldWorldIdFactionFactionIdRoute
+  '/world/$worldId/location/$locationId': typeof WorldWorldIdLocationLocationIdRoute
+  '/world/$worldId/hex/$q/$r': typeof WorldWorldIdHexQRRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/atlas/$worldId': typeof AtlasWorldIdRoute
   '/world/$worldId': typeof WorldWorldIdRoute
+  '/world/$worldId/faction/$factionId': typeof WorldWorldIdFactionFactionIdRoute
+  '/world/$worldId/location/$locationId': typeof WorldWorldIdLocationLocationIdRoute
+  '/world/$worldId/hex/$q/$r': typeof WorldWorldIdHexQRRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/atlas/$worldId': typeof AtlasWorldIdRoute
   '/world/$worldId': typeof WorldWorldIdRoute
+  '/world/$worldId_/faction/$factionId': typeof WorldWorldIdFactionFactionIdRoute
+  '/world/$worldId_/location/$locationId': typeof WorldWorldIdLocationLocationIdRoute
+  '/world/$worldId_/hex/$q/$r': typeof WorldWorldIdHexQRRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/atlas/$worldId' | '/world/$worldId'
+  fullPaths:
+    | '/'
+    | '/atlas/$worldId'
+    | '/world/$worldId'
+    | '/world/$worldId/faction/$factionId'
+    | '/world/$worldId/location/$locationId'
+    | '/world/$worldId/hex/$q/$r'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/atlas/$worldId' | '/world/$worldId'
-  id: '__root__' | '/' | '/atlas/$worldId' | '/world/$worldId'
+  to:
+    | '/'
+    | '/atlas/$worldId'
+    | '/world/$worldId'
+    | '/world/$worldId/faction/$factionId'
+    | '/world/$worldId/location/$locationId'
+    | '/world/$worldId/hex/$q/$r'
+  id:
+    | '__root__'
+    | '/'
+    | '/atlas/$worldId'
+    | '/world/$worldId'
+    | '/world/$worldId_/faction/$factionId'
+    | '/world/$worldId_/location/$locationId'
+    | '/world/$worldId_/hex/$q/$r'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AtlasWorldIdRoute: typeof AtlasWorldIdRoute
   WorldWorldIdRoute: typeof WorldWorldIdRoute
+  WorldWorldIdFactionFactionIdRoute: typeof WorldWorldIdFactionFactionIdRoute
+  WorldWorldIdLocationLocationIdRoute: typeof WorldWorldIdLocationLocationIdRoute
+  WorldWorldIdHexQRRoute: typeof WorldWorldIdHexQRRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +133,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AtlasWorldIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/world/$worldId_/location/$locationId': {
+      id: '/world/$worldId_/location/$locationId'
+      path: '/world/$worldId/location/$locationId'
+      fullPath: '/world/$worldId/location/$locationId'
+      preLoaderRoute: typeof WorldWorldIdLocationLocationIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/world/$worldId_/faction/$factionId': {
+      id: '/world/$worldId_/faction/$factionId'
+      path: '/world/$worldId/faction/$factionId'
+      fullPath: '/world/$worldId/faction/$factionId'
+      preLoaderRoute: typeof WorldWorldIdFactionFactionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/world/$worldId_/hex/$q/$r': {
+      id: '/world/$worldId_/hex/$q/$r'
+      path: '/world/$worldId/hex/$q/$r'
+      fullPath: '/world/$worldId/hex/$q/$r'
+      preLoaderRoute: typeof WorldWorldIdHexQRRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +161,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AtlasWorldIdRoute: AtlasWorldIdRoute,
   WorldWorldIdRoute: WorldWorldIdRoute,
+  WorldWorldIdFactionFactionIdRoute: WorldWorldIdFactionFactionIdRoute,
+  WorldWorldIdLocationLocationIdRoute: WorldWorldIdLocationLocationIdRoute,
+  WorldWorldIdHexQRRoute: WorldWorldIdHexQRRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
