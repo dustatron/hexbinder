@@ -1,5 +1,6 @@
 import {
   Castle,
+  Crown,
   Skull,
   Swords,
   Moon,
@@ -26,6 +27,7 @@ interface HexTileProps {
   hexData: Hex;
   locationType?: LocationType;
   dungeonTheme?: DungeonTheme;
+  isCapital?: boolean;
   isSelected: boolean;
   onClick: (coord: HexCoord) => void;
   showIcon?: boolean;
@@ -62,6 +64,7 @@ export function HexTile({
   hexData,
   locationType,
   dungeonTheme,
+  isCapital,
   isSelected,
   onClick,
   showIcon = true,
@@ -75,12 +78,18 @@ export function HexTile({
     : TERRAIN_BORDER_COLORS[hexData.terrain];
 
   // Use dungeon-specific icon if available, otherwise fall back to location icon
+  // Capitals get Crown icon
   let Icon: LucideIcon | null = null;
-  if (locationType === "dungeon" && dungeonTheme) {
+  if (isCapital) {
+    Icon = Crown;
+  } else if (locationType === "dungeon" && dungeonTheme) {
     Icon = DUNGEON_ICONS[dungeonTheme] ?? Skull;
   } else if (locationType) {
     Icon = LOCATION_ICONS[locationType];
   }
+
+  // Capital icons get gold fill
+  const iconFill = isCapital ? "#fbbf24" : "none"; // amber-400
 
   // Icon-only mode: just render the icon without polygon (for layering above roads)
   if (iconOnly) {
@@ -93,7 +102,7 @@ export function HexTile({
         height={24}
         stroke="#1c1917"
         strokeWidth={2}
-        fill="none"
+        fill={iconFill}
         style={{ cursor: "pointer" }}
         onClick={() => onClick(hexData.coord)}
       />
@@ -126,7 +135,7 @@ export function HexTile({
           height={24}
           stroke="#1c1917" // stone-900
           strokeWidth={2}
-          fill="none"
+          fill={iconFill}
         />
       )}
     </g>

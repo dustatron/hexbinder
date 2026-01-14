@@ -1,7 +1,7 @@
 import { useMemo, useRef } from "react";
 import { useGesture } from "@use-gesture/react";
 import { motion, useMotionValue } from "framer-motion";
-import type { Hex, HexCoord, Location, HexEdge, Dungeon } from "~/models";
+import type { Hex, HexCoord, Location, HexEdge, Dungeon, Settlement } from "~/models";
 import { Tile, HEX_SIZE } from "~/lib/hex-utils";
 import { HexTile } from "./HexTile";
 
@@ -135,6 +135,12 @@ export function HexMap({
                 ? (location as Dungeon).theme
                 : undefined;
 
+            // Check if settlement is a capital
+            const isCapital =
+              location?.type === "settlement"
+                ? (location as Settlement).isCapital
+                : false;
+
             return (
               <HexTile
                 key={coordKey}
@@ -142,6 +148,7 @@ export function HexMap({
                 hexData={hexData}
                 locationType={location?.type}
                 dungeonTheme={dungeonTheme}
+                isCapital={isCapital}
                 isSelected={isSelected}
                 onClick={onHexClick}
               />

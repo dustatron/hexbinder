@@ -86,6 +86,11 @@ export function SettlementDetail({
           <div className="flex-1">
             <h2 className="text-xl font-bold text-stone-100">{settlement.name}</h2>
             <div className="mt-1 flex flex-wrap items-center gap-2">
+              {settlement.isCapital && (
+                <span className="rounded bg-yellow-500 px-2 py-0.5 text-xs font-bold text-yellow-950">
+                  CAPITAL
+                </span>
+              )}
               <span
                 className={`rounded px-2 py-0.5 text-xs font-medium text-stone-100 ${SIZE_COLORS[settlement.size]}`}
               >
@@ -121,7 +126,21 @@ export function SettlementDetail({
         {/* Quick stats */}
         <div className="flex flex-wrap gap-3 text-xs text-stone-400">
           <span>Govt: {settlement.governmentType}</span>
-          {settlement.mayorNpcId && (() => {
+          {settlement.rulerNpcId && settlement.rulerTitle && (() => {
+            const ruler = npcs.find((n) => n.id === settlement.rulerNpcId);
+            const titleLabel = {
+              king: "King",
+              baron: "Baron",
+              duke: "Duke",
+              count: "Count",
+            }[settlement.rulerTitle];
+            return ruler ? (
+              <span className="font-medium text-yellow-400">
+                {titleLabel}: {ruler.name}
+              </span>
+            ) : null;
+          })()}
+          {!settlement.rulerNpcId && settlement.mayorNpcId && (() => {
             const mayor = npcs.find((n) => n.id === settlement.mayorNpcId);
             return mayor ? (
               <span className="text-stone-300">

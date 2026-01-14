@@ -25,7 +25,7 @@ import { generateFactions } from "./FactionGenerator";
 import { generateFactionClock } from "./ClockGenerator";
 import { generateRoads } from "./RoadGenerator";
 import { generateBridges, type Bridge } from "./BridgeGenerator";
-import { generateSettlementNPCs, generateFactionNPCs } from "./NPCGenerator";
+import { generateNPC, generateSettlementNPCs, generateFactionNPCs } from "./NPCGenerator";
 import { generateNPCRelationships } from "./NPCRelationshipGenerator";
 import { weaveHooks } from "./HookWeaver";
 import { generateRumors, generateNotices } from "./RumorGenerator";
@@ -261,6 +261,20 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     // Link NPC IDs to settlement
     settlement.npcIds = settlementNPCs.map((n) => n.id);
     settlement.mayorNpcId = mayorNpcId;
+
+    // Generate ruler for capital
+    if (settlement.isCapital && settlement.rulerTitle) {
+      const ruler = generateNPC({
+        seed: `${seed}-ruler-${settlement.id}`,
+        archetype: "noble",
+        locationId: settlement.id,
+        role: settlement.rulerTitle,
+        age: rng.between(35, 65),
+      });
+      npcs.push(ruler);
+      settlement.npcIds.push(ruler.id);
+      settlement.rulerNpcId = ruler.id;
+    }
 
     // Link site owners
     for (const site of settlement.sites) {
