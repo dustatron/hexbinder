@@ -3,9 +3,13 @@ import type {
   Faction,
   FactionArchetype,
   FactionScale,
+  FactionType,
   CreatureArchetype,
   FactionRelationship,
   RelationshipType,
+  FactionLair,
+  HexCoord,
+  Hex,
 } from "~/models";
 import { SeededRandom, createWeightedTable } from "./SeededRandom";
 
@@ -47,6 +51,44 @@ const ARCHETYPE_WEIGHTS = createWeightedTable<FactionArchetype>({
   monstrous: 5,
   secret: 5,
 });
+
+// === Faction Type ===
+
+const FACTION_TYPE_WEIGHTS = createWeightedTable<FactionType>({
+  cult: 25,
+  militia: 25,
+  syndicate: 20,
+  guild: 20,
+  tribe: 10,
+});
+
+const PURPOSE_BY_TYPE: Record<FactionType, string[]> = {
+  cult: [
+    "conducting dark rituals",
+    "summoning demons",
+    "worshipping forbidden gods",
+  ],
+  militia: [
+    "protecting trade routes",
+    "defending the realm",
+    "hunting monsters",
+  ],
+  syndicate: [
+    "controlling smuggling operations",
+    "running protection rackets",
+    "gathering secrets",
+  ],
+  guild: [
+    "monopolizing trade",
+    "advancing arcane research",
+    "training warriors",
+  ],
+  tribe: [
+    "claiming ancestral lands",
+    "raiding settlements",
+    "preserving ancient ways",
+  ],
+};
 
 const LEADER_ARCHETYPES: Record<FactionArchetype, CreatureArchetype[]> = {
   criminal: ["bandit", "thief", "assassin"],
@@ -157,18 +199,24 @@ const SYMBOLS = [
 export interface FactionGeneratorOptions {
   seed: string;
   count?: number;
+  hexes?: Hex[]; // for lair placement
 }
 
 /**
  * Generate factions for the world.
  */
 export function generateFactions(options: FactionGeneratorOptions): Faction[] {
-  const { seed, count = 2 } = options;
+  const { seed, count = 2, hexes = [] } = options;
   const rng = new SeededRandom(`${seed}-factions`);
   const factions: Faction[] = [];
 
+  // Filter hexes suitable for lairs
+  const lairHexes = hexes.filter(
+    (h) => h.terrain === "hills" || h.terrain === "forest" || h.terrain === "mountains"
+  );
+
   for (let i = 0; i < count; i++) {
-    const faction = generateFaction(rng, `faction-${i}`);
+    const faction = generateFaction(rng, `faction-${i}`, lairHexes);
     factions.push(faction);
   }
 
@@ -190,15 +238,27 @@ export function generateFactions(options: FactionGeneratorOptions): Faction[] {
   return factions;
 }
 
-function generateFaction(rng: SeededRandom, idSuffix: string): Faction {
+function generateFaction(rng: SeededRandom, idSuffix: string, lairHexes: Hex[]): Faction {
   const archetype = rng.pickWeighted(ARCHETYPE_WEIGHTS);
+  const factionType = rng.pickWeighted(FACTION_TYPE_WEIGHTS);
   const name = generateFactionName(rng, archetype);
+  const purpose = rng.pick(PURPOSE_BY_TYPE[factionType]);
+
+  // 40% chance of lair
+  let lair: FactionLair | undefined;
+  if (lairHexes.length > 0 && rng.chance(0.4)) {
+    const lairHex = rng.pick(lairHexes);
+    lair = { hexCoord: { q: lairHex.coord.q, r: lairHex.coord.r } };
+  }
 
   return {
     id: `faction-${nanoid(8)}`,
     name,
     description: `A ${archetype} organization known as ${name}.`,
     archetype,
+    factionType,
+    purpose,
+    lair,
     scale: rng.pick(["local", "local", "regional"] as FactionScale[]),
     goals: [
       {

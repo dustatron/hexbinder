@@ -63,3 +63,18 @@ export type { WorldGeneratorOptions, GeneratedWorld } from "./WorldGenerator";
 
 export { generateSpiralTerrain, getMapRadius } from "./SpiralTerrainGenerator";
 export type { SpiralTerrainOptions, SpiralTerrainResult, MapSize, StartPosition } from "./SpiralTerrainGenerator";
+
+export { generateHexEncounters } from "./HexEncounterGenerator";
+export type { HexEncounterGeneratorOptions } from "./HexEncounterGenerator";
+
+export { generateFeatures } from "./FeatureGenerator";
+export type { FeatureGeneratorOptions, FeatureGeneratorResult } from "./FeatureGenerator";
+
+export { generateDwellings } from "./DwellingGenerator";
+export type { DwellingGeneratorOptions, DwellingGeneratorResult } from "./DwellingGenerator";
+
+export { generateQuestObjects } from "./QuestObjectGenerator";
+export type { QuestObjectGeneratorOptions } from "./QuestObjectGenerator";
+
+export { generateDayEvents } from "./DayEventGenerator";
+export type { DayEventGeneratorOptions } from "./DayEventGenerator";

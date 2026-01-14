@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorldWorldIdRouteImport } from './routes/world.$worldId'
+import { Route as AtlasWorldIdRouteImport } from './routes/atlas.$worldId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,30 +23,39 @@ const WorldWorldIdRoute = WorldWorldIdRouteImport.update({
   path: '/world/$worldId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AtlasWorldIdRoute = AtlasWorldIdRouteImport.update({
+  id: '/atlas/$worldId',
+  path: '/atlas/$worldId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/atlas/$worldId': typeof AtlasWorldIdRoute
   '/world/$worldId': typeof WorldWorldIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/atlas/$worldId': typeof AtlasWorldIdRoute
   '/world/$worldId': typeof WorldWorldIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/atlas/$worldId': typeof AtlasWorldIdRoute
   '/world/$worldId': typeof WorldWorldIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/world/$worldId'
+  fullPaths: '/' | '/atlas/$worldId' | '/world/$worldId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/world/$worldId'
-  id: '__root__' | '/' | '/world/$worldId'
+  to: '/' | '/atlas/$worldId' | '/world/$worldId'
+  id: '__root__' | '/' | '/atlas/$worldId' | '/world/$worldId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AtlasWorldIdRoute: typeof AtlasWorldIdRoute
   WorldWorldIdRoute: typeof WorldWorldIdRoute
 }
 
@@ -65,11 +75,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorldWorldIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/atlas/$worldId': {
+      id: '/atlas/$worldId'
+      path: '/atlas/$worldId'
+      fullPath: '/atlas/$worldId'
+      preLoaderRoute: typeof AtlasWorldIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AtlasWorldIdRoute: AtlasWorldIdRoute,
   WorldWorldIdRoute: WorldWorldIdRoute,
 }
 export const routeTree = rootRouteImport

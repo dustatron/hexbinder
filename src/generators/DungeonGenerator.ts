@@ -12,6 +12,7 @@ import type {
   HexCoord,
   DungeonSize,
   DungeonTheme,
+  TerrainType,
   Encounter,
   TreasureEntry,
 } from "~/models";
@@ -33,6 +34,13 @@ const DUNGEON_NOUNS: Record<DungeonTheme, string[]> = {
   sewer: ["Sewers", "Undercity", "Drains", "Warrens", "Tunnels"],
   crypt: ["Crypt", "Ossuary", "Charnel House", "Vault", "Catacombs"],
   lair: ["Lair", "Den", "Nest", "Burrow", "Hideout"],
+  // Wilderness lair themes
+  bandit_hideout: ["Hideout", "Camp", "Stronghold", "Outpost", "Den"],
+  cultist_lair: ["Sanctum", "Temple", "Lair", "Altar", "Chamber"],
+  witch_hut: ["Hut", "Cottage", "Hovel", "Dwelling", "Sanctum"],
+  sea_cave: ["Grotto", "Cove", "Cavern", "Hideaway", "Lair"],
+  beast_den: ["Den", "Lair", "Nest", "Warren", "Cave"],
+  floating_keep: ["Keep", "Citadel", "Tower", "Fortress", "Spire"],
 };
 
 const ROOM_TYPE_WEIGHTS = createWeightedTable<RoomType>({
@@ -64,6 +72,13 @@ const THEME_WEIGHTS = createWeightedTable<DungeonTheme>({
   sewer: 10,
   crypt: 10,
   lair: 5,
+  // Wilderness themes have 0 weight - selected separately by placeWildernessLair
+  bandit_hideout: 0,
+  cultist_lair: 0,
+  witch_hut: 0,
+  sea_cave: 0,
+  beast_den: 0,
+  floating_keep: 0,
 });
 
 const SIZE_WEIGHTS = createWeightedTable<DungeonSize>({
@@ -144,6 +159,107 @@ export function placeDungeon(options: DungeonPlacementOptions): {
   hex.locationId = dungeon.id;
 
   return { dungeon, hex };
+}
+
+// === Wilderness Lair Themes ===
+
+const WILDERNESS_THEMES: DungeonTheme[] = [
+  "bandit_hideout",
+  "cultist_lair",
+  "witch_hut",
+  "sea_cave",
+  "beast_den",
+  "floating_keep",
+];
+
+const WILDERNESS_TERRAIN_PREFS: Record<DungeonTheme, TerrainType[]> = {
+  bandit_hideout: ["forest", "hills"],
+  cultist_lair: ["swamp", "hills", "mountains"],
+  witch_hut: ["swamp", "forest"],
+  sea_cave: ["water"],
+  beast_den: ["forest", "hills", "mountains"],
+  floating_keep: ["plains", "hills", "mountains"],
+  // Regular themes (not wilderness, but needed for type completeness)
+  tomb: ["hills"],
+  cave: ["hills", "mountains"],
+  temple: ["hills", "forest"],
+  mine: ["hills", "mountains"],
+  fortress: ["hills"],
+  sewer: ["plains"],
+  crypt: ["hills"],
+  lair: ["forest", "hills"],
+};
+
+export interface WildernessLairOptions {
+  seed: string;
+  hexes: Hex[];
+}
+
+/**
+ * Place a wilderness lair (mini-dungeon) with terrain-appropriate theme.
+ * These are smaller sites like bandit camps, cultist lairs, witch huts.
+ */
+export function placeWildernessLair(options: WildernessLairOptions): {
+  dungeon: Dungeon;
+  hex: Hex;
+} | null {
+  const { seed, hexes } = options;
+  const rng = new SeededRandom(`${seed}-wilderness-lair`);
+
+  // Pick a random wilderness theme
+  const theme = rng.pick(WILDERNESS_THEMES);
+  const preferredTerrains = WILDERNESS_TERRAIN_PREFS[theme];
+
+  // Find hexes matching terrain preference
+  let candidates = hexes.filter(
+    (h) => preferredTerrains.includes(h.terrain) && !h.locationId
+  );
+
+  // For sea_cave, look for water-adjacent hexes instead
+  if (theme === "sea_cave" && candidates.length === 0) {
+    candidates = hexes.filter(
+      (h) => !h.locationId && isAdjacentToWater(h, hexes)
+    );
+  }
+
+  // Fallback to any non-water hex
+  if (candidates.length === 0) {
+    candidates = hexes.filter(
+      (h) => h.terrain !== "water" && !h.locationId
+    );
+  }
+
+  if (candidates.length === 0) return null;
+
+  const hex = rng.pick(candidates);
+
+  // Wilderness lairs are always small (3-5 rooms)
+  const dungeon = generateDungeon(rng, hex.coord, theme, "lair");
+
+  hex.locationId = dungeon.id;
+
+  return { dungeon, hex };
+}
+
+/**
+ * Check if a hex is adjacent to water terrain.
+ */
+function isAdjacentToWater(hex: Hex, allHexes: Hex[]): boolean {
+  const { q, r } = hex.coord;
+  const neighbors = [
+    { q: q + 1, r: r },
+    { q: q - 1, r: r },
+    { q: q, r: r + 1 },
+    { q: q, r: r - 1 },
+    { q: q + 1, r: r - 1 },
+    { q: q - 1, r: r + 1 },
+  ];
+
+  return neighbors.some((coord) =>
+    allHexes.some(
+      (h) => h.coord.q === coord.q && h.coord.r === coord.r && h.terrain === "water"
+    )
+  );
 }
 
 function generateDungeon(

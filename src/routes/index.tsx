@@ -15,6 +15,39 @@ import {
 import { generateWorld, type MapSize, type StartPosition } from "~/generators";
 import type { WorldSummary, SettlementSize } from "~/models";
 
+// Fantasy world name generation
+const WORLD_PREFIXES = [
+  "The", "Lost", "Ancient", "Forgotten", "Cursed", "Sunken", "Shadowed",
+  "Hidden", "Twilight", "Storm", "Dark", "Iron", "Silver", "Golden",
+];
+const WORLD_ADJECTIVES = [
+  "Borderlands", "Reaches", "Wilds", "Marches", "Expanse", "Wastes",
+  "Kingdoms", "Realms", "Dominions", "Territories", "Frontier", "Barrens",
+];
+const WORLD_NOUNS = [
+  "Thornwood", "Ravenmoor", "Blackhollow", "Grimholt", "Ashfall", "Dragonspine",
+  "Ironhold", "Stormvale", "Frostpeak", "Shadowfen", "Moonshire", "Sunreach",
+  "Duskwater", "Wyrmrest", "Bleakstone", "Mistral", "Valeholm", "Dreadmire",
+];
+
+function generateWorldName(): string {
+  const type = Math.random();
+  if (type < 0.5) {
+    // "The [Adjective]" format
+    const prefix = WORLD_PREFIXES[Math.floor(Math.random() * WORLD_PREFIXES.length)];
+    const adj = WORLD_ADJECTIVES[Math.floor(Math.random() * WORLD_ADJECTIVES.length)];
+    return `${prefix} ${adj}`;
+  } else {
+    // Single fantasy noun
+    return WORLD_NOUNS[Math.floor(Math.random() * WORLD_NOUNS.length)];
+  }
+}
+
+function generateSeed(): string {
+  // Simple 6-digit number
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
 export const Route = createFileRoute("/")({
   component: HomePage,
   // Only load on client - localStorage doesn't exist on server
@@ -30,6 +63,16 @@ function HomePage() {
   const [mapSize, setMapSize] = useState<MapSize>("medium");
   const [startPosition, setStartPosition] = useState<StartPosition>("center");
   const [settlementSize, setSettlementSize] = useState<SettlementSize>("village");
+  const [settlementCount, setSettlementCount] = useState<number | "">("");
+  const [dungeonCount, setDungeonCount] = useState<number | "">("");
+  const [lairCount, setLairCount] = useState<number | "">("");
+
+  // Default counts by map size
+  const defaultCounts = {
+    small: { settlements: 8, dungeons: 4, lairs: 6 },
+    medium: { settlements: 12, dungeons: 8, lairs: 10 },
+    large: { settlements: 20, dungeons: 12, lairs: 16 },
+  };
 
   const refreshWorlds = () => setWorlds(listWorlds());
 
@@ -40,6 +83,9 @@ function HomePage() {
       mapSize,
       startPosition,
       startingSettlementSize: settlementSize,
+      settlementCount: settlementCount || undefined,
+      dungeonCount: dungeonCount || undefined,
+      wildernessLairCount: lairCount || undefined,
     });
     saveWorld(world);
     setShowNewForm(false);
@@ -48,6 +94,9 @@ function HomePage() {
     setMapSize("medium");
     setStartPosition("center");
     setSettlementSize("village");
+    setSettlementCount("");
+    setDungeonCount("");
+    setLairCount("");
     navigate({ to: "/world/$worldId", params: { worldId: world.id } });
   };
 
@@ -92,7 +141,11 @@ function HomePage() {
 
         <div className="mb-6 flex gap-2">
           <Button
-            onClick={() => setShowNewForm(true)}
+            onClick={() => {
+              setNewWorldName(generateWorldName());
+              setNewWorldSeed(generateSeed());
+              setShowNewForm(true);
+            }}
             className="flex items-center gap-2"
           >
             <Plus size={18} />
@@ -202,8 +255,49 @@ function HomePage() {
                 <option value="city">City (5000+ people)</option>
               </select>
             </div>
-            <div className="flex gap-2">
-              <Button onClick={handleCreateWorld}>Create</Button>
+            {/* Content Counts */}
+            <div className="mb-4 grid grid-cols-3 gap-3">
+              <div>
+                <label className="mb-1 block text-sm text-stone-400">
+                  Settlements
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  max="30"
+                  value={settlementCount === "" ? defaultCounts[mapSize].settlements : settlementCount}
+                  onChange={(e) => setSettlementCount(e.target.value ? parseInt(e.target.value) : "")}
+                  className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-stone-400">
+                  Dungeons
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  max="20"
+                  value={dungeonCount === "" ? defaultCounts[mapSize].dungeons : dungeonCount}
+                  onChange={(e) => setDungeonCount(e.target.value ? parseInt(e.target.value) : "")}
+                  className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-stone-400">
+                  Wild Lairs
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  max="20"
+                  value={lairCount === "" ? defaultCounts[mapSize].lairs : lairCount}
+                  onChange={(e) => setLairCount(e.target.value ? parseInt(e.target.value) : "")}
+                  className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2">
               <Button
                 variant="outline"
                 onClick={() => {
@@ -213,9 +307,18 @@ function HomePage() {
                   setMapSize("medium");
                   setStartPosition("center");
                   setSettlementSize("village");
+                  setSettlementCount("");
+                  setDungeonCount("");
+                  setLairCount("");
                 }}
               >
                 Cancel
+              </Button>
+              <Button
+                onClick={handleCreateWorld}
+                className="bg-green-600 hover:bg-green-500"
+              >
+                Create
               </Button>
             </div>
           </div>

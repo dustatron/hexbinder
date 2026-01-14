@@ -1,6 +1,19 @@
-import { Castle, Skull } from "lucide-react";
+import {
+  Castle,
+  Skull,
+  Swords,
+  Moon,
+  Wand2,
+  Anchor,
+  Footprints,
+  Mountain,
+  Church,
+  Pickaxe,
+  Shield,
+  type LucideIcon,
+} from "lucide-react";
 import type { Hex as HexType } from "honeycomb-grid";
-import type { Hex, HexCoord, LocationType } from "~/models";
+import type { Hex, HexCoord, LocationType, DungeonTheme } from "~/models";
 import {
   hexToPolygonPoints,
   hexToCenter,
@@ -12,23 +25,47 @@ interface HexTileProps {
   honeycombHex: HexType;
   hexData: Hex;
   locationType?: LocationType;
+  dungeonTheme?: DungeonTheme;
   isSelected: boolean;
   onClick: (coord: HexCoord) => void;
+  showIcon?: boolean;
+  iconOnly?: boolean;
 }
 
-const LOCATION_ICONS: Record<LocationType, typeof Castle> = {
+const LOCATION_ICONS: Record<LocationType, LucideIcon> = {
   settlement: Castle,
   dungeon: Skull,
-  landmark: Castle, // placeholder
-  wilderness: Castle, // placeholder
+  landmark: Castle,
+  wilderness: Castle,
+};
+
+const DUNGEON_ICONS: Partial<Record<DungeonTheme, LucideIcon>> = {
+  tomb: Skull,
+  cave: Mountain,
+  temple: Church,
+  mine: Pickaxe,
+  fortress: Shield,
+  sewer: Skull,
+  crypt: Skull,
+  lair: Footprints,
+  // Wilderness themes
+  bandit_hideout: Swords,
+  cultist_lair: Moon,
+  witch_hut: Wand2,
+  sea_cave: Anchor,
+  beast_den: Footprints,
+  floating_keep: Castle,
 };
 
 export function HexTile({
   honeycombHex,
   hexData,
   locationType,
+  dungeonTheme,
   isSelected,
   onClick,
+  showIcon = true,
+  iconOnly = false,
 }: HexTileProps) {
   const points = hexToPolygonPoints(honeycombHex);
   const center = hexToCenter(honeycombHex);
@@ -37,7 +74,31 @@ export function HexTile({
     ? "#f59e0b" // amber-500 for selection
     : TERRAIN_BORDER_COLORS[hexData.terrain];
 
-  const Icon = locationType ? LOCATION_ICONS[locationType] : null;
+  // Use dungeon-specific icon if available, otherwise fall back to location icon
+  let Icon: LucideIcon | null = null;
+  if (locationType === "dungeon" && dungeonTheme) {
+    Icon = DUNGEON_ICONS[dungeonTheme] ?? Skull;
+  } else if (locationType) {
+    Icon = LOCATION_ICONS[locationType];
+  }
+
+  // Icon-only mode: just render the icon without polygon (for layering above roads)
+  if (iconOnly) {
+    if (!Icon) return null;
+    return (
+      <Icon
+        x={center.x - 12}
+        y={center.y - 12}
+        width={24}
+        height={24}
+        stroke="#1c1917"
+        strokeWidth={2}
+        fill="none"
+        style={{ cursor: "pointer" }}
+        onClick={() => onClick(hexData.coord)}
+      />
+    );
+  }
 
   return (
     <g
@@ -57,7 +118,7 @@ export function HexTile({
         stroke={strokeColor}
         strokeWidth={isSelected ? 3 : 1}
       />
-      {Icon && (
+      {showIcon && Icon && (
         <Icon
           x={center.x - 12}
           y={center.y - 12}

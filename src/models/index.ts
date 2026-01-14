@@ -24,6 +24,97 @@ export interface Hex {
   coord: HexCoord;
   terrain: TerrainType;
   locationId?: string;
+  // NEW: hex content layers
+  feature?: HexFeature;
+  encounter?: HexEncounter;
+  questObject?: QuestObject;
+  dwellingId?: string;
+  description?: string; // terrain flavor text
+}
+
+// === Hex Feature (Landmarks) ===
+
+export type FeatureType =
+  | "standing_stones"
+  | "abandoned_farm"
+  | "caravan_camp"
+  | "crossroads_shrine"
+  | "hunters_camp"
+  | "druid_grove"
+  | "ancient_tree"
+  | "ruined_tower"
+  | "watchtower"
+  | "mining_camp"
+  | "hermit_cave"
+  | "burial_mound"
+  | "mountain_pass"
+  | "eagle_nest"
+  | "frozen_shrine"
+  | "abandoned_mine"
+  | "witch_hut"
+  | "sunken_ruins"
+  | "sacrificial_altar"
+  | "wayshrine"
+  | "traveler_camp"
+  | "battlefield"
+  | "monster_lair"
+  // Water features
+  | "shipwreck"
+  | "reef"
+  | "sea_shrine"
+  | "whirlpool"
+  | "lighthouse_ruins"
+  | "drowned_village";
+
+export interface HexFeature {
+  id: string;
+  type: FeatureType;
+  name: string;
+  description: string;
+  interactive: boolean; // can be cleared/looted
+  cleared?: boolean;
+  encounter?: HexEncounter;
+  treasure?: TreasureEntry[];
+}
+
+// === Hex Encounter ===
+
+export interface HexEncounter {
+  id: string;
+  creature: string;
+  count: number;
+  behavior: "hostile" | "neutral" | "fleeing";
+  probability: number; // 0-100, chance when entering hex
+  treasure?: TreasureEntry;
+  rumor?: string;
+  defeated?: boolean;
+}
+
+// === Quest Object ===
+
+export type QuestObjectType = "plant" | "mineral" | "artifact" | "remains";
+
+export interface QuestObject {
+  id: string;
+  type: QuestObjectType;
+  name: string;
+  description: string;
+  found: boolean;
+  linkedHookId?: string;
+}
+
+// === Dwelling (Mini-Location) ===
+
+export type DwellingType = "farmstead" | "cottage" | "hermitage" | "ranger_station" | "roadside_inn";
+
+export interface Dwelling {
+  id: string;
+  type: DwellingType;
+  hexCoord: HexCoord;
+  name: string;
+  description: string;
+  npcIds: string[];
+  hasQuest?: boolean;
 }
 
 // === Location (base) ===
@@ -182,11 +273,21 @@ export interface FactionRelationship {
   reason?: string;
 }
 
+export type FactionType = "cult" | "militia" | "syndicate" | "guild" | "tribe";
+
+export interface FactionLair {
+  dungeonId?: string;
+  hexCoord?: HexCoord;
+}
+
 export interface Faction {
   id: string;
   name: string;
   description: string;
   archetype: FactionArchetype;
+  factionType: FactionType; // NEW
+  purpose: string; // NEW: "conducting dark rituals", etc.
+  lair?: FactionLair; // NEW
   scale: FactionScale;
   goals: FactionGoal[];
   methods: string[];
@@ -250,7 +351,22 @@ export interface Hook {
 // === Dungeon ===
 
 export type DungeonSize = "lair" | "small" | "medium" | "large" | "megadungeon";
-export type DungeonTheme = "tomb" | "cave" | "temple" | "mine" | "fortress" | "sewer" | "crypt" | "lair";
+export type DungeonTheme =
+  | "tomb"
+  | "cave"
+  | "temple"
+  | "mine"
+  | "fortress"
+  | "sewer"
+  | "crypt"
+  | "lair"
+  // Wilderness lair themes
+  | "bandit_hideout"
+  | "cultist_lair"
+  | "witch_hut"
+  | "sea_cave"
+  | "beast_den"
+  | "floating_keep";
 
 export interface Dungeon extends Location {
   type: "dungeon";
@@ -401,6 +517,26 @@ export type Season = "spring" | "summer" | "autumn" | "winter";
 
 export type MoonPhase = "new" | "waxing" | "full" | "waning";
 
+// === Day Events (Atlas) ===
+
+export type DayEventType = "clock_tick" | "weather_change" | "rumor" | "encounter" | "arrival";
+
+export interface DayEvent {
+  id: string;
+  type: DayEventType;
+  description: string;
+  linkedClockId?: string;
+  linkedFactionId?: string;
+  linkedLocationId?: string;
+}
+
+export interface DayRecord {
+  day: number;
+  weather: WeatherState;
+  moonPhase: MoonPhase;
+  events: DayEvent[];
+}
+
 // === World State ===
 
 export interface WorldState {
@@ -409,6 +545,8 @@ export interface WorldState {
   year: number;
   weather: WeatherState;
   moonPhase: MoonPhase;
+  calendar: DayRecord[]; // Pre-generated days (past + future)
+  forecastEndDay: number; // Last day with generated events
 }
 
 // === Edge Types (for roads/rivers) ===
@@ -433,6 +571,7 @@ export interface WorldData {
   hexes: Hex[];
   edges: HexEdge[];
   locations: Location[];
+  dwellings: Dwelling[]; // NEW
   npcs: NPC[];
   factions: Faction[];
   hooks: Hook[];

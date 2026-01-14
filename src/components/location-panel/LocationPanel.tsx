@@ -1,10 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
-import type { Hex, Location, TerrainType } from "~/models";
+import { X, Sparkles, Skull, Home } from "lucide-react";
+import type { Hex, Location, TerrainType, Dwelling, DwellingType } from "~/models";
 
 interface LocationPanelProps {
   location: Location | null;
   hex: Hex | null;
+  dwelling: Dwelling | null;
   onClose: () => void;
 }
 
@@ -17,7 +18,15 @@ const TERRAIN_LABELS: Record<TerrainType, string> = {
   swamp: "Murky Swamp",
 };
 
-export function LocationPanel({ location, hex, onClose }: LocationPanelProps) {
+const DWELLING_LABELS: Record<DwellingType, string> = {
+  farmstead: "Farmstead",
+  cottage: "Cottage",
+  hermitage: "Hermitage",
+  ranger_station: "Ranger Station",
+  roadside_inn: "Roadside Inn",
+};
+
+export function LocationPanel({ location, hex, dwelling, onClose }: LocationPanelProps) {
   const isOpen = hex !== null;
 
   return (
@@ -80,10 +89,72 @@ export function LocationPanel({ location, hex, onClose }: LocationPanelProps) {
           )}
 
           {!location && hex && (
-            <p className="text-stone-400">
-              No notable locations in this hex. The{" "}
-              {hex.terrain.replace("_", " ")} stretches before you.
-            </p>
+            <div className="space-y-3">
+              {/* Terrain description */}
+              <p className="text-stone-300">
+                {hex.description ||
+                  `The ${hex.terrain.replace("_", " ")} stretches before you.`}
+              </p>
+
+              {/* Feature */}
+              {hex.feature && (
+                <div className="rounded-lg border border-stone-600 bg-stone-700/50 p-3">
+                  <h3 className="font-medium text-stone-100">
+                    {hex.feature.name}
+                  </h3>
+                  <p className="mt-1 text-sm text-stone-300">
+                    {hex.feature.description}
+                  </p>
+                  {hex.feature.cleared && (
+                    <span className="mt-2 inline-block rounded bg-stone-600 px-2 py-0.5 text-xs text-stone-400">
+                      Cleared
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {/* Encounter */}
+              {hex.encounter && !hex.encounter.defeated && (
+                <div className="flex items-start gap-2 rounded-lg border border-red-900/50 bg-red-950/30 p-3">
+                  <Skull size={16} className="mt-0.5 shrink-0 text-red-400" />
+                  <p className="text-sm text-red-200">
+                    Potential encounter: {hex.encounter.creature} (x
+                    {hex.encounter.count})
+                  </p>
+                </div>
+              )}
+
+              {/* Quest Object */}
+              {hex.questObject && !hex.questObject.found && (
+                <div className="flex items-start gap-2 rounded-lg border border-amber-900/50 bg-amber-950/30 p-3">
+                  <Sparkles
+                    size={16}
+                    className="mt-0.5 shrink-0 text-amber-400"
+                  />
+                  <p className="text-sm text-amber-200">
+                    Something glints in the area: {hex.questObject.name}
+                  </p>
+                </div>
+              )}
+
+              {/* Dwelling */}
+              {dwelling && (
+                <div className="flex items-start gap-2 rounded-lg border border-stone-600 bg-stone-700/50 p-3">
+                  <Home size={16} className="mt-0.5 shrink-0 text-stone-300" />
+                  <div>
+                    <p className="text-sm text-stone-200">
+                      A {DWELLING_LABELS[dwelling.type].toLowerCase()} sits
+                      here: <span className="font-medium">{dwelling.name}</span>
+                    </p>
+                    {dwelling.description && (
+                      <p className="mt-1 text-xs text-stone-400">
+                        {dwelling.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           )}
         </motion.div>
       )}

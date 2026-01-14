@@ -1,7 +1,7 @@
 import { useMemo, useRef } from "react";
 import { useGesture } from "@use-gesture/react";
 import { motion, useMotionValue } from "framer-motion";
-import type { Hex, HexCoord, Location, HexEdge } from "~/models";
+import type { Hex, HexCoord, Location, HexEdge, Dungeon } from "~/models";
 import { Tile, HEX_SIZE } from "~/lib/hex-utils";
 import { HexTile } from "./HexTile";
 
@@ -29,14 +29,17 @@ export function HexMap({
 
   // Create honeycomb hex instances for each world hex
   const honeycombHexes = useMemo(() => {
-    return hexes.map(hex => new Tile(hex.coord));
+    return hexes.map((hex) => new Tile(hex.coord));
   }, [hexes]);
 
   // Calculate viewBox from actual hex positions
   const viewBox = useMemo(() => {
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    honeycombHexes.forEach(hex => {
-      hex.corners.forEach(corner => {
+    let minX = Infinity,
+      minY = Infinity,
+      maxX = -Infinity,
+      maxY = -Infinity;
+    honeycombHexes.forEach((hex) => {
+      hex.corners.forEach((corner) => {
         minX = Math.min(minX, corner.x);
         minY = Math.min(minY, corner.y);
         maxX = Math.max(maxX, corner.x);
@@ -55,7 +58,7 @@ export function HexMap({
   // Create hex center lookup for edge rendering
   const hexCenters = useMemo(() => {
     const map = new Map<string, { x: number; y: number }>();
-    honeycombHexes.forEach(hex => {
+    honeycombHexes.forEach((hex) => {
       map.set(`${hex.q},${hex.r}`, { x: hex.x, y: hex.y });
     });
     return map;
@@ -96,7 +99,7 @@ export function HexMap({
         from: () => [scale.get(), 0],
         scaleBounds: { min: 0.5, max: 2 },
       },
-    }
+    },
   );
 
   return (
@@ -115,7 +118,7 @@ export function HexMap({
           scale,
         }}
       >
-        {/* Render hex tiles first (background) */}
+        {/* Render hex tiles with icons */}
         <g>
           {honeycombHexes.map((honeycombHex, index) => {
             const hexData = hexes[index];
@@ -126,19 +129,26 @@ export function HexMap({
               selectedCoord?.q === hexData.coord.q &&
               selectedCoord?.r === hexData.coord.r;
 
+            // Get dungeon theme if location is a dungeon
+            const dungeonTheme =
+              location?.type === "dungeon"
+                ? (location as Dungeon).theme
+                : undefined;
+
             return (
               <HexTile
                 key={coordKey}
                 honeycombHex={honeycombHex}
                 hexData={hexData}
                 locationType={location?.type}
+                dungeonTheme={dungeonTheme}
                 isSelected={isSelected}
                 onClick={onHexClick}
               />
             );
           })}
         </g>
-        {/* Render edges (roads/rivers) on top */}
+        {/* Render edges (roads/rivers) */}
         <g>
           {edges.map((edge, index) => {
             const fromKey = `${edge.from.q},${edge.from.r}`;
@@ -171,6 +181,7 @@ export function HexMap({
                   strokeWidth={6}
                   strokeLinecap="round"
                   fill="none"
+                  opacity={0.7}
                 />
               );
             }
@@ -195,6 +206,7 @@ export function HexMap({
                 strokeLinecap="round"
                 strokeDasharray="8 4"
                 fill="none"
+                opacity={0.7}
               />
             );
           })}

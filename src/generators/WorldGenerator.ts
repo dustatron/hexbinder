@@ -11,13 +11,15 @@ import type {
   Faction,
   Clock,
   Hook,
+  Dwelling,
   SettlementSize,
+  DayRecord,
 } from "~/models";
 import { SeededRandom } from "./SeededRandom";
 import { generateSpiralTerrain, type MapSize, type StartPosition } from "./SpiralTerrainGenerator";
 import { generateRivers } from "./RiverGenerator";
 import { placeSettlement } from "./SettlementGenerator";
-import { placeDungeon } from "./DungeonGenerator";
+import { placeDungeon, placeWildernessLair } from "./DungeonGenerator";
 import { generateSites } from "./SiteGenerator";
 import { generateFactions } from "./FactionGenerator";
 import { generateFactionClock } from "./ClockGenerator";
@@ -28,6 +30,12 @@ import { generateRumors, generateNotices } from "./RumorGenerator";
 import { generateSettlementHooks, generateDungeonHook, generateFactionHook } from "./HookGenerator";
 import { populateDungeonRooms } from "./RoomContentGenerator";
 import { generateWeather, getSeasonFromDay, getMoonPhase } from "./WeatherGenerator";
+import { generateTerrainDescription } from "./TerrainDescriptionGenerator";
+import { generateDayEvents } from "./DayEventGenerator";
+import { generateFeatures } from "./FeatureGenerator";
+import { generateHexEncounters } from "./HexEncounterGenerator";
+import { generateDwellings } from "./DwellingGenerator";
+import { generateQuestObjects } from "./QuestObjectGenerator";
 
 export interface WorldGeneratorOptions {
   name: string;
@@ -35,7 +43,9 @@ export interface WorldGeneratorOptions {
   mapSize?: MapSize;
   startPosition?: StartPosition;
   startingSettlementSize?: SettlementSize;
+  settlementCount?: number;
   dungeonCount?: number;
+  wildernessLairCount?: number;
   factionCount?: number;
 }
 
@@ -47,6 +57,13 @@ export interface GeneratedWorld {
 /**
  * Generate a complete world with all content.
  */
+// Default counts by map size
+const DEFAULT_COUNTS: Record<MapSize, { settlements: number; dungeons: number; wildernessLairs: number }> = {
+  small: { settlements: 8, dungeons: 4, wildernessLairs: 6 },
+  medium: { settlements: 12, dungeons: 8, wildernessLairs: 10 },
+  large: { settlements: 20, dungeons: 12, wildernessLairs: 16 },
+};
+
 export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   const {
     name,
@@ -54,9 +71,13 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     mapSize = "medium",
     startPosition = "center",
     startingSettlementSize = "village",
-    dungeonCount = 2,
     factionCount = 2,
   } = options;
+
+  const defaults = DEFAULT_COUNTS[mapSize];
+  const settlementCount = options.settlementCount ?? defaults.settlements;
+  const dungeonCount = options.dungeonCount ?? defaults.dungeons;
+  const wildernessLairCount = options.wildernessLairCount ?? defaults.wildernessLairs;
 
   const rng = new SeededRandom(seed);
   const worldId = `world-${nanoid(8)}`;
@@ -71,8 +92,8 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   // Step 2: Generate rivers
   const { rivers, riverHexes } = generateRivers({ seed, hexes, riverCount: 2 });
 
-  // Step 3: Generate factions
-  const factions = generateFactions({ seed, count: factionCount });
+  // Step 3: Generate factions (pass hexes for lair placement)
+  const factions = generateFactions({ seed, count: factionCount, hexes });
 
   // Step 4: Place starting settlement at start position
   const settlements: Settlement[] = [];
@@ -98,8 +119,8 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   }
 
   // Step 5: Place additional settlements
-  // Number of extra settlements based on map size
-  const extraSettlementCount = mapSize === "small" ? 1 : mapSize === "medium" ? 2 : 4;
+  // Use configured settlement count minus the starting settlement
+  const extraSettlementCount = settlementCount - 1;
 
   // First try POI locations on plains
   const poiForSettlements = poiCoords.filter(c =>
@@ -157,7 +178,45 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     }
   }
 
-  // Step 9: Generate NPCs
+  // Step 8b: Place wilderness lairs (mini-dungeons)
+  for (let i = 0; i < wildernessLairCount; i++) {
+    const result = placeWildernessLair({ seed: `${seed}-wilderness-${i}`, hexes });
+    if (result) {
+      result.dungeon.rooms = populateDungeonRooms(seed, result.dungeon.rooms, result.dungeon.depth);
+      dungeons.push(result.dungeon);
+    }
+  }
+
+  // Step 9: Generate dwellings
+  const { dwellings, hexes: hexesWithDwellings } = generateDwellings({
+    seed,
+    hexes,
+    roadHexes,
+  });
+  let updatedHexes = hexesWithDwellings;
+
+  // Step 10: Generate features
+  const { hexes: hexesWithFeatures } = generateFeatures({
+    seed,
+    hexes: updatedHexes,
+    roadHexes,
+  });
+  updatedHexes = hexesWithFeatures;
+
+  // Step 11: Generate hex encounters
+  updatedHexes = generateHexEncounters({ seed, hexes: updatedHexes });
+
+  // Step 12: Generate quest objects
+  updatedHexes = generateQuestObjects({ seed, hexes: updatedHexes });
+
+  // Step 13: Add terrain descriptions to all hexes
+  const terrainRng = new SeededRandom(`${seed}-terrain-desc`);
+  updatedHexes = updatedHexes.map((hex) => ({
+    ...hex,
+    description: generateTerrainDescription(hex.terrain, terrainRng),
+  }));
+
+  // Step 14: Generate NPCs
   const npcs: NPC[] = [];
 
   // Settlement NPCs
@@ -176,14 +235,14 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     npcs.push(...factionNPCs);
   }
 
-  // Step 10: Generate clocks for factions
+  // Step 15: Generate clocks for factions
   const clocks: Clock[] = [];
   for (const faction of factions) {
     const clock = generateFactionClock({ seed, faction });
     clocks.push(clock);
   }
 
-  // Step 11: Generate hooks
+  // Step 16: Generate hooks
   const hooks: Hook[] = [];
 
   // Settlement hooks
@@ -205,61 +264,82 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     hooks.push(factionHook);
   }
 
-  // Step 12: Build edges array (roads + rivers)
+  // Step 17: Build edges array (roads + rivers)
   const edges: HexEdge[] = [...roads, ...rivers];
 
-  // Step 13: Build locations array
+  // Step 18: Build locations array
   const locations: Location[] = [...settlements, ...dungeons];
 
-  // Step 14: Generate initial weather/time state
+  // Step 19: Generate initial weather/time state
   const day = 1;
   const year = 1;
   const season = getSeasonFromDay(day);
   const weather = generateWeather({ seed, season, day });
   const moonPhase = getMoonPhase(day);
 
-  // Step 15: Assemble world state
-  const state: WorldState = {
-    day,
-    season,
-    year,
-    weather,
-    moonPhase,
-  };
-
-  // Step 16: Assemble world data
+  // Step 20: Assemble world data (without calendar first)
+  const FORECAST_DAYS = 28;
   const world: WorldData = {
     id: worldId,
     name,
     seed,
     createdAt: Date.now(),
     updatedAt: Date.now(),
-    state,
-    hexes,
+    state: {
+      day,
+      season,
+      year,
+      weather,
+      moonPhase,
+      calendar: [],
+      forecastEndDay: FORECAST_DAYS,
+    },
+    hexes: updatedHexes,
     edges,
     locations,
+    dwellings,
     npcs,
     factions,
     hooks,
     clocks,
   };
 
+  // Step 21: Pre-generate 28 days of events/weather
+  for (let d = 1; d <= FORECAST_DAYS; d++) {
+    const daySeason = getSeasonFromDay(d);
+    const dayWeather = generateWeather({ seed, season: daySeason, day: d });
+    const dayMoonPhase = getMoonPhase(d);
+    const dayEvents = generateDayEvents({ seed, day: d, world });
+
+    world.state.calendar.push({
+      day: d,
+      weather: dayWeather,
+      moonPhase: dayMoonPhase,
+      events: dayEvents,
+    });
+  }
+
   return { world, bridges };
 }
 
+const FORECAST_DAYS = 28;
+
 /**
  * Advance the world by one day.
+ * Reads from pre-generated calendar. Returns null if at end of forecast.
  */
-export function advanceDay(world: WorldData): WorldData {
+export function advanceDay(world: WorldData): WorldData | null {
   const newDay = world.state.day + 1;
-  const newYear = Math.floor(newDay / 360) + 1;
-  const season = getSeasonFromDay(newDay);
-  const weather = generateWeather({
-    seed: world.seed,
-    season,
-    day: newDay,
-  });
-  const moonPhase = getMoonPhase(newDay);
+
+  // Can't advance past forecast
+  if (newDay > world.state.forecastEndDay) {
+    return null;
+  }
+
+  const dayRecord = world.state.calendar.find((r) => r.day === newDay);
+  if (!dayRecord) {
+    return null;
+  }
 
   return {
     ...world,
@@ -267,12 +347,81 @@ export function advanceDay(world: WorldData): WorldData {
     state: {
       ...world.state,
       day: newDay,
-      year: newYear,
-      season,
-      weather,
-      moonPhase,
+      year: Math.floor(newDay / 360) + 1,
+      season: getSeasonFromDay(newDay),
+      weather: dayRecord.weather,
+      moonPhase: dayRecord.moonPhase,
     },
   };
+}
+
+/**
+ * Go back one day.
+ * Returns null if already at day 1.
+ */
+export function goBackDay(world: WorldData): WorldData | null {
+  if (world.state.day <= 1) {
+    return null;
+  }
+
+  const newDay = world.state.day - 1;
+  const dayRecord = world.state.calendar.find((r) => r.day === newDay);
+  if (!dayRecord) {
+    return null;
+  }
+
+  return {
+    ...world,
+    updatedAt: Date.now(),
+    state: {
+      ...world.state,
+      day: newDay,
+      year: Math.floor(newDay / 360) + 1,
+      season: getSeasonFromDay(newDay),
+      weather: dayRecord.weather,
+      moonPhase: dayRecord.moonPhase,
+    },
+  };
+}
+
+/**
+ * Extend forecast by generating another 28 days.
+ */
+export function extendForecast(world: WorldData): WorldData {
+  const startDay = world.state.forecastEndDay + 1;
+  const endDay = startDay + FORECAST_DAYS - 1;
+  const newCalendar = [...world.state.calendar];
+
+  for (let d = startDay; d <= endDay; d++) {
+    const daySeason = getSeasonFromDay(d);
+    const dayWeather = generateWeather({ seed: world.seed, season: daySeason, day: d });
+    const dayMoonPhase = getMoonPhase(d);
+    const dayEvents = generateDayEvents({ seed: world.seed, day: d, world });
+
+    newCalendar.push({
+      day: d,
+      weather: dayWeather,
+      moonPhase: dayMoonPhase,
+      events: dayEvents,
+    });
+  }
+
+  return {
+    ...world,
+    updatedAt: Date.now(),
+    state: {
+      ...world.state,
+      calendar: newCalendar,
+      forecastEndDay: endDay,
+    },
+  };
+}
+
+/**
+ * Check if forecast needs extending (within 5 days of end).
+ */
+export function needsForecastExtension(world: WorldData): boolean {
+  return world.state.day >= world.state.forecastEndDay - 5;
 }
 
 /**
