@@ -1,83 +1,86 @@
-# [React TanStarter](https://github.com/dotnize/react-tanstarter)
+# Hexbinder
 
-A minimal starter template for 🏝️ TanStack Start. [→ Preview here](https://tanstarter.nize.ph/)
+Procedural sandbox generator for tabletop RPG GMs. Generates hex maps, settlements, dungeons, NPCs, factions, and tracks world state over time.
 
-- [React 19](https://react.dev) + [React Compiler](https://react.dev/learn/react-compiler)
-- TanStack [Start](https://tanstack.com/start/latest) + [Router](https://tanstack.com/router/latest) + [Query](https://tanstack.com/query/latest)
-- [Tailwind CSS](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/) + [Base UI](https://base-ui.com/)
-- [Vite 8](https://vite.dev/blog/announcing-vite8-beta) (beta) + [Nitro v3](https://v3.nitro.build/) (nightly)
-- [Drizzle ORM](https://orm.drizzle.team/) + PostgreSQL
-- [Better Auth](https://www.better-auth.com/)
+Built for **Shadowdark RPG**. Optimized for iPad, works on web.
 
-## Getting Started
+## Features
 
-1. [Use this template](https://github.com/new?template_name=react-tanstarter&template_owner=dotnize) or clone this repository with gitpick:
+- **Hex Map Generation** - Spiral terrain with roads, rivers, bridges
+- **Settlements** - Villages, towns, cities with NPCs, shops, rumors, notices
+- **Dungeons** - Room-by-room layouts with monsters, treasure, traps
+- **Wilderness Lairs** - Bandit hideouts, cultist caves, witch huts, etc.
+- **Factions** - Goals, clocks, territory, member NPCs
+- **World Calendar** - 28-day event forecasting, weather, faction activity
+- **Encounter Tables** - 1d6 tables with monster/NPC/treasure/omen results
+- **Seeded Generation** - Same seed = identical world, shareable
 
-   ```bash
-   npx gitpick dotnize/react-tanstarter myapp
-   cd myapp
-   ```
+## Quick Start
 
-2. Install dependencies:
+```bash
+pnpm install
+pnpm dev
+```
 
-   ```bash
-   pnpm install
-   ```
+Open http://localhost:3000
 
-3. Create a `.env` file based on [`.env.example`](./.env.example).
+## Scripts
 
-4. Push the schema to your database with drizzle-kit:
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start dev server |
+| `pnpm build` | Production build |
+| `pnpm preview` | Preview production build |
+| `pnpm check` | Format, lint, type check |
 
-   ```bash
-   pnpm db push
-   ```
+## Tech Stack
 
-   https://orm.drizzle.team/docs/migrations
+- React 19 + React Compiler
+- TanStack Start/Router/Query
+- Vite 8, TypeScript, Tailwind 4
+- Honeycomb (hex math)
+- Framer Motion, @use-gesture/react
+- localStorage (no backend)
 
-5. Run the development server:
+## Project Structure
 
-   ```bash
-   pnpm dev
-   ```
+```
+src/
+├── routes/              # TanStack Router pages
+├── components/
+│   ├── hex-map/         # Map rendering, tiles, edges
+│   ├── encounter-table/ # Shared encounter tables
+│   └── location-detail/ # Settlement/dungeon/faction views
+├── generators/          # Procedural generation
+├── models/              # TypeScript types
+└── lib/                 # Utilities, storage, monsters
+```
 
-   The development server should now be running at [http://localhost:3000](http://localhost:3000).
+## Routes
 
-## Deploying to production
+| Route | Description |
+|-------|-------------|
+| `/` | World list, create new |
+| `/world/$worldId` | Hex map view |
+| `/world/$worldId/hex/$q/$r` | Hex detail page |
+| `/world/$worldId/location/$locationId` | Location detail |
+| `/world/$worldId/faction/$factionId` | Faction detail |
+| `/atlas/$worldId` | World atlas, calendar, factions |
 
-The [vite config](./vite.config.ts#L12-L13) is currently configured to use [Nitro v3](https://v3.nitro.build) (nightly) to deploy on Vercel, but can be easily switched to other providers.
+## Reference Data
 
-Refer to the [TanStack Start hosting docs](https://tanstack.com/start/latest/docs/framework/react/guide/hosting) for deploying to other platforms.
+`shadowdark-reference/` contains Shadowdark RPG JSON:
+- `monsters.json` - Monster stats for encounters
+- `spells.json`, `equipment.json`, `magic-items.json`
 
-## Issue watchlist
+## Storage
 
-- [Router/Start issues](https://github.com/TanStack/router/issues) - TanStack Start is in RC.
-- [Devtools releases](https://github.com/TanStack/devtools/releases) - TanStack Devtools is in alpha and may still have breaking changes.
-- [Vite 8 beta](https://vite.dev/blog/announcing-vite8-beta) - We're using Vite 8 beta which is powered by Rolldown.
-- [Nitro v3 nightly](https://v3.nitro.build/docs/nightly) - The template is configured with Nitro v3 nightly by default.
+All data in localStorage. Export/import JSON for backup.
 
-## Goodies
-
-#### Scripts
-
-We use **pnpm** by default, but you can modify these scripts in [package.json](./package.json) to use your preferred package manager.
-
-- **`auth:generate`** - Regenerate the [auth db schema](./src/lib/db/schema/auth.schema.ts) if you've made changes to your Better Auth [config](./src/lib/auth/auth.ts).
-- **`db`** - Run [drizzle-kit](https://orm.drizzle.team/docs/kit-overview) commands. (e.g. `pnpm db generate`, `pnpm db studio`)
-- **`ui`** - The shadcn/ui CLI. (e.g. `pnpm ui add button`)
-- **`format`**, **`lint`**, **`check-types`** - Run Prettier, ESLint, and check TypeScript types respectively.
-  - **`check`** - Run all three above. (e.g. `pnpm check`)
-- **`deps`** - Selectively upgrade dependencies via taze.
-
-#### Utilities
-
-- [`auth/middleware.ts`](./src/lib/auth/middleware.ts) - Sample middleware for forcing authentication on server functions. (see [#5](https://github.com/dotnize/react-tanstarter/issues/5#issuecomment-2615905686) and [#17](https://github.com/dotnize/react-tanstarter/issues/17#issuecomment-2853482062))
-- [`theme-toggle.tsx`](./src/components/theme-toggle.tsx), [`theme-provider.tsx`](./src/components/theme-provider.tsx) - A theme toggle and provider for toggling between light and dark mode. ([#7](https://github.com/dotnize/react-tanstarter/issues/7#issuecomment-3141530412))
+```
+world:${id} -> WorldData JSON blob
+```
 
 ## License
 
-Code in this template is public domain via [Unlicense](./LICENSE). Feel free to remove or replace for your own project.
-
-## Also check out
-
-- [@tanstack/create-start](https://github.com/TanStack/create-tsrouter-app/blob/main/cli/ts-create-start/README.md) - The official CLI tool from the TanStack team to create Start projects.
-- [awesome-tanstack-start](https://github.com/Balastrong/awesome-tanstack-start) - A curated list of awesome resources for TanStack Start.
+Private project.
