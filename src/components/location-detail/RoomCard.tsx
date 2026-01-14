@@ -1,11 +1,12 @@
 import { ChevronDown, ChevronRight, Eye, EyeOff, Skull, AlertTriangle, Gem, Lock } from "lucide-react";
-import type { DungeonRoom, RoomSize } from "~/models";
+import type { DungeonRoom, SpatialRoom, RoomSize } from "~/models";
 import { getMonster, type Monster } from "~/lib/monsters";
 
 interface RoomCardProps {
-  room: DungeonRoom;
+  room: DungeonRoom | SpatialRoom;
   roomNumber: number;
   expanded?: boolean;
+  selected?: boolean;
   onToggle?: () => void;
 }
 
@@ -47,7 +48,7 @@ function MonsterDisplay({ monster, count }: { monster: Monster; count: number })
   );
 }
 
-export function RoomCard({ room, roomNumber, expanded = false, onToggle }: RoomCardProps) {
+export function RoomCard({ room, roomNumber, expanded = false, selected = false, onToggle }: RoomCardProps) {
   const sizeBadge = SIZE_BADGES[room.size];
   const hasMonsters = room.encounters.some(e => !e.defeated);
   const hasHazards = room.hazards.some(h => !h.disarmed);
@@ -55,7 +56,9 @@ export function RoomCard({ room, roomNumber, expanded = false, onToggle }: RoomC
   const hasSecrets = room.secrets.some(s => !s.discovered);
 
   return (
-    <div className="rounded-lg border border-stone-700 bg-stone-900 overflow-hidden">
+    <div className={`rounded-lg border bg-stone-900 overflow-hidden ${
+      selected ? "border-amber-500 ring-1 ring-amber-500/30" : "border-stone-700"
+    }`}>
       {/* Header - always visible */}
       <button
         onClick={onToggle}

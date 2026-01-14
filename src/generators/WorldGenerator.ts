@@ -6,7 +6,7 @@ import type {
   HexEdge,
   Location,
   Settlement,
-  Dungeon,
+  SpatialDungeon,
   NPC,
   Faction,
   Clock,
@@ -30,7 +30,7 @@ import { generateNPCRelationships } from "./NPCRelationshipGenerator";
 import { weaveHooks } from "./HookWeaver";
 import { generateRumors, generateNotices } from "./RumorGenerator";
 import { generateSettlementHooks, generateDungeonHook, generateFactionHook } from "./HookGenerator";
-import { populateDungeonRooms } from "./RoomContentGenerator";
+import { populateSpatialDungeonRooms } from "./RoomContentGenerator";
 import { generateWeather, getSeasonFromDay, getMoonPhase } from "./WeatherGenerator";
 import { generateTerrainDescription } from "./TerrainDescriptionGenerator";
 import { generateDayEvents } from "./DayEventGenerator";
@@ -200,13 +200,13 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   const bridges = generateBridges({ seed, roads, riverHexes });
 
   // Step 8: Place dungeons
-  const dungeons: Dungeon[] = [];
+  const dungeons: SpatialDungeon[] = [];
 
   for (let i = 0; i < dungeonCount; i++) {
     const result = placeDungeon({ seed: `${seed}-dungeon-${i}`, hexes });
     if (result) {
       // Populate dungeon rooms with encounters and treasure
-      result.dungeon.rooms = populateDungeonRooms(seed, result.dungeon.rooms, result.dungeon.depth);
+      result.dungeon.rooms = populateSpatialDungeonRooms(seed, result.dungeon.rooms, result.dungeon.depth);
       dungeons.push(result.dungeon);
     }
   }
@@ -215,7 +215,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   for (let i = 0; i < wildernessLairCount; i++) {
     const result = placeWildernessLair({ seed: `${seed}-wilderness-${i}`, hexes });
     if (result) {
-      result.dungeon.rooms = populateDungeonRooms(seed, result.dungeon.rooms, result.dungeon.depth);
+      result.dungeon.rooms = populateSpatialDungeonRooms(seed, result.dungeon.rooms, result.dungeon.depth);
       dungeons.push(result.dungeon);
     }
   }

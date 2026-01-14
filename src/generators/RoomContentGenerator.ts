@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 import type {
   DungeonRoom,
+  SpatialRoom,
   Encounter,
   EncounterBehavior,
   TreasureEntry,
@@ -276,5 +277,116 @@ export function populateDungeonRooms(
 ): DungeonRoom[] {
   return rooms.map((room) =>
     populateRoom({ seed, room, dungeonDepth })
+  );
+}
+
+export interface SpatialRoomContentOptions {
+  seed: string;
+  room: SpatialRoom;
+  dungeonDepth?: number;
+}
+
+/**
+ * Generate encounters for a spatial dungeon room.
+ */
+export function generateSpatialRoomEncounters(options: SpatialRoomContentOptions): Encounter[] {
+  const { seed, room, dungeonDepth = 1 } = options;
+  const rng = new SeededRandom(`${seed}-encounter-${room.id}`);
+
+  const encounters: Encounter[] = [];
+  const encounterChance = ROOM_ENCOUNTER_CHANCE[room.type];
+
+  if (!rng.chance(encounterChance)) {
+    return encounters;
+  }
+
+  // Determine creature tier based on room depth and dungeon depth
+  const effectiveDepth = Math.min(room.depth + dungeonDepth - 1, 4);
+  const creatures = ENCOUNTER_CREATURES_BY_DEPTH[effectiveDepth] ?? ENCOUNTER_CREATURES_BY_DEPTH[0];
+  const creatureType = rng.pick(creatures);
+
+  // Count based on room size
+  const countRanges: Record<string, [number, number]> = {
+    cramped: [1, 2],
+    small: [1, 3],
+    medium: [2, 4],
+    large: [3, 6],
+    vast: [4, 8],
+  };
+  const [minCount, maxCount] = countRanges[room.size] ?? [1, 3];
+  const count = rng.between(minCount, maxCount);
+
+  encounters.push({
+    id: `encounter-${nanoid(8)}`,
+    creatureType,
+    count,
+    behavior: rng.pickWeighted(BEHAVIOR_WEIGHTS),
+    defeated: false,
+  });
+
+  // Small chance of second encounter in large rooms
+  if ((room.size === "large" || room.size === "vast") && rng.chance(0.2)) {
+    const secondCreature = rng.pick(creatures);
+    if (secondCreature !== creatureType) {
+      encounters.push({
+        id: `encounter-${nanoid(8)}`,
+        creatureType: secondCreature,
+        count: rng.between(1, 2),
+        behavior: rng.pickWeighted(BEHAVIOR_WEIGHTS),
+        defeated: false,
+      });
+    }
+  }
+
+  return encounters;
+}
+
+/**
+ * Generate treasure for a spatial dungeon room.
+ */
+export function generateSpatialRoomTreasure(options: SpatialRoomContentOptions): TreasureEntry[] {
+  const { seed, room, dungeonDepth = 1 } = options;
+  const rng = new SeededRandom(`${seed}-treasure-${room.id}`);
+
+  const treasure: TreasureEntry[] = [];
+  const treasureChance = ROOM_TREASURE_CHANCE[room.type];
+
+  if (!rng.chance(treasureChance)) {
+    return treasure;
+  }
+
+  // Number of treasure items based on room type
+  const itemCount = room.type === "treasury"
+    ? rng.between(3, 6)
+    : rng.between(1, 3);
+
+  for (let i = 0; i < itemCount; i++) {
+    const type = rng.pickWeighted(TREASURE_TYPE_WEIGHTS);
+    treasure.push(generateTreasureEntry(rng, type, dungeonDepth));
+  }
+
+  return treasure;
+}
+
+/**
+ * Populate a spatial room with encounters and treasure.
+ */
+export function populateSpatialRoom(options: SpatialRoomContentOptions): SpatialRoom {
+  const room = { ...options.room };
+  room.encounters = generateSpatialRoomEncounters(options);
+  room.treasure = generateSpatialRoomTreasure(options);
+  return room;
+}
+
+/**
+ * Populate all spatial rooms in a dungeon.
+ */
+export function populateSpatialDungeonRooms(
+  seed: string,
+  rooms: SpatialRoom[],
+  dungeonDepth: number
+): SpatialRoom[] {
+  return rooms.map((room) =>
+    populateSpatialRoom({ seed, room, dungeonDepth })
   );
 }

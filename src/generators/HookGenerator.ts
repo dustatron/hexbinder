@@ -3,7 +3,7 @@ import type {
   Hook,
   HookStatus,
   Settlement,
-  Dungeon,
+  SpatialDungeon,
   Faction,
   NPC,
 } from "~/models";
@@ -129,7 +129,7 @@ const WILDERNESS_HOOKS: HookTemplate[] = [
 export interface HookGeneratorOptions {
   seed: string;
   settlement?: Settlement;
-  dungeon?: Dungeon;
+  dungeon?: SpatialDungeon;
   faction?: Faction;
   npcs?: NPC[];
 }
@@ -215,7 +215,7 @@ export function generateSettlementHooks(
 /**
  * Generate a hook for a dungeon.
  */
-export function generateDungeonHook(seed: string, dungeon: Dungeon): Hook {
+export function generateDungeonHook(seed: string, dungeon: SpatialDungeon): Hook {
   return generateHook({
     seed: `${seed}-dungeon-hook-${dungeon.id}`,
     dungeon,
