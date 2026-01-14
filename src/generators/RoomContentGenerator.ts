@@ -1,0 +1,280 @@
+import { nanoid } from "nanoid";
+import type {
+  DungeonRoom,
+  Encounter,
+  EncounterBehavior,
+  TreasureEntry,
+  TreasureType,
+  RoomType,
+} from "~/models";
+import { SeededRandom, createWeightedTable } from "./SeededRandom";
+
+// === Encounter Tables ===
+
+const ENCOUNTER_CREATURES_BY_DEPTH: Record<number, string[]> = {
+  0: ["giant_rat", "kobold", "goblin", "skeleton", "spider"],
+  1: ["orc", "zombie", "hobgoblin", "wolf", "stirge"],
+  2: ["bugbear", "ghoul", "ogre", "wight", "shadow"],
+  3: ["troll", "wraith", "vampire_spawn", "gargoyle", "basilisk"],
+  4: ["giant", "vampire", "beholder", "dragon_young", "lich"],
+};
+
+const BEHAVIOR_WEIGHTS = createWeightedTable<EncounterBehavior>({
+  hostile: 50,
+  neutral: 20,
+  negotiable: 20,
+  fleeing: 10,
+});
+
+const ROOM_ENCOUNTER_CHANCE: Record<RoomType, number> = {
+  entrance: 0.2,
+  corridor: 0.3,
+  chamber: 0.4,
+  lair: 0.9,
+  trap_room: 0.1,
+  treasury: 0.3,
+  shrine: 0.3,
+  prison: 0.5,
+  puzzle_room: 0.2,
+};
+
+// === Treasure Tables ===
+
+const TREASURE_TYPE_WEIGHTS = createWeightedTable<TreasureType>({
+  coins: 40,
+  gems: 20,
+  art: 15,
+  item: 20,
+  magic_item: 5,
+});
+
+const COIN_VALUES = [
+  "2d6 cp",
+  "3d6 sp",
+  "2d6 gp",
+  "1d6 x 10 gp",
+  "2d6 x 10 gp",
+];
+
+const GEM_DESCRIPTIONS = [
+  "A small amethyst",
+  "A polished agate",
+  "A cloudy quartz crystal",
+  "A piece of jade",
+  "A tiger's eye",
+  "A bloodstone",
+  "A carnelian",
+  "An onyx",
+];
+
+const ART_OBJECTS = [
+  "A silver goblet",
+  "A gold ring with gemstone",
+  "A silk tapestry",
+  "An ivory statuette",
+  "A bronze brazier",
+  "A painted portrait",
+  "A jeweled dagger",
+  "A golden candlestick",
+];
+
+const MUNDANE_ITEMS = [
+  "A well-crafted longsword",
+  "A suit of chainmail",
+  "A crossbow with bolts",
+  "A hooded lantern",
+  "A set of thieves' tools",
+  "A healer's kit",
+  "A spellbook (empty)",
+  "A rope of climbing",
+];
+
+const ROOM_TREASURE_CHANCE: Record<RoomType, number> = {
+  entrance: 0.1,
+  corridor: 0.1,
+  chamber: 0.3,
+  lair: 0.7,
+  trap_room: 0.5,
+  treasury: 0.95,
+  shrine: 0.4,
+  prison: 0.2,
+  puzzle_room: 0.6,
+};
+
+export interface RoomContentOptions {
+  seed: string;
+  room: DungeonRoom;
+  dungeonDepth?: number;
+}
+
+/**
+ * Generate encounters for a dungeon room.
+ */
+export function generateRoomEncounters(options: RoomContentOptions): Encounter[] {
+  const { seed, room, dungeonDepth = 1 } = options;
+  const rng = new SeededRandom(`${seed}-encounter-${room.id}`);
+
+  const encounters: Encounter[] = [];
+  const encounterChance = ROOM_ENCOUNTER_CHANCE[room.type];
+
+  if (!rng.chance(encounterChance)) {
+    return encounters;
+  }
+
+  // Determine creature tier based on room depth and dungeon depth
+  const effectiveDepth = Math.min(room.depth + dungeonDepth - 1, 4);
+  const creatures = ENCOUNTER_CREATURES_BY_DEPTH[effectiveDepth] ?? ENCOUNTER_CREATURES_BY_DEPTH[0];
+  const creatureType = rng.pick(creatures);
+
+  // Count based on room size
+  const countRanges: Record<string, [number, number]> = {
+    cramped: [1, 2],
+    small: [1, 3],
+    medium: [2, 4],
+    large: [3, 6],
+    vast: [4, 8],
+  };
+  const [minCount, maxCount] = countRanges[room.size] ?? [1, 3];
+  const count = rng.between(minCount, maxCount);
+
+  encounters.push({
+    id: `encounter-${nanoid(8)}`,
+    creatureType,
+    count,
+    behavior: rng.pickWeighted(BEHAVIOR_WEIGHTS),
+    defeated: false,
+  });
+
+  // Small chance of second encounter in large rooms
+  if ((room.size === "large" || room.size === "vast") && rng.chance(0.2)) {
+    const secondCreature = rng.pick(creatures);
+    if (secondCreature !== creatureType) {
+      encounters.push({
+        id: `encounter-${nanoid(8)}`,
+        creatureType: secondCreature,
+        count: rng.between(1, 2),
+        behavior: rng.pickWeighted(BEHAVIOR_WEIGHTS),
+        defeated: false,
+      });
+    }
+  }
+
+  return encounters;
+}
+
+/**
+ * Generate treasure for a dungeon room.
+ */
+export function generateRoomTreasure(options: RoomContentOptions): TreasureEntry[] {
+  const { seed, room, dungeonDepth = 1 } = options;
+  const rng = new SeededRandom(`${seed}-treasure-${room.id}`);
+
+  const treasure: TreasureEntry[] = [];
+  const treasureChance = ROOM_TREASURE_CHANCE[room.type];
+
+  if (!rng.chance(treasureChance)) {
+    return treasure;
+  }
+
+  // Number of treasure items based on room type
+  const itemCount = room.type === "treasury"
+    ? rng.between(3, 6)
+    : rng.between(1, 3);
+
+  for (let i = 0; i < itemCount; i++) {
+    const type = rng.pickWeighted(TREASURE_TYPE_WEIGHTS);
+    treasure.push(generateTreasureEntry(rng, type, dungeonDepth));
+  }
+
+  return treasure;
+}
+
+function generateTreasureEntry(
+  rng: SeededRandom,
+  type: TreasureType,
+  dungeonDepth: number
+): TreasureEntry {
+  const id = `treasure-${nanoid(8)}`;
+
+  switch (type) {
+    case "coins": {
+      const valueIndex = Math.min(dungeonDepth - 1, COIN_VALUES.length - 1);
+      const value = COIN_VALUES[Math.max(0, valueIndex)];
+      return {
+        id,
+        type: "coins",
+        name: "Coins",
+        value,
+        looted: false,
+      };
+    }
+    case "gems": {
+      const gem = rng.pick(GEM_DESCRIPTIONS);
+      const baseValue = 10 * dungeonDepth;
+      const value = `${rng.between(baseValue, baseValue * 5)} gp`;
+      return {
+        id,
+        type: "gems",
+        name: gem,
+        value,
+        looted: false,
+      };
+    }
+    case "art": {
+      const art = rng.pick(ART_OBJECTS);
+      const baseValue = 25 * dungeonDepth;
+      const value = `${rng.between(baseValue, baseValue * 4)} gp`;
+      return {
+        id,
+        type: "art",
+        name: art,
+        value,
+        description: art,
+        looted: false,
+      };
+    }
+    case "item": {
+      const item = rng.pick(MUNDANE_ITEMS);
+      return {
+        id,
+        type: "item",
+        name: item,
+        description: item,
+        looted: false,
+      };
+    }
+    case "magic_item": {
+      // Magic items reference the MagicItemGenerator
+      return {
+        id,
+        type: "magic_item",
+        name: "Mysterious Magic Item",
+        description: "An item that radiates magical energy",
+        looted: false,
+      };
+    }
+  }
+}
+
+/**
+ * Populate a room with encounters and treasure.
+ */
+export function populateRoom(options: RoomContentOptions): DungeonRoom {
+  const room = { ...options.room };
+  room.encounters = generateRoomEncounters(options);
+  room.treasure = generateRoomTreasure(options);
+  return room;
+}
+
+/**
+ * Populate all rooms in a dungeon.
+ */
+export function populateDungeonRooms(
+  seed: string,
+  rooms: DungeonRoom[],
+  dungeonDepth: number
+): DungeonRoom[] {
+  return rooms.map((room) =>
+    populateRoom({ seed, room, dungeonDepth })
+  );
+}

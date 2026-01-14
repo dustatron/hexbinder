@@ -109,7 +109,11 @@ export function createMockWorld(name?: string, seed?: string): WorldData {
       moonPhase: "waxing",
     },
     hexes,
-    edges: [], // No roads/rivers for Phase 0 mock
+    edges: [],
     locations,
+    npcs: [],
+    factions: [],
+    hooks: [],
+    clocks: [],
   };
 }

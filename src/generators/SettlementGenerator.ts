@@ -1,0 +1,178 @@
+import { nanoid } from "nanoid";
+import type {
+  Settlement,
+  SettlementSize,
+  GovernmentType,
+  EconomyType,
+  SettlementMood,
+  DefenseLevel,
+  Hex,
+  HexCoord,
+} from "~/models";
+import { SeededRandom, createWeightedTable } from "./SeededRandom";
+
+// === Name Tables ===
+
+const SETTLEMENT_PREFIXES = [
+  "North", "South", "East", "West", "Old", "New", "High", "Low",
+  "Green", "Black", "White", "Red", "Grey", "Iron", "Stone", "Oak",
+];
+
+const SETTLEMENT_SUFFIXES = [
+  "haven", "ford", "dale", "bury", "wick", "ton", "ham", "worth",
+  "bridge", "field", "hollow", "crossing", "falls", "mill", "hold",
+];
+
+const SETTLEMENT_TROUBLES = [
+  "Livestock have been found dead with strange marks",
+  "Travelers have gone missing on the road",
+  "Strange lights are seen in the hills at night",
+  "A sickness is spreading through the village",
+  "Crops have been failing despite good weather",
+  "Children report seeing monsters in the woods",
+  "The local well water has turned foul",
+  "Bandits have been demanding tribute",
+];
+
+const SETTLEMENT_QUIRKS = [
+  "The villagers refuse to speak after dark",
+  "All the buildings face away from the forest",
+  "A strange monument stands in the center of town",
+  "The locals worship an unusual deity",
+  "Everyone wears the same color clothing",
+  "The village has no children",
+  "A permanent mist hangs over the settlement",
+  "All the animals here are unusually docile",
+];
+
+const SIZE_WEIGHTS = createWeightedTable<SettlementSize>({
+  thorpe: 10,
+  hamlet: 25,
+  village: 40,
+  town: 20,
+  city: 5,
+});
+
+const POPULATION_RANGES: Record<SettlementSize, [number, number]> = {
+  thorpe: [10, 50],
+  hamlet: [50, 200],
+  village: [200, 1000],
+  town: [1000, 5000],
+  city: [5000, 25000],
+};
+
+const GOVERNMENT_WEIGHTS = createWeightedTable<GovernmentType>({
+  elder: 30,
+  mayor: 25,
+  council: 20,
+  lord: 15,
+  guild: 5,
+  theocracy: 5,
+});
+
+const ECONOMY_OPTIONS: EconomyType[] = [
+  "farming", "trade", "mining", "fishing", "crafting", "logging",
+];
+
+const MOOD_WEIGHTS = createWeightedTable<SettlementMood>({
+  welcoming: 20,
+  prosperous: 15,
+  struggling: 25,
+  fearful: 20,
+  secretive: 15,
+  hostile: 5,
+});
+
+const DEFENSE_WEIGHTS = createWeightedTable<DefenseLevel>({
+  none: 30,
+  militia: 35,
+  guards: 25,
+  walls: 8,
+  fortified: 2,
+});
+
+export interface SettlementPlacementOptions {
+  seed: string;
+  hexes: Hex[];
+  forceCoord?: HexCoord;    // Place at specific coordinate
+  forceSize?: SettlementSize; // Force specific settlement size
+}
+
+/**
+ * Find a suitable hex and place a settlement.
+ * Returns the settlement and updates the hex with locationId.
+ */
+export function placeSettlement(options: SettlementPlacementOptions): {
+  settlement: Settlement;
+  hex: Hex;
+} | null {
+  const { seed, hexes, forceCoord, forceSize } = options;
+  const rng = new SeededRandom(`${seed}-settlement`);
+
+  let hex: Hex | undefined;
+
+  if (forceCoord) {
+    // Use specified coordinate
+    hex = hexes.find(h => h.coord.q === forceCoord.q && h.coord.r === forceCoord.r);
+    if (!hex || hex.locationId) return null;
+  } else {
+    // Find suitable hexes (plains without locations)
+    const candidates = hexes.filter(
+      (h) => h.terrain === "plains" && !h.locationId
+    );
+
+    if (candidates.length === 0) {
+      // Fallback to any non-water/mountain hex
+      const fallback = hexes.filter(
+        (h) => h.terrain !== "water" && h.terrain !== "mountains" && !h.locationId
+      );
+      if (fallback.length === 0) return null;
+      candidates.push(...fallback);
+    }
+
+    hex = rng.pick(candidates);
+  }
+
+  if (!hex) return null;
+
+  const settlement = generateSettlement(rng, hex.coord, forceSize);
+
+  // Update hex with location ID
+  hex.locationId = settlement.id;
+
+  return { settlement, hex };
+}
+
+function generateSettlement(rng: SeededRandom, coord: HexCoord, forceSize?: SettlementSize): Settlement {
+  const id = `settlement-${nanoid(8)}`;
+  const name = generateSettlementName(rng);
+  const size = forceSize ?? rng.pickWeighted(SIZE_WEIGHTS);
+  const [minPop, maxPop] = POPULATION_RANGES[size];
+
+  return {
+    id,
+    name,
+    type: "settlement",
+    description: `A ${size} called ${name}.`,
+    hexCoord: coord,
+    tags: [size],
+    size,
+    population: rng.between(minPop, maxPop),
+    governmentType: rng.pickWeighted(GOVERNMENT_WEIGHTS),
+    economyBase: rng.sample(ECONOMY_OPTIONS, rng.between(1, 3)),
+    mood: rng.pickWeighted(MOOD_WEIGHTS),
+    trouble: rng.pick(SETTLEMENT_TROUBLES),
+    quirk: rng.pick(SETTLEMENT_QUIRKS),
+    sites: [], // Filled by site generator
+    npcIds: [],
+    rumors: [],
+    notices: [],
+    defenses: rng.pickWeighted(DEFENSE_WEIGHTS),
+  };
+}
+
+function generateSettlementName(rng: SeededRandom): string {
+  const prefix = rng.pick(SETTLEMENT_PREFIXES);
+  const suffix = rng.pick(SETTLEMENT_SUFFIXES);
+  return `${prefix}${suffix}`;
+}

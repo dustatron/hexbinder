@@ -3,17 +3,23 @@ import type { WorldData, WorldSummary } from "~/models";
 
 const WORLD_PREFIX = "world:";
 
+/** Check if we're in browser environment */
+const isBrowser = typeof window !== "undefined";
+
 export function saveWorld(world: WorldData): void {
+  if (!isBrowser) return;
   world.updatedAt = Date.now();
   localStorage.setItem(`${WORLD_PREFIX}${world.id}`, JSON.stringify(world));
 }
 
 export function loadWorld(id: string): WorldData | null {
+  if (!isBrowser) return null;
   const data = localStorage.getItem(`${WORLD_PREFIX}${id}`);
   return data ? JSON.parse(data) : null;
 }
 
 export function listWorlds(): WorldSummary[] {
+  if (!isBrowser) return [];
   const worlds: WorldSummary[] = [];
 
   for (let i = 0; i < localStorage.length; i++) {
@@ -39,6 +45,7 @@ export function listWorlds(): WorldSummary[] {
 }
 
 export function deleteWorld(id: string): void {
+  if (!isBrowser) return;
   localStorage.removeItem(`${WORLD_PREFIX}${id}`);
 }
 

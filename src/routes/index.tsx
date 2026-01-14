@@ -12,11 +12,13 @@ import {
   importWorld,
   saveWorld,
 } from "~/lib/storage";
-import { createMockWorld } from "~/data/mock-world";
-import type { WorldSummary } from "~/models";
+import { generateWorld, type MapSize, type StartPosition } from "~/generators";
+import type { WorldSummary, SettlementSize } from "~/models";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
+  // Only load on client - localStorage doesn't exist on server
+  ssr: false,
 });
 
 function HomePage() {
@@ -25,18 +27,27 @@ function HomePage() {
   const [showNewForm, setShowNewForm] = useState(false);
   const [newWorldName, setNewWorldName] = useState("");
   const [newWorldSeed, setNewWorldSeed] = useState("");
+  const [mapSize, setMapSize] = useState<MapSize>("medium");
+  const [startPosition, setStartPosition] = useState<StartPosition>("center");
+  const [settlementSize, setSettlementSize] = useState<SettlementSize>("village");
 
   const refreshWorlds = () => setWorlds(listWorlds());
 
   const handleCreateWorld = () => {
-    const world = createMockWorld(
-      newWorldName || undefined,
-      newWorldSeed || undefined
-    );
+    const { world } = generateWorld({
+      name: newWorldName || "The Borderlands",
+      seed: newWorldSeed || undefined,
+      mapSize,
+      startPosition,
+      startingSettlementSize: settlementSize,
+    });
     saveWorld(world);
     setShowNewForm(false);
     setNewWorldName("");
     setNewWorldSeed("");
+    setMapSize("medium");
+    setStartPosition("center");
+    setSettlementSize("village");
     navigate({ to: "/world/$worldId", params: { worldId: world.id } });
   };
 
@@ -128,6 +139,69 @@ function HomePage() {
                 className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100 placeholder:text-stone-500"
               />
             </div>
+            <div className="mb-4">
+              <label className="mb-1 block text-sm text-stone-400">
+                Map Size
+              </label>
+              <div className="flex gap-2">
+                {(["small", "medium", "large"] as const).map((size) => (
+                  <button
+                    key={size}
+                    type="button"
+                    onClick={() => setMapSize(size)}
+                    className={`flex-1 rounded border px-3 py-2 text-sm capitalize ${
+                      mapSize === size
+                        ? "border-amber-500 bg-amber-500/20 text-amber-400"
+                        : "border-stone-600 bg-stone-700 text-stone-300 hover:bg-stone-600"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-1 text-xs text-stone-500">
+                {mapSize === "small" && "~37 hexes"}
+                {mapSize === "medium" && "~91 hexes"}
+                {mapSize === "large" && "~217 hexes"}
+              </p>
+            </div>
+            <div className="mb-4">
+              <label className="mb-1 block text-sm text-stone-400">
+                Starting Position
+              </label>
+              <div className="flex gap-2">
+                {(["left", "center", "right"] as const).map((pos) => (
+                  <button
+                    key={pos}
+                    type="button"
+                    onClick={() => setStartPosition(pos)}
+                    className={`flex-1 rounded border px-3 py-2 text-sm capitalize ${
+                      startPosition === pos
+                        ? "border-amber-500 bg-amber-500/20 text-amber-400"
+                        : "border-stone-600 bg-stone-700 text-stone-300 hover:bg-stone-600"
+                    }`}
+                  >
+                    {pos}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="mb-4">
+              <label className="mb-1 block text-sm text-stone-400">
+                Starting Settlement
+              </label>
+              <select
+                value={settlementSize}
+                onChange={(e) => setSettlementSize(e.target.value as SettlementSize)}
+                className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100"
+              >
+                <option value="thorpe">Thorpe (10-50 people)</option>
+                <option value="hamlet">Hamlet (50-200 people)</option>
+                <option value="village">Village (200-1000 people)</option>
+                <option value="town">Town (1000-5000 people)</option>
+                <option value="city">City (5000+ people)</option>
+              </select>
+            </div>
             <div className="flex gap-2">
               <Button onClick={handleCreateWorld}>Create</Button>
               <Button
@@ -136,6 +210,9 @@ function HomePage() {
                   setShowNewForm(false);
                   setNewWorldName("");
                   setNewWorldSeed("");
+                  setMapSize("medium");
+                  setStartPosition("center");
+                  setSettlementSize("village");
                 }}
               >
                 Cancel

@@ -12,6 +12,8 @@ export const Route = createFileRoute("/world/$worldId")({
     if (!world) throw notFound();
     return world;
   },
+  // Only load on client - localStorage doesn't exist on server
+  ssr: false,
   component: WorldPage,
 });
 
@@ -70,6 +72,7 @@ function WorldPage() {
       <div className="relative flex-1 overflow-hidden">
         <HexMap
           hexes={world.hexes}
+          edges={world.edges}
           locations={world.locations}
           selectedCoord={selectedCoord}
           onHexClick={setSelectedCoord}
