@@ -15,8 +15,11 @@ import type {
   TerrainType,
   Encounter,
   TreasureEntry,
+  SpatialDungeon,
+  SpatialRoom,
 } from "~/models";
 import { SeededRandom, createWeightedTable } from "./SeededRandom";
+import { DungeonLayoutGenerator } from "./DungeonLayoutEngine";
 
 // === Name Tables ===
 
@@ -128,11 +131,11 @@ export interface DungeonPlacementOptions {
 }
 
 /**
- * Find a suitable hex and place a dungeon.
+ * Find a suitable hex and place a dungeon with spatial layout.
  * Returns the dungeon and updates the hex with locationId.
  */
 export function placeDungeon(options: DungeonPlacementOptions): {
-  dungeon: Dungeon;
+  dungeon: SpatialDungeon;
   hex: Hex;
 } | null {
   const { seed, hexes, theme, size } = options;
@@ -153,7 +156,7 @@ export function placeDungeon(options: DungeonPlacementOptions): {
   }
 
   const hex = rng.pick(candidates);
-  const dungeon = generateDungeon(rng, hex.coord, theme, size);
+  const dungeon = generateSpatialDungeon(seed, hex.coord, theme, size);
 
   // Update hex with location ID
   hex.locationId = dungeon.id;
@@ -200,7 +203,7 @@ export interface WildernessLairOptions {
  * These are smaller sites like bandit camps, cultist lairs, witch huts.
  */
 export function placeWildernessLair(options: WildernessLairOptions): {
-  dungeon: Dungeon;
+  dungeon: SpatialDungeon;
   hex: Hex;
 } | null {
   const { seed, hexes } = options;
@@ -234,7 +237,7 @@ export function placeWildernessLair(options: WildernessLairOptions): {
   const hex = rng.pick(candidates);
 
   // Wilderness lairs are always small (3-5 rooms)
-  const dungeon = generateDungeon(rng, hex.coord, theme, "lair");
+  const dungeon = generateSpatialDungeon(seed, hex.coord, theme, "lair");
 
   hex.locationId = dungeon.id;
 
@@ -262,12 +265,16 @@ function isAdjacentToWater(hex: Hex, allHexes: Hex[]): boolean {
   );
 }
 
-function generateDungeon(
-  rng: SeededRandom,
+/**
+ * Generate a spatial dungeon with layout, rooms, and passages.
+ */
+function generateSpatialDungeon(
+  seed: string,
   coord: HexCoord,
   forcedTheme?: DungeonTheme,
   forcedSize?: DungeonSize
-): Dungeon {
+): SpatialDungeon {
+  const rng = new SeededRandom(`${seed}-dungeon-gen`);
   const id = `dungeon-${nanoid(8)}`;
   const theme = forcedTheme ?? rng.pickWeighted(THEME_WEIGHTS);
   const size = forcedSize ?? rng.pickWeighted(SIZE_WEIGHTS);
@@ -275,8 +282,12 @@ function generateDungeon(
   const roomCount = getRoomCountForSize(rng, size);
   const depth = getDepthForSize(size);
 
-  const rooms = generateRooms(rng, roomCount);
-  const connections = generateConnections(rng, rooms);
+  // Generate spatial layout
+  const layoutGenerator = new DungeonLayoutGenerator(seed);
+  const layout = layoutGenerator.generate(size, theme, roomCount, coord);
+
+  // Add content (features, hazards, secrets) to each room
+  const rooms = layout.rooms.map((room) => addRoomContent(rng, room));
 
   return {
     id,
@@ -288,11 +299,106 @@ function generateDungeon(
     size,
     theme,
     depth,
+    gridWidth: layout.gridWidth,
+    gridHeight: layout.gridHeight,
     rooms,
-    connections,
-    entranceRoomId: rooms[0].id,
+    passages: layout.passages,
+    entranceRoomId: rooms[0]?.id ?? "",
     cleared: false,
     linkedHookIds: [],
+  };
+}
+
+/**
+ * Add features, hazards, and secrets to a spatial room.
+ */
+function addRoomContent(rng: SeededRandom, room: SpatialRoom): SpatialRoom {
+  const features: RoomFeature[] = [];
+  const hazards: Hazard[] = [];
+  const secrets: RoomSecret[] = [];
+
+  // Add 0-2 features
+  const featureCount = rng.between(0, 2);
+  if (featureCount > 0) {
+    features.push(...rng.sample(ROOM_FEATURES, featureCount));
+  }
+
+  // 20% chance of hazard (higher in trap rooms)
+  const hazardChance = room.type === "trap_room" ? 0.8 : 0.2;
+  if (rng.chance(hazardChance)) {
+    const hazard = rng.pick(HAZARDS);
+    hazards.push({ ...hazard, disarmed: false });
+  }
+
+  // 15% chance of secret
+  if (rng.chance(0.15)) {
+    const secret = rng.pick(SECRETS);
+    secrets.push({ ...secret, discovered: false });
+  }
+
+  return {
+    ...room,
+    features,
+    hazards,
+    secrets,
+  };
+}
+
+// Legacy function kept for compatibility - wraps spatial generation
+function generateDungeon(
+  rng: SeededRandom,
+  coord: HexCoord,
+  forcedTheme?: DungeonTheme,
+  forcedSize?: DungeonSize
+): Dungeon {
+  // Generate spatial dungeon and convert to legacy format
+  const spatial = generateSpatialDungeon(
+    rng.next().toString(),
+    coord,
+    forcedTheme,
+    forcedSize
+  );
+
+  // Convert SpatialRooms to DungeonRooms (drop bounds)
+  const rooms: DungeonRoom[] = spatial.rooms.map((sr) => ({
+    id: sr.id,
+    name: sr.name,
+    description: sr.description,
+    type: sr.type,
+    size: sr.size,
+    depth: sr.depth,
+    encounters: sr.encounters,
+    treasure: sr.treasure,
+    features: sr.features,
+    hazards: sr.hazards,
+    secrets: sr.secrets,
+    explored: sr.explored,
+  }));
+
+  // Convert Passages to RoomConnections (drop waypoints)
+  const connections: RoomConnection[] = spatial.passages.map((p) => ({
+    fromRoomId: p.fromRoomId,
+    toRoomId: p.toRoomId,
+    type: p.connectionType,
+    locked: p.locked,
+    hidden: p.hidden,
+  }));
+
+  return {
+    id: spatial.id,
+    name: spatial.name,
+    type: "dungeon",
+    description: spatial.description,
+    hexCoord: coord,
+    tags: spatial.tags,
+    size: spatial.size,
+    theme: spatial.theme,
+    depth: spatial.depth,
+    rooms,
+    connections,
+    entranceRoomId: spatial.entranceRoomId,
+    cleared: spatial.cleared,
+    linkedHookIds: spatial.linkedHookIds,
   };
 }
 
@@ -325,128 +431,5 @@ function getDepthForSize(size: DungeonSize): number {
   return depths[size];
 }
 
-function generateRooms(rng: SeededRandom, count: number): DungeonRoom[] {
-  const rooms: DungeonRoom[] = [];
-
-  for (let i = 0; i < count; i++) {
-    const roomType = i === 0 ? "entrance" : rng.pickWeighted(ROOM_TYPE_WEIGHTS);
-    const room = generateRoom(rng, `room-${i}`, roomType, i);
-    rooms.push(room);
-  }
-
-  return rooms;
-}
-
-function generateRoom(
-  rng: SeededRandom,
-  id: string,
-  roomType: RoomType,
-  index: number
-): DungeonRoom {
-  const size = rng.pickWeighted(ROOM_SIZE_WEIGHTS);
-  const features: RoomFeature[] = [];
-  const hazards: Hazard[] = [];
-  const secrets: RoomSecret[] = [];
-  const encounters: Encounter[] = [];
-  const treasure: TreasureEntry[] = [];
-
-  // Add 0-2 features
-  const featureCount = rng.between(0, 2);
-  if (featureCount > 0) {
-    features.push(...rng.sample(ROOM_FEATURES, featureCount));
-  }
-
-  // 20% chance of hazard (higher in trap rooms)
-  const hazardChance = roomType === "trap_room" ? 0.8 : 0.2;
-  if (rng.chance(hazardChance)) {
-    const hazard = rng.pick(HAZARDS);
-    hazards.push({ ...hazard, disarmed: false });
-  }
-
-  // 15% chance of secret
-  if (rng.chance(0.15)) {
-    const secret = rng.pick(SECRETS);
-    secrets.push({ ...secret, discovered: false });
-  }
-
-  return {
-    id,
-    name: getRoomName(rng, roomType),
-    description: `A ${size} ${roomType.replace("_", " ")}.`,
-    type: roomType,
-    size,
-    depth: Math.floor(index / 3), // Approximate depth from entrance
-    encounters,
-    treasure,
-    features,
-    hazards,
-    secrets,
-    explored: false,
-  };
-}
-
-function getRoomName(rng: SeededRandom, roomType: RoomType): string {
-  const names: Record<RoomType, string[]> = {
-    entrance: ["Entry Hall", "Gatehouse", "Antechamber", "Foyer"],
-    corridor: ["Passage", "Hallway", "Gallery", "Tunnel"],
-    chamber: ["Chamber", "Hall", "Room", "Vault"],
-    lair: ["Lair", "Den", "Nest", "Burrow"],
-    trap_room: ["Death Corridor", "Gauntlet", "Testing Ground"],
-    treasury: ["Treasury", "Vault", "Hoard Room"],
-    shrine: ["Shrine", "Chapel", "Altar Room", "Sanctuary"],
-    prison: ["Dungeon Cells", "Oubliette", "Prison Block"],
-    puzzle_room: ["Puzzle Chamber", "Trial Room", "Testing Grounds"],
-  };
-  return rng.pick(names[roomType]);
-}
-
-function generateConnections(
-  rng: SeededRandom,
-  rooms: DungeonRoom[]
-): RoomConnection[] {
-  const connections: RoomConnection[] = [];
-  const connectionTypes: RoomConnection["type"][] = ["door", "door", "archway", "passage", "secret"];
-
-  // Create a simple branching structure
-  // Each room connects to 1-3 other rooms
-  for (let i = 1; i < rooms.length; i++) {
-    // Connect to a random earlier room (ensures connectivity)
-    const targetIdx = rng.between(0, i - 1);
-    connections.push({
-      fromRoomId: rooms[targetIdx].id,
-      toRoomId: rooms[i].id,
-      type: rng.pick(connectionTypes),
-      locked: rng.chance(0.15),
-      hidden: false,
-    });
-  }
-
-  // Add some extra connections for loops (30% of room count)
-  const extraCount = Math.floor(rooms.length * 0.3);
-  for (let i = 0; i < extraCount; i++) {
-    const fromIdx = rng.between(0, rooms.length - 1);
-    let toIdx = rng.between(0, rooms.length - 1);
-    while (toIdx === fromIdx) {
-      toIdx = rng.between(0, rooms.length - 1);
-    }
-
-    // Check if connection already exists
-    const exists = connections.some(
-      (c) =>
-        (c.fromRoomId === rooms[fromIdx].id && c.toRoomId === rooms[toIdx].id) ||
-        (c.fromRoomId === rooms[toIdx].id && c.toRoomId === rooms[fromIdx].id)
-    );
-
-    if (!exists) {
-      connections.push({
-        fromRoomId: rooms[fromIdx].id,
-        toRoomId: rooms[toIdx].id,
-        type: rng.pick(connectionTypes),
-        locked: rng.chance(0.2),
-        hidden: rng.chance(0.15),
-      });
-    }
-  }
-
-  return connections;
-}
+// Old generateRooms, generateRoom, getRoomName, generateConnections functions
+// have been removed - spatial layout now handles room/passage generation.

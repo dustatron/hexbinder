@@ -159,6 +159,62 @@ export interface Settlement extends Location {
   defenses: DefenseLevel;
 }
 
+// === Spatial Town Types ===
+
+export interface TownPoint { x: number; y: number }
+export interface TownPolygon { vertices: TownPoint[] }
+
+export type WardType =
+  | "market" | "residential" | "craftsmen" | "merchant"
+  | "temple" | "tavern" | "castle" | "slum" | "park";
+
+export interface TownWard {
+  id: string;
+  type: WardType;
+  shape: TownPolygon;
+  siteId?: string;
+  buildings: TownBuilding[];
+}
+
+export interface TownBuilding {
+  id: string;
+  shape: TownPolygon;
+  type: "house" | "shop" | "landmark" | "civic";
+}
+
+export interface TownWall {
+  shape: TownPolygon;
+  gates: TownPoint[];
+  towers: TownPoint[];
+}
+
+export interface TownStreet {
+  id: string;
+  waypoints: TownPoint[];
+  width: "main" | "side" | "alley";
+}
+
+export interface SpatialSettlement extends Settlement {
+  center: TownPoint;
+  radius: number;
+  wards: TownWard[];
+  wall?: TownWall;
+  streets: TownStreet[];
+  plaza?: TownPolygon;
+}
+
+export const WARD_COUNTS: Record<SettlementSize, number> = {
+  thorpe: 3,
+  hamlet: 5,
+  village: 8,
+  town: 15,
+  city: 25,
+};
+
+export function isSpatialSettlement(s: Settlement): s is SpatialSettlement {
+  return "wards" in s && Array.isArray((s as SpatialSettlement).wards);
+}
+
 // === Settlement Site ===
 
 export type SiteType =
@@ -200,6 +256,7 @@ export interface Rumor {
   source: string; // site name or NPC name
   linkedHookId?: string;
   targetLocationId?: string; // Where rumor points
+  used?: boolean;
 }
 
 export interface Notice {
@@ -210,6 +267,7 @@ export interface Notice {
   posterId?: string;
   noticeType: "bounty" | "job" | "warning" | "announcement" | "request";
   linkedHookId?: string;
+  used?: boolean;
 }
 
 // === NPC ===
@@ -542,6 +600,96 @@ export interface RoomConnection {
   hidden: boolean;
 }
 
+// === Spatial Dungeon Types (for map rendering) ===
+
+/** Cell state in the occupancy grid */
+export type CellState = "empty" | "room" | "passage" | "reserved" | "blocked";
+
+/** 2D point in grid space (1 cell = 5ft) */
+export interface GridPoint {
+  x: number;
+  y: number;
+}
+
+/** Rectangular bounds in grid space */
+export interface GridRect {
+  x: number; // top-left x
+  y: number; // top-left y
+  width: number; // cells wide
+  height: number; // cells tall
+}
+
+/** Cardinal direction for room placement */
+export type PlacementDirection = "n" | "s" | "e" | "w";
+
+/** Room size to dimensions mapping (in 5ft cells) */
+export const ROOM_DIMENSIONS: Record<
+  RoomSize,
+  { minW: number; maxW: number; minH: number; maxH: number }
+> = {
+  cramped: { minW: 2, maxW: 3, minH: 2, maxH: 3 },
+  small: { minW: 3, maxW: 4, minH: 3, maxH: 4 },
+  medium: { minW: 4, maxW: 6, minH: 4, maxH: 6 },
+  large: { minW: 5, maxW: 8, minH: 5, maxH: 8 },
+  vast: { minW: 6, maxW: 9, minH: 6, maxH: 9 },
+};
+
+/** Dungeon size to grid dimensions */
+export const DUNGEON_GRID_SIZES: Record<DungeonSize, number> = {
+  lair: 40,
+  small: 60,
+  medium: 80,
+  large: 100,
+  megadungeon: 150,
+};
+
+/** Spatial room with position and dimensions */
+export interface SpatialRoom {
+  id: string;
+  name: string;
+  description: string;
+  type: RoomType;
+  size: RoomSize;
+  depth: number;
+  // Spatial properties
+  bounds: GridRect;
+  // Content (same as DungeonRoom)
+  encounters: Encounter[];
+  treasure: TreasureEntry[];
+  features: RoomFeature[];
+  hazards: Hazard[];
+  secrets: RoomSecret[];
+  explored: boolean;
+}
+
+/** Passage between rooms with spatial path */
+export interface Passage {
+  id: string;
+  fromRoomId: string;
+  toRoomId: string;
+  waypoints: GridPoint[]; // Path through grid
+  connectionType: RoomConnection["type"];
+  locked: boolean;
+  hidden: boolean;
+}
+
+/** Dungeon with spatial layout for map rendering */
+export interface SpatialDungeon extends Location {
+  type: "dungeon";
+  size: DungeonSize;
+  theme: DungeonTheme;
+  depth: number;
+  // Spatial layout
+  gridWidth: number;
+  gridHeight: number;
+  rooms: SpatialRoom[];
+  passages: Passage[];
+  entranceRoomId: string;
+  bossEncounterId?: string;
+  cleared: boolean;
+  linkedHookIds: string[];
+}
+
 // === Encounter ===
 
 export type EncounterBehavior = "hostile" | "neutral" | "negotiable" | "fleeing";
@@ -696,4 +844,12 @@ export function isSettlement(location: Location): location is Settlement {
 
 export function isDungeon(location: Location): location is Dungeon {
   return location.type === "dungeon";
+}
+
+export function isSpatialDungeon(location: Location): location is SpatialDungeon {
+  return (
+    location.type === "dungeon" &&
+    "gridWidth" in location &&
+    "passages" in location
+  );
 }

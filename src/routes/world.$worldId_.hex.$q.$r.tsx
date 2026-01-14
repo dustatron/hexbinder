@@ -7,7 +7,7 @@ import { regenerateHex, type RegenerationType } from "~/lib/hex-regenerate";
 import { WildernessDetail } from "~/components/location-detail/WildernessDetail";
 import { SettlementDetail } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
-import type { Settlement, Dungeon } from "~/models";
+import type { Settlement, Dungeon, WorldData } from "~/models";
 
 export const Route = createFileRoute("/world/$worldId_/hex/$q/$r")({
   loader: ({ params }) => {
@@ -54,6 +54,12 @@ function HexDetailPage() {
   const handleReroll = useCallback(() => {
     setSeed(`${world.seed}-hex-${hex.coord.q},${hex.coord.r}-${nanoid(4)}`);
   }, [world.seed, hex.coord]);
+
+  const handleUpdateWorld = useCallback((updater: (world: WorldData) => WorldData) => {
+    const updated = updater(world);
+    saveWorld(updated);
+    setWorld(updated);
+  }, [world]);
 
   // Get today's events for settlements
   const todayRecord = world.state.calendar.find((r) => r.day === world.state.day);
@@ -109,6 +115,7 @@ function HexDetailPage() {
             worldId={world.id}
             onRegenerate={handleRegenerate}
             onReroll={handleReroll}
+            onUpdateWorld={handleUpdateWorld}
             seed={seed}
           />
         )}

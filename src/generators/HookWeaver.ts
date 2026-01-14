@@ -5,7 +5,7 @@ import type {
   NPC,
   NPCWant,
   Settlement,
-  Dungeon,
+  SpatialDungeon,
   Faction,
   Rumor,
   isSettlement,
@@ -109,7 +109,7 @@ export interface HookWeaverOptions {
   seed: string;
   npcs: NPC[];
   settlements: Settlement[];
-  dungeons: Dungeon[];
+  dungeons: SpatialDungeon[];
   factions: Faction[];
 }
 
@@ -176,7 +176,7 @@ export function weaveHooks(options: HookWeaverOptions): HookWeaverResult {
 function generateRescueHooks(
   rng: SeededRandom,
   npcs: NPC[],
-  dungeons: Dungeon[],
+  dungeons: SpatialDungeon[],
   npcMap: Map<string, NPC>
 ): Hook[] {
   const hooks: Hook[] = [];
@@ -353,7 +353,7 @@ function generateRevengeHooks(
 function generateRetrievalHooks(
   rng: SeededRandom,
   npcs: NPC[],
-  dungeons: Dungeon[],
+  dungeons: SpatialDungeon[],
   npcMap: Map<string, NPC>
 ): Hook[] {
   const hooks: Hook[] = [];
@@ -401,7 +401,7 @@ function generateFactionHooks(
   rng: SeededRandom,
   npcs: NPC[],
   factions: Faction[],
-  dungeons: Dungeon[],
+  dungeons: SpatialDungeon[],
   npcMap: Map<string, NPC>
 ): Hook[] {
   const hooks: Hook[] = [];
@@ -448,7 +448,7 @@ function generateMysteryHooks(
   rng: SeededRandom,
   npcs: NPC[],
   settlements: Settlement[],
-  dungeons: Dungeon[],
+  dungeons: SpatialDungeon[],
   npcMap: Map<string, NPC>
 ): Hook[] {
   const hooks: Hook[] = [];
@@ -497,7 +497,7 @@ function generateMysteryHooks(
 function generatePersonalHooks(
   rng: SeededRandom,
   npcs: NPC[],
-  dungeons: Dungeon[],
+  dungeons: SpatialDungeon[],
   settlements: Settlement[],
   npcMap: Map<string, NPC>
 ): Hook[] {

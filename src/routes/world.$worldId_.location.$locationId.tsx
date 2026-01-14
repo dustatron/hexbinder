@@ -5,7 +5,7 @@ import { SettlementDetail } from "~/components/location-detail/SettlementDetail"
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { regenerateHex, type RegenerationType } from "~/lib/hex-regenerate";
-import { isSettlement, isDungeon, type Settlement, type Dungeon, type NPC, type DayEvent, type Hook } from "~/models";
+import { isSettlement, isDungeon, type Settlement, type Dungeon, type NPC, type DayEvent, type Hook, type WorldData } from "~/models";
 import { nanoid } from "nanoid";
 
 export const Route = createFileRoute("/world/$worldId_/location/$locationId")({
@@ -84,6 +84,12 @@ function LocationPage() {
     setSeed(`${world.seed}-${location?.id}-${nanoid(4)}`);
   }, [world.seed, location?.id]);
 
+  const handleUpdateWorld = useCallback((updater: (world: WorldData) => WorldData) => {
+    const updated = updater(world);
+    saveWorld(updated);
+    setWorld(updated);
+  }, [world]);
+
   // Location not found (shouldn't happen in normal flow)
   if (!location) {
     return (
@@ -130,6 +136,7 @@ function LocationPage() {
             worldId={world.id}
             onRegenerate={handleRegenerate}
             onReroll={handleReroll}
+            onUpdateWorld={handleUpdateWorld}
             seed={seed}
           />
         )}

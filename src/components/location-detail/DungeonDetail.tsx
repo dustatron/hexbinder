@@ -1,13 +1,15 @@
-import { useState, useMemo } from "react";
-import { RefreshCw, CheckCircle2, Skull, Gem, MapPin, User } from "lucide-react";
-import type { Dungeon, Hook, DungeonTheme, NPC } from "~/models";
+import { useState, useMemo, useRef, useEffect } from "react";
+import { RefreshCw, CheckCircle2, Skull, Gem, MapPin, User, Map as MapIcon } from "lucide-react";
+import type { Dungeon, Hook, DungeonTheme, NPC, SpatialDungeon } from "~/models";
+import { isSpatialDungeon } from "~/models";
 import type { RegenerationType } from "~/lib/hex-regenerate";
 import { EncounterTable } from "~/components/encounter-table/EncounterTable";
 import { RegenerateButton } from "./RegenerateButton";
 import { RoomCard } from "./RoomCard";
+import { DungeonMap } from "~/components/dungeon-map";
 
 interface DungeonDetailProps {
-  dungeon: Dungeon;
+  dungeon: Dungeon | SpatialDungeon;
   hook?: Hook;
   hooks?: Hook[]; // All hooks targeting this dungeon
   npcs?: NPC[]; // All NPCs for lookup
@@ -45,6 +47,26 @@ export function DungeonDetail({
   seed,
 }: DungeonDetailProps) {
   const [expandedRooms, setExpandedRooms] = useState<Set<number>>(() => new Set([0]));
+  const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
+  const roomCardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+
+  // Scroll to selected room when clicking on map
+  const handleRoomClick = (roomId: string) => {
+    setSelectedRoomId(roomId);
+    // Find room index and expand it
+    const roomIndex = sortedRooms.findIndex((r) => r.id === roomId);
+    if (roomIndex >= 0) {
+      setExpandedRooms((prev) => new Set(prev).add(roomIndex));
+      // Scroll to the room card
+      setTimeout(() => {
+        const element = roomCardRefs.current.get(roomId);
+        element?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 100);
+    }
+  };
+
+  // Check if dungeon has spatial layout
+  const hasSpatialLayout = isSpatialDungeon(dungeon);
 
   // Find NPCs linked to this dungeon via hooks
   const linkedNPCs = useMemo(() => {
@@ -223,18 +245,44 @@ export function DungeonDetail({
       {/* Encounter Table */}
       <EncounterTable seed={`${seed}-encounter`} onReroll={onReroll} />
 
+      {/* Dungeon Map */}
+      {hasSpatialLayout && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <MapIcon className="h-4 w-4 text-stone-400" />
+            <h3 className="text-sm font-semibold text-stone-200">Dungeon Map</h3>
+          </div>
+          <DungeonMap
+            dungeon={dungeon as SpatialDungeon}
+            selectedRoomId={selectedRoomId}
+            onRoomClick={handleRoomClick}
+          />
+          <p className="text-xs text-stone-500">
+            Click a room to see details. Pan and zoom with gestures.
+          </p>
+        </div>
+      )}
+
       {/* Room Layout */}
       <div className="space-y-3">
         <h3 className="text-sm font-semibold text-stone-200">Room Layout</h3>
         <div className="space-y-2">
           {sortedRooms.map((room, index) => (
-            <RoomCard
+            <div
               key={room.id}
-              room={room}
-              roomNumber={index + 1}
-              expanded={expandedRooms.has(index)}
-              onToggle={() => toggleRoom(index)}
-            />
+              ref={(el) => {
+                if (el) roomCardRefs.current.set(room.id, el);
+              }}
+              onClick={() => setSelectedRoomId(room.id)}
+            >
+              <RoomCard
+                room={room}
+                roomNumber={index + 1}
+                expanded={expandedRooms.has(index)}
+                onToggle={() => toggleRoom(index)}
+                selected={room.id === selectedRoomId}
+              />
+            </div>
           ))}
         </div>
       </div>
