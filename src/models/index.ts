@@ -159,6 +159,62 @@ export interface Settlement extends Location {
   defenses: DefenseLevel;
 }
 
+// === Spatial Town Types ===
+
+export interface TownPoint { x: number; y: number }
+export interface TownPolygon { vertices: TownPoint[] }
+
+export type WardType =
+  | "market" | "residential" | "craftsmen" | "merchant"
+  | "temple" | "tavern" | "castle" | "slum" | "park";
+
+export interface TownWard {
+  id: string;
+  type: WardType;
+  shape: TownPolygon;
+  siteId?: string;
+  buildings: TownBuilding[];
+}
+
+export interface TownBuilding {
+  id: string;
+  shape: TownPolygon;
+  type: "house" | "shop" | "landmark" | "civic";
+}
+
+export interface TownWall {
+  shape: TownPolygon;
+  gates: TownPoint[];
+  towers: TownPoint[];
+}
+
+export interface TownStreet {
+  id: string;
+  waypoints: TownPoint[];
+  width: "main" | "side" | "alley";
+}
+
+export interface SpatialSettlement extends Settlement {
+  center: TownPoint;
+  radius: number;
+  wards: TownWard[];
+  wall?: TownWall;
+  streets: TownStreet[];
+  plaza?: TownPolygon;
+}
+
+export const WARD_COUNTS: Record<SettlementSize, number> = {
+  thorpe: 3,
+  hamlet: 5,
+  village: 8,
+  town: 15,
+  city: 25,
+};
+
+export function isSpatialSettlement(s: Settlement): s is SpatialSettlement {
+  return "wards" in s && Array.isArray((s as SpatialSettlement).wards);
+}
+
 // === Settlement Site ===
 
 export type SiteType =

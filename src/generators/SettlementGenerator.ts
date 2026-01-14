@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 import type {
   Settlement,
+  SpatialSettlement,
   SettlementSize,
   GovernmentType,
   EconomyType,
@@ -10,6 +11,7 @@ import type {
   HexCoord,
 } from "~/models";
 import { SeededRandom, createWeightedTable } from "./SeededRandom";
+import { generateTownLayout } from "./TownLayoutEngine";
 
 // === Name Tables ===
 
@@ -100,10 +102,10 @@ export interface SettlementPlacementOptions {
 
 /**
  * Find a suitable hex and place a settlement.
- * Returns the settlement and updates the hex with locationId.
+ * Returns the settlement with spatial layout and updates the hex with locationId.
  */
 export function placeSettlement(options: SettlementPlacementOptions): {
-  settlement: Settlement;
+  settlement: SpatialSettlement;
   hex: Hex;
 } | null {
   const { seed, hexes, forceCoord, forceSize } = options;
@@ -137,10 +139,21 @@ export function placeSettlement(options: SettlementPlacementOptions): {
 
   const settlement = generateSettlement(rng, hex.coord, forceSize);
 
-  // Update hex with location ID
-  hex.locationId = settlement.id;
+  // Generate spatial layout
+  const layout = generateTownLayout(
+    { size: settlement.size, sites: settlement.sites },
+    rng
+  );
 
-  return { settlement, hex };
+  const spatialSettlement: SpatialSettlement = {
+    ...settlement,
+    ...layout,
+  };
+
+  // Update hex with location ID
+  hex.locationId = spatialSettlement.id;
+
+  return { settlement: spatialSettlement, hex };
 }
 
 function generateSettlement(rng: SeededRandom, coord: HexCoord, forceSize?: SettlementSize): Settlement {

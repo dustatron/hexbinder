@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(bd create:*)",
+      "Bash(bd list:*)",
+      "Bash(bd dep add:*)",
+      "Bash(bd ready)",
+      "Bash(bd edit:*)",
+      "Bash(pnpm build:*)",
+      "Bash(bd close:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(pnpm tsc:*)",
+      "Skill(commit)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(npx tsc:*)",
+      "Bash(pnpm exec tsc:*)",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__click",
+      "mcp__chrome-devtools__fill",
+      "mcp__chrome-devtools__take_snapshot",
+      "mcp__chrome-devtools__press_key",
+      "WebFetch(domain:watabou.itch.io)",
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:watabou.github.io)",
+      "WebFetch(domain:hackaday.com)",
+      "WebFetch(domain:hicsuntdra.co)"
+    ]
+  }
+}

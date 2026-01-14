@@ -13,6 +13,9 @@ export type { WeatherGeneratorOptions } from "./WeatherGenerator";
 export { placeSettlement } from "./SettlementGenerator";
 export type { SettlementPlacementOptions } from "./SettlementGenerator";
 
+export { generateTownLayout } from "./TownLayoutEngine";
+export type { TownLayoutInput, TownLayoutOutput } from "./TownLayoutEngine";
+
 export { placeDungeon } from "./DungeonGenerator";
 export type { DungeonPlacementOptions } from "./DungeonGenerator";
 
@@ -84,3 +87,6 @@ export type { QuestObjectGeneratorOptions } from "./QuestObjectGenerator";
 
 export { generateDayEvents } from "./DayEventGenerator";
 export type { DayEventGeneratorOptions } from "./DayEventGenerator";
+
+export { Voronoi, createVoronoiWithRandomPoints } from "./Voronoi";
+export type { Point, Triangle, Edge, VoronoiCell } from "./Voronoi";
