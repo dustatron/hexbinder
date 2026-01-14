@@ -1,8 +1,31 @@
 # Agent Instructions
 
-This project uses **bd** (beads) for issue tracking. Run `bd onboard` to get started.
+## Specialized Agents
 
-## Quick Reference
+Located in `.claude/agents/`. Use based on task type:
+
+| Task | Agent |
+|------|-------|
+| React components, UI, styling | `frontend` |
+| Procedural generation, random | `generator` |
+| Project setup, deps | `scaffold` |
+| TypeScript interfaces | `models` |
+| localStorage persistence | `storage` |
+| TanStack Router config | `routes` |
+| Hex math utilities | `hexmap` |
+| Time/clock logic | `timeline` |
+| Final polish, haptics, PWA | `polish` |
+
+**Tier 1 (most used):** frontend, generator
+**Tier 2 (setup):** scaffold, models, storage, routes
+**Tier 3 (feature):** hexmap, timeline
+**Tier 4 (late):** polish
+
+---
+
+## Issue Tracking (Beads)
+
+This project uses **bd** (beads) for issue tracking. Run `bd onboard` to get started.
 
 ```bash
 bd ready              # Find available work
