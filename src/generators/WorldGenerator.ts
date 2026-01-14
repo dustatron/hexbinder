@@ -26,6 +26,8 @@ import { generateFactionClock } from "./ClockGenerator";
 import { generateRoads } from "./RoadGenerator";
 import { generateBridges, type Bridge } from "./BridgeGenerator";
 import { generateSettlementNPCs, generateFactionNPCs } from "./NPCGenerator";
+import { generateNPCRelationships } from "./NPCRelationshipGenerator";
+import { weaveHooks } from "./HookWeaver";
 import { generateRumors, generateNotices } from "./RumorGenerator";
 import { generateSettlementHooks, generateDungeonHook, generateFactionHook } from "./HookGenerator";
 import { populateDungeonRooms } from "./RoomContentGenerator";
@@ -160,6 +162,37 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     }
   }
 
+  // Step 5b: Designate capital - largest settlement becomes regional seat of power
+  if (settlements.length > 0) {
+    const capitalRng = new SeededRandom(`${seed}-capital`);
+
+    // Find the largest settlement, or use the starting one
+    const sizeOrder: Record<string, number> = { thorpe: 1, hamlet: 2, village: 3, town: 4, city: 5 };
+    settlements.sort((a, b) => sizeOrder[b.size] - sizeOrder[a.size]);
+    const capital = settlements[0];
+
+    // Upgrade to city if not already
+    if (capital.size !== "city") {
+      capital.size = "city";
+      capital.population = capitalRng.between(5000, 15000);
+      capital.defenses = "fortified";
+    }
+
+    // Mark as capital
+    capital.isCapital = true;
+    capital.governmentType = "lord";
+
+    // Pick ruler title based on map size
+    const titles: Array<"baron" | "count" | "duke" | "king"> =
+      mapSize === "large" ? ["duke", "king"] :
+      mapSize === "medium" ? ["count", "duke", "baron"] :
+      ["baron", "count"];
+    capital.rulerTitle = capitalRng.pick(titles);
+
+    // Re-sort settlements back to original order for consistency
+    settlements.sort((a, b) => a.id.localeCompare(b.id));
+  }
+
   // Step 6: Generate roads between settlements
   const { roads, roadHexes } = generateRoads({ seed, hexes, settlementHexes });
 
@@ -222,11 +255,20 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   // Settlement NPCs
   for (const settlement of settlements) {
     const sites = settlement.sites;
-    const settlementNPCs = generateSettlementNPCs({ seed, settlement, sites });
+    const { npcs: settlementNPCs, mayorNpcId, siteOwnerMap } = generateSettlementNPCs({ seed, settlement, sites });
     npcs.push(...settlementNPCs);
 
     // Link NPC IDs to settlement
     settlement.npcIds = settlementNPCs.map((n) => n.id);
+    settlement.mayorNpcId = mayorNpcId;
+
+    // Link site owners
+    for (const site of settlement.sites) {
+      const ownerId = siteOwnerMap.get(site.id);
+      if (ownerId) {
+        site.ownerId = ownerId;
+      }
+    }
   }
 
   // Faction NPCs
@@ -235,34 +277,129 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     npcs.push(...factionNPCs);
   }
 
-  // Step 15: Generate clocks for factions
+  // Step 15: Generate NPC relationships (family clusters, rivalries)
+  const { npcs: npcsWithRelationships } = generateNPCRelationships({
+    seed,
+    npcs,
+    settlements,
+  });
+
+  // Step 16: Generate clocks for factions
   const clocks: Clock[] = [];
   for (const faction of factions) {
     const clock = generateFactionClock({ seed, faction });
     clocks.push(clock);
   }
 
-  // Step 16: Generate hooks
-  const hooks: Hook[] = [];
+  // Step 17: Generate interconnected hooks using HookWeaver
+  const { hooks: wovenHooks, npcs: npcsWithWants } = weaveHooks({
+    seed,
+    npcs: npcsWithRelationships,
+    settlements,
+    dungeons,
+    factions,
+  });
 
-  // Settlement hooks
-  for (const settlement of settlements) {
-    const settlementHooks = generateSettlementHooks(seed, settlement, 1);
-    hooks.push(...settlementHooks);
-  }
-
-  // Dungeon hooks
+  // Also add legacy dungeon hooks (for dungeons not covered by weaveHooks)
+  const hooks: Hook[] = [...wovenHooks];
   for (const dungeon of dungeons) {
-    const dungeonHook = generateDungeonHook(seed, dungeon);
-    hooks.push(dungeonHook);
-    dungeon.linkedHookIds.push(dungeonHook.id);
+    // Only add if dungeon doesn't already have hooks from weaveHooks
+    const hasHook = wovenHooks.some((h) => h.targetLocationId === dungeon.id);
+    if (!hasHook) {
+      const dungeonHook = generateDungeonHook(seed, dungeon);
+      hooks.push(dungeonHook);
+      dungeon.linkedHookIds.push(dungeonHook.id);
+    }
   }
 
-  // Faction hooks
-  for (const faction of factions) {
-    const factionHook = generateFactionHook(seed, faction);
-    hooks.push(factionHook);
+  // Link woven hooks to dungeons
+  for (const hook of wovenHooks) {
+    if (hook.targetLocationId) {
+      const dungeon = dungeons.find((d) => d.id === hook.targetLocationId);
+      if (dungeon && !dungeon.linkedHookIds.includes(hook.id)) {
+        dungeon.linkedHookIds.push(hook.id);
+      }
+    }
   }
+
+  // Step 17b: Distribute hook rumors to settlements
+  const hookRng = new SeededRandom(`${seed}-hook-rumors`);
+  for (const hook of wovenHooks) {
+    // Find source settlement for this hook
+    let sourceSettlement: Settlement | undefined;
+    if (hook.sourceSettlementId) {
+      sourceSettlement = settlements.find((s) => s.id === hook.sourceSettlementId);
+    } else if (hook.sourceNpcId) {
+      const sourceNpc = npcsWithWants.find((n) => n.id === hook.sourceNpcId);
+      if (sourceNpc?.locationId) {
+        sourceSettlement = settlements.find((s) => s.id === sourceNpc.locationId);
+      }
+    }
+
+    if (sourceSettlement) {
+      // Create a rumor linked to this hook
+      const rumor = {
+        id: `rumor-${hook.id}`,
+        text: hook.rumor,
+        isTrue: true,
+        source: "tavern talk",
+        linkedHookId: hook.id,
+        targetLocationId: hook.targetLocationId,
+      };
+      sourceSettlement.rumors.push(rumor);
+    }
+  }
+
+  // Step 17c: Link faction recruitment hooks and distribute goal rumors
+  for (const faction of factions) {
+    // Recruitment hooks already linked in weaveHooks
+
+    // Create goal rumors for influenced settlements
+    if (faction.influenceIds.length > 0 || settlements.length > 0) {
+      const targetSettlement = hookRng.pick(settlements);
+      const goalRumor = {
+        id: `rumor-faction-${faction.id}`,
+        text: `The ${faction.name} is ${faction.purpose}`,
+        isTrue: true,
+        source: "whispered rumors",
+      };
+      targetSettlement.rumors.push(goalRumor);
+      faction.goalRumorIds.push(goalRumor.id);
+    }
+  }
+
+  // Step 17d: Create notice board postings from hooks
+  for (const hook of wovenHooks) {
+    if (!hook.sourceNpcId) continue;
+
+    const sourceNpc = npcsWithWants.find((n) => n.id === hook.sourceNpcId);
+    if (!sourceNpc?.locationId) continue;
+
+    const settlement = settlements.find((s) => s.id === sourceNpc.locationId);
+    if (!settlement) continue;
+
+    // Create a notice for this hook
+    const noticeType = hook.type === "retrieval" ? "job"
+      : hook.type === "rescue" ? "request"
+      : hook.type === "assassination" ? "bounty"
+      : hook.type === "investigation" ? "job"
+      : "request";
+
+    const notice = {
+      id: `notice-${hook.id}`,
+      title: hook.rumor.slice(0, 50) + (hook.rumor.length > 50 ? "..." : ""),
+      description: hook.rumor,
+      posterId: sourceNpc.id,
+      noticeType: noticeType as "bounty" | "job" | "warning" | "announcement" | "request",
+      reward: hook.reward,
+      linkedHookId: hook.id,
+    };
+
+    settlement.notices.push(notice);
+  }
+
+  // Update npcs to final version with relationships and wants
+  const finalNPCs = npcsWithWants;
 
   // Step 17: Build edges array (roads + rivers)
   const edges: HexEdge[] = [...roads, ...rivers];
@@ -298,7 +435,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     edges,
     locations,
     dwellings,
-    npcs,
+    npcs: finalNPCs,
     factions,
     hooks,
     clocks,

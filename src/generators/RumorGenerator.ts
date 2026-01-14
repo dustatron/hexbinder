@@ -128,49 +128,40 @@ export interface RumorGeneratorOptions {
 }
 
 /**
- * Generate rumors for a settlement.
+ * Generate rumors for a settlement. All rumors are true/actionable.
  */
 export function generateRumors(options: RumorGeneratorOptions): Rumor[] {
   const { seed, count = 3, hooks = [], factions = [] } = options;
   const rng = new SeededRandom(`${seed}-rumors`);
   const rumors: Rumor[] = [];
 
-  // Generate hook-related rumors (more likely to be true)
+  // Generate hook-related rumors (always true)
   for (const hook of hooks.slice(0, 2)) {
-    if (rng.chance(0.6)) {
-      rumors.push({
-        id: `rumor-${nanoid(8)}`,
-        text: generateHookRumor(rng, hook),
-        isTrue: rng.chance(0.8),
-        source: rng.pick(RUMOR_SOURCES),
-        linkedHookId: hook.id,
-      });
-    }
-  }
-
-  // Generate faction-related rumors
-  for (const faction of factions.slice(0, 2)) {
-    if (rng.chance(0.5)) {
-      rumors.push({
-        id: `rumor-${nanoid(8)}`,
-        text: generateFactionRumor(rng, faction),
-        isTrue: rng.chance(0.6),
-        source: rng.pick(RUMOR_SOURCES),
-      });
-    }
-  }
-
-  // Fill remaining with generic rumors
-  while (rumors.length < count) {
-    const isTrue = rng.chance(0.5);
-    const template = isTrue
-      ? rng.pick(RUMOR_TEMPLATES)
-      : rng.pick(FALSE_RUMOR_TEMPLATES);
-
     rumors.push({
       id: `rumor-${nanoid(8)}`,
-      text: fillTemplate(rng, template),
-      isTrue,
+      text: hook.rumor,
+      isTrue: true,
+      source: rng.pick(RUMOR_SOURCES),
+      linkedHookId: hook.id,
+    });
+  }
+
+  // Generate faction-related rumors (always true)
+  for (const faction of factions.slice(0, 2)) {
+    rumors.push({
+      id: `rumor-${nanoid(8)}`,
+      text: generateFactionRumor(rng, faction),
+      isTrue: true,
+      source: rng.pick(RUMOR_SOURCES),
+    });
+  }
+
+  // Fill remaining with generic true rumors
+  while (rumors.length < count) {
+    rumors.push({
+      id: `rumor-${nanoid(8)}`,
+      text: fillTemplate(rng, rng.pick(RUMOR_TEMPLATES)),
+      isTrue: true,
       source: rng.pick(RUMOR_SOURCES),
     });
   }

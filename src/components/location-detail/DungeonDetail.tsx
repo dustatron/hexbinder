@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
-import { RefreshCw, CheckCircle2, Skull, Gem, MapPin } from "lucide-react";
-import type { Dungeon, Hook, DungeonTheme } from "~/models";
+import { RefreshCw, CheckCircle2, Skull, Gem, MapPin, User } from "lucide-react";
+import type { Dungeon, Hook, DungeonTheme, NPC } from "~/models";
 import type { RegenerationType } from "~/lib/hex-regenerate";
 import { EncounterTable } from "~/components/encounter-table/EncounterTable";
 import { RegenerateButton } from "./RegenerateButton";
@@ -9,6 +9,8 @@ import { RoomCard } from "./RoomCard";
 interface DungeonDetailProps {
   dungeon: Dungeon;
   hook?: Hook;
+  hooks?: Hook[]; // All hooks targeting this dungeon
+  npcs?: NPC[]; // All NPCs for lookup
   worldId: string;
   onRegenerate: (type: RegenerationType) => void;
   onReroll: () => void;
@@ -35,12 +37,34 @@ const THEME_BADGES: Record<DungeonTheme, { label: string; color: string }> = {
 export function DungeonDetail({
   dungeon,
   hook,
+  hooks = [],
+  npcs = [],
   worldId,
   onRegenerate,
   onReroll,
   seed,
 }: DungeonDetailProps) {
   const [expandedRooms, setExpandedRooms] = useState<Set<number>>(() => new Set([0]));
+
+  // Find NPCs linked to this dungeon via hooks
+  const linkedNPCs = useMemo(() => {
+    const dungeonHooks = hooks.filter((h) => h.targetLocationId === dungeon.id);
+    const npcIds = new Set<string>();
+
+    for (const h of dungeonHooks) {
+      if (h.sourceNpcId) npcIds.add(h.sourceNpcId);
+      if (h.missingNpcId) npcIds.add(h.missingNpcId);
+    }
+
+    return Array.from(npcIds).map((id) => {
+      const npc = npcs.find((n) => n.id === id);
+      const relatedHook = dungeonHooks.find(
+        (h) => h.sourceNpcId === id || h.missingNpcId === id
+      );
+      const isSource = relatedHook?.sourceNpcId === id;
+      return npc ? { npc, hook: relatedHook, isSource } : null;
+    }).filter(Boolean) as Array<{ npc: NPC; hook?: Hook; isSource: boolean }>;
+  }, [hooks, dungeon.id, npcs]);
 
   const toggleRoom = (index: number) => {
     setExpandedRooms((prev) => {
@@ -130,6 +154,40 @@ export function DungeonDetail({
         {/* Description */}
         <p className="text-sm text-stone-400">{dungeon.description}</p>
       </div>
+
+      {/* Linked NPCs */}
+      {linkedNPCs.length > 0 && (
+        <div className="rounded-lg border border-blue-700/50 bg-blue-950/30 p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <User className="h-4 w-4 text-blue-400" />
+            <h3 className="text-sm font-semibold text-blue-300">Linked NPCs</h3>
+          </div>
+          <ul className="space-y-2">
+            {linkedNPCs.map(({ npc, hook: npcHook, isSource }) => (
+              <li key={npc.id} className="text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-stone-200">{npc.name}</span>
+                  <span className={`rounded px-1.5 py-0.5 text-xs ${
+                    isSource
+                      ? "bg-amber-500/20 text-amber-300"
+                      : "bg-red-500/20 text-red-300"
+                  }`}>
+                    {isSource ? "Quest Giver" : "Missing/Captured"}
+                  </span>
+                </div>
+                {npcHook && (
+                  <p className="mt-1 text-xs text-stone-400">
+                    {isSource ? npcHook.rumor : `${npc.name} is ${npc.status} here`}
+                  </p>
+                )}
+                {npcHook?.reward && isSource && (
+                  <p className="text-xs text-amber-400">Reward: {npcHook.reward}</p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Hook Section */}
       {hook && (

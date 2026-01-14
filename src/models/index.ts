@@ -150,6 +150,10 @@ export interface Settlement extends Location {
   quirk: string;
   sites: SettlementSite[];
   npcIds: string[];
+  mayorNpcId?: string; // Reference to mayor/elder NPC
+  isCapital?: boolean; // Regional seat of power
+  rulerNpcId?: string; // King/Baron/Duke who rules from here
+  rulerTitle?: RulerTitle; // What to call the ruler
   rumors: Rumor[];
   notices: Notice[];
   defenses: DefenseLevel;
@@ -195,6 +199,7 @@ export interface Rumor {
   isTrue: boolean;
   source: string; // site name or NPC name
   linkedHookId?: string;
+  targetLocationId?: string; // Where rumor points
 }
 
 export interface Notice {
@@ -227,6 +232,65 @@ export type ThreatLevel = 1 | 2 | 3 | 4 | 5;
 
 export type FactionRole = "leader" | "lieutenant" | "member" | "agent" | "informant";
 
+export type NPCRole =
+  | "mayor"
+  | "elder"
+  | "innkeeper"
+  | "shopkeeper"
+  | "blacksmith"
+  | "priest"
+  | "guard_captain"
+  | "farmer"
+  | "merchant"
+  | "craftsman"
+  | "healer"
+  | "sage"
+  | "beggar"
+  | "criminal"
+  | "noble"
+  | "king"
+  | "baron"
+  | "duke"
+  | "count";
+
+export type RulerTitle = "king" | "baron" | "duke" | "count";
+
+export type NPCRelationshipType =
+  | "parent"
+  | "child"
+  | "sibling"
+  | "spouse"
+  | "friend"
+  | "rival"
+  | "enemy"
+  | "employer"
+  | "employee"
+  | "former_lover";
+
+export type NPCRelationshipSentiment =
+  | "love"
+  | "hate"
+  | "fear"
+  | "respect"
+  | "resentment"
+  | "indifferent";
+
+export interface NPCRelationship {
+  targetNpcId: string;
+  type: NPCRelationshipType;
+  sentiment: NPCRelationshipSentiment;
+}
+
+export interface NPCWant {
+  hookId: string;
+  personalStakes: string; // "my daughter", "my inheritance", "revenge"
+}
+
+export interface NPCFactionAspiration {
+  factionId: string;
+  task?: string; // "prove yourself", "bring us information"
+}
+
 export interface NPC {
   id: string;
   name: string;
@@ -238,9 +302,14 @@ export interface NPC {
   factionRole?: FactionRole;
   locationId?: string;
   siteId?: string;
-  wants: string;
+  age?: number;
+  role?: NPCRole;
+  relationships: NPCRelationship[];
+  flavorWant: string; // Background desire (flavor text)
+  wants: NPCWant[]; // Actionable hook-linked wants
+  factionAspiration?: NPCFactionAspiration;
   secret?: string;
-  status: "alive" | "dead" | "missing" | "unknown";
+  status: "alive" | "dead" | "missing" | "unknown" | "captured";
   tags: string[];
 }
 
@@ -285,9 +354,9 @@ export interface Faction {
   name: string;
   description: string;
   archetype: FactionArchetype;
-  factionType: FactionType; // NEW
-  purpose: string; // NEW: "conducting dark rituals", etc.
-  lair?: FactionLair; // NEW
+  factionType: FactionType;
+  purpose: string; // "conducting dark rituals", etc.
+  lair?: FactionLair;
   scale: FactionScale;
   goals: FactionGoal[];
   methods: string[];
@@ -300,6 +369,8 @@ export interface Faction {
   memberArchetype: CreatureArchetype;
   symbols: string[];
   rumors: string[];
+  recruitmentHookIds: string[]; // Hook IDs for joining faction
+  goalRumorIds: string[]; // Rumor IDs spreading faction activity
   status: "active" | "destroyed" | "disbanded" | "underground";
 }
 
@@ -334,13 +405,44 @@ export interface Clock {
 
 export type HookStatus = "available" | "active" | "completed" | "failed" | "expired";
 
+export type HookType =
+  | "delivery" // Take X to NPC Y
+  | "assassination" // Kill target NPC/creature
+  | "theft" // Steal item from NPC
+  | "rescue" // Save NPC from location
+  | "retrieval" // Get item from location
+  | "investigation" // Find out what happened
+  | "escort" // Protect NPC traveling
+  | "faction_task" // Task to join/help faction
+  | "mystery" // Something happening (sheep dying, etc.)
+  | "revenge" // Payback against NPC
+  | "debt"; // Collect money from NPC
+
 export interface Hook {
   id: string;
+  type: HookType;
   rumor: string; // what players hear
   truth: string; // what's actually happening
+
+  // Sources - who gives this hook
+  sourceNpcId?: string;
+  sourceSettlementId?: string;
+  sourceFactionId?: string;
+
+  // Targets
+  targetNpcId?: string; // For delivery, kill, theft
+  targetLocationId?: string; // Dungeon, settlement, wilderness
+  targetFactionId?: string;
+  targetItemId?: string; // For retrieval hooks
+
+  // For rescue/missing person hooks
+  missingNpcId?: string; // NPC placed at target location
+
+  // Legacy fields for compatibility
   involvedNpcIds: string[];
   involvedLocationIds: string[];
   involvedFactionIds: string[];
+
   reward?: string;
   danger?: string;
   status: HookStatus;

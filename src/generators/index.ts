@@ -29,7 +29,13 @@ export { generateRoomEncounters, generateRoomTreasure, populateRoom, populateDun
 export type { RoomContentOptions } from "./RoomContentGenerator";
 
 export { generateNPC, generateSettlementNPCs, generateFactionNPCs } from "./NPCGenerator";
-export type { NPCGeneratorOptions, SettlementNPCOptions, FactionNPCOptions } from "./NPCGenerator";
+export type { NPCGeneratorOptions, SettlementNPCOptions, SettlementNPCResult, FactionNPCOptions } from "./NPCGenerator";
+
+export { generateNPCRelationships, getRelatives, getEnemies } from "./NPCRelationshipGenerator";
+export type { RelationshipGeneratorOptions, RelationshipGeneratorResult, FamilyCluster } from "./NPCRelationshipGenerator";
+
+export { weaveHooks } from "./HookWeaver";
+export type { HookWeaverOptions, HookWeaverResult } from "./HookWeaver";
 
 export { generateDungeonConnections, validateConnectivity, getAdjacentRooms, findRoomPath } from "./DungeonConnectionGenerator";
 export type { ConnectionGeneratorOptions } from "./DungeonConnectionGenerator";

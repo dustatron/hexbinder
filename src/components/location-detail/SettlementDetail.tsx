@@ -121,6 +121,14 @@ export function SettlementDetail({
         {/* Quick stats */}
         <div className="flex flex-wrap gap-3 text-xs text-stone-400">
           <span>Govt: {settlement.governmentType}</span>
+          {settlement.mayorNpcId && (() => {
+            const mayor = npcs.find((n) => n.id === settlement.mayorNpcId);
+            return mayor ? (
+              <span className="text-stone-300">
+                {settlement.governmentType === "elder" ? "Elder" : "Mayor"}: {mayor.name}
+              </span>
+            ) : null;
+          })()}
           <span>Mood: {settlement.mood}</span>
           <span className="flex items-center gap-1">
             <Coins size={12} />
@@ -231,6 +239,10 @@ export function SettlementDetail({
           <div className="grid gap-2">
             {npcs.map((npc) => {
               const faction = npcFactionMap.get(npc.id);
+              const relationships = npc.relationships || [];
+              const familyRels = relationships.filter((r) =>
+                ["parent", "child", "sibling", "spouse"].includes(r.type)
+              );
               return (
                 <div
                   key={npc.id}
@@ -238,8 +250,20 @@ export function SettlementDetail({
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <h4 className="font-medium text-stone-200">{npc.name}</h4>
+                      <h4 className="font-medium text-stone-200">
+                        {npc.name}
+                        {npc.age && (
+                          <span className="ml-1 text-xs text-stone-500">
+                            ({npc.age} yrs)
+                          </span>
+                        )}
+                      </h4>
                       <p className="text-xs text-stone-500">
+                        {npc.role && (
+                          <span className="capitalize text-stone-400">
+                            {npc.role.replace("_", " ")} &middot;{" "}
+                          </span>
+                        )}
                         {npc.archetype} (Threat {npc.threatLevel})
                       </p>
                     </div>
@@ -251,8 +275,24 @@ export function SettlementDetail({
                     )}
                   </div>
                   <p className="mt-1 text-sm text-stone-400">{npc.description}</p>
+                  {familyRels.length > 0 && (
+                    <p className="mt-1 text-xs text-blue-400/80">
+                      <span className="font-medium">Family:</span>{" "}
+                      {familyRels.map((r) => {
+                        const relNpc = npcs.find((n) => n.id === r.targetNpcId);
+                        return relNpc ? `${r.type}: ${relNpc.name}` : null;
+                      }).filter(Boolean).join(", ")}
+                    </p>
+                  )}
                   <p className="mt-1 text-xs text-amber-400/80">
-                    <span className="font-medium">Wants:</span> {npc.wants}
+                    <span className="font-medium">Wants:</span>{" "}
+                    {npc.wants.length > 0 ? (
+                      <span className="text-amber-300">
+                        {npc.wants.map((w) => w.personalStakes).join(", ")}
+                      </span>
+                    ) : (
+                      npc.flavorWant
+                    )}
                   </p>
                 </div>
               );
@@ -278,13 +318,17 @@ export function SettlementDetail({
                     className="flex items-start gap-2 rounded bg-stone-800/50 p-2 text-sm"
                   >
                     <ScrollText size={14} className="mt-0.5 shrink-0 text-stone-500" />
-                    <div>
-                      <p className="text-stone-300">"{rumor.text}"</p>
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between">
+                        <p className="text-stone-300">"{rumor.text}"</p>
+                        {rumor.linkedHookId && (
+                          <span className="ml-2 shrink-0 rounded bg-amber-500/20 px-1.5 py-0.5 text-xs text-amber-300">
+                            Quest
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs text-stone-500">
                         Source: {rumor.source}
-                        {!rumor.isTrue && (
-                          <span className="ml-2 text-red-400">(false)</span>
-                        )}
                       </p>
                     </div>
                   </li>
@@ -298,26 +342,40 @@ export function SettlementDetail({
               <h4 className="mb-2 text-xs font-medium uppercase tracking-wide text-stone-500">
                 Notice Board
               </h4>
-              <ul className="space-y-1">
-                {settlement.notices.map((notice) => (
-                  <li
-                    key={notice.id}
-                    className="rounded border border-stone-700 bg-stone-800/50 p-2"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="rounded bg-stone-600 px-1.5 py-0.5 text-xs text-stone-300">
-                        {notice.noticeType}
-                      </span>
-                      <h5 className="font-medium text-stone-200">{notice.title}</h5>
-                    </div>
-                    <p className="mt-1 text-sm text-stone-400">{notice.description}</p>
-                    {notice.reward && (
-                      <p className="mt-1 text-xs text-amber-400">
-                        Reward: {notice.reward}
-                      </p>
-                    )}
-                  </li>
-                ))}
+              <ul className="space-y-2">
+                {settlement.notices.map((notice) => {
+                  const posterNpc = notice.posterId
+                    ? npcs.find((n) => n.id === notice.posterId)
+                    : undefined;
+                  return (
+                    <li
+                      key={notice.id}
+                      className="rounded border border-stone-700 bg-stone-800/50 p-2"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="rounded bg-amber-600/80 px-1.5 py-0.5 text-xs font-medium text-stone-100">
+                          {notice.noticeType.toUpperCase()}
+                        </span>
+                        <h5 className="font-medium text-stone-200">{notice.title}</h5>
+                      </div>
+                      <p className="mt-1 text-sm text-stone-300">{notice.description}</p>
+                      <div className="mt-2 flex items-center gap-3 text-xs">
+                        {posterNpc && (
+                          <span className="text-stone-400">
+                            <span className="font-medium text-stone-300">Contact:</span>{" "}
+                            {posterNpc.name}
+                            {posterNpc.role && ` (${posterNpc.role.replace("_", " ")})`}
+                          </span>
+                        )}
+                        {notice.reward && (
+                          <span className="text-amber-400 font-medium">
+                            Pays: {notice.reward}
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           )}

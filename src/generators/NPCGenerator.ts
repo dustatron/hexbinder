@@ -4,11 +4,51 @@ import type {
   CreatureArchetype,
   ThreatLevel,
   FactionRole,
+  NPCRole,
   Settlement,
   SettlementSite,
+  SiteType,
   Faction,
 } from "~/models";
 import { SeededRandom, createWeightedTable } from "./SeededRandom";
+
+// === Age Generation ===
+
+// Age ranges weighted toward middle-aged (30-50)
+const AGE_WEIGHTS = createWeightedTable({
+  young: 15, // 18-25
+  adult: 30, // 26-40
+  middleAged: 35, // 41-55
+  older: 15, // 56-65
+  elderly: 5, // 66-75
+});
+
+const AGE_RANGES: Record<string, [number, number]> = {
+  young: [18, 25],
+  adult: [26, 40],
+  middleAged: [41, 55],
+  older: [56, 65],
+  elderly: [66, 75],
+};
+
+function generateAge(rng: SeededRandom): number {
+  const bracket = rng.pickWeighted(AGE_WEIGHTS);
+  const [min, max] = AGE_RANGES[bracket];
+  return rng.between(min, max);
+}
+
+// === Site Type to NPC Role mapping ===
+
+const SITE_TYPE_TO_ROLE: Record<SiteType, NPCRole> = {
+  inn: "innkeeper",
+  tavern: "innkeeper",
+  temple: "priest",
+  blacksmith: "blacksmith",
+  general_store: "shopkeeper",
+  market: "merchant",
+  guild_hall: "merchant",
+  noble_estate: "noble",
+};
 
 // === Name Tables ===
 
@@ -207,20 +247,23 @@ export interface NPCGeneratorOptions {
   factionRole?: FactionRole;
   locationId?: string;
   siteId?: string;
+  role?: NPCRole;
+  age?: number; // Override generated age
 }
 
 /**
  * Generate a single NPC.
  */
 export function generateNPC(options: NPCGeneratorOptions): NPC {
-  const { seed, archetype, factionId, factionRole, locationId, siteId } = options;
+  const { seed, archetype, factionId, factionRole, locationId, siteId, role, age } = options;
   const rng = new SeededRandom(`${seed}-npc-${nanoid(4)}`);
 
   const finalArchetype = archetype ?? rng.pick(Object.keys(ARCHETYPE_DESCRIPTIONS) as CreatureArchetype[]);
   const name = generateNPCName(rng);
   const description = rng.pick(ARCHETYPE_DESCRIPTIONS[finalArchetype]);
-  const wants = rng.pick(WANTS_BY_ARCHETYPE[finalArchetype]);
+  const flavorWant = rng.pick(WANTS_BY_ARCHETYPE[finalArchetype]);
   const threatLevel = ARCHETYPE_THREAT[finalArchetype];
+  const npcAge = age ?? generateAge(rng);
 
   const npc: NPC = {
     id: `npc-${nanoid(8)}`,
@@ -228,7 +271,11 @@ export function generateNPC(options: NPCGeneratorOptions): NPC {
     description,
     archetype: finalArchetype,
     threatLevel,
-    wants,
+    age: npcAge,
+    role,
+    relationships: [],
+    flavorWant, // Background desire
+    wants: [], // Hook-linked wants populated by HookWeaver
     status: "alive",
     tags: [finalArchetype],
   };
@@ -273,25 +320,49 @@ export interface SettlementNPCOptions {
   sites: SettlementSite[];
 }
 
+export interface SettlementNPCResult {
+  npcs: NPC[];
+  mayorNpcId?: string;
+  siteOwnerMap: Map<string, string>; // siteId -> npcId
+}
+
 /**
  * Generate NPCs for a settlement and its sites.
+ * Returns NPCs, mayor ID, and site owner mappings.
  */
-export function generateSettlementNPCs(options: SettlementNPCOptions): NPC[] {
+export function generateSettlementNPCs(options: SettlementNPCOptions): SettlementNPCResult {
   const { seed, settlement, sites } = options;
   const rng = new SeededRandom(`${seed}-settlement-npcs-${settlement.id}`);
   const npcs: NPC[] = [];
+  const siteOwnerMap = new Map<string, string>();
+
+  // Generate mayor/elder first (middle-aged or older)
+  const mayorRole: NPCRole = settlement.governmentType === "elder" ? "elder" : "mayor";
+  const mayorAge = rng.between(45, 70); // Leaders are older
+  const mayor = generateNPC({
+    seed: `${seed}-mayor-${settlement.id}`,
+    archetype: settlement.governmentType === "theocracy" ? "priest" : "noble",
+    locationId: settlement.id,
+    role: mayorRole,
+    age: mayorAge,
+  });
+  npcs.push(mayor);
+  const mayorNpcId = mayor.id;
 
   // Generate owner/staff for each site
   for (const site of sites) {
-    // Site owner
+    // Site owner with role based on site type
     const ownerArchetype = getSiteOwnerArchetype(site.type);
+    const siteRole = SITE_TYPE_TO_ROLE[site.type];
     const owner = generateNPC({
       seed: `${seed}-site-${site.id}`,
       archetype: ownerArchetype,
       locationId: settlement.id,
       siteId: site.id,
+      role: siteRole,
     });
     npcs.push(owner);
+    siteOwnerMap.set(site.id, owner.id);
 
     // 1-2 staff for larger sites
     if (rng.chance(0.5)) {
@@ -305,21 +376,24 @@ export function generateSettlementNPCs(options: SettlementNPCOptions): NPC[] {
     }
   }
 
-  // Generate some general townsfolk
+  // Generate some general townsfolk with roles
   const populationFactor = Math.floor(settlement.population / 500);
   const townsfolkCount = Math.min(rng.between(2, 5) + populationFactor, 10);
 
+  const TOWNSFOLK_ROLES: NPCRole[] = ["farmer", "craftsman", "merchant", "guard_captain"];
   for (let i = 0; i < townsfolkCount; i++) {
     const archetype = rng.pick(["commoner", "commoner", "guard", "merchant"] as CreatureArchetype[]);
+    const role = rng.pick(TOWNSFOLK_ROLES);
     const npc = generateNPC({
       seed: `${seed}-townsfolk-${i}`,
       archetype,
       locationId: settlement.id,
+      role,
     });
     npcs.push(npc);
   }
 
-  return npcs;
+  return { npcs, mayorNpcId, siteOwnerMap };
 }
 
 function getSiteOwnerArchetype(siteType: string): CreatureArchetype {

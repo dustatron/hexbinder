@@ -162,9 +162,29 @@ export function EncounterTable({ seed, terrain, onReroll }: EncounterTableProps)
           )}
 
           {subTableResult.entry && (
-            <p className="text-sm text-stone-200">
-              {subTableResult.entry.description}
-            </p>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-stone-200">
+                {subTableResult.entry.description}
+              </p>
+              {subTableResult.entry.activity && (
+                <p className="text-sm text-stone-400">
+                  <span className="font-medium text-stone-300">Activity:</span>{" "}
+                  {subTableResult.entry.activity}
+                </p>
+              )}
+              {subTableResult.entry.rumor && (
+                <p className="text-sm text-blue-400/80">
+                  <span className="font-medium text-blue-300">Rumor:</span>{" "}
+                  {subTableResult.entry.rumor}
+                </p>
+              )}
+              {subTableResult.entry.reward && (
+                <p className="text-sm text-amber-400">
+                  <span className="font-medium text-amber-300">Reward:</span>{" "}
+                  {subTableResult.entry.reward}
+                </p>
+              )}
+            </div>
           )}
 
           {subTableResult.monster && (

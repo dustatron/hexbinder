@@ -44,6 +44,11 @@ export function FactionDetail({
     h.involvedFactionIds.includes(faction.id)
   );
 
+  // Get recruitment hooks
+  const recruitmentHooks = hooks.filter((h) =>
+    faction.recruitmentHookIds?.includes(h.id)
+  );
+
   return (
     <div className="space-y-6 bg-stone-900 p-4 text-stone-100">
       {/* Header */}
@@ -206,27 +211,56 @@ export function FactionDetail({
         </section>
       )}
 
-      {/* Hooks */}
+      {/* Recruitment Hooks */}
+      {recruitmentHooks.length > 0 && (
+        <section className="space-y-3">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-400">
+            Join {faction.name}
+          </h3>
+          <ul className="space-y-2">
+            {recruitmentHooks.map((hook) => (
+              <li key={hook.id} className="rounded border border-purple-500/30 bg-purple-500/10 p-2">
+                <p className="text-sm text-stone-300">{hook.rumor}</p>
+                <div className="mt-1 flex items-center gap-2 text-xs">
+                  <span className="rounded bg-purple-500/20 px-1.5 py-0.5 capitalize text-purple-300">
+                    {hook.type.replace("_", " ")}
+                  </span>
+                  {hook.reward && (
+                    <span className="text-stone-500">Reward: {hook.reward}</span>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* Other Hooks */}
       {factionHooks.length > 0 && (
         <section className="space-y-3">
           <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-400">
-            Hooks
+            Related Hooks
           </h3>
           <ul className="space-y-2">
-            {factionHooks.map((hook) => (
+            {factionHooks.filter((h) => !faction.recruitmentHookIds?.includes(h.id)).map((hook) => (
               <li key={hook.id} className="space-y-1">
                 <p className="text-sm text-stone-300">{hook.rumor}</p>
-                <span
-                  className={`text-xs ${
-                    hook.status === "active"
-                      ? "text-green-500"
-                      : hook.status === "completed"
-                        ? "text-stone-500"
-                        : "text-amber-500"
-                  }`}
-                >
-                  {hook.status}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="rounded bg-stone-800 px-1.5 py-0.5 text-xs capitalize text-stone-400">
+                    {hook.type.replace("_", " ")}
+                  </span>
+                  <span
+                    className={`text-xs ${
+                      hook.status === "active"
+                        ? "text-green-500"
+                        : hook.status === "completed"
+                          ? "text-stone-500"
+                          : "text-amber-500"
+                    }`}
+                  >
+                    {hook.status}
+                  </span>
+                </div>
               </li>
             ))}
           </ul>

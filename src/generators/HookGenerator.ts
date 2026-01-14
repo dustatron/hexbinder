@@ -177,6 +177,7 @@ export function generateHook(options: HookGeneratorOptions): Hook {
 
   return {
     id: `hook-${nanoid(8)}`,
+    type: "mystery" as const, // Legacy hooks default to mystery type
     rumor: template.rumor,
     truth: template.truth,
     involvedNpcIds,

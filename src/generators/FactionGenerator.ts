@@ -271,6 +271,8 @@ function generateFaction(rng: SeededRandom, idSuffix: string, lairHexes: Hex[]):
     relationships: [],
     territoryIds: [],
     influenceIds: [],
+    recruitmentHookIds: [],
+    goalRumorIds: [],
     leaderArchetype: rng.pick(LEADER_ARCHETYPES[archetype]),
     memberArchetype: rng.pick(MEMBER_ARCHETYPES[archetype]),
     symbols: [rng.pick(SYMBOLS)],
