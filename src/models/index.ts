@@ -856,6 +856,11 @@ export interface WorldSummary {
   id: string;
   name: string;
   updatedAt: number;
+  hexCount: number;
+  settlementCount: number;
+  dungeonCount: number;
+  factionCount: number;
+  day: number;
 }
 
 // === Type Guards ===

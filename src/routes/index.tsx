@@ -353,7 +353,7 @@ function HomePage() {
                 className="flex items-center justify-between rounded-lg border border-stone-700 bg-stone-800 p-4"
               >
                 <div
-                  className="flex cursor-pointer items-center gap-3"
+                  className="flex-1 cursor-pointer"
                   onClick={() =>
                     navigate({
                       to: "/world/$worldId",
@@ -361,12 +361,31 @@ function HomePage() {
                     })
                   }
                 >
-                  <Map className="text-amber-500" size={24} />
-                  <div>
-                    <h3 className="font-semibold">{world.name}</h3>
-                    <p className="text-sm text-stone-400">
-                      {formatDistanceToNow(world.updatedAt, { addSuffix: true })}
-                    </p>
+                  <div className="flex items-center gap-3">
+                    <Map className="text-amber-500" size={24} />
+                    <div>
+                      <h3 className="font-semibold">{world.name}</h3>
+                      <p className="text-sm text-stone-400">
+                        {formatDistanceToNow(world.updatedAt, { addSuffix: true })}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                    <span className="rounded bg-stone-700 px-2 py-0.5 text-stone-300">
+                      Day {world.day}
+                    </span>
+                    <span className="rounded bg-stone-700 px-2 py-0.5 text-stone-300">
+                      {world.hexCount} hexes
+                    </span>
+                    <span className="rounded bg-amber-700/50 px-2 py-0.5 text-amber-300">
+                      {world.settlementCount} settlements
+                    </span>
+                    <span className="rounded bg-red-700/50 px-2 py-0.5 text-red-300">
+                      {world.dungeonCount} dungeons
+                    </span>
+                    <span className="rounded bg-purple-700/50 px-2 py-0.5 text-purple-300">
+                      {world.factionCount} factions
+                    </span>
                   </div>
                 </div>
                 <div className="flex gap-2">

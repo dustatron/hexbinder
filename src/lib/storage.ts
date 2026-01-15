@@ -33,6 +33,11 @@ export function listWorlds(): WorldSummary[] {
             id: world.id,
             name: world.name,
             updatedAt: world.updatedAt,
+            hexCount: world.hexes?.length ?? 0,
+            settlementCount: world.locations?.filter(l => l.type === "settlement").length ?? 0,
+            dungeonCount: world.locations?.filter(l => l.type === "dungeon").length ?? 0,
+            factionCount: world.factions?.length ?? 0,
+            day: world.state?.day ?? 1,
           });
         }
       } catch {
