@@ -27,6 +27,7 @@ import { generateFactionClock } from "./ClockGenerator";
 import { generateRoads } from "./RoadGenerator";
 import { generateBridges, type Bridge } from "./BridgeGenerator";
 import { generateNPC, generateSettlementNPCs, generateFactionNPCs } from "./NPCGenerator";
+import { NameRegistry } from "./NameRegistry";
 import { generateNPCRelationships } from "./NPCRelationshipGenerator";
 import { weaveHooks } from "./HookWeaver";
 import { generateRumors, generateNotices } from "./RumorGenerator";
@@ -84,6 +85,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
 
   const rng = new SeededRandom(seed);
   const worldId = `world-${nanoid(8)}`;
+  const nameRegistry = new NameRegistry(seed);
 
   // Step 1: Generate terrain using spiral pattern
   const { hexes, startCoord, poiCoords } = generateSpiralTerrain({
@@ -259,7 +261,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   // Settlement NPCs
   for (const settlement of settlements) {
     const sites = settlement.sites;
-    const { npcs: settlementNPCs, mayorNpcId, siteOwnerMap } = generateSettlementNPCs({ seed, settlement, sites });
+    const { npcs: settlementNPCs, mayorNpcId, siteOwnerMap } = generateSettlementNPCs({ seed, settlement, sites, nameRegistry });
     npcs.push(...settlementNPCs);
 
     // Link NPC IDs to settlement
@@ -274,6 +276,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
         locationId: settlement.id,
         role: settlement.rulerTitle,
         age: rng.between(35, 65),
+        nameRegistry,
       });
       npcs.push(ruler);
       settlement.npcIds.push(ruler.id);
@@ -299,7 +302,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
 
   // Faction NPCs
   for (const faction of factions) {
-    const factionNPCs = generateFactionNPCs({ seed, faction });
+    const factionNPCs = generateFactionNPCs({ seed, faction, nameRegistry });
     npcs.push(...factionNPCs);
   }
 

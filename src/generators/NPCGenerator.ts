@@ -1,6 +1,8 @@
 import { nanoid } from "nanoid";
 import type {
   NPC,
+  NPCRace,
+  NPCGender,
   CreatureArchetype,
   ThreatLevel,
   FactionRole,
@@ -11,6 +13,7 @@ import type {
   Faction,
 } from "~/models";
 import { SeededRandom, createWeightedTable } from "./SeededRandom";
+import { NameRegistry, generateRace } from "./NameRegistry";
 
 // === Age Generation ===
 
@@ -49,26 +52,6 @@ const SITE_TYPE_TO_ROLE: Record<SiteType, NPCRole> = {
   guild_hall: "merchant",
   noble_estate: "noble",
 };
-
-// === Name Tables ===
-
-const FIRST_NAMES = [
-  "Aldric", "Brynn", "Cedric", "Dara", "Elric", "Fiona", "Gareth", "Helena",
-  "Ivar", "Jenna", "Kael", "Lyra", "Magnus", "Nadia", "Orin", "Petra",
-  "Quinn", "Rowan", "Silas", "Thalia", "Ulric", "Vera", "Willem", "Xara",
-  "Yorick", "Zara", "Aldwin", "Brom", "Cora", "Dorian",
-];
-
-const LAST_NAMES = [
-  "Blackwood", "Stoneheart", "Ironforge", "Shadowmere", "Brightwater",
-  "Thornwood", "Stormwind", "Goldmane", "Silverton", "Ravencrest",
-  "Oakenshield", "Fireforge", "Frostborn", "Nightingale", "Greymoor",
-];
-
-const NICKNAMES = [
-  "the Bold", "the Wise", "the Swift", "the Silent", "the Fierce",
-  "the Cunning", "the Kind", "the Grim", "the Lucky", "the Lost",
-];
 
 // === Trait Tables ===
 
@@ -274,17 +257,43 @@ export interface NPCGeneratorOptions {
   siteId?: string;
   role?: NPCRole;
   age?: number; // Override generated age
+  nameRegistry?: NameRegistry; // For unique name generation
+  settlementType?: string; // For race distribution (e.g., "dwarven", "elven")
+  race?: NPCRace; // Override generated race
+  gender?: NPCGender; // Override generated gender
 }
 
 /**
  * Generate a single NPC.
  */
 export function generateNPC(options: NPCGeneratorOptions): NPC {
-  const { seed, archetype, factionId, factionRole, locationId, siteId, role, age } = options;
+  const {
+    seed,
+    archetype,
+    factionId,
+    factionRole,
+    locationId,
+    siteId,
+    role,
+    age,
+    nameRegistry,
+    settlementType,
+    race: overrideRace,
+    gender: overrideGender,
+  } = options;
   const rng = new SeededRandom(`${seed}-npc-${nanoid(4)}`);
 
   const finalArchetype = archetype ?? rng.pick(Object.keys(ARCHETYPE_DESCRIPTIONS) as CreatureArchetype[]);
-  const name = generateNPCName(rng);
+
+  // Generate or use provided race/gender
+  const race: NPCRace = overrideRace ?? generateRace(rng, settlementType);
+  const gender: NPCGender = overrideGender ?? (rng.chance(0.5) ? "male" : "female");
+
+  // Generate name using registry (unique) or fallback to basic generation
+  const name = nameRegistry
+    ? nameRegistry.generateFullName(race, gender)
+    : generateFallbackName(rng);
+
   const description = rng.pick(ARCHETYPE_DESCRIPTIONS[finalArchetype]);
   const flavorWant = rng.pick(WANTS_BY_ARCHETYPE[finalArchetype]);
   const threatLevel = ARCHETYPE_THREAT[finalArchetype];
@@ -293,6 +302,8 @@ export function generateNPC(options: NPCGeneratorOptions): NPC {
   const npc: NPC = {
     id: `npc-${nanoid(8)}`,
     name,
+    race,
+    gender,
     description,
     archetype: finalArchetype,
     threatLevel,
@@ -302,7 +313,7 @@ export function generateNPC(options: NPCGeneratorOptions): NPC {
     flavorWant, // Background desire
     wants: [], // Hook-linked wants populated by HookWeaver
     status: "alive",
-    tags: [finalArchetype],
+    tags: [finalArchetype, race],
   };
 
   if (factionId) {
@@ -326,23 +337,19 @@ export function generateNPC(options: NPCGeneratorOptions): NPC {
   return npc;
 }
 
-function generateNPCName(rng: SeededRandom): string {
-  const first = rng.pick(FIRST_NAMES);
-  const last = rng.pick(LAST_NAMES);
-
-  // 20% chance of a nickname
-  if (rng.chance(0.2)) {
-    const nickname = rng.pick(NICKNAMES);
-    return `${first} ${nickname} ${last}`;
-  }
-
-  return `${first} ${last}`;
+// Fallback name generation when no registry is provided (legacy support)
+function generateFallbackName(rng: SeededRandom): string {
+  const FALLBACK_FIRST = ["Aldric", "Brynn", "Cedric", "Dara", "Elric", "Fiona", "Gareth", "Helena"];
+  const FALLBACK_LAST = ["Blackwood", "Stoneheart", "Ironforge", "Shadowmere", "Brightwater"];
+  return `${rng.pick(FALLBACK_FIRST)} ${rng.pick(FALLBACK_LAST)}`;
 }
 
 export interface SettlementNPCOptions {
   seed: string;
   settlement: Settlement;
   sites: SettlementSite[];
+  nameRegistry?: NameRegistry;
+  settlementType?: string; // For race distribution (e.g., "dwarven", "elven", "human")
 }
 
 export interface SettlementNPCResult {
@@ -356,7 +363,7 @@ export interface SettlementNPCResult {
  * Returns NPCs, mayor ID, and site owner mappings.
  */
 export function generateSettlementNPCs(options: SettlementNPCOptions): SettlementNPCResult {
-  const { seed, settlement, sites } = options;
+  const { seed, settlement, sites, nameRegistry, settlementType } = options;
   const rng = new SeededRandom(`${seed}-settlement-npcs-${settlement.id}`);
   const npcs: NPC[] = [];
   const siteOwnerMap = new Map<string, string>();
@@ -370,6 +377,8 @@ export function generateSettlementNPCs(options: SettlementNPCOptions): Settlemen
     locationId: settlement.id,
     role: mayorRole,
     age: mayorAge,
+    nameRegistry,
+    settlementType,
   });
   npcs.push(mayor);
   const mayorNpcId = mayor.id;
@@ -385,6 +394,8 @@ export function generateSettlementNPCs(options: SettlementNPCOptions): Settlemen
       locationId: settlement.id,
       siteId: site.id,
       role: siteRole,
+      nameRegistry,
+      settlementType,
     });
     npcs.push(owner);
     siteOwnerMap.set(site.id, owner.id);
@@ -396,6 +407,8 @@ export function generateSettlementNPCs(options: SettlementNPCOptions): Settlemen
         archetype: "commoner",
         locationId: settlement.id,
         siteId: site.id,
+        nameRegistry,
+        settlementType,
       });
       npcs.push(staff);
     }
@@ -414,6 +427,8 @@ export function generateSettlementNPCs(options: SettlementNPCOptions): Settlemen
       archetype,
       locationId: settlement.id,
       role,
+      nameRegistry,
+      settlementType,
     });
     npcs.push(npc);
   }
@@ -438,13 +453,14 @@ function getSiteOwnerArchetype(siteType: string): CreatureArchetype {
 export interface FactionNPCOptions {
   seed: string;
   faction: Faction;
+  nameRegistry?: NameRegistry;
 }
 
 /**
  * Generate NPCs for a faction.
  */
 export function generateFactionNPCs(options: FactionNPCOptions): NPC[] {
-  const { seed, faction } = options;
+  const { seed, faction, nameRegistry } = options;
   const rng = new SeededRandom(`${seed}-faction-npcs-${faction.id}`);
   const npcs: NPC[] = [];
 
@@ -454,6 +470,7 @@ export function generateFactionNPCs(options: FactionNPCOptions): NPC[] {
     archetype: faction.leaderArchetype,
     factionId: faction.id,
     factionRole: "leader",
+    nameRegistry,
   });
   npcs.push(leader);
 
@@ -465,6 +482,7 @@ export function generateFactionNPCs(options: FactionNPCOptions): NPC[] {
       archetype: faction.leaderArchetype,
       factionId: faction.id,
       factionRole: "lieutenant",
+      nameRegistry,
     });
     npcs.push(lieutenant);
   }
@@ -477,6 +495,7 @@ export function generateFactionNPCs(options: FactionNPCOptions): NPC[] {
       archetype: faction.memberArchetype,
       factionId: faction.id,
       factionRole: "member",
+      nameRegistry,
     });
     npcs.push(member);
   }

@@ -276,6 +276,18 @@ export interface Notice {
 
 // === NPC ===
 
+export type NPCRace =
+  | "human"
+  | "elf"
+  | "dwarf"
+  | "halfling"
+  | "half-elf"
+  | "half-orc"
+  | "gnome"
+  | "goblin";
+
+export type NPCGender = "male" | "female";
+
 export type CreatureArchetype =
   | "commoner"
   | "bandit"
@@ -356,6 +368,8 @@ export interface NPCFactionAspiration {
 export interface NPC {
   id: string;
   name: string;
+  race: NPCRace;
+  gender: NPCGender;
   description: string;
   archetype: CreatureArchetype;
   threatLevel: ThreatLevel;
