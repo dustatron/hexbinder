@@ -473,13 +473,9 @@ export function SettlementDetail({
                           </span>
                         )}
                       </h4>
-                      <p className="text-xs text-stone-500">
-                        {npc.role && (
-                          <span className="capitalize text-stone-400">
-                            {npc.role.replace("_", " ")} &middot;{" "}
-                          </span>
-                        )}
-                        {npc.archetype} (Threat {npc.threatLevel})
+                      <p className="text-xs text-stone-500 capitalize">
+                        {npc.race} {npc.role ? npc.role.replace("_", " ") : npc.archetype}
+                        {npc.role && ` - ${npc.archetype}`}
                       </p>
                       {npc.siteId && (() => {
                         const site = settlement.sites.find((s) => s.id === npc.siteId);
