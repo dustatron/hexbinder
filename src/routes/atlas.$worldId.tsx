@@ -316,6 +316,31 @@ function AtlasPage() {
             })}
           </div>
 
+          {/* Week Pagination Footer */}
+          <div className="mt-4 flex items-center justify-between">
+            <button
+              onClick={() => setWeekOffset(weekOffset - 1)}
+              disabled={!canGoPrevWeek}
+              className="flex items-center gap-1 rounded bg-stone-700 px-2 py-1 text-sm hover:bg-stone-600 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <ChevronLeft size={16} />
+              Prev
+            </button>
+            <div className="text-center">
+              <div className="text-sm font-medium">
+                Days {weekStartDay} - {weekEndDay}
+              </div>
+            </div>
+            <button
+              onClick={() => setWeekOffset(weekOffset + 1)}
+              disabled={!canGoNextWeek}
+              className="flex items-center gap-1 rounded bg-stone-700 px-2 py-1 text-sm hover:bg-stone-600 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Next
+              <ChevronRight size={16} />
+            </button>
+          </div>
+
           {/* Extend Forecast Button */}
           {showExtendButton && weekOffset >= 0 && (
             <button
