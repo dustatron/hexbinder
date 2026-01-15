@@ -5,6 +5,7 @@ import type { RegenerationType } from "~/lib/hex-regenerate";
 import { EncounterTable } from "~/components/encounter-table/EncounterTable";
 import { RegenerateButton } from "./RegenerateButton";
 import { TownMap } from "~/components/town-map";
+import { NPCStatLine } from "~/components/npc/NPCStatLine";
 import { useState, useMemo, type ReactNode } from "react";
 import { generateRumors } from "~/generators/RumorGenerator";
 import { nanoid } from "nanoid";
@@ -637,6 +638,7 @@ export function SettlementDetail({
                           </p>
                         ) : null;
                       })()}
+                      <NPCStatLine archetype={npc.archetype} />
                     </div>
                     {faction && (
                       <span className="rounded bg-purple-500/20 px-1.5 py-0.5 text-xs text-purple-300">
