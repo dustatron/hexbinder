@@ -310,15 +310,25 @@ export function BuildingWithRoof({
         </text>
       )}
 
-      {/* Selection highlight */}
+      {/* Selection highlight - prominent amber glow */}
       {selected && (
-        <path
-          d={pathData}
-          fill="none"
-          stroke="#c9a050"
-          strokeWidth={2}
-          strokeDasharray="3 3"
-        />
+        <>
+          {/* Outer glow */}
+          <path
+            d={pathData}
+            fill="none"
+            stroke="#f59e0b"
+            strokeWidth={4}
+            opacity={0.4}
+          />
+          {/* Inner highlight */}
+          <path
+            d={pathData}
+            fill="rgba(245, 158, 11, 0.3)"
+            stroke="#f59e0b"
+            strokeWidth={2}
+          />
+        </>
       )}
     </g>
   );

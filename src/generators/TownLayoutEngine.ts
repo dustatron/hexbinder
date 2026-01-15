@@ -1335,8 +1335,53 @@ export function linkSitesToBuildings(
       );
       if (matchingSite) {
         building.siteId = matchingSite.id;
+        building.name = matchingSite.name; // Show actual site name, not building type
         building.icon = siteTypeToIcon[matchingSite.type];
         usedSiteIds.add(matchingSite.id);
+      }
+    }
+  }
+
+  // Remove unlinked landmarks to ensure 1:1 with sites
+  for (const ward of settlement.wards) {
+    ward.buildings = ward.buildings.filter(
+      (b) => b.type !== "landmark" || b.siteId
+    );
+  }
+
+  // Create landmarks for any sites that weren't linked
+  const unlinkedSites = settlement.sites.filter((s) => !usedSiteIds.has(s.id));
+  for (const site of unlinkedSites) {
+    // Find a ward with houses to convert one to a landmark
+    const wardWithHouses = settlement.wards.find((w) =>
+      w.buildings.some((b) => b.type === "house")
+    );
+    if (wardWithHouses) {
+      // Find largest house to convert
+      const houses = wardWithHouses.buildings.filter((b) => b.type === "house");
+      if (houses.length > 0) {
+        // Pick the largest house by area
+        const largestHouse = houses.reduce((largest, house) => {
+          const area = Math.abs(
+            house.shape.vertices.reduce((sum, v, i, arr) => {
+              const next = arr[(i + 1) % arr.length];
+              return sum + (v.x * next.y - next.x * v.y);
+            }, 0) / 2
+          );
+          const largestArea = Math.abs(
+            largest.shape.vertices.reduce((sum, v, i, arr) => {
+              const next = arr[(i + 1) % arr.length];
+              return sum + (v.x * next.y - next.x * v.y);
+            }, 0) / 2
+          );
+          return area > largestArea ? house : largest;
+        });
+
+        // Convert to landmark
+        largestHouse.type = "landmark";
+        largestHouse.siteId = site.id;
+        largestHouse.name = site.name;
+        largestHouse.icon = siteTypeToIcon[site.type];
       }
     }
   }
