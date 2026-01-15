@@ -1,4 +1,4 @@
-import type { WorldData, HexCoord, DungeonTheme, SettlementSize, Dungeon, Settlement, SpatialSettlement, TerrainType } from "~/models";
+import type { WorldData, HexCoord, DungeonTheme, DungeonSize, SettlementSize, Dungeon, Settlement, SpatialSettlement, TerrainType } from "~/models";
 import { isDungeon, isSettlement } from "~/models";
 import { placeDungeon, placeWildernessLair } from "~/generators/DungeonGenerator";
 import { placeSettlement } from "~/generators/SettlementGenerator";
@@ -97,11 +97,23 @@ export function clearHexLocation(world: WorldData, coord: HexCoord): WorldData {
   };
 }
 
+export interface RegenerateOptions {
+  /** Dungeon size override (only applies to dungeon themes) */
+  dungeonSize?: DungeonSize;
+  /** Custom seed for generation (overrides auto-generated seed) */
+  customSeed?: string;
+}
+
 /**
  * Regenerate hex content based on type.
  * Clears existing location first, then generates new content.
  */
-export function regenerateHex(world: WorldData, coord: HexCoord, type: RegenerationType): WorldData {
+export function regenerateHex(
+  world: WorldData,
+  coord: HexCoord,
+  type: RegenerationType,
+  options?: RegenerateOptions
+): WorldData {
   // Always clear first
   let updated = clearHexLocation(world, coord);
 
@@ -124,8 +136,8 @@ export function regenerateHex(world: WorldData, coord: HexCoord, type: Regenerat
   const hex = updated.hexes.find(h => h.coord.q === coord.q && h.coord.r === coord.r);
   if (!hex) return updated;
 
-  // Generate unique seed for regeneration
-  const regenSeed = `${world.seed}-regen-${coord.q},${coord.r}-${nanoid(4)}`;
+  // Use custom seed if provided, otherwise generate unique seed
+  const regenSeed = options?.customSeed || `${world.seed}-regen-${coord.q},${coord.r}-${nanoid(4)}`;
 
   if (type === "random") {
     return generateRandom(updated, hex, regenSeed);
@@ -133,12 +145,12 @@ export function regenerateHex(world: WorldData, coord: HexCoord, type: Regenerat
 
   // Check if it's a dungeon theme
   if (DUNGEON_THEMES.includes(type as (typeof DUNGEON_THEMES)[number])) {
-    return generateDungeonAtHex(updated, hex, regenSeed, type as DungeonTheme);
+    return generateDungeonAtHex(updated, hex, regenSeed, type as DungeonTheme, options?.dungeonSize);
   }
 
   // Check if it's a wilderness theme
   if (WILDERNESS_THEMES.includes(type as (typeof WILDERNESS_THEMES)[number])) {
-    return generateWildernessAtHex(updated, hex, regenSeed, type as DungeonTheme);
+    return generateWildernessAtHex(updated, hex, regenSeed, type as DungeonTheme, options?.dungeonSize);
   }
 
   // Check if it's a settlement size
@@ -169,7 +181,8 @@ function generateDungeonAtHex(
   world: WorldData,
   hex: typeof world.hexes[0],
   seed: string,
-  forcedTheme?: DungeonTheme
+  forcedTheme?: DungeonTheme,
+  forcedSize?: DungeonSize
 ): WorldData {
   // Create a mutable hex reference for placeDungeon
   // If water terrain, change to hills first (dungeons can't spawn in water)
@@ -182,6 +195,7 @@ function generateDungeonAtHex(
     seed,
     hexes: [hexRef],
     theme: forcedTheme,
+    size: forcedSize,
   });
 
   if (!result) return world;
@@ -216,7 +230,8 @@ function generateWildernessAtHex(
   world: WorldData,
   hex: typeof world.hexes[0],
   seed: string,
-  forcedTheme?: DungeonTheme
+  forcedTheme?: DungeonTheme,
+  forcedSize?: DungeonSize
 ): WorldData {
   // Determine terrain - if water and not sea_cave, convert to appropriate terrain
   const targetTerrain = LAIR_TERRAIN_MAP[forcedTheme ?? ""];
@@ -230,13 +245,13 @@ function generateWildernessAtHex(
   // Create a mutable hex reference with correct terrain
   const hexRef = { ...hex, terrain: workingTerrain };
 
-  // If forcing a theme, use placeDungeon with lair size
+  // If forcing a theme, use placeDungeon with specified or default lair size
   if (forcedTheme) {
     const result = placeDungeon({
       seed,
       hexes: [hexRef],
       theme: forcedTheme,
-      size: "lair",
+      size: forcedSize ?? "lair", // Default to lair for wilderness, but respect user choice
     });
 
     if (!result) return world;

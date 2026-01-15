@@ -17,9 +17,16 @@ import type {
   TreasureEntry,
   SpatialDungeon,
   SpatialRoom,
+  Hook,
 } from "~/models";
 import { SeededRandom, createWeightedTable } from "./SeededRandom";
-import { DungeonLayoutGenerator } from "./DungeonLayoutEngine";
+import { DungeonLayoutGenerator, markDeadEnds } from "./DungeonLayoutEngine";
+import { applyBlueprint } from "./dungeon/BlueprintEngine";
+import { placeTraps } from "./dungeon/TrapGenerator";
+import { generateDungeonEcology } from "./dungeon/DungeonEcologyGenerator";
+import { generateWanderingMonsters } from "./dungeon/WanderingMonsterGenerator";
+import { generateDungeonNPCs } from "./dungeon/DungeonNPCGenerator";
+import { generateKeyLocks } from "./dungeon/KeyLockGenerator";
 
 // === Name Tables ===
 
@@ -49,14 +56,14 @@ const DUNGEON_NOUNS: Record<DungeonTheme, string[]> = {
 
 const ROOM_TYPE_WEIGHTS = createWeightedTable<RoomType>({
   entrance: 5,
+  exit: 0, // Exits are placed explicitly, not randomly
   corridor: 25,
-  chamber: 30,
+  chamber: 35,
   lair: 10,
   trap_room: 10,
   treasury: 5,
   shrine: 5,
   prison: 5,
-  puzzle_room: 5,
 });
 
 const ROOM_SIZE_WEIGHTS = createWeightedTable<RoomSize>({
@@ -274,7 +281,8 @@ function generateSpatialDungeon(
   seed: string,
   coord: HexCoord,
   forcedTheme?: DungeonTheme,
-  forcedSize?: DungeonSize
+  forcedSize?: DungeonSize,
+  hooks: Hook[] = []
 ): SpatialDungeon {
   const rng = new SeededRandom(`${seed}-dungeon-gen`);
   const id = `dungeon-${nanoid(8)}`;
@@ -288,8 +296,29 @@ function generateSpatialDungeon(
   const layoutGenerator = new DungeonLayoutGenerator(seed);
   const layout = layoutGenerator.generate(size, theme, roomCount, coord);
 
+  // Mark dead-end rooms for reward boosting
+  markDeadEnds(layout.rooms, layout.passages);
+
+  // Apply blueprint-based theme room types
+  applyBlueprint(theme, layout.rooms, layout.passages, seed);
+
   // Add content (features, hazards, secrets) to each room
   const rooms = layout.rooms.map((room) => addRoomContent(rng, room));
+
+  // Place traps in rooms and passages
+  placeTraps(theme, rooms, layout.passages, seed);
+
+  // Generate dungeon ecology (builder culture, inhabitants, activities)
+  const ecology = generateDungeonEcology(theme, rooms, seed);
+
+  // Generate wandering monster table
+  const wanderingMonsters = generateWanderingMonsters(theme, depth, seed);
+
+  // Generate dungeon NPCs (prisoners, rivals, hermits, ghosts)
+  const dungeonNPCs = generateDungeonNPCs(theme, rooms, hooks, seed);
+
+  // Generate key-lock pairs for locked doors
+  const keyLockPairs = generateKeyLocks(theme, rooms, layout.passages, seed);
 
   return {
     id,
@@ -308,6 +337,10 @@ function generateSpatialDungeon(
     entranceRoomId: rooms[0]?.id ?? "",
     cleared: false,
     linkedHookIds: [],
+    ecology,
+    wanderingMonsters,
+    dungeonNPCs,
+    keyLockPairs,
   };
 }
 

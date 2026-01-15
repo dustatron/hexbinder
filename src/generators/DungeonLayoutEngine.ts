@@ -6,6 +6,7 @@ import type {
   PlacementDirection,
   RoomSize,
   RoomType,
+  RoomGeometry,
   SpatialRoom,
   Passage,
   SpatialDungeon,
@@ -22,6 +23,53 @@ import type {
   DUNGEON_GRID_SIZES,
 } from "~/models";
 import { SeededRandom } from "./SeededRandom";
+
+/**
+ * Classify room geometry based on dimensions.
+ * - corridor: aspect ratio >= 2 AND area <= 12 cells
+ * - alcove: area <= 6 cells
+ * - gallery: aspect ratio >= 1.5 AND area >= 20 cells
+ * - chamber: everything else
+ */
+export function classifyRoomGeometry(bounds: GridRect): RoomGeometry {
+  const area = bounds.width * bounds.height;
+  const aspect = Math.max(bounds.width, bounds.height) /
+                 Math.min(bounds.width, bounds.height);
+
+  // Corridors: long and narrow, not too big
+  if (aspect >= 2 && area <= 12) return "corridor";
+
+  // Alcoves: tiny rooms
+  if (area <= 6) return "alcove";
+
+  // Galleries: elongated but spacious
+  if (aspect >= 1.5 && area >= 20) return "gallery";
+
+  // Chambers: everything else (typical rooms)
+  return "chamber";
+}
+
+/**
+ * Mark dead-end rooms (rooms with only one connection).
+ */
+export function markDeadEnds(rooms: SpatialRoom[], passages: Passage[]): void {
+  const connectionCount = new Map<string, number>();
+
+  for (const passage of passages) {
+    connectionCount.set(
+      passage.fromRoomId,
+      (connectionCount.get(passage.fromRoomId) ?? 0) + 1
+    );
+    connectionCount.set(
+      passage.toRoomId,
+      (connectionCount.get(passage.toRoomId) ?? 0) + 1
+    );
+  }
+
+  for (const room of rooms) {
+    room.isDeadEnd = (connectionCount.get(room.id) ?? 0) === 1;
+  }
+}
 
 // Re-import constants (they're values, not types)
 const ROOM_DIMS: Record<
@@ -290,28 +338,89 @@ export class RoomPlacer {
     };
   }
 
-  /** Place entrance room at center of grid */
+  /** Place entrance room at edge of grid (not center) */
   placeEntrance(size: RoomSize, type: RoomType = "entrance"): SpatialRoom | null {
     const dims = this.generateRoomDimensions(size);
-    const centerX = Math.floor(this.grid.width / 2);
-    const centerY = Math.floor(this.grid.height / 2);
 
-    const bounds: GridRect = {
-      x: centerX - Math.floor(dims.width / 2),
-      y: centerY - Math.floor(dims.height / 2),
+    // Pick a random edge: top, bottom, left, or right
+    const edges: Array<{ x: number; y: number }> = [
+      // Top edge (centered horizontally)
+      { x: Math.floor(this.grid.width / 2) - Math.floor(dims.width / 2), y: 1 },
+      // Bottom edge
+      { x: Math.floor(this.grid.width / 2) - Math.floor(dims.width / 2), y: this.grid.height - dims.height - 1 },
+      // Left edge (centered vertically)
+      { x: 1, y: Math.floor(this.grid.height / 2) - Math.floor(dims.height / 2) },
+      // Right edge
+      { x: this.grid.width - dims.width - 1, y: Math.floor(this.grid.height / 2) - Math.floor(dims.height / 2) },
+    ];
+
+    // Shuffle edges and try each until one works
+    this.rng.shuffle(edges);
+
+    for (const edge of edges) {
+      const bounds: GridRect = {
+        x: Math.max(1, edge.x),
+        y: Math.max(1, edge.y),
+        width: dims.width,
+        height: dims.height,
+      };
+
+      if (this.grid.isRectClear(bounds)) {
+        // Mark room in grid
+        this.grid.setRect(bounds, "room");
+        this.grid.reservePerimeter(bounds);
+        return this.createSpatialRoom(bounds, type, size, 0);
+      }
+    }
+
+    // Fallback to any clear position near edge
+    const fallbackBounds: GridRect = {
+      x: 1,
+      y: 1,
       width: dims.width,
       height: dims.height,
     };
 
-    if (!this.grid.isRectClear(bounds)) {
-      return null;
+    if (this.grid.isRectClear(fallbackBounds)) {
+      this.grid.setRect(fallbackBounds, "room");
+      this.grid.reservePerimeter(fallbackBounds);
+      return this.createSpatialRoom(fallbackBounds, type, size, 0);
     }
 
-    // Mark room in grid
-    this.grid.setRect(bounds, "room");
-    this.grid.reservePerimeter(bounds);
+    return null;
+  }
 
-    return this.createSpatialRoom(bounds, type, size, 0);
+  /** Place a secondary entrance/exit at a different edge than the main entrance */
+  placeSecondaryEntrance(size: RoomSize): SpatialRoom | null {
+    const dims = this.generateRoomDimensions(size);
+
+    // Try all four edges, shuffled
+    const edges: Array<{ x: number; y: number; edge: string }> = [
+      { x: Math.floor(this.grid.width / 2) - Math.floor(dims.width / 2), y: 1, edge: "top" },
+      { x: Math.floor(this.grid.width / 2) - Math.floor(dims.width / 2), y: this.grid.height - dims.height - 1, edge: "bottom" },
+      { x: 1, y: Math.floor(this.grid.height / 2) - Math.floor(dims.height / 2), edge: "left" },
+      { x: this.grid.width - dims.width - 1, y: Math.floor(this.grid.height / 2) - Math.floor(dims.height / 2), edge: "right" },
+    ];
+
+    this.rng.shuffle(edges);
+
+    for (const edge of edges) {
+      const bounds: GridRect = {
+        x: Math.max(1, edge.x),
+        y: Math.max(1, edge.y),
+        width: dims.width,
+        height: dims.height,
+      };
+
+      if (this.grid.isRectClear(bounds)) {
+        this.grid.setRect(bounds, "room");
+        this.grid.reservePerimeter(bounds);
+        // Mark as exit type with depth 0 (accessible from outside)
+        return this.createSpatialRoom(bounds, "exit", size, 0);
+      }
+    }
+
+    return null;
   }
 
   /** Place a room adjacent to an anchor room */
@@ -399,11 +508,25 @@ export class RoomPlacer {
     size: RoomSize,
     depth: number
   ): SpatialRoom {
+    const geometry = classifyRoomGeometry(bounds);
+
+    // Override type based on geometry for non-special rooms
+    let effectiveType = type;
+    if (type !== "entrance" && type !== "exit" && type !== "treasury" && type !== "shrine" &&
+        type !== "prison" && type !== "trap_room") {
+      // Let geometry determine if it's a corridor or chamber
+      if (geometry === "corridor") {
+        effectiveType = "corridor";
+      } else if (geometry === "chamber" || geometry === "gallery") {
+        effectiveType = "chamber";
+      }
+    }
+
     return {
       id: `room-${nanoid(8)}`,
-      name: this.getRoomName(type),
-      description: `A ${size} ${type.replace("_", " ")}.`,
-      type,
+      name: this.getRoomName(effectiveType),
+      description: `A ${size} ${effectiveType.replace("_", " ")}.`,
+      type: effectiveType,
       size,
       depth,
       bounds,
@@ -413,6 +536,9 @@ export class RoomPlacer {
       hazards: [],
       secrets: [],
       explored: false,
+      // Ecology fields
+      geometry,
+      isDeadEnd: false, // Will be set by markDeadEnds after all passages created
     };
   }
 
@@ -420,6 +546,7 @@ export class RoomPlacer {
   private getRoomName(type: RoomType): string {
     const names: Record<RoomType, string[]> = {
       entrance: ["Entry Hall", "Gatehouse", "Antechamber", "Foyer"],
+      exit: ["Secret Exit", "Escape Tunnel", "Back Door", "Hidden Egress"],
       corridor: ["Passage", "Hallway", "Gallery", "Tunnel"],
       chamber: ["Chamber", "Hall", "Room", "Vault"],
       lair: ["Lair", "Den", "Nest", "Burrow"],
@@ -427,7 +554,6 @@ export class RoomPlacer {
       treasury: ["Treasury", "Vault", "Hoard Room"],
       shrine: ["Shrine", "Chapel", "Altar Room", "Sanctuary"],
       prison: ["Dungeon Cells", "Oubliette", "Prison Block"],
-      puzzle_room: ["Puzzle Chamber", "Trial Room", "Testing Grounds"],
     };
     return this.rng.pick(names[type]);
   }
@@ -558,13 +684,12 @@ export class DungeonLayoutGenerator {
     // Room type weights (excluding entrance)
     const roomTypes: RoomType[] = [
       "corridor", "corridor",
-      "chamber", "chamber", "chamber",
+      "chamber", "chamber", "chamber", "chamber",
       "lair",
       "trap_room",
       "treasury",
       "shrine",
       "prison",
-      "puzzle_room",
     ];
 
     const roomSizes: RoomSize[] = [
@@ -660,6 +785,62 @@ export class DungeonLayoutGenerator {
         }
       }
     }
+
+    // Phase 4: Add secondary entrance/exit based on dungeon size
+    // - Large/Megadungeon: Always have secondary exit
+    // - Medium: 50% chance
+    // - Small/Lair: No secondary exit
+    const shouldAddSecondaryExit =
+      size === "large" || size === "megadungeon" ||
+      (size === "medium" && this.rng.chance(0.5));
+
+    if (shouldAddSecondaryExit) {
+      // Find a good anchor room for the secondary exit:
+      // Prefer dead-ends or rooms with only 1 connection, far from entrance
+      const connectionCounts = new Map<string, number>();
+      for (const p of passages) {
+        connectionCounts.set(p.fromRoomId, (connectionCounts.get(p.fromRoomId) ?? 0) + 1);
+        connectionCounts.set(p.toRoomId, (connectionCounts.get(p.toRoomId) ?? 0) + 1);
+      }
+
+      // Find rooms with only 1 connection (dead-ends), excluding entrance
+      const deadEndRooms = rooms.filter(r =>
+        r.type !== "entrance" &&
+        r.type !== "exit" &&
+        (connectionCounts.get(r.id) ?? 0) === 1
+      );
+
+      // If no dead-ends, use rooms with depth >= 2
+      const candidateRooms = deadEndRooms.length > 0
+        ? deadEndRooms
+        : rooms.filter(r => r.depth >= 2 && r.type !== "entrance" && r.type !== "exit");
+
+      if (candidateRooms.length > 0) {
+        const anchorRoom = this.rng.pick(candidateRooms);
+
+        // Place exit adjacent to the anchor room
+        const secondaryExit = this.placer.placeAdjacentRoom(
+          anchorRoom,
+          "small",
+          "exit",
+          anchorRoom.depth
+        );
+
+        if (secondaryExit) {
+          rooms.push(secondaryExit);
+
+          // Route passage from anchor to exit
+          const passage = this.router.routePassage(anchorRoom, secondaryExit, "secret");
+          if (passage) {
+            passage.hidden = true; // Secret exit
+            passages.push(passage);
+          }
+        }
+      }
+    }
+
+    // Phase 5: Mark dead-end rooms (single connection)
+    markDeadEnds(rooms, passages);
 
     return {
       rooms,

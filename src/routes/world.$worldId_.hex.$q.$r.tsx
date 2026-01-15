@@ -3,7 +3,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { nanoid } from "nanoid";
 import { loadWorld, saveWorld } from "~/lib/storage";
-import { regenerateHex, type RegenerationType } from "~/lib/hex-regenerate";
+import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/lib/hex-regenerate";
 import { WildernessDetail } from "~/components/location-detail/WildernessDetail";
 import { SettlementDetail } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
@@ -44,8 +44,8 @@ function HexDetailPage() {
     ? world.locations.find((loc) => loc.id === hex.locationId)
     : null;
 
-  const handleRegenerate = useCallback((type: RegenerationType) => {
-    const newWorld = regenerateHex(world, hex.coord, type);
+  const handleRegenerate = useCallback((type: RegenerationType, options?: RegenerateOptions) => {
+    const newWorld = regenerateHex(world, hex.coord, type, options);
     saveWorld(newWorld);
     setWorld(newWorld);
     setSeed(`${newWorld.seed}-hex-${hex.coord.q},${hex.coord.r}-${nanoid(4)}`);

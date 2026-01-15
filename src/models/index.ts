@@ -566,14 +566,14 @@ export interface Dungeon extends Location {
 
 export type RoomType =
   | "entrance"
+  | "exit"
   | "corridor"
   | "chamber"
   | "shrine"
   | "treasury"
   | "prison"
   | "lair"
-  | "trap_room"
-  | "puzzle_room";
+  | "trap_room";
 
 export type RoomSize = "cramped" | "small" | "medium" | "large" | "vast";
 
@@ -681,6 +681,11 @@ export interface SpatialRoom {
   hazards: Hazard[];
   secrets: RoomSecret[];
   explored: boolean;
+  // Ecology fields (optional for backwards compatibility)
+  themeRoomType?: ThemeRoomType;
+  geometry?: RoomGeometry;
+  isDeadEnd?: boolean;
+  activity?: CreatureActivity;
 }
 
 /** Passage between rooms with spatial path */
@@ -692,6 +697,9 @@ export interface Passage {
   connectionType: RoomConnection["type"];
   locked: boolean;
   hidden: boolean;
+  // Ecology fields
+  trap?: Hazard;
+  keyId?: string; // key required to unlock
 }
 
 /** Dungeon with spatial layout for map rendering */
@@ -709,6 +717,272 @@ export interface SpatialDungeon extends Location {
   bossEncounterId?: string;
   cleared: boolean;
   linkedHookIds: string[];
+  // Ecology layer
+  ecology?: DungeonEcology;
+  wanderingMonsters?: WanderingMonsterTable;
+  dungeonNPCs?: DungeonNPC[];
+}
+
+// === Dungeon Ecology System ===
+
+/** Room geometry classification based on shape */
+export type RoomGeometry = "corridor" | "chamber" | "gallery" | "alcove";
+
+/** What creatures are doing in a room */
+export type CreatureActivity =
+  | "sleeping"
+  | "eating"
+  | "patrolling"
+  | "guarding"
+  | "worshipping"
+  | "working"
+  | "hiding"
+  | "fighting"
+  | "socializing";
+
+/** Theme-specific room types - union of all themes */
+export type ThemeRoomType =
+  // Universal
+  | "entrance"
+  | "corridor"
+  | "chamber"
+  | "dead_end"
+  // Tomb
+  | "sarcophagus_chamber"
+  | "embalming_room"
+  | "burial_niches"
+  | "offering_hall"
+  | "priest_quarters"
+  | "false_tomb"
+  | "guardian_chamber"
+  | "treasure_vault"
+  // Cave
+  | "mushroom_garden"
+  | "underground_pool"
+  | "bat_roost"
+  | "crystal_grotto"
+  | "natural_chimney"
+  | "stalactite_hall"
+  | "collapsed_section"
+  | "creature_nest"
+  // Temple
+  | "nave"
+  | "vestry"
+  | "meditation_cells"
+  | "altar_room"
+  | "clergy_quarters"
+  | "temple_library"
+  | "reliquary"
+  | "baptistery"
+  // Mine
+  | "ore_vein"
+  | "cart_tracks"
+  | "collapsed_tunnel"
+  | "flooded_level"
+  | "equipment_room"
+  | "ore_processing"
+  | "shaft_entrance"
+  | "support_beams"
+  // Fortress
+  | "barracks"
+  | "armory"
+  | "war_room"
+  | "prison_block"
+  | "mess_hall"
+  | "watchtower"
+  | "throne_room"
+  | "secret_escape"
+  // Sewer
+  | "junction"
+  | "overflow_chamber"
+  | "maintenance_access"
+  | "rat_nest"
+  | "smuggler_cache"
+  | "toxic_pool"
+  | "drain_grate"
+  // Crypt
+  | "ossuary"
+  | "charnel_pit"
+  | "memorial_hall"
+  | "burial_alcoves"
+  | "caretaker_quarters"
+  | "sealed_vault"
+  | "ritual_chamber"
+  // Lair
+  | "nest"
+  | "feeding_area"
+  | "bone_pile"
+  | "sleeping_den"
+  | "trophy_room"
+  | "entrance_cave"
+  // Shrine
+  | "sacred_pool"
+  | "meditation_garden"
+  | "offering_altar"
+  | "pilgrim_shelter"
+  | "oracle_chamber"
+  | "relic_display"
+  // Bandit Hideout
+  | "lookout_post"
+  | "sleeping_quarters"
+  | "loot_storage"
+  | "planning_room"
+  | "escape_tunnel"
+  | "prisoner_hold"
+  | "common_area"
+  // Cultist Lair
+  | "summoning_circle"
+  | "sacrifice_altar"
+  | "initiates_quarters"
+  | "leaders_chamber"
+  | "forbidden_library"
+  | "ritual_pool"
+  // Witch Hut
+  | "potion_workshop"
+  | "ingredient_storage"
+  | "divination_room"
+  | "sleeping_loft"
+  | "garden_access"
+  | "familiar_den"
+  // Sea Cave
+  | "tidal_pool"
+  | "smuggler_dock"
+  | "treasure_grotto"
+  | "kelp_garden"
+  | "shell_shrine"
+  | "underwater_passage"
+  // Beast Den
+  | "primary_nest"
+  | "feeding_ground"
+  | "bone_yard"
+  | "young_nursery"
+  | "territorial_marker"
+  | "water_source"
+  // Floating Keep
+  | "observation_deck"
+  | "arcane_engine"
+  | "sky_dock"
+  | "wind_shrine"
+  | "cloud_garden"
+  | "storm_chamber";
+
+/** Configuration for a theme-specific room type */
+export interface ThemeRoomConfig {
+  type: ThemeRoomType;
+  names: string[];
+  description: string;
+  geometries: RoomGeometry[];
+  minSize?: RoomSize;
+  features?: string[];
+  treasureBonus: number; // multiplier for treasure chance
+  encounterBonus: number; // multiplier for encounter chance
+}
+
+/** Adjacency preference rule */
+export interface AdjacencyRule {
+  roomType: ThemeRoomType;
+  preferred: ThemeRoomType[];
+  forbidden: ThemeRoomType[];
+}
+
+/** Trap template for generation */
+export interface TrapTemplate {
+  name: string;
+  description: string;
+  damage: string;
+  save: string;
+  themes: (DungeonTheme | "*")[]; // "*" means universal
+  locations: ("room" | "passage")[];
+}
+
+/** Blueprint for guided dungeon generation */
+export interface DungeonBlueprint {
+  theme: DungeonTheme;
+  requiredRooms: ThemeRoomType[];
+  optionalRooms: ThemeRoomType[];
+  bossRoom: ThemeRoomType;
+  adjacencyRules: AdjacencyRule[];
+  creaturePool: string[]; // monster slugs
+  trapPool: TrapTemplate[];
+  emptyRoomDescriptions: string[];
+}
+
+/** Faction profile for dungeon ecology */
+export interface DungeonFactionProfile {
+  name: string;
+  factionId?: string; // link to world Faction if active
+  creaturePool: string[]; // monster slugs
+  leaderCreature: string;
+  organization: "tribal" | "military" | "horde" | "cult" | "solitary";
+}
+
+/** Room activity assignment */
+export interface RoomActivityAssignment {
+  roomId: string;
+  creatures: string[];
+  count: number;
+  activity: CreatureActivity;
+  schedule?: "day" | "night" | "always";
+}
+
+/** Dungeon ecology - who built it, who lives there */
+export interface DungeonEcology {
+  builders?: DungeonFactionProfile; // who built it (may be dead/gone)
+  inhabitants: DungeonFactionProfile; // who lives here now
+  activities: RoomActivityAssignment[];
+}
+
+/** Wandering monster table entry */
+export interface WanderingMonsterEntry {
+  creatureType: string;
+  count: string; // dice notation e.g. "1d4"
+  weight: number;
+  activity: string; // what they're doing when encountered
+}
+
+/** Wandering monster table for a dungeon */
+export interface WanderingMonsterTable {
+  checkFrequency: string; // e.g. "every 2 turns" or "on loud noise"
+  entries: WanderingMonsterEntry[];
+}
+
+/** Key/lock relationship */
+export interface KeyLockPair {
+  keyId: string;
+  keyDescription: string;
+  keyRoomId: string;
+  lockRoomId: string;
+  lockDescription: string;
+  clueText?: string; // hint about key location
+}
+
+/** Dungeon NPC category */
+export type DungeonNPCCategory =
+  | "rival_party" // adventurers (hostile/neutral/friendly)
+  | "prisoner" // rescue hook
+  | "hermit" // info source, trader
+  | "ghost" // cursed, haunts room
+  | "refugee"; // hiding from inhabitants
+
+/** NPC present in a dungeon */
+export interface DungeonNPC {
+  npcId: string; // reference to NPC
+  category: DungeonNPCCategory;
+  roomId: string;
+  disposition: "hostile" | "neutral" | "friendly";
+  hasInfo?: string; // clue about dungeon
+  hasItem?: string; // key or treasure
+  wantsRescue?: boolean;
+  partySize?: number; // for rival_party
+}
+
+/** Extended spatial room with ecology fields */
+export interface SpatialRoomEcology {
+  themeRoomType?: ThemeRoomType;
+  geometry: RoomGeometry;
+  isDeadEnd: boolean;
+  activity?: RoomActivityAssignment;
+  keyLockPairs?: KeyLockPair[];
 }
 
 // === Encounter ===
