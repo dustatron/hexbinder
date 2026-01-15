@@ -1,8 +1,11 @@
 import { useState, useMemo, useRef } from "react";
-import { RefreshCw, CheckCircle2, Skull, Gem, MapPin, User, Map as MapIcon, ScrollText } from "lucide-react";
-import type { Dungeon, Hook, DungeonTheme, NPC, SpatialDungeon } from "~/models";
+import {
+  CheckCircle2, Skull, Gem, MapPin, User, Map as MapIcon, ScrollText,
+  BookOpen, Users, Ghost, AlertTriangle, Footprints, Key
+} from "lucide-react";
+import type { Dungeon, Hook, DungeonTheme, NPC, SpatialDungeon, DungeonNPC, KeyLockPair } from "~/models";
 import { isSpatialDungeon } from "~/models";
-import type { RegenerationType } from "~/lib/hex-regenerate";
+import type { RegenerationType, RegenerateOptions } from "~/lib/hex-regenerate";
 import { EncounterTable } from "~/components/encounter-table/EncounterTable";
 import { RegenerateButton } from "./RegenerateButton";
 import { RoomCard } from "./RoomCard";
@@ -14,8 +17,8 @@ interface DungeonDetailProps {
   hooks?: Hook[]; // All hooks targeting this dungeon
   npcs?: NPC[]; // All NPCs for lookup
   worldId: string;
-  onRegenerate: (type: RegenerationType) => void;
-  onReroll: () => void;
+  onRegenerate: (type: RegenerationType, options?: RegenerateOptions) => void;
+  onReroll?: () => void;
   seed: string;
 }
 
@@ -111,6 +114,15 @@ export function DungeonDetail({
     return entranceRoom ? [entranceRoom, ...otherRooms] : otherRooms;
   }, [dungeon.rooms, dungeon.entranceRoomId]);
 
+  // Map room IDs to display numbers (1-indexed)
+  const roomNumberMap = useMemo(() => {
+    const map = new Map<string, number>();
+    sortedRooms.forEach((room, index) => {
+      map.set(room.id, index + 1);
+    });
+    return map;
+  }, [sortedRooms]);
+
   // Stats
   const stats = useMemo(() => {
     let monstersRemaining = 0;
@@ -160,17 +172,12 @@ export function DungeonDetail({
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <button
-              onClick={onReroll}
-              className="flex items-center gap-1 rounded px-2 py-1 text-xs text-stone-400 hover:bg-stone-700 hover:text-stone-200"
-              title="Re-roll dungeon"
-            >
-              <RefreshCw size={14} />
-            </button>
             <RegenerateButton
               onRegenerate={onRegenerate}
               currentLocationType="dungeon"
               defaultType={dungeon.theme}
+              currentSize={dungeon.size}
+              currentSeed={seed}
             />
           </div>
         </div>
@@ -305,6 +312,85 @@ export function DungeonDetail({
           </div>
         </div>
       </div>
+
+      {/* Dungeon Ecology */}
+      {hasSpatialLayout && (dungeon as SpatialDungeon).ecology && (
+        <div className="rounded-lg border border-stone-700 bg-stone-800/50 p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-stone-400" />
+            <h3 className="text-sm font-semibold text-stone-200">Dungeon Lore</h3>
+          </div>
+          <p className="text-sm text-stone-300 italic">
+            {(dungeon as SpatialDungeon).ecology?.history}
+          </p>
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <span className="text-stone-500">Built by:</span>
+              <span className="ml-2 text-stone-300 capitalize">
+                {(dungeon as SpatialDungeon).ecology?.builderCulture}
+              </span>
+            </div>
+            <div>
+              <span className="text-stone-500">Inhabitants:</span>
+              <span className="ml-2 text-stone-300 capitalize">
+                {(dungeon as SpatialDungeon).ecology?.currentInhabitants}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Wandering Monsters */}
+      {hasSpatialLayout && (dungeon as SpatialDungeon).wanderingMonsters && (
+        <div className="rounded-lg border border-red-900/50 bg-red-950/30 p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <Footprints className="h-4 w-4 text-red-400" />
+            <h3 className="text-sm font-semibold text-red-300">Wandering Monsters</h3>
+          </div>
+          <p className="text-xs text-stone-400">
+            Check: {(dungeon as SpatialDungeon).wanderingMonsters?.checkFrequency}
+          </p>
+          <div className="space-y-1">
+            {(dungeon as SpatialDungeon).wanderingMonsters?.entries.map((entry, i) => (
+              <div key={i} className="flex items-center gap-2 text-sm">
+                <span className="w-8 text-xs text-stone-500">{entry.count}</span>
+                <span className="text-stone-200">{entry.creatureType}</span>
+                <span className="text-xs text-stone-500 italic">({entry.activity})</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Dungeon NPCs */}
+      {hasSpatialLayout && (dungeon as SpatialDungeon).dungeonNPCs && (dungeon as SpatialDungeon).dungeonNPCs!.length > 0 && (
+        <div className="rounded-lg border border-purple-900/50 bg-purple-950/30 p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <Users className="h-4 w-4 text-purple-400" />
+            <h3 className="text-sm font-semibold text-purple-300">Dungeon Denizens</h3>
+          </div>
+          <div className="space-y-2">
+            {(dungeon as SpatialDungeon).dungeonNPCs?.map((npc: DungeonNPC) => (
+              <DungeonNPCCard key={npc.npcId} npc={npc} roomNumberMap={roomNumberMap} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Key-Lock Pairs */}
+      {hasSpatialLayout && (dungeon as SpatialDungeon).keyLockPairs && (dungeon as SpatialDungeon).keyLockPairs!.length > 0 && (
+        <div className="rounded-lg border border-amber-900/50 bg-amber-950/30 p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <Key className="h-4 w-4 text-amber-400" />
+            <h3 className="text-sm font-semibold text-amber-300">Keys & Locks</h3>
+          </div>
+          <div className="space-y-2">
+            {(dungeon as SpatialDungeon).keyLockPairs?.map((pair: KeyLockPair) => (
+              <KeyLockCard key={pair.keyId} pair={pair} roomNumberMap={roomNumberMap} passages={(dungeon as SpatialDungeon).passages} />
+            ))}
+          </div>
+        </div>
+      )}
       </>
       )}
 
@@ -322,6 +408,7 @@ export function DungeonDetail({
               dungeon={dungeon as SpatialDungeon}
               selectedRoomId={selectedRoomId}
               onRoomClick={handleRoomClick}
+              roomNumberMap={roomNumberMap}
             />
             <p className="text-xs text-stone-500">
               Click a room to see details. Pan and zoom with gestures.
@@ -354,6 +441,87 @@ export function DungeonDetail({
         </div>
       </div>
       )}
+    </div>
+  );
+}
+
+// NPC category display config
+const NPC_CATEGORY_CONFIG: Record<string, { icon: typeof User; color: string; label: string }> = {
+  rival_party: { icon: Users, color: "text-amber-400", label: "Rival Adventurers" },
+  prisoner: { icon: User, color: "text-blue-400", label: "Prisoner" },
+  hermit: { icon: User, color: "text-green-400", label: "Hermit" },
+  ghost: { icon: Ghost, color: "text-purple-400", label: "Ghost" },
+};
+
+interface DungeonNPCCardProps {
+  npc: DungeonNPC;
+  roomNumberMap: Map<string, number>;
+}
+
+function DungeonNPCCard({ npc, roomNumberMap }: DungeonNPCCardProps) {
+  const config = NPC_CATEGORY_CONFIG[npc.category] ?? { icon: User, color: "text-stone-400", label: npc.category };
+  const Icon = config.icon;
+  const roomNum = roomNumberMap.get(npc.roomId);
+
+  const dispositionColors: Record<string, string> = {
+    friendly: "bg-green-900/50 text-green-300",
+    neutral: "bg-stone-700 text-stone-300",
+    hostile: "bg-red-900/50 text-red-300",
+  };
+
+  return (
+    <div className="rounded border border-stone-700 bg-stone-800/50 p-2 space-y-1">
+      <div className="flex items-center gap-2">
+        <Icon className={`h-4 w-4 ${config.color}`} />
+        <span className="text-sm font-medium text-stone-200">{config.label}</span>
+        {roomNum && (
+          <span className="text-xs text-stone-500">Room #{roomNum}</span>
+        )}
+        <span className={`ml-auto rounded px-1.5 py-0.5 text-xs capitalize ${dispositionColors[npc.disposition]}`}>
+          {npc.disposition}
+        </span>
+      </div>
+      {npc.hasInfo && (
+        <p className="text-xs text-stone-400">{npc.hasInfo}</p>
+      )}
+      {npc.wantsRescue && (
+        <span className="inline-flex items-center gap-1 rounded bg-blue-900/50 px-1.5 py-0.5 text-xs text-blue-300">
+          <AlertTriangle className="h-3 w-3" />
+          Needs rescue
+        </span>
+      )}
+    </div>
+  );
+}
+
+interface KeyLockCardProps {
+  pair: KeyLockPair;
+  roomNumberMap: Map<string, number>;
+  passages: SpatialDungeon["passages"];
+}
+
+function KeyLockCard({ pair, roomNumberMap, passages }: KeyLockCardProps) {
+  const keyRoomNum = roomNumberMap.get(pair.keyRoomId);
+
+  // Find which rooms the locked passage connects
+  const lockedPassage = passages.find(p => p.id === pair.lockedPassageId);
+  const toRoomNum = lockedPassage ? roomNumberMap.get(lockedPassage.toRoomId) : null;
+
+  return (
+    <div className="rounded border border-amber-800/50 bg-stone-800/50 p-2 space-y-1">
+      <div className="flex items-center gap-2">
+        <Key className="h-4 w-4 text-amber-400" />
+        <span className="text-sm font-medium text-amber-200">{pair.keyName}</span>
+      </div>
+      <div className="flex items-center gap-3 text-xs">
+        <span className="text-stone-400">
+          Found in: <span className="text-stone-300">Room #{keyRoomNum ?? "?"}</span>
+        </span>
+        <span className="text-stone-500">→</span>
+        <span className="text-stone-400">
+          Opens door to: <span className="text-stone-300">Room #{toRoomNum ?? "?"}</span>
+        </span>
+      </div>
     </div>
   );
 }

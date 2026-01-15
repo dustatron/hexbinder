@@ -28,16 +28,36 @@ const BEHAVIOR_WEIGHTS = createWeightedTable<EncounterBehavior>({
 });
 
 const ROOM_ENCOUNTER_CHANCE: Record<RoomType, number> = {
-  entrance: 0.2,
-  corridor: 0.3,
-  chamber: 0.4,
-  lair: 0.9,
+  entrance: 0.1, // Reduced - entrances should feel safer
+  exit: 0.1, // Exits similar to entrances
+  corridor: 0.25, // Reduced - hallways less populated
+  chamber: 0.35, // Reduced from 0.4
+  lair: 0.9, // Lairs stay high
   trap_room: 0.1,
-  treasury: 0.3,
-  shrine: 0.3,
-  prison: 0.5,
-  puzzle_room: 0.2,
+  treasury: 0.25, // Reduced - treasury may just have treasure
+  shrine: 0.25,
+  prison: 0.4,
 };
+
+// Base chance for a room to be completely empty (no encounters or treasure)
+// This creates dungeon pacing - not every room has content
+const EMPTY_ROOM_CHANCE = 0.35; // 35% of rooms are empty
+
+// Room types that should never be empty
+const NEVER_EMPTY_TYPES: RoomType[] = ["lair", "treasury", "prison"];
+
+// Theme room types that should always have treasure (cache, vault, storage rooms)
+const TREASURE_ROOM_THEMES = [
+  "treasure_vault", "loot_storage", "smuggler_cache", "treasure_grotto",
+  "reliquary", "armory", "false_tomb", // may have decoy treasure
+];
+
+// Theme room types that should never be empty (important locations)
+const NEVER_EMPTY_THEMES = [
+  ...TREASURE_ROOM_THEMES,
+  "sarcophagus_chamber", "altar_room", "summoning_circle", "sacrifice_altar",
+  "throne_room", "leaders_chamber", "boss_lair",
+];
 
 // === Treasure Tables ===
 
@@ -92,6 +112,7 @@ const MUNDANE_ITEMS = [
 
 const ROOM_TREASURE_CHANCE: Record<RoomType, number> = {
   entrance: 0.1,
+  exit: 0.1,
   corridor: 0.1,
   chamber: 0.3,
   lair: 0.7,
@@ -99,7 +120,6 @@ const ROOM_TREASURE_CHANCE: Record<RoomType, number> = {
   treasury: 0.95,
   shrine: 0.4,
   prison: 0.2,
-  puzzle_room: 0.6,
 };
 
 export interface RoomContentOptions {
@@ -116,6 +136,12 @@ export function generateRoomEncounters(options: RoomContentOptions): Encounter[]
   const rng = new SeededRandom(`${seed}-encounter-${room.id}`);
 
   const encounters: Encounter[] = [];
+
+  // Check for empty room pacing
+  if (shouldBeEmptyRoom(seed, room)) {
+    return encounters;
+  }
+
   const encounterChance = ROOM_ENCOUNTER_CHANCE[room.type];
 
   if (!rng.chance(encounterChance)) {
@@ -171,6 +197,12 @@ export function generateRoomTreasure(options: RoomContentOptions): TreasureEntry
   const rng = new SeededRandom(`${seed}-treasure-${room.id}`);
 
   const treasure: TreasureEntry[] = [];
+
+  // Check for empty room pacing (same seed ensures consistent emptiness)
+  if (shouldBeEmptyRoom(seed, room)) {
+    return treasure;
+  }
+
   const treasureChance = ROOM_TREASURE_CHANCE[room.type];
 
   if (!rng.chance(treasureChance)) {
@@ -287,6 +319,38 @@ export interface SpatialRoomContentOptions {
 }
 
 /**
+ * Check if a room should be completely empty for pacing.
+ */
+function shouldBeEmptyRoom(seed: string, room: SpatialRoom | DungeonRoom): boolean {
+  // Never empty types always have content
+  if (NEVER_EMPTY_TYPES.includes(room.type)) {
+    return false;
+  }
+
+  // Check themed room types (SpatialRoom only)
+  const themeType = (room as SpatialRoom).themeRoomType;
+  if (themeType && NEVER_EMPTY_THEMES.includes(themeType)) {
+    return false;
+  }
+
+  // Dead-end rooms should have rewards to make exploration worthwhile
+  if ((room as SpatialRoom).isDeadEnd) {
+    return false;
+  }
+
+  const rng = new SeededRandom(`${seed}-empty-${room.id}`);
+  return rng.chance(EMPTY_ROOM_CHANCE);
+}
+
+/**
+ * Check if a room is a treasure-focused themed room.
+ */
+function isTreasureThemedRoom(room: SpatialRoom | DungeonRoom): boolean {
+  const themeType = (room as SpatialRoom).themeRoomType;
+  return themeType ? TREASURE_ROOM_THEMES.includes(themeType) : false;
+}
+
+/**
  * Generate encounters for a spatial dungeon room.
  */
 export function generateSpatialRoomEncounters(options: SpatialRoomContentOptions): Encounter[] {
@@ -294,6 +358,12 @@ export function generateSpatialRoomEncounters(options: SpatialRoomContentOptions
   const rng = new SeededRandom(`${seed}-encounter-${room.id}`);
 
   const encounters: Encounter[] = [];
+
+  // Check for empty room pacing
+  if (shouldBeEmptyRoom(seed, room)) {
+    return encounters;
+  }
+
   const encounterChance = ROOM_ENCOUNTER_CHANCE[room.type];
 
   if (!rng.chance(encounterChance)) {
@@ -349,16 +419,42 @@ export function generateSpatialRoomTreasure(options: SpatialRoomContentOptions):
   const rng = new SeededRandom(`${seed}-treasure-${room.id}`);
 
   const treasure: TreasureEntry[] = [];
-  const treasureChance = ROOM_TREASURE_CHANCE[room.type];
+
+  // Check for empty room pacing (same seed ensures consistent emptiness)
+  if (shouldBeEmptyRoom(seed, room)) {
+    return treasure;
+  }
+
+  // Treasure-themed rooms always have treasure
+  const isTreasureRoom = isTreasureThemedRoom(room);
+  const isDeadEnd = (room as SpatialRoom).isDeadEnd ?? false;
+
+  // Determine treasure chance
+  let treasureChance = ROOM_TREASURE_CHANCE[room.type];
+
+  // Boost for dead-ends (reward exploration)
+  if (isDeadEnd) {
+    treasureChance = Math.min(treasureChance * 2, 0.9);
+  }
+
+  // Treasure rooms always have treasure
+  if (isTreasureRoom) {
+    treasureChance = 1.0;
+  }
 
   if (!rng.chance(treasureChance)) {
     return treasure;
   }
 
-  // Number of treasure items based on room type
-  const itemCount = room.type === "treasury"
-    ? rng.between(3, 6)
-    : rng.between(1, 3);
+  // Number of treasure items based on room type and theme
+  let itemCount: number;
+  if (room.type === "treasury" || isTreasureRoom) {
+    itemCount = rng.between(3, 6);
+  } else if (isDeadEnd) {
+    itemCount = rng.between(2, 4); // Dead-ends get more loot
+  } else {
+    itemCount = rng.between(1, 3);
+  }
 
   for (let i = 0; i < itemCount; i++) {
     const type = rng.pickWeighted(TREASURE_TYPE_WEIGHTS);

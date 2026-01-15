@@ -1,6 +1,7 @@
 import { useRef, useMemo } from "react";
 import { useGesture } from "@use-gesture/react";
 import { motion, useMotionValue } from "framer-motion";
+import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import type { SpatialDungeon } from "~/models";
 import { RoomRect } from "./RoomRect";
 import { PassagePath } from "./PassagePath";
@@ -10,12 +11,14 @@ interface DungeonMapProps {
   dungeon: SpatialDungeon;
   selectedRoomId: string | null;
   onRoomClick: (roomId: string) => void;
+  roomNumberMap: Map<string, number>;
 }
 
 export function DungeonMap({
   dungeon,
   selectedRoomId,
   onRoomClick,
+  roomNumberMap,
 }: DungeonMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -91,12 +94,53 @@ export function DungeonMap({
     }
   );
 
+  // Zoom control handlers
+  const handleZoomIn = () => {
+    const currentScale = scale.get();
+    scale.set(Math.min(currentScale + 0.25, 3));
+  };
+
+  const handleZoomOut = () => {
+    const currentScale = scale.get();
+    scale.set(Math.max(currentScale - 0.25, 0.5));
+  };
+
+  const handleReset = () => {
+    scale.set(1);
+    x.set(0);
+    y.set(0);
+  };
+
   return (
     <div
       ref={containerRef}
-      className="h-[32rem] w-full overflow-hidden touch-none rounded-lg bg-stone-900 border border-stone-700"
+      className="relative h-[32rem] w-full overflow-hidden touch-none rounded-lg bg-stone-900 border border-stone-700"
       {...bind()}
     >
+      {/* Zoom controls */}
+      <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
+        <button
+          onClick={handleZoomIn}
+          className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
+          title="Zoom In"
+        >
+          <ZoomIn size={16} />
+        </button>
+        <button
+          onClick={handleZoomOut}
+          className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
+          title="Zoom Out"
+        >
+          <ZoomOut size={16} />
+        </button>
+        <button
+          onClick={handleReset}
+          className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
+          title="Reset View"
+        >
+          <RotateCcw size={16} />
+        </button>
+      </div>
       <motion.svg
         className="h-full w-full"
         viewBox={`${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`}
@@ -151,6 +195,7 @@ export function DungeonMap({
               theme={dungeon.theme}
               selected={room.id === selectedRoomId}
               onClick={() => onRoomClick(room.id)}
+              roomNumber={roomNumberMap.get(room.id) ?? 0}
             />
           ))}
         </g>

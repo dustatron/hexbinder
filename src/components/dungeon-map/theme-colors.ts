@@ -26,6 +26,7 @@ export const THEME_COLORS: Record<
 /** Room type icon mapping - using Lucide icon names */
 export const ROOM_ICONS: Record<RoomType, string> = {
   entrance: "DoorOpen",
+  exit: "LogOut",
   corridor: "ArrowRight",
   chamber: "Square",
   shrine: "Sparkles",
@@ -33,7 +34,6 @@ export const ROOM_ICONS: Record<RoomType, string> = {
   prison: "Lock",
   lair: "Skull",
   trap_room: "AlertTriangle",
-  puzzle_room: "HelpCircle",
 };
 
 /** Cell size in pixels (1 cell = 5ft) */
@@ -41,3 +41,9 @@ export const CELL_SIZE = 10;
 
 /** Passage width in pixels */
 export const PASSAGE_WIDTH = 8;
+
+/** Special room colors (override theme colors) */
+export const SPECIAL_ROOM_COLORS = {
+  entrance: { fill: "#166534", stroke: "#22c55e" }, // Green for entrance/exit
+  exit: { fill: "#166534", stroke: "#22c55e" },
+};

@@ -4,9 +4,8 @@ import { ArrowLeft } from "lucide-react";
 import { SettlementDetail } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
 import { loadWorld, saveWorld } from "~/lib/storage";
-import { regenerateHex, type RegenerationType } from "~/lib/hex-regenerate";
+import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/lib/hex-regenerate";
 import { isSettlement, isDungeon, type Settlement, type Dungeon, type NPC, type DayEvent, type Hook, type WorldData } from "~/models";
-import { nanoid } from "nanoid";
 
 export const Route = createFileRoute("/world/$worldId_/location/$locationId")({
   loader: ({ params }) => {
@@ -51,9 +50,9 @@ function LocationPage() {
   );
 
   const handleRegenerate = useCallback(
-    (type: RegenerationType) => {
+    (type: RegenerationType, options?: RegenerateOptions) => {
       if (!hex) return;
-      const updated = regenerateHex(world, hex.coord, type);
+      const updated = regenerateHex(world, hex.coord, type, options);
       saveWorld(updated);
       setWorld(updated);
 
@@ -79,10 +78,6 @@ function LocationPage() {
     },
     [world, hex, router]
   );
-
-  const handleReroll = useCallback(() => {
-    setSeed(`${world.seed}-${location?.id}-${nanoid(4)}`);
-  }, [world.seed, location?.id]);
 
   const handleUpdateWorld = useCallback((updater: (world: WorldData) => WorldData) => {
     const updated = updater(world);
@@ -149,7 +144,6 @@ function LocationPage() {
             hook={hooks.find((h) => h.status === "active")}
             worldId={world.id}
             onRegenerate={handleRegenerate}
-            onReroll={handleReroll}
             seed={seed}
           />
         )}

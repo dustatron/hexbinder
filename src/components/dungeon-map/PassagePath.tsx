@@ -1,3 +1,4 @@
+import { AlertTriangle } from "lucide-react";
 import type { Passage, DungeonTheme } from "~/models";
 import { THEME_COLORS, CELL_SIZE, PASSAGE_WIDTH } from "./theme-colors";
 
@@ -27,6 +28,11 @@ export function PassagePath({ passage, theme }: PassagePathProps) {
   const pathData = waypointsToPathData(passage.waypoints);
 
   if (!pathData) return null;
+
+  // Calculate trap marker position (midpoint of passage)
+  const hasTrap = passage.trap && !passage.trap.disarmed;
+  const midIndex = Math.floor(passage.waypoints.length / 2);
+  const trapPos = passage.waypoints[midIndex];
 
   return (
     <g className="passage">
@@ -58,6 +64,10 @@ export function PassagePath({ passage, theme }: PassagePathProps) {
           locked={passage.locked}
         />
       )}
+      {/* Trap marker at midpoint */}
+      {hasTrap && trapPos && (
+        <TrapMarker x={trapPos.x} y={trapPos.y} />
+      )}
     </g>
   );
 }
@@ -85,5 +95,28 @@ function DoorMarker({ x, y, locked }: DoorMarkerProps) {
         strokeWidth={1}
       />
     </g>
+  );
+}
+
+interface TrapMarkerProps {
+  x: number;
+  y: number;
+}
+
+function TrapMarker({ x, y }: TrapMarkerProps) {
+  const cx = x * CELL_SIZE + CELL_SIZE / 2;
+  const cy = y * CELL_SIZE + CELL_SIZE / 2;
+
+  return (
+    <foreignObject
+      x={cx - 6}
+      y={cy - 6}
+      width={12}
+      height={12}
+    >
+      <div className="flex items-center justify-center w-full h-full">
+        <AlertTriangle size={10} className="text-orange-400" />
+      </div>
+    </foreignObject>
   );
 }
