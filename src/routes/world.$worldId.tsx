@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Cloud, Sun, CloudRain, Settings, ChevronRight } from "lucide-react";
 import { HexMap } from "~/components/hex-map";
@@ -29,6 +29,11 @@ function WorldPage() {
   const initialWorld = Route.useLoaderData();
   const [world, setWorld] = useState<WorldData>(initialWorld);
   const [selectedCoord, setSelectedCoord] = useState<HexCoord | null>(null);
+
+  // Sync state when navigating back (loader runs again with fresh localStorage data)
+  useEffect(() => {
+    setWorld(initialWorld);
+  }, [initialWorld]);
 
   const handleAdvanceDay = () => {
     const newWorld = advanceDay(world);

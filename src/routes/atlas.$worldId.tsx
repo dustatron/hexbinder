@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import {
   ArrowLeft,
@@ -177,6 +177,11 @@ function AtlasPage() {
   const [world, setWorld] = useState<WorldData>(initialWorld);
   const [activeTab, setActiveTab] = useState<TabId>("events");
   const [weekOffset, setWeekOffset] = useState(0);
+
+  // Sync state when navigating back
+  useEffect(() => {
+    setWorld(initialWorld);
+  }, [initialWorld]);
 
   const settlements = world.locations.filter(
     (loc): loc is Settlement => loc.type === "settlement"
