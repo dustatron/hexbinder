@@ -506,62 +506,86 @@ function generatePersonalHooks(
   // Find NPCs without hooks
   const npcsWithoutHooks = npcs.filter((n) => n.wants.length === 0);
 
-  // Hook templates based on common want themes
+  // Hook templates with actionable quests
   const wantToHook: Array<{
     keywords: string[];
     type: HookType;
     makeRumor: (npc: NPC, target?: string) => string;
     makeTruth: (npc: NPC, target?: string) => string;
+    makeStakes: (npc: NPC, target?: string) => string;
     reward: string[];
   }> = [
     {
       keywords: ["family", "better life", "children"],
-      type: "retrieval",
-      makeRumor: (npc, target) => `${npc.name} needs help retrieving something from ${target}`,
-      makeTruth: (npc, target) => `${npc.name} seeks an item to improve their family's situation`,
-      reward: ["10 gp", "20 gp", "A home-cooked meal and lodging"],
+      type: "delivery",
+      makeRumor: (npc, target) => `${npc.name} needs a package delivered to ${target}`,
+      makeTruth: (npc, target) => `Medicine must reach ${npc.name}'s relative in ${target}`,
+      makeStakes: (_npc, target) => `deliver medicine to ${target} (pays 15gp)`,
+      reward: ["15 gp", "20 gp", "Free lodging for a week"],
     },
     {
       keywords: ["justice", "wrong", "revenge", "payback"],
       type: "investigation",
-      makeRumor: (npc) => `${npc.name} seeks information about a past wrong done to them`,
-      makeTruth: (npc) => `${npc.name} wants evidence to confront someone who wronged them`,
-      reward: ["15 gp", "25 gp", "A favor owed"],
+      makeRumor: (npc) => `${npc.name} seeks information about a past wrong`,
+      makeTruth: (npc) => `${npc.name} wants evidence to confront an old enemy`,
+      makeStakes: () => `find evidence of wrongdoing (pays 25gp)`,
+      reward: ["25 gp", "30 gp", "A favor owed"],
     },
     {
-      keywords: ["gold", "retire", "wealth", "fortune"],
+      keywords: ["gold", "retire", "wealth", "fortune", "treasure"],
       type: "retrieval",
       makeRumor: (npc, target) => `${npc.name} has heard of treasure in ${target}`,
-      makeTruth: (npc, target) => `${npc.name} will pay for any valuables retrieved from ${target}`,
+      makeTruth: (npc, target) => `${npc.name} will pay for any valuables from ${target}`,
+      makeStakes: (_npc, target) => `retrieve treasure from ${target} (shares profit)`,
       reward: ["Share of treasure", "50 gp finder's fee", "30 gp"],
     },
     {
-      keywords: ["protect", "innocent", "criminal", "catch"],
+      keywords: ["protect", "innocent", "criminal", "catch", "promotion"],
       type: "investigation",
-      makeRumor: (npc) => `${npc.name} is looking for help tracking someone down`,
-      makeTruth: (npc) => `${npc.name} needs help finding a criminal or missing person`,
+      makeRumor: (npc) => `${npc.name} is tracking a criminal`,
+      makeTruth: (npc) => `${npc.name} needs help catching a specific lawbreaker`,
+      makeStakes: () => `help catch a criminal (pays 20gp)`,
       reward: ["20 gp", "Official commendation", "15 gp"],
     },
     {
-      keywords: ["knowledge", "secret", "mystery", "lost"],
+      keywords: ["knowledge", "secret", "mystery", "lost", "artifact"],
       type: "retrieval",
-      makeRumor: (npc, target) => `${npc.name} seeks ancient knowledge hidden in ${target}`,
-      makeTruth: (npc, target) => `Old texts or artifacts in ${target} hold what ${npc.name} seeks`,
+      makeRumor: (npc, target) => `${npc.name} seeks something hidden in ${target}`,
+      makeTruth: (npc, target) => `Ancient texts in ${target} hold what ${npc.name} seeks`,
+      makeStakes: (_npc, target) => `retrieve a tome from ${target} (pays 40gp)`,
       reward: ["40 gp", "A minor magic item", "Valuable information"],
     },
     {
-      keywords: ["faith", "spread", "temple", "divine"],
+      keywords: ["faith", "spread", "temple", "divine", "pilgrimage"],
       type: "escort",
       makeRumor: (npc) => `${npc.name} needs escort to a sacred site`,
-      makeTruth: (npc) => `${npc.name} must reach a holy place to complete a pilgrimage`,
-      reward: ["Blessing", "20 gp", "Healing services"],
+      makeTruth: (npc) => `${npc.name} must complete a dangerous pilgrimage`,
+      makeStakes: () => `escort to holy site (blessing + 20gp)`,
+      reward: ["Blessing + 20 gp", "30 gp", "Healing services"],
     },
     {
-      keywords: ["power", "influence", "prove", "honor"],
+      keywords: ["power", "influence", "prove", "honor", "glory"],
       type: "retrieval",
-      makeRumor: (npc, target) => `${npc.name} needs proof of prowess from ${target}`,
-      makeTruth: (npc, target) => `Bring a trophy from ${target} to earn ${npc.name}'s respect`,
-      reward: ["30 gp", "Political favor", "Introduction to important people"],
+      makeRumor: (npc, target) => `${npc.name} wants a trophy from ${target}`,
+      makeTruth: (npc, target) => `Proof of prowess from ${target} earns ${npc.name}'s respect`,
+      makeStakes: (_npc, target) => `bring trophy from ${target} (pays 30gp + favor)`,
+      reward: ["30 gp + favor", "Political introduction", "50 gp"],
+    },
+    {
+      keywords: ["alone", "peace", "quiet"],
+      type: "mystery",
+      makeRumor: (npc) => `${npc.name} wants something dealt with quietly`,
+      makeTruth: (npc) => `Someone is harassing ${npc.name} and they want it stopped`,
+      makeStakes: () => `stop harassment (pays 15gp)`,
+      reward: ["15 gp", "20 gp", "Information"],
+    },
+    {
+      keywords: ["escape", "past", "disappear"],
+      type: "delivery",
+      makeRumor: (npc) => `${npc.name} needs help with a discrete errand`,
+      makeTruth: (npc) => `${npc.name} needs documents forged or delivered secretly`,
+      makeStakes: () => `deliver sealed documents (pays 25gp, no questions)`,
+      reward: ["25 gp", "30 gp", "A contact"],
     },
   ];
 
@@ -575,14 +599,56 @@ function generatePersonalHooks(
       t.keywords.some((k) => want.includes(k))
     );
 
-    // Default to generic retrieval if no match
+    // Default to random actionable quests if no keyword match
     if (!template) {
+      const defaultQuests = [
+        {
+          type: "delivery" as HookType,
+          makeRumor: (n: NPC, target?: string) => `${n.name} needs something delivered to ${target}`,
+          makeTruth: (n: NPC) => `${n.name} has an urgent package`,
+          makeStakes: (_n: NPC, target?: string) => `deliver package to ${target} (pays 15gp)`,
+          reward: ["15 gp", "20 gp"],
+        },
+        {
+          type: "retrieval" as HookType,
+          makeRumor: (n: NPC, target?: string) => `${n.name} lost something in ${target}`,
+          makeTruth: (n: NPC) => `${n.name} needs a keepsake recovered`,
+          makeStakes: (_n: NPC, target?: string) => `find lost keepsake in ${target} (pays 20gp)`,
+          reward: ["20 gp", "25 gp"],
+        },
+        {
+          type: "investigation" as HookType,
+          makeRumor: (n: NPC) => `${n.name} suspects someone of theft`,
+          makeTruth: (n: NPC) => `${n.name} needs proof of who stole from them`,
+          makeStakes: () => `find the thief (pays 25gp)`,
+          reward: ["25 gp", "30 gp"],
+        },
+        {
+          type: "escort" as HookType,
+          makeRumor: (n: NPC, target?: string) => `${n.name} needs safe passage to ${target}`,
+          makeTruth: (n: NPC) => `${n.name} fears the roads are dangerous`,
+          makeStakes: (_n: NPC, target?: string) => `escort to ${target} (pays 20gp)`,
+          reward: ["20 gp", "25 gp"],
+        },
+        {
+          type: "mystery" as HookType,
+          makeRumor: (n: NPC) => `${n.name} has a pest problem`,
+          makeTruth: (n: NPC) => `Something is killing ${n.name}'s livestock at night`,
+          makeStakes: () => `kill the beast (pays 30gp)`,
+          reward: ["30 gp", "35 gp"],
+        },
+        {
+          type: "debt" as HookType,
+          makeRumor: (n: NPC) => `${n.name} is owed money`,
+          makeTruth: (n: NPC) => `${n.name} needs help collecting a debt`,
+          makeStakes: () => `collect debt (keeps 10% as fee)`,
+          reward: ["10% of debt", "15 gp"],
+        },
+      ];
+      const picked = rng.pick(defaultQuests);
       template = {
         keywords: [],
-        type: "retrieval",
-        makeRumor: (n, target) => `${n.name} needs help with something in ${target}`,
-        makeTruth: (n) => `${n.name} is willing to pay for assistance`,
-        reward: ["15 gp", "20 gp", "10 gp"],
+        ...picked,
       };
     }
 
@@ -617,7 +683,11 @@ function generatePersonalHooks(
     });
 
     hooks.push(hook);
-    addWantToNpc(npcMap, npc.id, hook.id, npc.flavorWant.toLowerCase());
+    // Use the template's makeStakes for actionable quest description
+    const stakes = template.makeStakes
+      ? template.makeStakes(npc, targetLocation)
+      : `help with task (pays ${rng.pick(template.reward)})`;
+    addWantToNpc(npcMap, npc.id, hook.id, stakes);
   }
 
   return hooks;
