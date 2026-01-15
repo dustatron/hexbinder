@@ -55,9 +55,12 @@ const MOON_LABELS: Record<MoonPhase, string> = {
   waning: "Waning",
 };
 
+type TabId = "factions" | "events" | "settlements" | "dungeons";
+
 function AtlasPage() {
   const initialWorld = Route.useLoaderData();
   const [world, setWorld] = useState<WorldData>(initialWorld);
+  const [activeTab, setActiveTab] = useState<TabId>("factions");
 
   const settlements = world.locations.filter(
     (loc): loc is Settlement => loc.type === "settlement"
@@ -124,8 +127,8 @@ function AtlasPage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 space-y-6 p-4">
-        {/* Date & Weather Section */}
+      <main className="flex-1 space-y-4 p-4">
+        {/* Date & Weather Section - Always Visible */}
         <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
           <div className="mb-4 flex items-center justify-between">
             <div>
@@ -172,7 +175,33 @@ function AtlasPage() {
           </div>
         </section>
 
-        {/* Events Timeline */}
+        {/* Tab Bar */}
+        <div className="flex gap-1 rounded-lg border border-stone-700 bg-stone-800 p-1">
+          {([
+            { id: "factions", label: "Factions", icon: Users, count: world.factions.length },
+            { id: "events", label: "Events", icon: Calendar, count: todayRecord?.events.length ?? 0 },
+            { id: "settlements", label: "Settlements", icon: Castle, count: settlements.length },
+            { id: "dungeons", label: "Dungeons", icon: Skull, count: dungeons.length },
+          ] as const).map(({ id, label, icon: Icon, count }) => (
+            <button
+              key={id}
+              onClick={() => setActiveTab(id)}
+              className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-2 text-sm transition-colors ${
+                activeTab === id
+                  ? "bg-stone-700 text-stone-100"
+                  : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
+              }`}
+            >
+              <Icon size={16} />
+              <span className="hidden sm:inline">{label}</span>
+              <span className="rounded-full bg-stone-600 px-1.5 text-xs">{count}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Tab Content */}
+        {activeTab === "events" && (
+        /* Events Timeline */
         <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
           <h2 className="mb-3 flex items-center gap-2 font-semibold">
             <Calendar size={18} className="text-amber-500" />
@@ -270,8 +299,10 @@ function AtlasPage() {
             )}
           </div>
         </section>
+        )}
 
         {/* Factions */}
+        {activeTab === "factions" && (
         <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
           <h2 className="mb-3 flex items-center gap-2 font-semibold">
             <Users size={18} className="text-purple-400" />
@@ -319,8 +350,10 @@ function AtlasPage() {
             </ul>
           )}
         </section>
+        )}
 
         {/* Settlements */}
+        {activeTab === "settlements" && (
         <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
           <h2 className="mb-3 flex items-center gap-2 font-semibold">
             <Castle size={18} className="text-amber-400" />
@@ -344,7 +377,7 @@ function AtlasPage() {
                       {settlement.name}
                     </Link>
                     <p className="text-sm capitalize text-stone-400">
-                      {settlement.size}
+                      {settlement.settlementType} {settlement.size}
                     </p>
                   </div>
                   <span className="text-sm text-stone-400">
@@ -355,8 +388,10 @@ function AtlasPage() {
             </ul>
           )}
         </section>
+        )}
 
         {/* Dungeons */}
+        {activeTab === "dungeons" && (
         <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
           <h2 className="mb-3 flex items-center gap-2 font-semibold">
             <Skull size={18} className="text-red-400" />
@@ -397,6 +432,7 @@ function AtlasPage() {
             </ul>
           )}
         </section>
+        )}
       </main>
     </div>
   );
