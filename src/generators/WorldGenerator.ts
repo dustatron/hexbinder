@@ -261,7 +261,13 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   // Settlement NPCs
   for (const settlement of settlements) {
     const sites = settlement.sites;
-    const { npcs: settlementNPCs, mayorNpcId, siteOwnerMap } = generateSettlementNPCs({ seed, settlement, sites, nameRegistry });
+    const { npcs: settlementNPCs, mayorNpcId, siteOwnerMap } = generateSettlementNPCs({
+      seed,
+      settlement,
+      sites,
+      nameRegistry,
+      settlementType: settlement.settlementType,
+    });
     npcs.push(...settlementNPCs);
 
     // Link NPC IDs to settlement
@@ -277,6 +283,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
         role: settlement.rulerTitle,
         age: rng.between(35, 65),
         nameRegistry,
+        settlementType: settlement.settlementType,
       });
       npcs.push(ruler);
       settlement.npcIds.push(ruler.id);

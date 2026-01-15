@@ -138,9 +138,11 @@ export type GovernmentType = "council" | "mayor" | "lord" | "elder" | "guild" | 
 export type EconomyType = "farming" | "trade" | "mining" | "fishing" | "crafting" | "logging";
 export type SettlementMood = "prosperous" | "struggling" | "fearful" | "hostile" | "welcoming" | "secretive";
 export type DefenseLevel = "none" | "militia" | "guards" | "walls" | "fortified";
+export type SettlementType = "human" | "dwarven" | "elven" | "goblin";
 
 export interface Settlement extends Location {
   type: "settlement";
+  settlementType: SettlementType;
   size: SettlementSize;
   population: number;
   governmentType: GovernmentType;

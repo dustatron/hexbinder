@@ -3,12 +3,14 @@ import type {
   Settlement,
   SpatialSettlement,
   SettlementSize,
+  SettlementType,
   GovernmentType,
   EconomyType,
   SettlementMood,
   DefenseLevel,
   Hex,
   HexCoord,
+  TerrainType,
 } from "~/models";
 import { SeededRandom, createWeightedTable } from "./SeededRandom";
 import { generateTownLayout } from "./TownLayoutEngine";
@@ -93,6 +95,32 @@ const DEFENSE_WEIGHTS = createWeightedTable<DefenseLevel>({
   fortified: 2,
 });
 
+// Settlement type based on terrain context
+const SETTLEMENT_TYPE_WEIGHTS = createWeightedTable<SettlementType>({
+  human: 75,
+  dwarven: 10,
+  elven: 10,
+  goblin: 5,
+});
+
+// Terrain hints for non-human settlements
+const TERRAIN_SETTLEMENT_HINTS: Partial<Record<TerrainType, SettlementType>> = {
+  mountains: "dwarven",
+  hills: "dwarven",
+  forest: "elven",
+  swamp: "goblin",
+};
+
+function generateSettlementType(rng: SeededRandom, terrain: TerrainType): SettlementType {
+  // 30% chance terrain influences settlement type
+  if (rng.chance(0.3)) {
+    const hint = TERRAIN_SETTLEMENT_HINTS[terrain];
+    if (hint) return hint;
+  }
+  // Otherwise weighted random (mostly human)
+  return rng.pickWeighted(SETTLEMENT_TYPE_WEIGHTS);
+}
+
 export interface SettlementPlacementOptions {
   seed: string;
   hexes: Hex[];
@@ -137,7 +165,7 @@ export function placeSettlement(options: SettlementPlacementOptions): {
 
   if (!hex) return null;
 
-  const settlement = generateSettlement(rng, hex.coord, forceSize);
+  const settlement = generateSettlement(rng, hex.coord, hex.terrain, forceSize);
 
   // Generate spatial layout
   const layout = generateTownLayout(
@@ -156,8 +184,9 @@ export function placeSettlement(options: SettlementPlacementOptions): {
   return { settlement: spatialSettlement, hex };
 }
 
-function generateSettlement(rng: SeededRandom, coord: HexCoord, forceSize?: SettlementSize): Settlement {
+function generateSettlement(rng: SeededRandom, coord: HexCoord, terrain: TerrainType, forceSize?: SettlementSize): Settlement {
   const id = `settlement-${nanoid(8)}`;
+  const settlementType = generateSettlementType(rng, terrain);
   const name = generateSettlementName(rng);
   const size = forceSize ?? rng.pickWeighted(SIZE_WEIGHTS);
   const [minPop, maxPop] = POPULATION_RANGES[size];
@@ -166,9 +195,10 @@ function generateSettlement(rng: SeededRandom, coord: HexCoord, forceSize?: Sett
     id,
     name,
     type: "settlement",
-    description: `A ${size} called ${name}.`,
+    settlementType,
+    description: `A ${settlementType} ${size} called ${name}.`,
     hexCoord: coord,
-    tags: [size],
+    tags: [size, settlementType],
     size,
     population: rng.between(minPop, maxPop),
     governmentType: rng.pickWeighted(GOVERNMENT_WEIGHTS),
