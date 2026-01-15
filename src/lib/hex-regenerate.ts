@@ -103,9 +103,21 @@ export function regenerateHex(world: WorldData, coord: HexCoord, type: Regenerat
   // Always clear first
   let updated = clearHexLocation(world, coord);
 
-  // If clearing or keeping as terrain type, we're done
-  const TERRAIN_TYPES = ["plains", "forest", "hills", "mountains", "water", "swamp"];
-  if (type === "clear" || TERRAIN_TYPES.includes(type)) return updated;
+  // If just clearing, we're done
+  if (type === "clear") return updated;
+
+  // If changing terrain type, update the hex terrain
+  const TERRAIN_TYPES = ["plains", "forest", "hills", "mountains", "water", "swamp"] as const;
+  if (TERRAIN_TYPES.includes(type as typeof TERRAIN_TYPES[number])) {
+    return {
+      ...updated,
+      hexes: updated.hexes.map(h =>
+        h.coord.q === coord.q && h.coord.r === coord.r
+          ? { ...h, terrain: type as typeof TERRAIN_TYPES[number] }
+          : h
+      ),
+    };
+  }
 
   const hex = updated.hexes.find(h => h.coord.q === coord.q && h.coord.r === coord.r);
   if (!hex) return updated;
