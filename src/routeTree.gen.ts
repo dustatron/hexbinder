@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MapTestRouteImport } from './routes/map-test'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorldWorldIdRouteImport } from './routes/world.$worldId'
 import { Route as AtlasWorldIdRouteImport } from './routes/atlas.$worldId'
@@ -16,6 +17,11 @@ import { Route as WorldWorldIdLocationLocationIdRouteImport } from './routes/wor
 import { Route as WorldWorldIdFactionFactionIdRouteImport } from './routes/world.$worldId_.faction.$factionId'
 import { Route as WorldWorldIdHexQRRouteImport } from './routes/world.$worldId_.hex.$q.$r'
 
+const MapTestRoute = MapTestRouteImport.update({
+  id: '/map-test',
+  path: '/map-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -51,6 +57,7 @@ const WorldWorldIdHexQRRoute = WorldWorldIdHexQRRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/map-test': typeof MapTestRoute
   '/atlas/$worldId': typeof AtlasWorldIdRoute
   '/world/$worldId': typeof WorldWorldIdRoute
   '/world/$worldId/faction/$factionId': typeof WorldWorldIdFactionFactionIdRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/map-test': typeof MapTestRoute
   '/atlas/$worldId': typeof AtlasWorldIdRoute
   '/world/$worldId': typeof WorldWorldIdRoute
   '/world/$worldId/faction/$factionId': typeof WorldWorldIdFactionFactionIdRoute
@@ -68,6 +76,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/map-test': typeof MapTestRoute
   '/atlas/$worldId': typeof AtlasWorldIdRoute
   '/world/$worldId': typeof WorldWorldIdRoute
   '/world/$worldId_/faction/$factionId': typeof WorldWorldIdFactionFactionIdRoute
@@ -78,6 +87,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/map-test'
     | '/atlas/$worldId'
     | '/world/$worldId'
     | '/world/$worldId/faction/$factionId'
@@ -86,6 +96,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/map-test'
     | '/atlas/$worldId'
     | '/world/$worldId'
     | '/world/$worldId/faction/$factionId'
@@ -94,6 +105,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/map-test'
     | '/atlas/$worldId'
     | '/world/$worldId'
     | '/world/$worldId_/faction/$factionId'
@@ -103,6 +115,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MapTestRoute: typeof MapTestRoute
   AtlasWorldIdRoute: typeof AtlasWorldIdRoute
   WorldWorldIdRoute: typeof WorldWorldIdRoute
   WorldWorldIdFactionFactionIdRoute: typeof WorldWorldIdFactionFactionIdRoute
@@ -112,6 +125,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/map-test': {
+      id: '/map-test'
+      path: '/map-test'
+      fullPath: '/map-test'
+      preLoaderRoute: typeof MapTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -159,6 +179,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MapTestRoute: MapTestRoute,
   AtlasWorldIdRoute: AtlasWorldIdRoute,
   WorldWorldIdRoute: WorldWorldIdRoute,
   WorldWorldIdFactionFactionIdRoute: WorldWorldIdFactionFactionIdRoute,

@@ -169,6 +169,7 @@ export function DungeonDetail({
             <RegenerateButton
               onRegenerate={onRegenerate}
               currentLocationType="dungeon"
+              defaultType={dungeon.theme}
             />
           </div>
         </div>

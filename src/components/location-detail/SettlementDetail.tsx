@@ -35,14 +35,15 @@ const SIZE_COLORS: Record<Settlement["size"], string> = {
   city: "bg-amber-400",
 };
 
+// Icons match those used in StreetFirstTownGenerator landmarks
 const SITE_ICONS: Record<SettlementSite["type"], string> = {
   tavern: "🍺",
   inn: "🛏️",
   temple: "⛪",
   blacksmith: "⚒️",
   general_store: "🏪",
-  market: "🛒",
-  guild_hall: "🏛️",
+  market: "🏪",        // Same icon as map landmarks
+  guild_hall: "🏛️",   // Town Hall on map
   noble_estate: "🏰",
 };
 
@@ -66,8 +67,29 @@ export function SettlementDetail({
   onUpdateWorld,
   seed,
 }: SettlementDetailProps) {
-  // State for ward selection (similar to dungeon room selection)
+  // State for ward and building selection
   const [selectedWardId, setSelectedWardId] = useState<string | null>(null);
+  const [selectedBuildingId, setSelectedBuildingId] = useState<string | null>(null);
+
+  // Handle building click - scroll to linked site if present
+  const handleBuildingClick = (buildingId: string) => {
+    setSelectedBuildingId(buildingId);
+
+    // Find building to get its siteId
+    if (isSpatialSettlement(settlement)) {
+      const building = (settlement as SpatialSettlement).wards
+        .flatMap((w) => w.buildings)
+        .find((b) => b.id === buildingId);
+
+      if (building?.siteId) {
+        // Scroll to site card
+        const siteElement = document.getElementById(`site-${building.siteId}`);
+        if (siteElement) {
+          siteElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+    }
+  };
 
   // Toggle rumor used state
   const handleToggleRumor = (rumorId: string) => {
@@ -163,6 +185,7 @@ export function SettlementDetail({
             <RegenerateButton
               onRegenerate={onRegenerate}
               currentLocationType="settlement"
+              defaultType={settlement.size}
             />
           </div>
         </div>
@@ -238,45 +261,50 @@ export function SettlementDetail({
         </section>
       )}
 
-      {/* Town Map */}
-      {isSpatialSettlement(settlement) && (
-        <section className="space-y-3">
-          <div className="flex items-center gap-2">
-            <MapIcon className="h-4 w-4 text-stone-400" />
-            <h3 className="text-sm font-semibold text-stone-200">Town Map</h3>
-          </div>
-          <TownMap
-            settlement={settlement as SpatialSettlement}
-            selectedWardId={selectedWardId ?? undefined}
-            onWardClick={(wardId: string) => setSelectedWardId(wardId)}
-          />
-          <p className="text-xs text-stone-500">
-            Click a ward to see details. Pan and zoom with gestures.
-          </p>
-        </section>
-      )}
+      {/* Two-column layout: Map (left) + Locations (right) on desktop */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* Left column: Town Map */}
+        {isSpatialSettlement(settlement) && (
+          <section className="space-y-3 lg:sticky lg:top-4 lg:self-start">
+            <div className="flex items-center gap-2">
+              <MapIcon className="h-4 w-4 text-stone-400" />
+              <h3 className="text-sm font-semibold text-stone-200">Town Map</h3>
+            </div>
+            <TownMap
+              settlement={settlement as SpatialSettlement}
+              selectedBuildingId={selectedBuildingId ?? undefined}
+              selectedWardId={selectedWardId ?? undefined}
+              onBuildingClick={handleBuildingClick}
+              onWardClick={(wardId: string) => setSelectedWardId(wardId)}
+            />
+            <p className="text-xs text-stone-500">
+              Click a ward to see details. Pan and zoom with gestures or +/- buttons.
+            </p>
+          </section>
+        )}
 
-      {/* Encounter Table */}
-      <section>
-        <EncounterTable seed={`${seed}-settlement`} onReroll={onReroll} />
-      </section>
-
-      {/* Key Locations (Sites) */}
-      {settlement.sites.length > 0 && (
-        <section>
-          <SectionHeader icon={Building2} title="Key Locations" />
-          <div className="grid gap-2">
-            {settlement.sites.map((site) => {
-              const owner = site.ownerId ? npcs.find((n) => n.id === site.ownerId) : undefined;
-              const staff = site.staffIds?.map((id) => npcs.find((n) => n.id === id)).filter(Boolean) || [];
-              // Check if this site's ward is selected
-              const isWardSelected = isSpatialSettlement(settlement) && selectedWardId &&
-                (settlement as SpatialSettlement).wards.some(w => w.siteId === site.id && w.id === selectedWardId);
+        {/* Right column: Key Locations */}
+        <div className="space-y-6">
+          {/* Key Locations (Sites) */}
+          {settlement.sites.length > 0 && (
+            <section>
+              <SectionHeader icon={Building2} title="Key Locations" />
+              <div className="grid gap-2">
+                {settlement.sites.map((site) => {
+                  const owner = site.ownerId ? npcs.find((n) => n.id === site.ownerId) : undefined;
+                  const staff = site.staffIds?.map((id) => npcs.find((n) => n.id === id)).filter(Boolean) || [];
+                  // Check if this site's building is selected on the map
+                  const isLinkedBuildingSelected = isSpatialSettlement(settlement) && selectedBuildingId &&
+                    (settlement as SpatialSettlement).wards
+                      .flatMap((w) => w.buildings)
+                      .some((b) => b.siteId === site.id && b.id === selectedBuildingId);
+                  const isHighlighted = isLinkedBuildingSelected;
               return (
                 <div
+                  id={`site-${site.id}`}
                   key={site.id}
-                  className={`rounded-lg border p-3 transition-colors ${
-                    isWardSelected
+                  className={`scroll-mt-4 rounded-lg border p-3 transition-colors ${
+                    isHighlighted
                       ? "border-amber-500 bg-amber-500/10"
                       : "border-stone-700 bg-stone-800/50"
                   }`}
@@ -332,9 +360,11 @@ export function SettlementDetail({
                 </div>
               );
             })}
-          </div>
-        </section>
-      )}
+              </div>
+            </section>
+          )}
+        </div>
+      </div>
 
       {/* NPCs */}
       {npcs.length > 0 && (
@@ -566,6 +596,11 @@ export function SettlementDetail({
           </div>
         </section>
       )}
+
+      {/* Encounter Table (bottom) */}
+      <section>
+        <EncounterTable seed={`${seed}-settlement`} onReroll={onReroll} />
+      </section>
     </div>
   );
 }

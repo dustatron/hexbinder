@@ -13,7 +13,7 @@ export type { WeatherGeneratorOptions } from "./WeatherGenerator";
 export { placeSettlement } from "./SettlementGenerator";
 export type { SettlementPlacementOptions } from "./SettlementGenerator";
 
-export { generateTownLayout } from "./TownLayoutEngine";
+export { generateTownLayout, assignNPCsToBuildings } from "./TownLayoutEngine";
 export type { TownLayoutInput, TownLayoutOutput } from "./TownLayoutEngine";
 
 export { placeDungeon } from "./DungeonGenerator";

@@ -20,6 +20,87 @@ import type {
 import { WARD_COUNTS } from "~/models";
 import { SeededRandom } from "./SeededRandom";
 import { Voronoi } from "./Voronoi";
+import { generateStreetFirstTown, type PlacedBuilding } from "./StreetFirstTownGenerator";
+
+// === Ward Block Parameters ===
+
+/**
+ * Parameters controlling building generation per ward type.
+ * Based on watabou's district-specific layout approach.
+ */
+export interface BlockParams {
+  gridRegularity: number;   // 0-1: organic to grid layout
+  buildingDensity: number;  // 0-1: sparse to packed
+  minBuildingSize: number;  // Min footprint area
+  maxBuildingSize: number;  // Max footprint area
+  alleyWidth: number;       // Gap between buildings (in units)
+}
+
+export const WARD_PARAMS: Record<WardType, BlockParams> = {
+  market: {
+    gridRegularity: 0.7,
+    buildingDensity: 0.5,
+    minBuildingSize: 80,    // MUCH larger buildings
+    maxBuildingSize: 200,
+    alleyWidth: 6,          // Wide alleys for visibility
+  },
+  residential: {
+    gridRegularity: 0.5,
+    buildingDensity: 0.45,
+    minBuildingSize: 60,
+    maxBuildingSize: 150,
+    alleyWidth: 5,
+  },
+  slum: {
+    gridRegularity: 0.2,
+    buildingDensity: 0.55,
+    minBuildingSize: 40,
+    maxBuildingSize: 100,
+    alleyWidth: 4,
+  },
+  craftsmen: {
+    gridRegularity: 0.6,
+    buildingDensity: 0.4,
+    minBuildingSize: 100,
+    maxBuildingSize: 250,
+    alleyWidth: 8,
+  },
+  temple: {
+    gridRegularity: 0.8,
+    buildingDensity: 0.25,
+    minBuildingSize: 200,
+    maxBuildingSize: 500,
+    alleyWidth: 12,
+  },
+  castle: {
+    gridRegularity: 0.9,
+    buildingDensity: 0.3,
+    minBuildingSize: 180,
+    maxBuildingSize: 600,
+    alleyWidth: 10,
+  },
+  merchant: {
+    gridRegularity: 0.7,
+    buildingDensity: 0.45,
+    minBuildingSize: 70,
+    maxBuildingSize: 180,
+    alleyWidth: 6,
+  },
+  tavern: {
+    gridRegularity: 0.4,
+    buildingDensity: 0.4,
+    minBuildingSize: 60,
+    maxBuildingSize: 160,
+    alleyWidth: 5,
+  },
+  park: {
+    gridRegularity: 0.3,
+    buildingDensity: 0.08,
+    minBuildingSize: 50,
+    maxBuildingSize: 120,
+    alleyWidth: 15,
+  },
+};
 
 // === Site to Ward Type Mapping ===
 
@@ -46,19 +127,23 @@ export const SITE_TO_WARD: Partial<Record<SiteType | string, WardType>> = {
 // === Helper Functions ===
 
 /**
- * Generate points in a spiral pattern for organic ward distribution
+ * Generate points distributed across the area for ward seeds.
+ * Uses golden angle for even distribution.
  */
 export function generateSpiralPoints(
   nPoints: number,
   rng: SeededRandom
 ): TownPoint[] {
-  const sa = rng.next() * 2 * Math.PI;
   const points: TownPoint[] = [];
-  // Tighter spiral: smaller radius growth for more compact distribution
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5)); // ~137.5 degrees
+  const startAngle = rng.next() * 2 * Math.PI;
+
   for (let i = 0; i < nPoints; i++) {
-    const a = sa + Math.sqrt(i) * 3; // Reduced from 5 to 3 for tighter spiral
-    const r = i === 0 ? 0 : 5 + i * (1.5 + rng.next() * 0.5); // Reduced scale
-    points.push({ x: Math.cos(a) * r, y: Math.sin(a) * r });
+    // Sunflower seed pattern - more even distribution
+    const angle = startAngle + i * goldenAngle;
+    // Radius grows with sqrt for even area distribution
+    const r = i === 0 ? 0 : Math.sqrt(i / nPoints) * 10 + rng.next() * 2;
+    points.push({ x: Math.cos(angle) * r, y: Math.sin(angle) * r });
   }
   return points;
 }
@@ -291,11 +376,208 @@ export function assignWardTypes(
 // === Building Subdivision ===
 
 /**
- * Recursively subdivide a ward polygon into buildings
- * 1. Find longest edge of polygon
- * 2. Cut perpendicular at random ratio (0.3-0.7)
- * 3. Recurse until area < minArea
- * 4. Skip some cuts randomly (creates alleys)
+ * Inset a polygon by a fixed margin (for alleys between buildings)
+ */
+function insetPolygon(vertices: TownPoint[], margin: number): TownPoint[] {
+  if (vertices.length < 3 || margin <= 0) return vertices;
+
+  const centroid = polygonCentroid(vertices);
+  return vertices.map((v) => {
+    const dx = v.x - centroid.x;
+    const dy = v.y - centroid.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < margin * 2) return v; // Too small to inset
+    const scale = (dist - margin) / dist;
+    return {
+      x: centroid.x + dx * scale,
+      y: centroid.y + dy * scale,
+    };
+  });
+}
+
+/**
+ * Convert arbitrary polygon to inscribed rectangle.
+ * Creates more realistic rectangular building footprints.
+ */
+function inscribeRectangle(vertices: TownPoint[], rng: SeededRandom): TownPoint[] {
+  if (vertices.length < 3) return vertices;
+
+  // Find bounding box
+  let minX = Infinity, maxX = -Infinity;
+  let minY = Infinity, maxY = -Infinity;
+  for (const v of vertices) {
+    minX = Math.min(minX, v.x);
+    maxX = Math.max(maxX, v.x);
+    minY = Math.min(minY, v.y);
+    maxY = Math.max(maxY, v.y);
+  }
+
+  // Inset the rectangle significantly from bounding box for visible gaps
+  // Larger inset = more white space between buildings (watabou style)
+  const inset = Math.min(maxX - minX, maxY - minY) * 0.25;
+  minX += inset;
+  maxX -= inset;
+  minY += inset;
+  maxY -= inset;
+
+  // Add slight variation for organic feel
+  const variation = (maxX - minX) * 0.05;
+  const dx = (rng.next() - 0.5) * variation;
+  const dy = (rng.next() - 0.5) * variation;
+
+  return [
+    { x: minX + dx, y: minY + dy },
+    { x: maxX + dx, y: minY - dy },
+    { x: maxX - dx, y: maxY - dy },
+    { x: minX - dx, y: maxY + dy },
+  ];
+}
+
+/**
+ * Generate L-shaped building for larger lots
+ */
+function generateLShapedBuilding(vertices: TownPoint[], rng: SeededRandom): TownPoint[] {
+  // Get bounding rectangle first
+  let minX = Infinity, maxX = -Infinity;
+  let minY = Infinity, maxY = -Infinity;
+  for (const v of vertices) {
+    minX = Math.min(minX, v.x);
+    maxX = Math.max(maxX, v.x);
+    minY = Math.min(minY, v.y);
+    maxY = Math.max(maxY, v.y);
+  }
+
+  const w = maxX - minX;
+  const h = maxY - minY;
+
+  // L-shape cuts out one corner
+  const cutRatio = 0.3 + rng.next() * 0.2; // 30-50% of width/height
+  const corner = rng.between(0, 3); // Which corner to cut
+
+  const cx = minX + w * (corner % 2 === 0 ? cutRatio : 1 - cutRatio);
+  const cy = minY + h * (corner < 2 ? cutRatio : 1 - cutRatio);
+
+  // Generate L-shape vertices (6 points)
+  switch (corner) {
+    case 0: // Top-left
+      return [
+        { x: cx, y: minY }, { x: maxX, y: minY }, { x: maxX, y: maxY },
+        { x: minX, y: maxY }, { x: minX, y: cy }, { x: cx, y: cy },
+      ];
+    case 1: // Top-right
+      return [
+        { x: minX, y: minY }, { x: cx, y: minY }, { x: cx, y: cy },
+        { x: maxX, y: cy }, { x: maxX, y: maxY }, { x: minX, y: maxY },
+      ];
+    case 2: // Bottom-left
+      return [
+        { x: minX, y: minY }, { x: maxX, y: minY }, { x: maxX, y: maxY },
+        { x: cx, y: maxY }, { x: cx, y: cy }, { x: minX, y: cy },
+      ];
+    default: // Bottom-right
+      return [
+        { x: minX, y: minY }, { x: maxX, y: minY }, { x: maxX, y: cy },
+        { x: cx, y: cy }, { x: cx, y: maxY }, { x: minX, y: maxY },
+      ];
+  }
+}
+
+/**
+ * Check if polygon has reasonable aspect ratio (not too elongated)
+ */
+function getAspectRatio(vertices: TownPoint[]): number {
+  if (vertices.length < 3) return 1;
+
+  // Find bounding box
+  let minX = Infinity, maxX = -Infinity;
+  let minY = Infinity, maxY = -Infinity;
+  for (const v of vertices) {
+    minX = Math.min(minX, v.x);
+    maxX = Math.max(maxX, v.x);
+    minY = Math.min(minY, v.y);
+    maxY = Math.max(maxY, v.y);
+  }
+
+  const width = maxX - minX;
+  const height = maxY - minY;
+  if (width === 0 || height === 0) return 1;
+
+  return Math.max(width / height, height / width);
+}
+
+/**
+ * Improved polygon split - cuts along shorter axis for better aspect ratios
+ */
+function splitPolygonImproved(
+  vertices: TownPoint[],
+  ratio: number,
+  rng: SeededRandom
+): [TownPoint[], TownPoint[]] | null {
+  if (vertices.length < 3) return null;
+
+  // Find bounding box to determine orientation
+  let minX = Infinity, maxX = -Infinity;
+  let minY = Infinity, maxY = -Infinity;
+  for (const v of vertices) {
+    minX = Math.min(minX, v.x);
+    maxX = Math.max(maxX, v.x);
+    minY = Math.min(minY, v.y);
+    maxY = Math.max(maxY, v.y);
+  }
+
+  const width = maxX - minX;
+  const height = maxY - minY;
+
+  // Cut perpendicular to longer axis (to create squarer pieces)
+  const cutHorizontally = width > height;
+  const cutPos = cutHorizontally
+    ? minY + height * ratio
+    : minX + width * ratio;
+
+  const above: TownPoint[] = [];
+  const below: TownPoint[] = [];
+
+  for (let i = 0; i < vertices.length; i++) {
+    const curr = vertices[i];
+    const next = vertices[(i + 1) % vertices.length];
+
+    const currVal = cutHorizontally ? curr.y : curr.x;
+    const nextVal = cutHorizontally ? next.y : next.x;
+
+    const currAbove = currVal >= cutPos;
+    const nextAbove = nextVal >= cutPos;
+
+    if (currAbove) {
+      above.push(curr);
+    } else {
+      below.push(curr);
+    }
+
+    // Add intersection point if edge crosses cut line
+    if (currAbove !== nextAbove) {
+      const t = (cutPos - currVal) / (nextVal - currVal);
+      const intersection: TownPoint = {
+        x: curr.x + t * (next.x - curr.x),
+        y: curr.y + t * (next.y - curr.y),
+      };
+      above.push(intersection);
+      below.push(intersection);
+    }
+  }
+
+  if (above.length < 3 || below.length < 3) return null;
+
+  return [above, below];
+}
+
+/**
+ * Recursively subdivide a ward polygon into buildings.
+ * Improved algorithm for denser, more regular building layouts.
+ *
+ * 1. Inset ward boundary for street margin
+ * 2. Cut along shorter axis for squarer buildings
+ * 3. Recurse until area < minArea or aspect ratio is good
+ * 4. Apply final inset to each building for alley gaps
  */
 export function subdivideWard(
   polygon: TownPolygon,
@@ -304,52 +586,80 @@ export function subdivideWard(
   rng: SeededRandom
 ): TownBuilding[] {
   const buildings: TownBuilding[] = [];
+  const alleyMargin = 8; // MUCH bigger gap between buildings
 
-  function subdivide(vertices: TownPoint[]): void {
+  // Inset the ward boundary first (creates street margin)
+  const wardMargin = 8;
+  const insetVertices = insetPolygon(polygon.vertices, wardMargin);
+
+  const maxBuildings = 4; // Limit buildings per ward for clear visibility
+
+  function subdivide(vertices: TownPoint[], depth: number): void {
+    // Stop if we have enough buildings
+    if (buildings.length >= maxBuildings) return;
+
     const area = polygonArea(vertices);
+    const aspectRatio = getAspectRatio(vertices);
 
-    // Base case: area is small enough for a building
-    if (area < minArea) {
-      buildings.push({
-        id: nanoid(),
-        shape: { vertices: [...vertices] },
-        type: "house",
-      });
+    // Base cases for creating a building - stop MUCH earlier
+    const tooSmall = area < minArea;
+    const goodShape = area < minArea * 2 && aspectRatio < 2;
+    const tooDeep = depth > 2; // Max 4 subdivisions (2^2)
+    const randomStop = rng.next() < 0.3 && area < minArea * 3; // Stop more often
+
+    if (tooSmall || goodShape || tooDeep || randomStop) {
+      // Generate building footprint from lot
+      let buildingVertices: TownPoint[];
+
+      // Larger buildings occasionally get L-shapes
+      if (area > minArea * 5 && rng.next() < 0.15) {
+        buildingVertices = generateLShapedBuilding(vertices, rng);
+      } else {
+        // Most buildings are rectangular
+        buildingVertices = inscribeRectangle(vertices, rng);
+      }
+
+      // Apply final inset for alley gap
+      buildingVertices = insetPolygon(buildingVertices, alleyMargin);
+      const buildingArea = polygonArea(buildingVertices);
+
+      // Only add if building is large enough
+      if (buildingArea > minArea * 0.3 && buildingVertices.length >= 3) {
+        buildings.push({
+          id: nanoid(),
+          shape: { vertices: buildingVertices },
+          type: "house",
+        });
+      }
       return;
     }
 
-    // Randomly skip some cuts to create alleys/variation
-    if (rng.next() < chaos * 0.3) {
-      buildings.push({
-        id: nanoid(),
-        shape: { vertices: [...vertices] },
-        type: "house",
-      });
-      return;
-    }
-
-    // Cut at random ratio between 0.3 and 0.7
-    const ratio = 0.3 + rng.next() * 0.4;
-    const split = splitPolygon(vertices, ratio);
+    // Cut at slightly random ratio for variation
+    const baseRatio = 0.4 + rng.next() * 0.2; // 0.4-0.6 for more even splits
+    const split = splitPolygonImproved(vertices, baseRatio, rng);
 
     if (!split) {
-      // Can't split, make it a building
-      buildings.push({
-        id: nanoid(),
-        shape: { vertices: [...vertices] },
-        type: "house",
-      });
+      // Can't split, try to make a rectangular building
+      let buildingVertices = inscribeRectangle(vertices, rng);
+      buildingVertices = insetPolygon(buildingVertices, alleyMargin);
+      if (polygonArea(buildingVertices) > minArea * 0.3) {
+        buildings.push({
+          id: nanoid(),
+          shape: { vertices: buildingVertices },
+          type: "house",
+        });
+      }
       return;
     }
 
     const [poly1, poly2] = split;
 
     // Recurse on both halves
-    subdivide(poly1);
-    subdivide(poly2);
+    subdivide(poly1, depth + 1);
+    subdivide(poly2, depth + 1);
   }
 
-  subdivide(polygon.vertices);
+  subdivide(insetVertices, 0);
   return buildings;
 }
 
@@ -580,94 +890,193 @@ export interface TownLayoutOutput {
 // === Main Generation Function ===
 
 /**
- * Generate radial ward shapes (pie-slice sectors) for circular towns.
- * This creates naturally circular town boundaries.
+ * Generate an irregular boundary shape (not a perfect circle).
+ * Uses perlin-like noise to create organic town outlines.
  */
-function generateRadialWards(
+function generateIrregularBoundary(
+  center: TownPoint,
+  baseRadius: number,
+  numPoints: number,
+  irregularity: number,
+  rng: SeededRandom
+): TownPoint[] {
+  const vertices: TownPoint[] = [];
+
+  // Generate random offsets for each angle segment
+  const offsets: number[] = [];
+  for (let i = 0; i < numPoints; i++) {
+    offsets.push((rng.next() - 0.5) * 2 * irregularity);
+  }
+
+  // Smooth the offsets (simple averaging)
+  const smoothed: number[] = [];
+  for (let i = 0; i < numPoints; i++) {
+    const prev = offsets[(i - 1 + numPoints) % numPoints];
+    const curr = offsets[i];
+    const next = offsets[(i + 1) % numPoints];
+    smoothed.push((prev + curr * 2 + next) / 4);
+  }
+
+  // Generate boundary points
+  for (let i = 0; i < numPoints; i++) {
+    const angle = (i / numPoints) * 2 * Math.PI;
+    const r = baseRadius * (1 + smoothed[i]);
+    vertices.push({
+      x: center.x + Math.cos(angle) * r,
+      y: center.y + Math.sin(angle) * r,
+    });
+  }
+
+  return vertices;
+}
+
+/**
+ * Check if a point is inside a polygon (ray casting)
+ */
+function pointInPolygon(point: TownPoint, polygon: TownPoint[]): boolean {
+  let inside = false;
+  const n = polygon.length;
+
+  for (let i = 0, j = n - 1; i < n; j = i++) {
+    const xi = polygon[i].x, yi = polygon[i].y;
+    const xj = polygon[j].x, yj = polygon[j].y;
+
+    if (((yi > point.y) !== (yj > point.y)) &&
+        (point.x < (xj - xi) * (point.y - yi) / (yj - yi) + xi)) {
+      inside = !inside;
+    }
+  }
+
+  return inside;
+}
+
+/**
+ * Clip polygon to boundary using Sutherland-Hodgman algorithm (simplified)
+ */
+function clipPolygonToBoundary(
+  polygon: TownPoint[],
+  boundary: TownPoint[]
+): TownPoint[] {
+  if (polygon.length < 3) return polygon;
+
+  // Simple approach: keep vertices inside, project outside vertices to boundary
+  const result: TownPoint[] = [];
+  const center = polygonCentroid(boundary);
+
+  for (const v of polygon) {
+    if (pointInPolygon(v, boundary)) {
+      result.push(v);
+    } else {
+      // Project to nearest boundary point
+      let minDist = Infinity;
+      let nearest: TownPoint = v;
+
+      for (let i = 0; i < boundary.length; i++) {
+        const b1 = boundary[i];
+        const b2 = boundary[(i + 1) % boundary.length];
+
+        // Find closest point on edge
+        const dx = b2.x - b1.x;
+        const dy = b2.y - b1.y;
+        const t = Math.max(0, Math.min(1,
+          ((v.x - b1.x) * dx + (v.y - b1.y) * dy) / (dx * dx + dy * dy)
+        ));
+        const proj = { x: b1.x + t * dx, y: b1.y + t * dy };
+        const dist = Math.sqrt((v.x - proj.x) ** 2 + (v.y - proj.y) ** 2);
+
+        if (dist < minDist) {
+          minDist = dist;
+          nearest = proj;
+        }
+      }
+
+      result.push(nearest);
+    }
+  }
+
+  return result.length >= 3 ? result : polygon;
+}
+
+/**
+ * Generate organic ward shapes using Voronoi diagram.
+ * Clips cells to irregular boundary for natural town outline.
+ */
+function generateVoronoiWards(
   nWards: number,
   center: TownPoint,
   radius: number,
   rng: SeededRandom
 ): TownPolygon[] {
+  // Generate irregular town boundary
+  const boundaryPoints = 16 + Math.floor(nWards / 2);
+  const irregularity = 0.15 + rng.next() * 0.1; // 15-25% variation
+  const townBoundary = generateIrregularBoundary(
+    center, radius, boundaryPoints, irregularity, rng
+  );
+
+  // Create Voronoi with bounds slightly larger than town
+  const bounds = {
+    minX: center.x - radius * 1.3,
+    minY: center.y - radius * 1.3,
+    maxX: center.x + radius * 1.3,
+    maxY: center.y + radius * 1.3,
+  };
+
+  const voronoi = new Voronoi(bounds, rng);
+
+  // Add seed points - spiral pattern for more organic distribution
+  const seedPoints = generateSpiralPoints(nWards, rng);
+
+  // Scale and center the seed points
+  const maxDist = Math.max(...seedPoints.map(p =>
+    Math.sqrt(p.x * p.x + p.y * p.y)
+  ));
+  const scale = maxDist > 0 ? (radius * 0.7) / maxDist : 1;
+
+  for (const sp of seedPoints) {
+    voronoi.addPoint({
+      x: center.x + sp.x * scale,
+      y: center.y + sp.y * scale,
+    });
+  }
+
+  // Relax for smoother cells
+  voronoi.relax(2);
+
+  // Get Voronoi regions and clip to town boundary
+  const regions = voronoi.getRegions();
   const wards: TownPolygon[] = [];
 
-  // Determine layout based on ward count
-  // For small counts: single ring
-  // For larger counts: inner core + outer ring
-  const hasInnerCore = nWards > 6;
-  const innerRadius = hasInnerCore ? radius * 0.4 : 0;
-  const coreWards = hasInnerCore ? Math.min(5, Math.floor(nWards * 0.3)) : 1;
-  const outerWards = nWards - coreWards;
+  for (const region of regions) {
+    if (region.vertices.length < 3) continue;
 
-  // Generate inner core wards (smaller central area)
-  if (hasInnerCore && coreWards > 1) {
-    const coreAngleStep = (2 * Math.PI) / coreWards;
-    for (let i = 0; i < coreWards; i++) {
-      const startAngle = i * coreAngleStep + rng.next() * 0.1;
-      const endAngle = (i + 1) * coreAngleStep + rng.next() * 0.1;
+    // Check if region centroid is reasonably within town area
+    const centroid = polygonCentroid(region.vertices);
+    const distFromCenter = Math.sqrt(
+      (centroid.x - center.x) ** 2 + (centroid.y - center.y) ** 2
+    );
 
-      // Create pie slice from center to inner radius
-      const vertices: TownPoint[] = [
-        { x: center.x, y: center.y },
-      ];
+    // Include if centroid is within 120% of radius (allow some outside)
+    if (distFromCenter > radius * 1.2) continue;
 
-      // Add arc points
-      const arcSteps = 3;
-      for (let j = 0; j <= arcSteps; j++) {
-        const angle = startAngle + (endAngle - startAngle) * (j / arcSteps);
-        vertices.push({
-          x: center.x + Math.cos(angle) * innerRadius,
-          y: center.y + Math.sin(angle) * innerRadius,
-        });
-      }
+    // Clip region to town boundary
+    const clipped = clipPolygonToBoundary(region.vertices, townBoundary);
 
-      wards.push({ vertices });
+    // Include if we have a valid polygon with sufficient area
+    const area = polygonArea(clipped);
+    if (clipped.length >= 3 && area > 50) {
+      wards.push({ vertices: clipped });
     }
-  } else if (coreWards === 1) {
-    // Single central plaza (circle approximation)
-    const vertices: TownPoint[] = [];
-    const circleSteps = 8;
-    for (let i = 0; i < circleSteps; i++) {
-      const angle = (i / circleSteps) * 2 * Math.PI;
-      vertices.push({
-        x: center.x + Math.cos(angle) * innerRadius,
-        y: center.y + Math.sin(angle) * innerRadius,
-      });
-    }
-    wards.push({ vertices });
   }
 
-  // Generate outer ring wards
-  const outerAngleStep = (2 * Math.PI) / outerWards;
-  for (let i = 0; i < outerWards; i++) {
-    const startAngle = i * outerAngleStep + rng.next() * 0.05;
-    const endAngle = (i + 1) * outerAngleStep - rng.next() * 0.05;
-
-    // Create ring segment from inner to outer radius
-    const vertices: TownPoint[] = [];
-
-    // Inner arc (from inner radius)
-    const arcSteps = 3;
-    for (let j = 0; j <= arcSteps; j++) {
-      const angle = startAngle + (endAngle - startAngle) * (j / arcSteps);
-      const r = hasInnerCore ? innerRadius : radius * 0.15;
-      vertices.push({
-        x: center.x + Math.cos(angle) * r,
-        y: center.y + Math.sin(angle) * r,
-      });
-    }
-
-    // Outer arc (from outer radius, reversed)
-    for (let j = arcSteps; j >= 0; j--) {
-      const angle = startAngle + (endAngle - startAngle) * (j / arcSteps);
-      vertices.push({
-        x: center.x + Math.cos(angle) * radius,
-        y: center.y + Math.sin(angle) * radius,
-      });
-    }
-
-    wards.push({ vertices });
-  }
+  // Sort by distance from center (center wards first)
+  wards.sort((a, b) => {
+    const ca = polygonCentroid(a.vertices);
+    const cb = polygonCentroid(b.vertices);
+    const da = Math.sqrt((ca.x - center.x) ** 2 + (ca.y - center.y) ** 2);
+    const db = Math.sqrt((cb.x - center.x) ** 2 + (cb.y - center.y) ** 2);
+    return da - db;
+  });
 
   return wards;
 }
@@ -691,60 +1100,260 @@ export function generateTownLayout(
 ): TownLayoutOutput {
   const { size, sites } = settlement;
 
-  // 1. Get ward count from size
-  const nWards = WARD_COUNTS[size];
+  // Use street-first generator for better town layouts
+  const streetFirstResult = generateStreetFirstTown(size, rng);
 
-  // 2. Calculate town radius based on size
-  const baseRadius = 30 + nWards * 3;
-  const townRadius = baseRadius * (0.9 + rng.next() * 0.2);
-  const center: TownPoint = { x: 0, y: 0 };
+  // Map landmark name to site type for matching
+  const landmarkToSiteType: Record<string, SiteType> = {
+    "Temple": "temple",
+    "Tavern": "tavern",
+    "Market": "market",
+    "Town Hall": "guild_hall",
+    "Blacksmith": "blacksmith",
+    "Inn": "inn",
+    "General Store": "general_store",
+    "Noble Estate": "noble_estate",
+  };
 
-  // 4. Generate radial ward shapes
-  const wardShapes = generateRadialWards(nWards, center, townRadius, rng);
+  // Track which sites have been assigned to landmarks
+  const usedSiteIds = new Set<string>();
 
-  // 5. Create ward objects
-  const wards: TownWard[] = wardShapes.map((shape) => ({
+  // Convert PlacedBuilding to TownBuilding, linking landmarks to sites
+  const convertLandmark = (b: PlacedBuilding): TownBuilding => {
+    let siteId: string | undefined;
+
+    // Try to match this landmark to a site by type
+    if (b.name) {
+      const expectedSiteType = landmarkToSiteType[b.name];
+      const matchingSite = sites.find((s) =>
+        !usedSiteIds.has(s.id) && (
+          s.type === expectedSiteType ||
+          s.name.toLowerCase().includes(b.name!.toLowerCase())
+        )
+      );
+      if (matchingSite) {
+        siteId = matchingSite.id;
+        usedSiteIds.add(matchingSite.id);
+      }
+    }
+
+    return {
+      id: b.id,
+      shape: { vertices: b.vertices },
+      type: "landmark",
+      siteId,
+      name: b.name,
+      icon: b.icon,
+    };
+  };
+
+  const convertHouse = (b: PlacedBuilding): TownBuilding => ({
+    id: b.id,
+    shape: { vertices: b.vertices },
+    type: "house",
+  });
+
+  // Convert all buildings - landmarks first so they get site priority
+  const landmarkBuildings = streetFirstResult.landmarks.map(convertLandmark);
+  const houseBuildings = streetFirstResult.buildings.map(convertHouse);
+  const allBuildings = [...landmarkBuildings, ...houseBuildings];
+
+  // Create bounding box for all buildings as ward shape
+  let minX = Infinity, maxX = -Infinity;
+  let minY = Infinity, maxY = -Infinity;
+  for (const b of allBuildings) {
+    for (const v of b.shape.vertices) {
+      minX = Math.min(minX, v.x);
+      maxX = Math.max(maxX, v.x);
+      minY = Math.min(minY, v.y);
+      maxY = Math.max(maxY, v.y);
+    }
+  }
+
+  // Pad the bounding box
+  const padding = 10;
+  minX -= padding;
+  maxX += padding;
+  minY -= padding;
+  maxY += padding;
+
+  const wardShape: TownPolygon = {
+    vertices: [
+      { x: minX, y: minY },
+      { x: maxX, y: minY },
+      { x: maxX, y: maxY },
+      { x: minX, y: maxY },
+    ],
+  };
+
+  // Create a single ward containing all buildings
+  const mainWard: TownWard = {
     id: nanoid(),
-    type: "residential" as WardType,
-    shape,
-    buildings: [],
-  }));
-
-  // 6. Assign ward types based on sites
-  assignWardTypes(wards, sites, rng);
-
-  // 7. Subdivide wards into buildings
-  const minBuildingArea = size === "city" ? 50 : size === "town" ? 80 : 120;
-  const chaos = size === "city" ? 0.2 : size === "town" ? 0.3 : 0.4;
-
-  for (const ward of wards) {
-    ward.buildings = subdivideWard(ward.shape, minBuildingArea, chaos, rng);
-  }
-
-  // 8. Create entry points for streets (no walls)
-  const numEntries = rng.between(3, 5);
-  const gates: TownPoint[] = [];
-  for (let i = 0; i < numEntries; i++) {
-    const angle = (i / numEntries) * 2 * Math.PI + rng.next() * 0.3;
-    gates.push({
-      x: center.x + Math.cos(angle) * townRadius,
-      y: center.y + Math.sin(angle) * townRadius,
-    });
-  }
-
-  // 9. Build streets from entry points to center
-  const streets = buildStreets(gates, center, wards, rng);
-
-  // 10. Create plaza from center ward
-  const plaza: TownPolygon | undefined =
-    wards.length > 0 ? { vertices: [...wards[0].shape.vertices] } : undefined;
+    type: "residential",
+    shape: wardShape,
+    buildings: allBuildings,
+  };
 
   return {
-    center,
-    radius: townRadius,
-    wards,
-    wall: undefined, // No walls
-    streets,
-    plaza,
+    center: streetFirstResult.center,
+    radius: streetFirstResult.radius,
+    wards: [mainWard],
+    wall: undefined,
+    streets: streetFirstResult.streets,
+    plaza: streetFirstResult.plaza,
   };
+}
+
+/**
+ * Assign NPCs to buildings in a spatial settlement.
+ * - Site owners/staff → assigned to their site's building (via siteId)
+ * - Travelers (no siteId) → assigned to inn building
+ * - Residents → assigned to house buildings
+ */
+export function assignNPCsToBuildings(
+  settlement: {
+    wards: TownWard[];
+    sites: { id: string; type: SiteType; ownerId?: string; staffIds: string[] }[];
+    npcIds: string[];
+  },
+  npcs: { id: string; siteId?: string }[]
+): void {
+  const allBuildings = settlement.wards.flatMap((w) => w.buildings);
+  const houses = allBuildings.filter((b) => b.type === "house");
+  const landmarks = allBuildings.filter((b) => b.type === "landmark");
+
+  // Find inn building
+  const innBuilding = landmarks.find((b) => b.siteId &&
+    settlement.sites.find((s) => s.id === b.siteId && s.type === "inn")
+  );
+
+  // Build set of NPC IDs who work at a site
+  const siteWorkerIds = new Set<string>();
+  for (const site of settlement.sites) {
+    if (site.ownerId) siteWorkerIds.add(site.ownerId);
+    for (const staffId of site.staffIds) siteWorkerIds.add(staffId);
+  }
+
+  // Assign site workers to their building
+  for (const building of landmarks) {
+    if (!building.siteId) continue;
+    const site = settlement.sites.find((s) => s.id === building.siteId);
+    if (!site) continue;
+
+    const workerIds: string[] = [];
+    if (site.ownerId) workerIds.push(site.ownerId);
+    workerIds.push(...site.staffIds);
+
+    building.npcIds = workerIds;
+  }
+
+  // Get remaining NPCs (not assigned to sites)
+  const settlementNpcIds = settlement.npcIds;
+  const unassignedNpcIds = settlementNpcIds.filter((id) => !siteWorkerIds.has(id));
+
+  // Check if NPC is a traveler (has siteId pointing to inn/tavern)
+  const travelerIds: string[] = [];
+  const residentIds: string[] = [];
+
+  for (const npcId of unassignedNpcIds) {
+    const npc = npcs.find((n) => n.id === npcId);
+    if (npc?.siteId) {
+      const site = settlement.sites.find((s) => s.id === npc.siteId);
+      if (site && (site.type === "inn" || site.type === "tavern")) {
+        travelerIds.push(npcId);
+        continue;
+      }
+    }
+    residentIds.push(npcId);
+  }
+
+  // Assign travelers to inn
+  if (innBuilding && travelerIds.length > 0) {
+    innBuilding.npcIds = [...(innBuilding.npcIds || []), ...travelerIds];
+  }
+
+  // Assign residents to houses (distribute evenly)
+  if (houses.length > 0 && residentIds.length > 0) {
+    for (let i = 0; i < residentIds.length; i++) {
+      const house = houses[i % houses.length];
+      if (!house.npcIds) house.npcIds = [];
+      house.npcIds.push(residentIds[i]);
+    }
+  }
+}
+
+/**
+ * Link sites to landmark buildings after sites are generated.
+ * Call this when sites are generated separately from layout generation.
+ */
+export function linkSitesToBuildings(
+  settlement: {
+    wards: TownWard[];
+    sites: { id: string; type: SiteType; name: string }[];
+  }
+): void {
+  // Map building names to site types for matching
+  const landmarkToSiteType: Record<string, SiteType> = {
+    "Temple": "temple",
+    "Tavern": "tavern",
+    "Market": "market",
+    "Town Hall": "guild_hall",
+    "Blacksmith": "blacksmith",
+    "Inn": "inn",
+    "General Store": "general_store",
+    "Noble Estate": "noble_estate",
+  };
+
+  // Map site type to expected icon for landmarks
+  const siteTypeToIcon: Record<SiteType, string> = {
+    temple: "⛪",
+    tavern: "🍺",
+    market: "🏪",
+    guild_hall: "🏛️",
+    blacksmith: "⚒️",
+    inn: "🏨",
+    general_store: "🏪",
+    noble_estate: "🏰",
+  };
+
+  const usedSiteIds = new Set<string>();
+  const allBuildings = settlement.wards.flatMap((w) => w.buildings);
+  const landmarks = allBuildings.filter((b) => b.type === "landmark");
+
+  for (const building of landmarks) {
+    // Skip if already linked
+    if (building.siteId) continue;
+
+    // Try to match by building name to site type
+    if (building.name) {
+      const expectedSiteType = landmarkToSiteType[building.name];
+      const matchingSite = settlement.sites.find((s) =>
+        !usedSiteIds.has(s.id) && (
+          s.type === expectedSiteType ||
+          s.name.toLowerCase().includes(building.name!.toLowerCase())
+        )
+      );
+      if (matchingSite) {
+        building.siteId = matchingSite.id;
+        building.icon = siteTypeToIcon[matchingSite.type];
+        usedSiteIds.add(matchingSite.id);
+      }
+    }
+  }
+}
+
+/** Map site type to ward type */
+function getSiteWardType(siteType?: SiteType): WardType {
+  if (!siteType) return "residential";
+  const mapping: Partial<Record<SiteType, WardType>> = {
+    temple: "temple",
+    tavern: "tavern",
+    inn: "tavern",
+    blacksmith: "craftsmen",
+    market: "market",
+    general_store: "market",
+    guild_hall: "merchant",
+    noble_estate: "castle",
+  };
+  return mapping[siteType] ?? "residential";
 }

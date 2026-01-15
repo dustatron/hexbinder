@@ -180,6 +180,10 @@ export interface TownBuilding {
   id: string;
   shape: TownPolygon;
   type: "house" | "shop" | "landmark" | "civic";
+  siteId?: string;    // Link to SettlementSite
+  npcIds?: string[];  // NPCs who live/work here
+  name?: string;      // Display name for landmarks
+  icon?: string;      // Emoji icon for map display
 }
 
 export interface TownWall {
