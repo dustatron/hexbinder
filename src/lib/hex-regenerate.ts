@@ -1,4 +1,4 @@
-import type { WorldData, HexCoord, DungeonTheme, SettlementSize, Dungeon, Settlement, SpatialSettlement } from "~/models";
+import type { WorldData, HexCoord, DungeonTheme, SettlementSize, Dungeon, Settlement, SpatialSettlement, TerrainType } from "~/models";
 import { placeDungeon, placeWildernessLair } from "~/generators/DungeonGenerator";
 import { placeSettlement } from "~/generators/SettlementGenerator";
 import { generateSites } from "~/generators/SiteGenerator";
@@ -195,6 +195,13 @@ function generateDungeonAtHex(
   };
 }
 
+// Terrain types that certain wilderness lairs should set
+const LAIR_TERRAIN_MAP: Partial<Record<string, TerrainType>> = {
+  sea_cave: "water",
+  witch_hut: "swamp",
+  beast_den: "forest",
+};
+
 function generateWildernessAtHex(
   world: WorldData,
   hex: typeof world.hexes[0],
@@ -215,9 +222,16 @@ function generateWildernessAtHex(
 
     if (!result) return world;
 
+    // Determine if terrain should change based on lair type
+    const newTerrain = LAIR_TERRAIN_MAP[forcedTheme];
+
     const hexes = world.hexes.map(h => {
       if (h.coord.q === hex.coord.q && h.coord.r === hex.coord.r) {
-        return { ...h, locationId: result.dungeon.id };
+        return {
+          ...h,
+          locationId: result.dungeon.id,
+          ...(newTerrain && { terrain: newTerrain }),
+        };
       }
       return h;
     });
