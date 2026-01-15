@@ -70,9 +70,9 @@ function HomePage() {
 
   // Default counts by map size
   const defaultCounts = {
-    small: { settlements: 8, dungeons: 4, lairs: 6, factions: 2 },
-    medium: { settlements: 12, dungeons: 8, lairs: 10, factions: 3 },
-    large: { settlements: 20, dungeons: 12, lairs: 16, factions: 5 },
+    small: { settlements: 8, dungeons: 4, lairs: 6, factions: 3 },
+    medium: { settlements: 12, dungeons: 8, lairs: 10, factions: 5 },
+    large: { settlements: 20, dungeons: 12, lairs: 16, factions: 8 },
   };
 
   const refreshWorlds = () => setWorlds(listWorlds());
