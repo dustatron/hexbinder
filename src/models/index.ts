@@ -856,7 +856,7 @@ export interface WorldSummary {
   id: string;
   name: string;
   updatedAt: number;
-  hexCount: number;
+  mapSize: "small" | "medium" | "large";
   settlementCount: number;
   dungeonCount: number;
   factionCount: number;

@@ -374,8 +374,8 @@ function HomePage() {
                     <span className="rounded bg-stone-700 px-2 py-0.5 text-stone-300">
                       Day {world.day}
                     </span>
-                    <span className="rounded bg-stone-700 px-2 py-0.5 text-stone-300">
-                      {world.hexCount} hexes
+                    <span className="rounded bg-stone-700 px-2 py-0.5 text-stone-300 capitalize">
+                      {world.mapSize}
                     </span>
                     <span className="rounded bg-amber-700/50 px-2 py-0.5 text-amber-300">
                       {world.settlementCount} settlements

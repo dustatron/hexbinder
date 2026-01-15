@@ -29,11 +29,13 @@ export function listWorlds(): WorldSummary[] {
         const data = localStorage.getItem(key);
         if (data) {
           const world = JSON.parse(data) as WorldData;
+          const hexCount = world.hexes?.length ?? 0;
+          const mapSize = hexCount < 60 ? "small" : hexCount < 150 ? "medium" : "large";
           worlds.push({
             id: world.id,
             name: world.name,
             updatedAt: world.updatedAt,
-            hexCount: world.hexes?.length ?? 0,
+            mapSize,
             settlementCount: world.locations?.filter(l => l.type === "settlement").length ?? 0,
             dungeonCount: world.locations?.filter(l => l.type === "dungeon").length ?? 0,
             factionCount: world.factions?.length ?? 0,
