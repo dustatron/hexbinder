@@ -60,7 +60,7 @@ type TabId = "factions" | "events" | "settlements" | "dungeons";
 function AtlasPage() {
   const initialWorld = Route.useLoaderData();
   const [world, setWorld] = useState<WorldData>(initialWorld);
-  const [activeTab, setActiveTab] = useState<TabId>("factions");
+  const [activeTab, setActiveTab] = useState<TabId>("events");
 
   const settlements = world.locations.filter(
     (loc): loc is Settlement => loc.type === "settlement"
@@ -178,8 +178,8 @@ function AtlasPage() {
         {/* Tab Bar */}
         <div className="flex gap-1 rounded-lg border border-stone-700 bg-stone-800 p-1">
           {([
-            { id: "factions", label: "Factions", icon: Users, count: world.factions.length },
             { id: "events", label: "Events", icon: Calendar, count: todayRecord?.events.length ?? 0 },
+            { id: "factions", label: "Factions", icon: Users, count: world.factions.length },
             { id: "settlements", label: "Settlements", icon: Castle, count: settlements.length },
             { id: "dungeons", label: "Dungeons", icon: Skull, count: dungeons.length },
           ] as const).map(({ id, label, icon: Icon, count }) => (
