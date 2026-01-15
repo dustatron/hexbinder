@@ -997,6 +997,25 @@
     ]
   },
   {
+    "name": "Commoner",
+    "slug": "commoner",
+    "description": "An ordinary person with no combat training.",
+    "armor_class": 11,
+    "armor_type": null,
+    "hit_points": 1,
+    "attacks": "1 stick +0 (1d4)",
+    "movement": "near",
+    "strength": 0,
+    "dexterity": 0,
+    "constitution": 0,
+    "intelligence": 0,
+    "wisdom": 0,
+    "charisma": 0,
+    "alignment": "N",
+    "level": 0,
+    "traits": []
+  },
+  {
     "name": "Couatl",
     "slug": "couatl",
     "description": "A human-sized snake with scales made of jewels and a corona of iridescent feathers.",

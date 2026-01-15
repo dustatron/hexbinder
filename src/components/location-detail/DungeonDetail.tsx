@@ -10,6 +10,7 @@ import { EncounterTable } from "~/components/encounter-table/EncounterTable";
 import { RegenerateButton } from "./RegenerateButton";
 import { RoomCard } from "./RoomCard";
 import { DungeonMap } from "~/components/dungeon-map";
+import { NPCStatLine } from "~/components/npc/NPCStatLine";
 
 interface DungeonDetailProps {
   dungeon: Dungeon | SpatialDungeon;
@@ -236,6 +237,7 @@ export function DungeonDetail({
                     {isSource ? "Quest Giver" : "Missing/Captured"}
                   </span>
                 </div>
+                <NPCStatLine archetype={npc.archetype} />
                 {npcHook && (
                   <p className="mt-1 text-xs text-stone-400">
                     {isSource ? npcHook.rumor : `${npc.name} is ${npc.status} here`}

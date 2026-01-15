@@ -1,4 +1,5 @@
 import type { Faction, Clock, NPC, Location, Hook } from "~/models";
+import { NPCStatLine } from "~/components/npc/NPCStatLine";
 
 interface FactionDetailProps {
   faction: Faction;
@@ -205,6 +206,7 @@ export function FactionDetail({
                   )}
                 </div>
                 <p className="text-xs text-stone-500 capitalize">{npc.race} - {npc.role ? npc.role.replace("_", " ") : npc.archetype}</p>
+                <NPCStatLine archetype={npc.archetype} />
               </li>
             ))}
           </ul>
