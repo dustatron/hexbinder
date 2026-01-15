@@ -75,6 +75,7 @@ function AtlasPage() {
   const initialWorld = Route.useLoaderData();
   const [world, setWorld] = useState<WorldData>(initialWorld);
   const [activeTab, setActiveTab] = useState<TabId>("events");
+  const [weekOffset, setWeekOffset] = useState(0);
 
   const settlements = world.locations.filter(
     (loc): loc is Settlement => loc.type === "settlement"
@@ -83,15 +84,22 @@ function AtlasPage() {
     (loc): loc is Dungeon => loc.type === "dungeon"
   );
 
-  // Split calendar into today, upcoming (next 5), and past
+  // Paginated events by week (7 days per page)
   const currentDay = world.state.day;
-  const todayRecord = world.state.calendar.find((r) => r.day === currentDay);
-  const upcomingDays = world.state.calendar
-    .filter((r) => r.day > currentDay && r.day <= currentDay + 5)
+  const weekStartDay = currentDay + (weekOffset * 7);
+  const weekEndDay = weekStartDay + 6;
+  const weekDays = world.state.calendar
+    .filter((r) => r.day >= weekStartDay && r.day <= weekEndDay)
     .sort((a, b) => a.day - b.day);
-  const pastDays = world.state.calendar
-    .filter((r) => r.day < currentDay)
-    .sort((a, b) => b.day - a.day);
+
+  // For tab badge - count today's events
+  const todayRecord = world.state.calendar.find((r) => r.day === currentDay);
+
+  // Pagination bounds
+  const minDay = Math.min(...world.state.calendar.map((r) => r.day));
+  const maxDay = Math.max(...world.state.calendar.map((r) => r.day));
+  const canGoPrevWeek = weekStartDay > minDay;
+  const canGoNextWeek = weekEndDay < maxDay;
 
   const canGoBack = world.state.day > 1;
   const canAdvance = world.state.day < world.state.forecastEndDay;
@@ -217,137 +225,106 @@ function AtlasPage() {
         {activeTab === "events" && (
         /* Events Timeline */
         <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
-          <h2 className="mb-3 flex items-center gap-2 font-semibold">
-            <Calendar size={18} className="text-amber-500" />
-            Events Timeline
-          </h2>
-          <div className="space-y-4">
-            {/* Today */}
-            {todayRecord && (
-              <div>
-                <div className="mb-2 flex items-center gap-2 text-amber-400">
-                  <span className="font-medium">Today (Day {todayRecord.day})</span>
-                  <span className="rounded bg-amber-700 px-1.5 py-0.5 text-xs">Current</span>
-                </div>
-                {todayRecord.events.length === 0 ? (
-                  <p className="text-sm text-stone-600 italic">No events</p>
-                ) : (
-                  <ul className="space-y-2">
-                    {todayRecord.events.map((event) => {
-                      if (event.type === "weather_change") {
-                        const condition = getWeatherFromDescription(event.description);
-                        const WeatherIcon = getWeatherIcon(condition);
+          {/* Week Pagination Header */}
+          <div className="mb-4 flex items-center justify-between">
+            <button
+              onClick={() => setWeekOffset(weekOffset - 1)}
+              disabled={!canGoPrevWeek}
+              className="flex items-center gap-1 rounded bg-stone-700 px-2 py-1 text-sm hover:bg-stone-600 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <ChevronLeft size={16} />
+              Prev
+            </button>
+            <div className="text-center">
+              <div className="text-sm font-medium">
+                Days {weekStartDay} - {weekEndDay}
+              </div>
+              {weekOffset === 0 && (
+                <span className="text-xs text-amber-500">Current Week</span>
+              )}
+              {weekOffset < 0 && (
+                <span className="text-xs text-stone-500">Past</span>
+              )}
+              {weekOffset > 0 && (
+                <span className="text-xs text-blue-400">Future</span>
+              )}
+            </div>
+            <button
+              onClick={() => setWeekOffset(weekOffset + 1)}
+              disabled={!canGoNextWeek}
+              className="flex items-center gap-1 rounded bg-stone-700 px-2 py-1 text-sm hover:bg-stone-600 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Next
+              <ChevronRight size={16} />
+            </button>
+          </div>
+
+          {/* Week Days */}
+          <div className="space-y-3">
+            {weekDays.map((dayRecord) => {
+              const isToday = dayRecord.day === currentDay;
+              const isPast = dayRecord.day < currentDay;
+              return (
+                <div
+                  key={dayRecord.day}
+                  className={`border-l-2 pl-3 ${
+                    isToday ? "border-amber-500" : isPast ? "border-stone-700" : "border-blue-700"
+                  }`}
+                >
+                  <div className={`mb-1 flex items-center gap-2 text-sm ${
+                    isToday ? "text-amber-400" : isPast ? "text-stone-500" : "text-blue-300"
+                  }`}>
+                    <span className="font-medium">Day {dayRecord.day}</span>
+                    {isToday && (
+                      <span className="rounded bg-amber-700 px-1.5 py-0.5 text-xs">Today</span>
+                    )}
+                  </div>
+                  {dayRecord.events.length === 0 ? (
+                    <p className="text-sm text-stone-600 italic">No events</p>
+                  ) : (
+                    <ul className="space-y-1">
+                      {dayRecord.events.map((event) => {
+                        if (event.type === "weather_change") {
+                          const condition = getWeatherFromDescription(event.description);
+                          const DayWeatherIcon = getWeatherIcon(condition);
+                          return (
+                            <li key={event.id} className={`flex items-center gap-2 rounded px-3 py-2 text-sm ${
+                              isToday ? "bg-stone-700/70" : isPast ? "bg-stone-700/20 text-stone-500" : "bg-stone-700/30 text-stone-400"
+                            }`}>
+                              <DayWeatherIcon size={16} className={isPast ? "text-stone-600" : "text-stone-400"} />
+                              <span className="capitalize">{condition}</span>
+                            </li>
+                          );
+                        }
                         return (
-                          <li key={event.id} className="flex items-center gap-2 rounded bg-stone-700/70 px-3 py-2 text-sm">
-                            <WeatherIcon size={16} className="text-stone-400" />
-                            <span className="capitalize">{condition}</span>
+                          <li key={event.id} className={`rounded px-3 py-2 text-sm ${
+                            isToday ? "bg-stone-700/70" : isPast ? "bg-stone-700/20 text-stone-500" : "bg-stone-700/30 text-stone-400"
+                          }`}>
+                            <span className={`mr-2 rounded px-1.5 py-0.5 text-xs uppercase ${
+                              isPast ? "bg-stone-700 text-stone-400" : "bg-stone-600 text-stone-300"
+                            }`}>
+                              {event.type.replace("_", " ")}
+                            </span>
+                            {event.description}
                           </li>
                         );
-                      }
-                      return (
-                        <li key={event.id} className="rounded bg-stone-700/70 px-3 py-2 text-sm">
-                          <span className="mr-2 rounded bg-stone-600 px-1.5 py-0.5 text-xs uppercase text-stone-300">
-                            {event.type.replace("_", " ")}
-                          </span>
-                          {event.description}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </div>
-            )}
-
-            {/* Upcoming Days */}
-            {upcomingDays.length > 0 && (
-              <div>
-                <div className="mb-2 text-sm font-medium text-blue-400">Upcoming</div>
-                <div className="space-y-3">
-                  {upcomingDays.map((dayRecord) => (
-                    <div key={dayRecord.day} className="border-l-2 border-blue-700 pl-3">
-                      <div className="mb-1 text-sm text-blue-300">Day {dayRecord.day}</div>
-                      {dayRecord.events.length === 0 ? (
-                        <p className="text-sm text-stone-600 italic">No events</p>
-                      ) : (
-                        <ul className="space-y-1">
-                          {dayRecord.events.map((event) => {
-                            if (event.type === "weather_change") {
-                              const condition = getWeatherFromDescription(event.description);
-                              const WeatherIcon = getWeatherIcon(condition);
-                              return (
-                                <li key={event.id} className="flex items-center gap-2 rounded bg-stone-700/30 px-3 py-2 text-sm text-stone-400">
-                                  <WeatherIcon size={16} className="text-stone-500" />
-                                  <span className="capitalize">{condition}</span>
-                                </li>
-                              );
-                            }
-                            return (
-                              <li key={event.id} className="rounded bg-stone-700/30 px-3 py-2 text-sm text-stone-400">
-                                <span className="mr-2 rounded bg-stone-600 px-1.5 py-0.5 text-xs uppercase text-stone-300">
-                                  {event.type.replace("_", " ")}
-                                </span>
-                                {event.description}
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      )}
-                    </div>
-                  ))}
+                      })}
+                    </ul>
+                  )}
                 </div>
-              </div>
-            )}
-
-            {/* Extend Forecast Button */}
-            {showExtendButton && (
-              <button
-                onClick={handleExtendForecast}
-                className="w-full rounded bg-blue-700 px-3 py-2 text-sm hover:bg-blue-600"
-              >
-                Generate Next 28 Days
-              </button>
-            )}
-
-            {/* Past Days */}
-            {pastDays.length > 0 && (
-              <div>
-                <div className="mb-2 text-sm font-medium text-stone-500">Past Events</div>
-                <div className="space-y-3">
-                  {pastDays.map((dayRecord) => (
-                    <div key={dayRecord.day} className="border-l-2 border-stone-700 pl-3">
-                      <div className="mb-1 text-sm text-stone-500">Day {dayRecord.day}</div>
-                      {dayRecord.events.length === 0 ? (
-                        <p className="text-sm text-stone-600 italic">No events</p>
-                      ) : (
-                        <ul className="space-y-1">
-                          {dayRecord.events.map((event) => {
-                            if (event.type === "weather_change") {
-                              const condition = getWeatherFromDescription(event.description);
-                              const WeatherIcon = getWeatherIcon(condition);
-                              return (
-                                <li key={event.id} className="flex items-center gap-2 rounded bg-stone-700/20 px-3 py-2 text-sm text-stone-500">
-                                  <WeatherIcon size={16} className="text-stone-600" />
-                                  <span className="capitalize">{condition}</span>
-                                </li>
-                              );
-                            }
-                            return (
-                              <li key={event.id} className="rounded bg-stone-700/20 px-3 py-2 text-sm text-stone-500">
-                                <span className="mr-2 rounded bg-stone-700 px-1.5 py-0.5 text-xs uppercase text-stone-400">
-                                  {event.type.replace("_", " ")}
-                                </span>
-                                {event.description}
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+              );
+            })}
           </div>
+
+          {/* Extend Forecast Button */}
+          {showExtendButton && weekOffset >= 0 && (
+            <button
+              onClick={handleExtendForecast}
+              className="mt-4 w-full rounded bg-blue-700 px-3 py-2 text-sm hover:bg-blue-600"
+            >
+              Generate Next 28 Days
+            </button>
+          )}
         </section>
         )}
 
