@@ -130,7 +130,7 @@ export function DungeonDetail({
   const themeBadge = THEME_BADGES[dungeon.theme] ?? { label: dungeon.theme, color: "bg-stone-600" };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4">
       {/* Header */}
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-3">
