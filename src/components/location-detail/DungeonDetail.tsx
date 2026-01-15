@@ -246,45 +246,48 @@ export function DungeonDetail({
       {/* Encounter Table */}
       <EncounterTable seed={`${seed}-encounter`} onReroll={onReroll} />
 
-      {/* Dungeon Map */}
-      {hasSpatialLayout && (
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <MapIcon className="h-4 w-4 text-stone-400" />
-            <h3 className="text-sm font-semibold text-stone-200">Dungeon Map</h3>
-          </div>
-          <DungeonMap
-            dungeon={dungeon as SpatialDungeon}
-            selectedRoomId={selectedRoomId}
-            onRoomClick={handleRoomClick}
-          />
-          <p className="text-xs text-stone-500">
-            Click a room to see details. Pan and zoom with gestures.
-          </p>
-        </div>
-      )}
-
-      {/* Room Layout */}
-      <div className="space-y-3">
-        <h3 className="text-sm font-semibold text-stone-200">Room Layout</h3>
-        <div className="space-y-2">
-          {sortedRooms.map((room, index) => (
-            <div
-              key={room.id}
-              ref={(el) => {
-                if (el) roomCardRefs.current.set(room.id, el);
-              }}
-              onClick={() => setSelectedRoomId(room.id)}
-            >
-              <RoomCard
-                room={room}
-                roomNumber={index + 1}
-                expanded={expandedRooms.has(index)}
-                onToggle={() => toggleRoom(index)}
-                selected={room.id === selectedRoomId}
-              />
+      {/* Two-column layout: Map (left) + Rooms (right) on desktop */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* Left column: Dungeon Map */}
+        {hasSpatialLayout && (
+          <section className="space-y-3 lg:sticky lg:top-4 lg:self-start">
+            <div className="flex items-center gap-2">
+              <MapIcon className="h-4 w-4 text-stone-400" />
+              <h3 className="text-sm font-semibold text-stone-200">Dungeon Map</h3>
             </div>
-          ))}
+            <DungeonMap
+              dungeon={dungeon as SpatialDungeon}
+              selectedRoomId={selectedRoomId}
+              onRoomClick={handleRoomClick}
+            />
+            <p className="text-xs text-stone-500">
+              Click a room to see details. Pan and zoom with gestures.
+            </p>
+          </section>
+        )}
+
+        {/* Right column: Room Layout */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-semibold text-stone-200">Room Layout</h3>
+          <div className="space-y-2">
+            {sortedRooms.map((room, index) => (
+              <div
+                key={room.id}
+                ref={(el) => {
+                  if (el) roomCardRefs.current.set(room.id, el);
+                }}
+                onClick={() => setSelectedRoomId(room.id)}
+              >
+                <RoomCard
+                  room={room}
+                  roomNumber={index + 1}
+                  expanded={expandedRooms.has(index)}
+                  onToggle={() => toggleRoom(index)}
+                  selected={room.id === selectedRoomId}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
