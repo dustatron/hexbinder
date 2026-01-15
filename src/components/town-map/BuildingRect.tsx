@@ -1,5 +1,5 @@
 import type { TownBuilding } from "~/models";
-import { BUILDING_COLOR, SCALE } from "./theme-colors";
+import { BUILDING_FILL, BUILDING_STROKE, BUILDING_STROKE_WIDTH, SCALE } from "./theme-colors";
 
 interface BuildingRectProps {
   building: TownBuilding;
@@ -37,16 +37,15 @@ export function BuildingRect({ building, selected, onClick }: BuildingRectProps)
     >
       <path
         d={pathData}
-        fill={BUILDING_COLOR}
-        stroke="#292524"
-        strokeWidth={selected ? 2 : 0.5}
-        opacity={0.9}
+        fill={BUILDING_FILL}
+        stroke={BUILDING_STROKE}
+        strokeWidth={selected ? 1.5 : BUILDING_STROKE_WIDTH}
       />
       {selected && (
         <path
           d={pathData}
           fill="none"
-          stroke="#f59e0b"
+          stroke="#c9a050"
           strokeWidth={2}
           strokeDasharray="3 3"
         />

@@ -1,6 +1,10 @@
-import type { WorldData, HexCoord, DungeonTheme, SettlementSize, Dungeon, Settlement } from "~/models";
+import type { WorldData, HexCoord, DungeonTheme, SettlementSize, Dungeon, Settlement, SpatialSettlement } from "~/models";
 import { placeDungeon, placeWildernessLair } from "~/generators/DungeonGenerator";
 import { placeSettlement } from "~/generators/SettlementGenerator";
+import { generateSites } from "~/generators/SiteGenerator";
+import { generateSettlementNPCs } from "~/generators/NPCGenerator";
+import { generateRumors, generateNotices } from "~/generators/RumorGenerator";
+import { assignNPCsToBuildings, linkSitesToBuildings } from "~/generators/TownLayoutEngine";
 import { SeededRandom } from "~/generators/SeededRandom";
 import { nanoid } from "nanoid";
 
@@ -41,6 +45,7 @@ export type RegenerationType =
 
 /**
  * Remove any location at this hex, cleaning up world data.
+ * Also removes NPCs that belonged to that location.
  */
 export function clearHexLocation(world: WorldData, coord: HexCoord): WorldData {
   const hex = world.hexes.find(h => h.coord.q === coord.q && h.coord.r === coord.r);
@@ -48,8 +53,23 @@ export function clearHexLocation(world: WorldData, coord: HexCoord): WorldData {
 
   const locationId = hex.locationId;
 
+  // Find the location to get its NPCs
+  const location = world.locations.find(loc => loc.id === locationId);
+  const npcIdsToRemove = new Set<string>();
+
+  if (location && location.type === "settlement") {
+    const settlement = location as Settlement;
+    // Collect all NPC IDs from this settlement
+    for (const npcId of settlement.npcIds) {
+      npcIdsToRemove.add(npcId);
+    }
+  }
+
   // Remove location from locations array
   const locations = world.locations.filter(loc => loc.id !== locationId);
+
+  // Remove NPCs that belonged to this location
+  const npcs = world.npcs.filter(npc => !npcIdsToRemove.has(npc.id));
 
   // Clear hex locationId
   const hexes = world.hexes.map(h => {
@@ -64,6 +84,7 @@ export function clearHexLocation(world: WorldData, coord: HexCoord): WorldData {
     ...world,
     hexes,
     locations,
+    npcs,
   };
 }
 
@@ -225,10 +246,59 @@ function generateSettlementAtHex(
 
   if (!result) return world;
 
+  const settlement = result.settlement;
+
+  // Generate sites for this settlement (key locations like taverns, temples, etc.)
+  const sites = generateSites({ seed, settlement });
+  settlement.sites = sites;
+
+  // Link sites to landmark buildings (needed since layout was generated before sites)
+  linkSitesToBuildings(settlement);
+
+  // Generate NPCs for this settlement
+  const { npcs: settlementNPCs, mayorNpcId, siteOwnerMap } = generateSettlementNPCs({
+    seed,
+    settlement,
+    sites: settlement.sites,
+  });
+
+  // Link NPC IDs to settlement
+  settlement.npcIds = settlementNPCs.map((n) => n.id);
+  settlement.mayorNpcId = mayorNpcId;
+
+  // Link site owners
+  for (const site of settlement.sites) {
+    const ownerId = siteOwnerMap.get(site.id);
+    if (ownerId) {
+      site.ownerId = ownerId;
+    }
+  }
+
+  // Assign NPCs to buildings in spatial settlement
+  if ("wards" in settlement && Array.isArray(settlement.wards)) {
+    assignNPCsToBuildings(
+      settlement as unknown as Parameters<typeof assignNPCsToBuildings>[0],
+      settlementNPCs
+    );
+  }
+
+  // Generate rumors and notices
+  settlement.rumors = generateRumors({
+    seed: `${seed}-rumors`,
+    count: Math.max(2, Math.floor(settlementNPCs.length / 2)),
+    hooks: world.hooks,
+  });
+
+  settlement.notices = generateNotices({
+    seed: `${seed}-notices`,
+    count: Math.max(1, Math.floor(settlementNPCs.length / 3)),
+    settlementSize: settlement.size,
+  });
+
   // placeSettlement mutates the hex in the array, but we want immutable updates
   const hexes = world.hexes.map(h => {
     if (h.coord.q === hex.coord.q && h.coord.r === hex.coord.r) {
-      return { ...h, locationId: result.settlement.id };
+      return { ...h, locationId: settlement.id };
     }
     return h;
   });
@@ -236,6 +306,7 @@ function generateSettlementAtHex(
   return {
     ...world,
     hexes,
-    locations: [...world.locations, result.settlement],
+    locations: [...world.locations, settlement],
+    npcs: [...world.npcs, ...settlementNPCs],
   };
 }

@@ -1,11 +1,12 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useCallback } from "react";
 import { useGesture } from "@use-gesture/react";
 import { motion, useMotionValue } from "framer-motion";
+import { Plus, Minus, RotateCcw } from "lucide-react";
 import type { SpatialSettlement } from "~/models";
 import { WardPolygon } from "./WardPolygon";
 import { StreetPath } from "./StreetPath";
 import { WallPath } from "./WallPath";
-import { SCALE } from "./theme-colors";
+import { SCALE, PARCHMENT_BG, STREET_COLOR } from "./theme-colors";
 
 interface TownMapProps {
   settlement: SpatialSettlement;
@@ -42,6 +43,23 @@ export function TownMap({
     };
   }, [settlement.center, settlement.radius]);
 
+  // Zoom control handlers
+  const zoomIn = useCallback(() => {
+    const currentScale = scale.get();
+    scale.set(Math.min(currentScale + 0.3, 3));
+  }, [scale]);
+
+  const zoomOut = useCallback(() => {
+    const currentScale = scale.get();
+    scale.set(Math.max(currentScale - 0.3, 0.5));
+  }, [scale]);
+
+  const resetView = useCallback(() => {
+    scale.set(1);
+    x.set(0);
+    y.set(0);
+  }, [scale, x, y]);
+
   // Gesture bindings
   const bind = useGesture(
     {
@@ -70,11 +88,13 @@ export function TownMap({
   );
 
   return (
-    <div
-      ref={containerRef}
-      className="h-96 w-full overflow-hidden touch-none rounded-lg bg-amber-50 border border-stone-300"
-      {...bind()}
-    >
+    <div className="relative">
+      <div
+        ref={containerRef}
+        className="h-[48rem] w-full overflow-hidden touch-none rounded-lg border border-stone-400"
+        style={{ backgroundColor: PARCHMENT_BG }}
+        {...bind()}
+      >
       <motion.svg
         className="h-full w-full"
         viewBox={`${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`}
@@ -85,23 +105,46 @@ export function TownMap({
           scale,
         }}
       >
-        {/* Background */}
+        {/* SVG Definitions */}
+        <defs>
+          {/* Parchment grain texture */}
+          <pattern id="parchment-grain" width="100" height="100" patternUnits="userSpaceOnUse">
+            <rect width="100" height="100" fill={PARCHMENT_BG} />
+            <circle cx="20" cy="30" r="0.5" fill="#d8ccc0" opacity="0.4" />
+            <circle cx="60" cy="10" r="0.3" fill="#e0d4c8" opacity="0.3" />
+            <circle cx="80" cy="70" r="0.4" fill="#d0c4b8" opacity="0.35" />
+            <circle cx="40" cy="80" r="0.35" fill="#e0d8cc" opacity="0.3" />
+            <circle cx="10" cy="60" r="0.45" fill="#d4c8bc" opacity="0.35" />
+          </pattern>
+          {/* Vignette gradient */}
+          <radialGradient id="vignette" cx="50%" cy="50%" r="60%">
+            <stop offset="70%" stopColor="transparent" />
+            <stop offset="100%" stopColor="rgba(80, 60, 40, 0.08)" />
+          </radialGradient>
+        </defs>
         <rect
           x={viewBox.minX}
           y={viewBox.minY}
           width={viewBox.width}
           height={viewBox.height}
-          fill="#fefce8"
+          fill={PARCHMENT_BG}
+        />
+        <rect
+          x={viewBox.minX}
+          y={viewBox.minY}
+          width={viewBox.width}
+          height={viewBox.height}
+          fill="url(#parchment-grain)"
         />
 
         {/* Plaza (if present) */}
         {settlement.plaza && (
           <path
             d={polygonToPathData(settlement.plaza.vertices)}
-            fill="#e7e5e4"
-            stroke="#78716c"
+            fill={STREET_COLOR}
+            stroke="#8b8070"
             strokeWidth={1}
-            opacity={0.5}
+            opacity={0.7}
           />
         )}
 
@@ -129,16 +172,42 @@ export function TownMap({
         {/* Wall layer (on top) */}
         {settlement.wall && <WallPath wall={settlement.wall} />}
 
-        {/* Center marker for town center */}
-        <circle
-          cx={settlement.center.x * SCALE}
-          cy={settlement.center.y * SCALE}
-          r={3}
-          fill="#f59e0b"
-          stroke="#78716c"
-          strokeWidth={1}
+        {/* Vignette overlay */}
+        <rect
+          x={viewBox.minX}
+          y={viewBox.minY}
+          width={viewBox.width}
+          height={viewBox.height}
+          fill="url(#vignette)"
         />
+
       </motion.svg>
+      </div>
+
+      {/* Zoom controls */}
+      <div className="absolute right-2 top-2 flex flex-col gap-1">
+        <button
+          onClick={zoomIn}
+          className="rounded bg-stone-800/80 p-1.5 text-stone-300 hover:bg-stone-700 hover:text-stone-100"
+          title="Zoom in"
+        >
+          <Plus size={16} />
+        </button>
+        <button
+          onClick={zoomOut}
+          className="rounded bg-stone-800/80 p-1.5 text-stone-300 hover:bg-stone-700 hover:text-stone-100"
+          title="Zoom out"
+        >
+          <Minus size={16} />
+        </button>
+        <button
+          onClick={resetView}
+          className="rounded bg-stone-800/80 p-1.5 text-stone-300 hover:bg-stone-700 hover:text-stone-100"
+          title="Reset view"
+        >
+          <RotateCcw size={14} />
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import type { TownWard } from "~/models";
 import { WARD_COLORS, SCALE } from "./theme-colors";
-import { BuildingRect } from "./BuildingRect";
+import { BuildingWithRoof } from "./BuildingWithRoof";
 
 interface WardPolygonProps {
   ward: TownWard;
@@ -42,20 +42,20 @@ export function WardPolygon({
 
   return (
     <g className="ward-polygon">
-      {/* Ward background */}
+      {/* Ward background - subtle fill only, buildings define the shape */}
       <path
         d={pathData}
         fill={colors.fill}
-        stroke={isSelected ? "#f59e0b" : colors.stroke}
-        strokeWidth={isSelected ? 3 : 1.5}
-        opacity={isSelected ? 0.8 : 0.6}
-        className={onWardClick ? "cursor-pointer hover:opacity-80" : ""}
+        stroke={isSelected ? "#f59e0b" : "none"}
+        strokeWidth={isSelected ? 2 : 0}
+        opacity={isSelected ? 0.5 : 0.3}
+        className={onWardClick ? "cursor-pointer hover:opacity-50" : ""}
         onClick={onWardClick ? () => onWardClick(ward.id) : undefined}
       />
 
-      {/* Buildings within ward */}
+      {/* Buildings within ward (with 3D roofs) */}
       {ward.buildings.map((building) => (
-        <BuildingRect
+        <BuildingWithRoof
           key={building.id}
           building={building}
           selected={building.id === selectedBuildingId}

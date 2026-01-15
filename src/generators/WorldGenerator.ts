@@ -19,6 +19,7 @@ import { SeededRandom } from "./SeededRandom";
 import { generateSpiralTerrain, type MapSize, type StartPosition } from "./SpiralTerrainGenerator";
 import { generateRivers } from "./RiverGenerator";
 import { placeSettlement } from "./SettlementGenerator";
+import { assignNPCsToBuildings, linkSitesToBuildings } from "./TownLayoutEngine";
 import { placeDungeon, placeWildernessLair } from "./DungeonGenerator";
 import { generateSites } from "./SiteGenerator";
 import { generateFactions } from "./FactionGenerator";
@@ -113,6 +114,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     if (startSettlement) {
       const sites = generateSites({ seed, settlement: startSettlement.settlement });
       startSettlement.settlement.sites = sites;
+      linkSitesToBuildings(startSettlement.settlement);
       startSettlement.settlement.rumors = generateRumors({ seed: `${seed}-rumors-0`, factions });
       startSettlement.settlement.notices = generateNotices({ seed: `${seed}-notices-0`, settlementSize: startSettlement.settlement.size });
       settlements.push(startSettlement.settlement);
@@ -138,6 +140,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     if (result) {
       const sites = generateSites({ seed, settlement: result.settlement });
       result.settlement.sites = sites;
+      linkSitesToBuildings(result.settlement);
       result.settlement.rumors = generateRumors({ seed: `${seed}-rumors-${i + 1}`, factions });
       result.settlement.notices = generateNotices({ seed: `${seed}-notices-${i + 1}`, settlementSize: result.settlement.size });
       settlements.push(result.settlement);
@@ -155,6 +158,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     if (result) {
       const sites = generateSites({ seed, settlement: result.settlement });
       result.settlement.sites = sites;
+      linkSitesToBuildings(result.settlement);
       result.settlement.rumors = generateRumors({ seed: `${seed}-rumors-extra-${i}`, factions });
       result.settlement.notices = generateNotices({ seed: `${seed}-notices-extra-${i}`, settlementSize: result.settlement.size });
       settlements.push(result.settlement);
@@ -282,6 +286,14 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       if (ownerId) {
         site.ownerId = ownerId;
       }
+    }
+
+    // Assign NPCs to buildings in spatial settlement
+    if ("wards" in settlement && Array.isArray(settlement.wards)) {
+      assignNPCsToBuildings(
+        settlement as unknown as Parameters<typeof assignNPCsToBuildings>[0],
+        settlementNPCs
+      );
     }
   }
 

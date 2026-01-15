@@ -5,6 +5,8 @@ import { Button } from "~/components/ui/button";
 interface RegenerateButtonProps {
   onRegenerate: (type: RegenerationType) => void;
   currentLocationType?: "settlement" | "dungeon" | "wilderness" | null;
+  /** The specific type to default the selector to (e.g., "town", "village", "tomb") */
+  defaultType?: RegenerationType;
 }
 
 const REGENERATE_OPTIONS: {
@@ -56,8 +58,9 @@ const REGENERATE_OPTIONS: {
 export function RegenerateButton({
   onRegenerate,
   currentLocationType,
+  defaultType,
 }: RegenerateButtonProps) {
-  const [selected, setSelected] = useState<RegenerationType>("random");
+  const [selected, setSelected] = useState<RegenerationType>(defaultType ?? "random");
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleRegenerate = () => {
@@ -95,7 +98,12 @@ export function RegenerateButton({
         ))}
       </select>
 
-      <Button variant="outline" size="sm" onClick={handleRegenerate}>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={handleRegenerate}
+        className="border-stone-600 bg-stone-800 text-stone-200 hover:bg-stone-700 hover:text-stone-100"
+      >
         Regenerate
       </Button>
 

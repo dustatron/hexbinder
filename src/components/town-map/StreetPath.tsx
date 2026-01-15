@@ -5,10 +5,11 @@ interface StreetPathProps {
   street: TownStreet;
 }
 
+// Street widths - narrow to let buildings dominate
 const STREET_WIDTHS = {
-  main: 6,
-  side: 4,
-  alley: 2,
+  main: 3,
+  side: 2,
+  alley: 1,
 };
 
 /** Convert waypoints to SVG path data */
@@ -27,6 +28,11 @@ function waypointsToPathData(waypoints: { x: number; y: number }[]): string {
   return d;
 }
 
+/**
+ * Street rendered as ground/negative space.
+ * In watabou style, streets are the gaps between buildings.
+ * This renders subtle paths that blend with parchment background.
+ */
 export function StreetPath({ street }: StreetPathProps) {
   const pathData = waypointsToPathData(street.waypoints);
   const width = STREET_WIDTHS[street.width];
@@ -35,6 +41,7 @@ export function StreetPath({ street }: StreetPathProps) {
 
   return (
     <g className="street-path">
+      {/* Street as subtle ground color */}
       <path
         d={pathData}
         stroke={STREET_COLOR}
@@ -42,19 +49,18 @@ export function StreetPath({ street }: StreetPathProps) {
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"
-        opacity={0.8}
+        opacity={0.6}
       />
-      {/* Center line for main streets */}
-      {street.width === "main" && (
-        <path
-          d={pathData}
-          stroke="#a8a29e"
-          strokeWidth={0.5}
-          fill="none"
-          strokeDasharray="2 2"
-          strokeLinecap="round"
-        />
-      )}
+      {/* Subtle edge for definition */}
+      <path
+        d={pathData}
+        stroke="#a89870"
+        strokeWidth={width + 1}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        opacity={0.15}
+      />
     </g>
   );
 }
