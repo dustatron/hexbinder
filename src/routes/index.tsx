@@ -66,12 +66,13 @@ function HomePage() {
   const [settlementCount, setSettlementCount] = useState<number | "">("");
   const [dungeonCount, setDungeonCount] = useState<number | "">("");
   const [lairCount, setLairCount] = useState<number | "">("");
+  const [factionCount, setFactionCount] = useState<number | "">("");
 
   // Default counts by map size
   const defaultCounts = {
-    small: { settlements: 8, dungeons: 4, lairs: 6 },
-    medium: { settlements: 12, dungeons: 8, lairs: 10 },
-    large: { settlements: 20, dungeons: 12, lairs: 16 },
+    small: { settlements: 8, dungeons: 4, lairs: 6, factions: 2 },
+    medium: { settlements: 12, dungeons: 8, lairs: 10, factions: 3 },
+    large: { settlements: 20, dungeons: 12, lairs: 16, factions: 5 },
   };
 
   const refreshWorlds = () => setWorlds(listWorlds());
@@ -86,6 +87,7 @@ function HomePage() {
       settlementCount: settlementCount || undefined,
       dungeonCount: dungeonCount || undefined,
       wildernessLairCount: lairCount || undefined,
+      factionCount: factionCount || undefined,
     });
     saveWorld(world);
     setShowNewForm(false);
@@ -97,6 +99,7 @@ function HomePage() {
     setSettlementCount("");
     setDungeonCount("");
     setLairCount("");
+    setFactionCount("");
     navigate({ to: "/world/$worldId", params: { worldId: world.id } });
   };
 
@@ -256,7 +259,7 @@ function HomePage() {
               </select>
             </div>
             {/* Content Counts */}
-            <div className="mb-4 grid grid-cols-3 gap-3">
+            <div className="mb-4 grid grid-cols-4 gap-3">
               <div>
                 <label className="mb-1 block text-sm text-stone-400">
                   Settlements
@@ -296,6 +299,19 @@ function HomePage() {
                   className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100"
                 />
               </div>
+              <div>
+                <label className="mb-1 block text-sm text-stone-400">
+                  Factions
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  max="10"
+                  value={factionCount === "" ? defaultCounts[mapSize].factions : factionCount}
+                  onChange={(e) => setFactionCount(e.target.value ? parseInt(e.target.value) : "")}
+                  className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100"
+                />
+              </div>
             </div>
             <div className="flex justify-end gap-2">
               <Button
@@ -310,6 +326,7 @@ function HomePage() {
                   setSettlementCount("");
                   setDungeonCount("");
                   setLairCount("");
+                  setFactionCount("");
                 }}
               >
                 Cancel
