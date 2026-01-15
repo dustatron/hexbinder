@@ -170,7 +170,11 @@ function generateDungeonAtHex(
   forcedTheme?: DungeonTheme
 ): WorldData {
   // Create a mutable hex reference for placeDungeon
-  const hexRef = { ...hex };
+  // If water terrain, change to hills first (dungeons can't spawn in water)
+  const hexRef = {
+    ...hex,
+    terrain: hex.terrain === "water" ? "hills" as TerrainType : hex.terrain,
+  };
 
   const result = placeDungeon({
     seed,
@@ -180,10 +184,14 @@ function generateDungeonAtHex(
 
   if (!result) return world;
 
-  // Update hex with new locationId
+  // Update hex with new locationId and terrain change if needed
   const hexes = world.hexes.map(h => {
     if (h.coord.q === hex.coord.q && h.coord.r === hex.coord.r) {
-      return { ...h, locationId: result.dungeon.id };
+      return {
+        ...h,
+        locationId: result.dungeon.id,
+        terrain: hexRef.terrain, // Apply terrain change if water was converted
+      };
     }
     return h;
   });
@@ -208,8 +216,17 @@ function generateWildernessAtHex(
   seed: string,
   forcedTheme?: DungeonTheme
 ): WorldData {
-  // Create a mutable hex reference
-  const hexRef = { ...hex };
+  // Determine terrain - if water and not sea_cave, convert to appropriate terrain
+  const targetTerrain = LAIR_TERRAIN_MAP[forcedTheme ?? ""];
+  let workingTerrain = hex.terrain;
+
+  if (hex.terrain === "water" && forcedTheme !== "sea_cave") {
+    // Convert water to forest for most lairs
+    workingTerrain = targetTerrain ?? "forest";
+  }
+
+  // Create a mutable hex reference with correct terrain
+  const hexRef = { ...hex, terrain: workingTerrain };
 
   // If forcing a theme, use placeDungeon with lair size
   if (forcedTheme) {
@@ -222,15 +239,15 @@ function generateWildernessAtHex(
 
     if (!result) return world;
 
-    // Determine if terrain should change based on lair type
-    const newTerrain = LAIR_TERRAIN_MAP[forcedTheme];
+    // Determine final terrain - use LAIR_TERRAIN_MAP if set, otherwise use working terrain
+    const finalTerrain = targetTerrain ?? workingTerrain;
 
     const hexes = world.hexes.map(h => {
       if (h.coord.q === hex.coord.q && h.coord.r === hex.coord.r) {
         return {
           ...h,
           locationId: result.dungeon.id,
-          ...(newTerrain && { terrain: newTerrain }),
+          terrain: finalTerrain,
         };
       }
       return h;
