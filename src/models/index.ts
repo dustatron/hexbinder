@@ -776,6 +776,8 @@ export type Visibility = "clear" | "hazy" | "poor" | "none";
 export interface WeatherState {
   condition: WeatherCondition;
   temperature: Temperature;
+  tempLow: number;  // Fahrenheit
+  tempHigh: number; // Fahrenheit
   wind: WindLevel;
   visibility?: Visibility;
   duration?: number; // days

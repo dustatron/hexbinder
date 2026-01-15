@@ -114,6 +114,16 @@ const STORM_CONDITIONS: WeatherCondition[] = [
   "blizzard",
 ];
 
+// Temperature ranges in Fahrenheit [minLow, maxLow, minHigh, maxHigh]
+const TEMP_RANGES: Record<Temperature, [number, number, number, number]> = {
+  freezing: [-10, 15, 10, 32],
+  cold: [20, 35, 35, 45],
+  cool: [38, 50, 50, 62],
+  mild: [50, 60, 62, 72],
+  warm: [60, 72, 75, 88],
+  hot: [72, 85, 88, 105],
+};
+
 export interface WeatherGeneratorOptions {
   seed: string;
   season: Season;
@@ -150,9 +160,16 @@ export function generateWeather(options: WeatherGeneratorOptions): WeatherState 
     }
   }
 
+  // Generate numeric temps from range
+  const [minLow, maxLow, minHigh, maxHigh] = TEMP_RANGES[temperature];
+  const tempLow = rng.between(minLow, maxLow);
+  const tempHigh = rng.between(Math.max(minHigh, tempLow + 5), maxHigh);
+
   return {
     condition,
     temperature,
+    tempLow,
+    tempHigh,
     wind,
   };
 }

@@ -104,6 +104,8 @@ export function createMockWorld(name?: string, seed?: string): WorldData {
       weather: {
         condition: "clear",
         temperature: "mild",
+        tempLow: 55,
+        tempHigh: 68,
         wind: "breeze",
       },
       moonPhase: "waxing",

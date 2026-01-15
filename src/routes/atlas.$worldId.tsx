@@ -270,6 +270,9 @@ function AtlasPage() {
                   {world.state.weather.condition.replace("_", " ")}
                 </span>
               </div>
+              <p className="mt-1 text-sm text-stone-300">
+                {world.state.weather.tempLow}° / {world.state.weather.tempHigh}°F
+              </p>
               <p className="mt-1 flex items-center justify-end gap-2 text-sm text-stone-400">
                 <Moon size={14} />
                 {MOON_LABELS[world.state.moonPhase]}
