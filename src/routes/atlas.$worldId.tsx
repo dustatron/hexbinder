@@ -67,20 +67,21 @@ function linkifyDescription(
   locations: Location[]
 ): React.ReactNode {
   // Build a map of names to their link info
-  const linkMap: Array<{ name: string; type: "faction" | "location"; id: string }> = [];
+  const linkMap: Array<{ name: string; type: "faction" | "settlement" | "dungeon"; id: string }> = [];
 
   for (const faction of factions) {
     linkMap.push({ name: faction.name, type: "faction", id: faction.id });
   }
   for (const location of locations) {
-    linkMap.push({ name: location.name, type: "location", id: location.id });
+    const locType = location.type === "dungeon" ? "dungeon" : "settlement";
+    linkMap.push({ name: location.name, type: locType, id: location.id });
   }
 
   // Sort by name length descending to match longer names first
   linkMap.sort((a, b) => b.name.length - a.name.length);
 
   // Find all matches and their positions
-  const matches: Array<{ start: number; end: number; name: string; type: "faction" | "location"; id: string }> = [];
+  const matches: Array<{ start: number; end: number; name: string; type: "faction" | "settlement" | "dungeon"; id: string }> = [];
 
   for (const item of linkMap) {
     let searchStart = 0;
@@ -120,6 +121,17 @@ function linkifyDescription(
           to="/world/$worldId/faction/$factionId"
           params={{ worldId, factionId: match.id }}
           className="rounded bg-purple-500/20 px-1 py-0.5 text-purple-300 hover:bg-purple-500/30"
+        >
+          {match.name}
+        </Link>
+      );
+    } else if (match.type === "dungeon") {
+      result.push(
+        <Link
+          key={`${match.id}-${match.start}`}
+          to="/world/$worldId/location/$locationId"
+          params={{ worldId, locationId: match.id }}
+          className="rounded bg-red-500/20 px-1 py-0.5 text-red-300 hover:bg-red-500/30"
         >
           {match.name}
         </Link>
