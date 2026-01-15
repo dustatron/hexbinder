@@ -397,6 +397,38 @@ function AtlasPage() {
                             </li>
                           );
                         }
+                        if (event.type === "clock_tick" && event.linkedClockId) {
+                          const clock = world.clocks.find((c) => c.id === event.linkedClockId);
+                          if (clock) {
+                            return (
+                              <li key={event.id} className={`rounded px-3 py-2 text-sm ${
+                                isToday ? "bg-stone-700/70" : isPast ? "bg-stone-700/20 text-stone-500" : "bg-stone-700/30 text-stone-400"
+                              }`}>
+                                <div className="flex items-center justify-between gap-2">
+                                  <span>{linkifyDescription(event.description, world.id, world.factions, world.locations)}</span>
+                                </div>
+                                <div className="mt-2 flex items-center gap-2">
+                                  <span className="text-xs text-stone-400">{clock.name}</span>
+                                  <div className="flex gap-0.5">
+                                    {Array.from({ length: clock.segments }).map((_, i) => (
+                                      <div
+                                        key={i}
+                                        className={`h-2 w-3 rounded-sm ${
+                                          i < clock.filled
+                                            ? "bg-purple-500"
+                                            : "bg-stone-600"
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
+                                  <span className="text-xs text-stone-500">
+                                    {clock.filled}/{clock.segments}
+                                  </span>
+                                </div>
+                              </li>
+                            );
+                          }
+                        }
                         return (
                           <li key={event.id} className={`rounded px-3 py-2 text-sm ${
                             isToday ? "bg-stone-700/70" : isPast ? "bg-stone-700/20 text-stone-500" : "bg-stone-700/30 text-stone-400"
