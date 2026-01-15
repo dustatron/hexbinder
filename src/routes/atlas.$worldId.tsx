@@ -57,6 +57,95 @@ const MOON_LABELS: Record<MoonPhase, string> = {
 
 type TabId = "factions" | "events" | "settlements" | "dungeons";
 
+import type { Faction, Location } from "~/models";
+
+// Parse description and replace faction/location names with linked badges
+function linkifyDescription(
+  description: string,
+  worldId: string,
+  factions: Faction[],
+  locations: Location[]
+): React.ReactNode {
+  // Build a map of names to their link info
+  const linkMap: Array<{ name: string; type: "faction" | "location"; id: string }> = [];
+
+  for (const faction of factions) {
+    linkMap.push({ name: faction.name, type: "faction", id: faction.id });
+  }
+  for (const location of locations) {
+    linkMap.push({ name: location.name, type: "location", id: location.id });
+  }
+
+  // Sort by name length descending to match longer names first
+  linkMap.sort((a, b) => b.name.length - a.name.length);
+
+  // Find all matches and their positions
+  const matches: Array<{ start: number; end: number; name: string; type: "faction" | "location"; id: string }> = [];
+
+  for (const item of linkMap) {
+    let searchStart = 0;
+    while (true) {
+      const idx = description.indexOf(item.name, searchStart);
+      if (idx === -1) break;
+      // Check if this position overlaps with existing match
+      const overlaps = matches.some(m =>
+        (idx >= m.start && idx < m.end) || (idx + item.name.length > m.start && idx + item.name.length <= m.end)
+      );
+      if (!overlaps) {
+        matches.push({ start: idx, end: idx + item.name.length, ...item });
+      }
+      searchStart = idx + 1;
+    }
+  }
+
+  if (matches.length === 0) {
+    return description;
+  }
+
+  // Sort matches by position
+  matches.sort((a, b) => a.start - b.start);
+
+  // Build result with links
+  const result: React.ReactNode[] = [];
+  let lastEnd = 0;
+
+  for (const match of matches) {
+    if (match.start > lastEnd) {
+      result.push(description.slice(lastEnd, match.start));
+    }
+    if (match.type === "faction") {
+      result.push(
+        <Link
+          key={`${match.id}-${match.start}`}
+          to="/world/$worldId/faction/$factionId"
+          params={{ worldId, factionId: match.id }}
+          className="rounded bg-purple-500/20 px-1 py-0.5 text-purple-300 hover:bg-purple-500/30"
+        >
+          {match.name}
+        </Link>
+      );
+    } else {
+      result.push(
+        <Link
+          key={`${match.id}-${match.start}`}
+          to="/world/$worldId/location/$locationId"
+          params={{ worldId, locationId: match.id }}
+          className="rounded bg-amber-500/20 px-1 py-0.5 text-amber-300 hover:bg-amber-500/30"
+        >
+          {match.name}
+        </Link>
+      );
+    }
+    lastEnd = match.end;
+  }
+
+  if (lastEnd < description.length) {
+    result.push(description.slice(lastEnd));
+  }
+
+  return result;
+}
+
 // Extract weather condition from description like "The weather shifts to light rain"
 function getWeatherFromDescription(desc: string): string {
   const match = desc.match(/shifts to (.+)$/);
@@ -296,12 +385,6 @@ function AtlasPage() {
                             </li>
                           );
                         }
-                        const linkedFaction = event.linkedFactionId
-                          ? world.factions.find((f) => f.id === event.linkedFactionId)
-                          : null;
-                        const linkedLocation = event.linkedLocationId
-                          ? world.locations.find((l) => l.id === event.linkedLocationId)
-                          : null;
                         return (
                           <li key={event.id} className={`rounded px-3 py-2 text-sm ${
                             isToday ? "bg-stone-700/70" : isPast ? "bg-stone-700/20 text-stone-500" : "bg-stone-700/30 text-stone-400"
@@ -311,25 +394,7 @@ function AtlasPage() {
                             }`}>
                               {event.type.replace("_", " ")}
                             </span>
-                            {event.description}
-                            {linkedFaction && (
-                              <Link
-                                to="/world/$worldId/faction/$factionId"
-                                params={{ worldId: world.id, factionId: linkedFaction.id }}
-                                className="ml-2 inline-block rounded bg-purple-500/20 px-1.5 py-0.5 text-xs text-purple-300 hover:bg-purple-500/30"
-                              >
-                                {linkedFaction.name}
-                              </Link>
-                            )}
-                            {linkedLocation && (
-                              <Link
-                                to="/world/$worldId/location/$locationId"
-                                params={{ worldId: world.id, locationId: linkedLocation.id }}
-                                className="ml-2 inline-block rounded bg-amber-500/20 px-1.5 py-0.5 text-xs text-amber-300 hover:bg-amber-500/30"
-                              >
-                                {linkedLocation.name}
-                              </Link>
-                            )}
+                            {linkifyDescription(event.description, world.id, world.factions, world.locations)}
                           </li>
                         );
                       })}
