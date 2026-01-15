@@ -36,9 +36,9 @@ const ROOM_ICONS: Record<RoomType, React.ComponentType<{ size?: number; classNam
 
 export function RoomRect({ room, theme, selected, onClick, roomNumber }: RoomRectProps) {
   // Use special colors for entrance/exit rooms
-  const isEntrance = room.type === "entrance" || room.themeRoomType === "entrance";
-  const isExit = room.type === "exit" || room.themeRoomType === "secret_escape";
-  const themeColors = THEME_COLORS[theme];
+  const isEntrance = room.type === "entrance";
+  const isExit = room.type === "exit";
+  const themeColors = THEME_COLORS[theme] ?? THEME_COLORS.cave; // Fallback to cave colors
   const colors = (isEntrance || isExit)
     ? { ...themeColors, ...SPECIAL_ROOM_COLORS.entrance }
     : themeColors;
