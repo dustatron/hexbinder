@@ -48,7 +48,7 @@ export function DungeonDetail({
 }: DungeonDetailProps) {
   const [expandedRooms, setExpandedRooms] = useState<Set<number>>(() => new Set([0]));
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "map">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "map">("map");
   const roomCardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   // Scroll to selected room when clicking on map
@@ -182,17 +182,6 @@ export function DungeonDetail({
       {/* Tab Bar */}
       <div className="flex gap-1 rounded-lg border border-stone-700 bg-stone-800 p-1">
         <button
-          onClick={() => setActiveTab("overview")}
-          className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm transition-colors ${
-            activeTab === "overview"
-              ? "bg-stone-700 text-stone-100"
-              : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
-          }`}
-        >
-          <ScrollText size={16} />
-          Overview
-        </button>
-        <button
           onClick={() => setActiveTab("map")}
           className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm transition-colors ${
             activeTab === "map"
@@ -203,6 +192,17 @@ export function DungeonDetail({
           <MapIcon size={16} />
           Map & Rooms
           <span className="rounded-full bg-stone-600 px-1.5 text-xs">{stats.totalRooms}</span>
+        </button>
+        <button
+          onClick={() => setActiveTab("overview")}
+          className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm transition-colors ${
+            activeTab === "overview"
+              ? "bg-stone-700 text-stone-100"
+              : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
+          }`}
+        >
+          <ScrollText size={16} />
+          Overview
         </button>
       </div>
 

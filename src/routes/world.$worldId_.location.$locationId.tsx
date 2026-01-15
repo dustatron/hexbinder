@@ -133,6 +133,8 @@ function LocationPage() {
             npcs={npcs}
             todayEvents={todayEvents}
             factions={world.factions}
+            hooks={hooks}
+            locations={world.locations}
             worldId={world.id}
             onRegenerate={handleRegenerate}
             onReroll={handleReroll}

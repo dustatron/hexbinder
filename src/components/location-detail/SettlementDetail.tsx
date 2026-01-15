@@ -1,17 +1,140 @@
 import { RefreshCw, Users, Shield, Coins, AlertTriangle, ScrollText, MessageSquare, Building2, User, Flag, Map as MapIcon } from "lucide-react";
-import type { Settlement, NPC, Faction, DayEvent, SettlementSite, WorldData } from "~/models";
-import { isSpatialSettlement, type SpatialSettlement } from "~/models";
+import type { Settlement, NPC, Faction, DayEvent, SettlementSite, WorldData, Hook, Dungeon, Location } from "~/models";
+import { isSpatialSettlement, isDungeon, isSettlement, type SpatialSettlement } from "~/models";
 import type { RegenerationType } from "~/lib/hex-regenerate";
 import { EncounterTable } from "~/components/encounter-table/EncounterTable";
 import { RegenerateButton } from "./RegenerateButton";
 import { TownMap } from "~/components/town-map";
-import { useState } from "react";
+import { useState, useMemo, type ReactNode } from "react";
+import { generateRumors } from "~/generators/RumorGenerator";
+import { nanoid } from "nanoid";
+import { Link } from "@tanstack/react-router";
+
+// Entity types for linked text
+type EntityMatch = {
+  name: string;
+  type: "faction" | "location";
+  id: string;
+  start: number;
+  end: number;
+};
+
+// Parse text and replace entity names with linked badges
+function LinkedText({
+  text,
+  factions,
+  locations,
+  worldId,
+  className,
+}: {
+  text: string;
+  factions: Faction[];
+  locations: Location[];
+  worldId: string;
+  className?: string;
+}) {
+  const parts = useMemo(() => {
+    // Safety check for empty/undefined arrays
+    const safeFactions = factions ?? [];
+    const safeLocations = locations ?? [];
+
+    // Find all entity matches in text
+    const matches: EntityMatch[] = [];
+
+    // Check for faction names
+    for (const faction of safeFactions) {
+      let idx = 0;
+      while ((idx = text.indexOf(faction.name, idx)) !== -1) {
+        matches.push({
+          name: faction.name,
+          type: "faction",
+          id: faction.id,
+          start: idx,
+          end: idx + faction.name.length,
+        });
+        idx += faction.name.length;
+      }
+    }
+
+    // Check for location names (dungeons and settlements)
+    for (const location of safeLocations) {
+      let idx = 0;
+      while ((idx = text.indexOf(location.name, idx)) !== -1) {
+        // Avoid duplicate matches at same position
+        if (!matches.some((m) => m.start === idx)) {
+          matches.push({
+            name: location.name,
+            type: "location",
+            id: location.id,
+            start: idx,
+            end: idx + location.name.length,
+          });
+        }
+        idx += location.name.length;
+      }
+    }
+
+    // Sort by position
+    matches.sort((a, b) => a.start - b.start);
+
+    // Build parts array
+    const result: ReactNode[] = [];
+    let lastEnd = 0;
+
+    for (const match of matches) {
+      // Add text before match
+      if (match.start > lastEnd) {
+        result.push(text.slice(lastEnd, match.start));
+      }
+
+      // Add linked badge
+      if (match.type === "faction") {
+        result.push(
+          <Link
+            key={`${match.type}-${match.id}-${match.start}`}
+            to="/world/$worldId_/faction/$factionId"
+            params={{ worldId_: worldId, factionId: match.id }}
+            className="mx-0.5 inline-flex items-center rounded bg-purple-500/30 px-1.5 py-0.5 text-xs font-medium text-purple-300 hover:bg-purple-500/50"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {match.name}
+          </Link>
+        );
+      } else {
+        result.push(
+          <Link
+            key={`${match.type}-${match.id}-${match.start}`}
+            to="/world/$worldId_/location/$locationId"
+            params={{ worldId_: worldId, locationId: match.id }}
+            className="mx-0.5 inline-flex items-center rounded bg-amber-500/30 px-1.5 py-0.5 text-xs font-medium text-amber-300 hover:bg-amber-500/50"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {match.name}
+          </Link>
+        );
+      }
+
+      lastEnd = match.end;
+    }
+
+    // Add remaining text
+    if (lastEnd < text.length) {
+      result.push(text.slice(lastEnd));
+    }
+
+    return result.length > 0 ? result : [text];
+  }, [text, factions, locations, worldId]);
+
+  return <span className={className}>{parts}</span>;
+}
 
 interface SettlementDetailProps {
   settlement: Settlement;
   npcs: NPC[];
   todayEvents: DayEvent[];
   factions: Faction[];
+  hooks: Hook[];
+  locations: Location[];
   worldId: string;
   onRegenerate: (type: RegenerationType) => void;
   onReroll: () => void;
@@ -61,6 +184,8 @@ export function SettlementDetail({
   npcs,
   todayEvents,
   factions,
+  hooks,
+  locations,
   worldId,
   onRegenerate,
   onReroll,
@@ -163,6 +288,34 @@ export function SettlementDetail({
               r.id === rumorId ? { ...r, used: !r.used } : r
             ),
           };
+        }
+        return loc;
+      });
+      return { ...world, locations: updatedLocations };
+    });
+  };
+
+  // Regenerate all rumors with world-connected content
+  const handleRegenerateRumors = () => {
+    onUpdateWorld((world) => {
+      const dungeons = world.locations.filter(isDungeon) as Dungeon[];
+      const settlements = world.locations.filter(isSettlement) as Settlement[];
+
+      const newRumors = generateRumors({
+        seed: `${seed}-rumors-${nanoid(4)}`,
+        count: 8,
+        hooks: world.hooks,
+        dungeons,
+        npcs: world.npcs,
+        settlements,
+        factions: world.factions,
+        hexes: world.hexes,
+        currentSettlement: settlement,
+      });
+
+      const updatedLocations = world.locations.map((loc) => {
+        if (loc.id === settlement.id && loc.type === "settlement") {
+          return { ...loc, rumors: newRumors };
         }
         return loc;
       });
@@ -474,8 +627,7 @@ export function SettlementDetail({
                         )}
                       </h4>
                       <p className="text-xs text-stone-500 capitalize">
-                        {npc.race} {npc.role ? npc.role.replace("_", " ") : npc.archetype}
-                        {npc.role && ` - ${npc.archetype}`}
+                        {npc.race} - {npc.role ? npc.role.replace("_", " ") : npc.archetype}
                       </p>
                       {npc.siteId && (() => {
                         const site = settlement.sites.find((s) => s.id === npc.siteId);
@@ -528,10 +680,17 @@ export function SettlementDetail({
           {settlement.rumors.length > 0 && (
             <div className="mb-3">
               {/* Header bar */}
-              <div className="mb-2 rounded-t bg-stone-700 px-3 py-1.5">
+              <div className="mb-2 flex items-center justify-between rounded-t bg-stone-700 px-3 py-1.5">
                 <h4 className="text-xs font-medium uppercase tracking-wide text-stone-200">
                   Rumors
                 </h4>
+                <button
+                  onClick={handleRegenerateRumors}
+                  className="rounded p-1 text-stone-400 hover:bg-stone-600 hover:text-stone-200"
+                  title="Generate new rumors"
+                >
+                  <RefreshCw size={14} />
+                </button>
               </div>
               {/* Rumors list with numbers */}
               <ul className="space-y-1">
@@ -554,7 +713,14 @@ export function SettlementDetail({
                     {/* Rumor content */}
                     <div className="flex-1">
                       <div className="flex items-start justify-between">
-                        <p className={`text-stone-300 ${rumor.used ? "opacity-50 line-through" : ""}`}>"{rumor.text}"</p>
+                        <p className={`text-stone-300 ${rumor.used ? "opacity-50 line-through" : ""}`}>
+                          "<LinkedText
+                            text={rumor.text}
+                            factions={factions}
+                            locations={locations}
+                            worldId={worldId}
+                          />"
+                        </p>
                         {rumor.linkedHookId && (
                           <span className={`ml-2 shrink-0 rounded bg-amber-500/20 px-1.5 py-0.5 text-xs text-amber-300 ${rumor.used ? "opacity-50" : ""}`}>
                             Quest
@@ -603,7 +769,12 @@ export function SettlementDetail({
                             </h5>
                           </div>
                           <p className={`mt-1 text-sm text-stone-300 ${notice.used ? "line-through opacity-50" : ""}`}>
-                            {notice.description}
+                            <LinkedText
+                              text={notice.description}
+                              factions={factions}
+                              locations={locations}
+                              worldId={worldId}
+                            />
                           </p>
                           <div className="mt-2 flex items-center gap-3 text-xs">
                             {posterNpc && (

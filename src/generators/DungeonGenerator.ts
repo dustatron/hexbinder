@@ -37,6 +37,7 @@ const DUNGEON_NOUNS: Record<DungeonTheme, string[]> = {
   sewer: ["Sewers", "Undercity", "Drains", "Warrens", "Tunnels"],
   crypt: ["Crypt", "Ossuary", "Charnel House", "Vault", "Catacombs"],
   lair: ["Lair", "Den", "Nest", "Burrow", "Hideout"],
+  shrine: ["Shrine", "Sanctum", "Fane", "Holy Place", "Sacred Grove"],
   // Wilderness lair themes
   bandit_hideout: ["Hideout", "Camp", "Stronghold", "Outpost", "Den"],
   cultist_lair: ["Sanctum", "Temple", "Lair", "Altar", "Chamber"],
@@ -75,6 +76,7 @@ const THEME_WEIGHTS = createWeightedTable<DungeonTheme>({
   sewer: 10,
   crypt: 10,
   lair: 5,
+  shrine: 10,
   // Wilderness themes have 0 weight - selected separately by placeWildernessLair
   bandit_hideout: 0,
   cultist_lair: 0,

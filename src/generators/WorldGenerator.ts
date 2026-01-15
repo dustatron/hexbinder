@@ -117,7 +117,13 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       const sites = generateSites({ seed, settlement: startSettlement.settlement });
       startSettlement.settlement.sites = sites;
       linkSitesToBuildings(startSettlement.settlement);
-      startSettlement.settlement.rumors = generateRumors({ seed: `${seed}-rumors-0`, factions });
+      startSettlement.settlement.rumors = generateRumors({
+        seed: `${seed}-rumors-0`,
+        factions,
+        settlements: [],
+        hexes,
+        currentSettlement: startSettlement.settlement,
+      });
       startSettlement.settlement.notices = generateNotices({ seed: `${seed}-notices-0`, settlementSize: startSettlement.settlement.size });
       settlements.push(startSettlement.settlement);
       settlementHexes.push(startSettlement.hex);
@@ -143,7 +149,13 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       const sites = generateSites({ seed, settlement: result.settlement });
       result.settlement.sites = sites;
       linkSitesToBuildings(result.settlement);
-      result.settlement.rumors = generateRumors({ seed: `${seed}-rumors-${i + 1}`, factions });
+      result.settlement.rumors = generateRumors({
+        seed: `${seed}-rumors-${i + 1}`,
+        factions,
+        settlements,
+        hexes,
+        currentSettlement: result.settlement,
+      });
       result.settlement.notices = generateNotices({ seed: `${seed}-notices-${i + 1}`, settlementSize: result.settlement.size });
       settlements.push(result.settlement);
       settlementHexes.push(result.hex);
@@ -161,7 +173,13 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       const sites = generateSites({ seed, settlement: result.settlement });
       result.settlement.sites = sites;
       linkSitesToBuildings(result.settlement);
-      result.settlement.rumors = generateRumors({ seed: `${seed}-rumors-extra-${i}`, factions });
+      result.settlement.rumors = generateRumors({
+        seed: `${seed}-rumors-extra-${i}`,
+        factions,
+        settlements,
+        hexes,
+        currentSettlement: result.settlement,
+      });
       result.settlement.notices = generateNotices({ seed: `${seed}-notices-extra-${i}`, settlementSize: result.settlement.size });
       settlements.push(result.settlement);
       settlementHexes.push(result.hex);
@@ -401,6 +419,20 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       };
       targetSettlement.rumors.push(goalRumor);
       faction.goalRumorIds.push(goalRumor.id);
+    }
+  }
+
+  // Cap rumors at 8 per settlement, prioritizing linked rumors
+  const MAX_RUMORS = 8;
+  for (const settlement of settlements) {
+    if (settlement.rumors.length > MAX_RUMORS) {
+      // Sort to prioritize linked rumors (hooks/factions) over generic ones
+      settlement.rumors.sort((a, b) => {
+        const aLinked = a.linkedHookId ? 1 : 0;
+        const bLinked = b.linkedHookId ? 1 : 0;
+        return bLinked - aLinked;
+      });
+      settlement.rumors = settlement.rumors.slice(0, MAX_RUMORS);
     }
   }
 

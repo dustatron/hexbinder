@@ -112,6 +112,8 @@ function HexDetailPage() {
             npcs={npcs}
             todayEvents={todayEvents}
             factions={world.factions}
+            hooks={world.hooks}
+            locations={world.locations}
             worldId={world.id}
             onRegenerate={handleRegenerate}
             onReroll={handleReroll}

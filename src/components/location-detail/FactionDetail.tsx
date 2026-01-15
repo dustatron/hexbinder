@@ -204,7 +204,7 @@ export function FactionDetail({
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-stone-500 capitalize">{npc.race} {npc.archetype}</p>
+                <p className="text-xs text-stone-500 capitalize">{npc.race} - {npc.role ? npc.role.replace("_", " ") : npc.archetype}</p>
               </li>
             ))}
           </ul>

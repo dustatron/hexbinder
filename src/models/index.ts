@@ -540,6 +540,7 @@ export type DungeonTheme =
   | "sewer"
   | "crypt"
   | "lair"
+  | "shrine"
   // Wilderness lair themes
   | "bandit_hideout"
   | "cultist_lair"

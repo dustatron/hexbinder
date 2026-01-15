@@ -1,4 +1,5 @@
 import type { WorldData, HexCoord, DungeonTheme, SettlementSize, Dungeon, Settlement, SpatialSettlement, TerrainType } from "~/models";
+import { isDungeon, isSettlement } from "~/models";
 import { placeDungeon, placeWildernessLair } from "~/generators/DungeonGenerator";
 import { placeSettlement } from "~/generators/SettlementGenerator";
 import { generateSites } from "~/generators/SiteGenerator";
@@ -9,7 +10,7 @@ import { SeededRandom } from "~/generators/SeededRandom";
 import { nanoid } from "nanoid";
 
 // Dungeon themes (standard)
-const DUNGEON_THEMES = ["tomb", "cave", "temple", "mine", "fortress", "sewer", "crypt", "lair"] as const;
+const DUNGEON_THEMES = ["tomb", "cave", "temple", "mine", "fortress", "sewer", "crypt", "lair", "shrine"] as const;
 
 // Wilderness lair themes
 const WILDERNESS_THEMES = ["bandit_hideout", "cultist_lair", "witch_hut", "sea_cave", "beast_den", "floating_keep"] as const;
@@ -36,6 +37,7 @@ export type RegenerationType =
   | "sewer"
   | "crypt"
   | "lair"
+  | "shrine"
   // Wilderness lair themes
   | "bandit_hideout"
   | "cultist_lair"
@@ -333,11 +335,20 @@ function generateSettlementAtHex(
     );
   }
 
-  // Generate rumors and notices
+  // Generate rumors and notices with world-connected content
+  const existingDungeons = world.locations.filter(isDungeon) as Dungeon[];
+  const existingSettlements = world.locations.filter(isSettlement) as Settlement[];
+
   settlement.rumors = generateRumors({
     seed: `${seed}-rumors`,
-    count: Math.max(2, Math.floor(settlementNPCs.length / 2)),
+    count: Math.min(8, Math.max(4, Math.floor(settlementNPCs.length / 2))),
     hooks: world.hooks,
+    factions: world.factions,
+    dungeons: existingDungeons,
+    npcs: [...world.npcs, ...settlementNPCs],
+    settlements: existingSettlements,
+    hexes: world.hexes,
+    currentSettlement: settlement,
   });
 
   settlement.notices = generateNotices({

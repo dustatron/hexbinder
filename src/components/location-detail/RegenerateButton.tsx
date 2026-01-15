@@ -48,6 +48,7 @@ const REGENERATE_OPTIONS: {
       { value: "tomb", label: "Tomb" },
       { value: "cave", label: "Cave" },
       { value: "temple", label: "Temple" },
+      { value: "shrine", label: "Shrine" },
       { value: "mine", label: "Mine" },
       { value: "fortress", label: "Fortress" },
       { value: "sewer", label: "Sewer" },

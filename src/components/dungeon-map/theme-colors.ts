@@ -13,6 +13,7 @@ export const THEME_COLORS: Record<
   sewer: { fill: "#14532d", stroke: "#166534", passage: "#15803d" },
   crypt: { fill: "#1c1917", stroke: "#44403c", passage: "#292524" },
   lair: { fill: "#450a0a", stroke: "#7f1d1d", passage: "#991b1b" },
+  shrine: { fill: "#fef3c7", stroke: "#f59e0b", passage: "#d97706" },
   // Wilderness themes
   bandit_hideout: { fill: "#365314", stroke: "#4d7c0f", passage: "#3f6212" },
   cultist_lair: { fill: "#4a044e", stroke: "#86198f", passage: "#701a75" },
