@@ -514,8 +514,24 @@ export function advanceDay(world: WorldData): WorldData | null {
     return null;
   }
 
+  // Advance clocks for any clock_tick events on this day
+  const updatedClocks = world.clocks.map((clock) => {
+    const clockTickEvent = dayRecord.events.find(
+      (e) => e.type === "clock_tick" && e.linkedClockId === clock.id
+    );
+    if (clockTickEvent && !clock.paused && clock.completedAt === undefined) {
+      return {
+        ...clock,
+        filled: Math.min(clock.filled + 1, clock.segments),
+        completedAt: clock.filled + 1 >= clock.segments ? Date.now() : undefined,
+      };
+    }
+    return clock;
+  });
+
   return {
     ...world,
+    clocks: updatedClocks,
     updatedAt: Date.now(),
     state: {
       ...world.state,
