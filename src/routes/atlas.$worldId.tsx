@@ -296,6 +296,12 @@ function AtlasPage() {
                             </li>
                           );
                         }
+                        const linkedFaction = event.linkedFactionId
+                          ? world.factions.find((f) => f.id === event.linkedFactionId)
+                          : null;
+                        const linkedLocation = event.linkedLocationId
+                          ? world.locations.find((l) => l.id === event.linkedLocationId)
+                          : null;
                         return (
                           <li key={event.id} className={`rounded px-3 py-2 text-sm ${
                             isToday ? "bg-stone-700/70" : isPast ? "bg-stone-700/20 text-stone-500" : "bg-stone-700/30 text-stone-400"
@@ -306,6 +312,24 @@ function AtlasPage() {
                               {event.type.replace("_", " ")}
                             </span>
                             {event.description}
+                            {linkedFaction && (
+                              <Link
+                                to="/world/$worldId/faction/$factionId"
+                                params={{ worldId: world.id, factionId: linkedFaction.id }}
+                                className="ml-2 inline-block rounded bg-purple-500/20 px-1.5 py-0.5 text-xs text-purple-300 hover:bg-purple-500/30"
+                              >
+                                {linkedFaction.name}
+                              </Link>
+                            )}
+                            {linkedLocation && (
+                              <Link
+                                to="/world/$worldId/location/$locationId"
+                                params={{ worldId: world.id, locationId: linkedLocation.id }}
+                                className="ml-2 inline-block rounded bg-amber-500/20 px-1.5 py-0.5 text-xs text-amber-300 hover:bg-amber-500/30"
+                              >
+                                {linkedLocation.name}
+                              </Link>
+                            )}
                           </li>
                         );
                       })}
