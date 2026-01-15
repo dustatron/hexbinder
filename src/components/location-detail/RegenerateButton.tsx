@@ -21,6 +21,17 @@ const REGENERATE_OPTIONS: {
     ],
   },
   {
+    group: "Terrain (Keep Wilderness)",
+    options: [
+      { value: "plains", label: "Plains" },
+      { value: "forest", label: "Forest" },
+      { value: "hills", label: "Hills" },
+      { value: "mountains", label: "Mountains" },
+      { value: "water", label: "Water" },
+      { value: "swamp", label: "Swamp" },
+    ],
+  },
+  {
     group: "Wilderness Lairs",
     options: [
       { value: "witch_hut", label: "Witch Hut" },

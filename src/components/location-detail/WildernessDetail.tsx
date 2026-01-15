@@ -71,6 +71,7 @@ export function WildernessDetail({
             <RegenerateButton
               onRegenerate={onRegenerate}
               currentLocationType="wilderness"
+              defaultType={terrain}
             />
           </div>
         </div>

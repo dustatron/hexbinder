@@ -20,6 +20,13 @@ const SETTLEMENT_SIZES = ["thorpe", "hamlet", "village", "town", "city"] as cons
 export type RegenerationType =
   | "random"
   | "clear"
+  // Terrain types (keep as wilderness)
+  | "plains"
+  | "forest"
+  | "hills"
+  | "mountains"
+  | "water"
+  | "swamp"
   // Dungeon themes
   | "tomb"
   | "cave"
@@ -96,8 +103,9 @@ export function regenerateHex(world: WorldData, coord: HexCoord, type: Regenerat
   // Always clear first
   let updated = clearHexLocation(world, coord);
 
-  // If just clearing, we're done
-  if (type === "clear") return updated;
+  // If clearing or keeping as terrain type, we're done
+  const TERRAIN_TYPES = ["plains", "forest", "hills", "mountains", "water", "swamp"];
+  if (type === "clear" || TERRAIN_TYPES.includes(type)) return updated;
 
   const hex = updated.hexes.find(h => h.coord.q === coord.q && h.coord.r === coord.r);
   if (!hex) return updated;

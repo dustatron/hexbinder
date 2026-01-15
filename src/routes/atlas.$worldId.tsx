@@ -382,6 +382,9 @@ function AtlasPage() {
                     {isToday && (
                       <span className="rounded bg-amber-700 px-1.5 py-0.5 text-xs">Today</span>
                     )}
+                    <span className="text-stone-400">
+                      {dayRecord.weather.tempLow}°/{dayRecord.weather.tempHigh}°
+                    </span>
                   </div>
                   {dayRecord.events.length === 0 ? (
                     <p className="text-sm text-stone-600 italic">No events</p>

@@ -112,6 +112,9 @@ function WorldPage() {
               <span className="capitalize">
                 {world.state.weather.condition.replace("_", " ")}
               </span>
+              <span className="text-stone-300">
+                {world.state.weather.tempLow}°/{world.state.weather.tempHigh}°
+              </span>
             </div>
             <Link
               to="/atlas/$worldId"
