@@ -57,6 +57,20 @@ const MOON_LABELS: Record<MoonPhase, string> = {
 
 type TabId = "factions" | "events" | "settlements" | "dungeons";
 
+// Extract weather condition from description like "The weather shifts to light rain"
+function getWeatherFromDescription(desc: string): string {
+  const match = desc.match(/shifts to (.+)$/);
+  return match ? match[1] : desc;
+}
+
+// Get weather icon for a condition string
+function getWeatherIcon(condition: string) {
+  if (condition.includes("snow") || condition.includes("blizzard")) return Snowflake;
+  if (condition.includes("rain") || condition.includes("storm") || condition.includes("thunder")) return CloudRain;
+  if (condition.includes("cloud") || condition.includes("overcast") || condition.includes("fog")) return Cloud;
+  return Sun;
+}
+
 function AtlasPage() {
   const initialWorld = Route.useLoaderData();
   const [world, setWorld] = useState<WorldData>(initialWorld);
@@ -219,14 +233,26 @@ function AtlasPage() {
                   <p className="text-sm text-stone-600 italic">No events</p>
                 ) : (
                   <ul className="space-y-2">
-                    {todayRecord.events.map((event) => (
-                      <li key={event.id} className="rounded bg-stone-700/70 px-3 py-2 text-sm">
-                        <span className="mr-2 rounded bg-stone-600 px-1.5 py-0.5 text-xs uppercase text-stone-300">
-                          {event.type.replace("_", " ")}
-                        </span>
-                        {event.description}
-                      </li>
-                    ))}
+                    {todayRecord.events.map((event) => {
+                      if (event.type === "weather_change") {
+                        const condition = getWeatherFromDescription(event.description);
+                        const WeatherIcon = getWeatherIcon(condition);
+                        return (
+                          <li key={event.id} className="flex items-center gap-2 rounded bg-stone-700/70 px-3 py-2 text-sm">
+                            <WeatherIcon size={16} className="text-stone-400" />
+                            <span className="capitalize">{condition}</span>
+                          </li>
+                        );
+                      }
+                      return (
+                        <li key={event.id} className="rounded bg-stone-700/70 px-3 py-2 text-sm">
+                          <span className="mr-2 rounded bg-stone-600 px-1.5 py-0.5 text-xs uppercase text-stone-300">
+                            {event.type.replace("_", " ")}
+                          </span>
+                          {event.description}
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </div>
@@ -244,14 +270,26 @@ function AtlasPage() {
                         <p className="text-sm text-stone-600 italic">No events</p>
                       ) : (
                         <ul className="space-y-1">
-                          {dayRecord.events.map((event) => (
-                            <li key={event.id} className="rounded bg-stone-700/30 px-3 py-2 text-sm text-stone-400">
-                              <span className="mr-2 rounded bg-stone-600 px-1.5 py-0.5 text-xs uppercase text-stone-300">
-                                {event.type.replace("_", " ")}
-                              </span>
-                              {event.description}
-                            </li>
-                          ))}
+                          {dayRecord.events.map((event) => {
+                            if (event.type === "weather_change") {
+                              const condition = getWeatherFromDescription(event.description);
+                              const WeatherIcon = getWeatherIcon(condition);
+                              return (
+                                <li key={event.id} className="flex items-center gap-2 rounded bg-stone-700/30 px-3 py-2 text-sm text-stone-400">
+                                  <WeatherIcon size={16} className="text-stone-500" />
+                                  <span className="capitalize">{condition}</span>
+                                </li>
+                              );
+                            }
+                            return (
+                              <li key={event.id} className="rounded bg-stone-700/30 px-3 py-2 text-sm text-stone-400">
+                                <span className="mr-2 rounded bg-stone-600 px-1.5 py-0.5 text-xs uppercase text-stone-300">
+                                  {event.type.replace("_", " ")}
+                                </span>
+                                {event.description}
+                              </li>
+                            );
+                          })}
                         </ul>
                       )}
                     </div>
@@ -282,14 +320,26 @@ function AtlasPage() {
                         <p className="text-sm text-stone-600 italic">No events</p>
                       ) : (
                         <ul className="space-y-1">
-                          {dayRecord.events.map((event) => (
-                            <li key={event.id} className="rounded bg-stone-700/20 px-3 py-2 text-sm text-stone-500">
-                              <span className="mr-2 rounded bg-stone-700 px-1.5 py-0.5 text-xs uppercase text-stone-400">
-                                {event.type.replace("_", " ")}
-                              </span>
-                              {event.description}
-                            </li>
-                          ))}
+                          {dayRecord.events.map((event) => {
+                            if (event.type === "weather_change") {
+                              const condition = getWeatherFromDescription(event.description);
+                              const WeatherIcon = getWeatherIcon(condition);
+                              return (
+                                <li key={event.id} className="flex items-center gap-2 rounded bg-stone-700/20 px-3 py-2 text-sm text-stone-500">
+                                  <WeatherIcon size={16} className="text-stone-600" />
+                                  <span className="capitalize">{condition}</span>
+                                </li>
+                              );
+                            }
+                            return (
+                              <li key={event.id} className="rounded bg-stone-700/20 px-3 py-2 text-sm text-stone-500">
+                                <span className="mr-2 rounded bg-stone-700 px-1.5 py-0.5 text-xs uppercase text-stone-400">
+                                  {event.type.replace("_", " ")}
+                                </span>
+                                {event.description}
+                              </li>
+                            );
+                          })}
                         </ul>
                       )}
                     </div>
