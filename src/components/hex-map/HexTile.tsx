@@ -26,11 +26,13 @@ interface HexTileProps {
   honeycombHex: HexType;
   hexData: Hex;
   locationType?: LocationType;
+  locationName?: string;
   dungeonTheme?: DungeonTheme;
   isCapital?: boolean;
   isSelected: boolean;
   onClick: (coord: HexCoord) => void;
   showIcon?: boolean;
+  showLabel?: boolean;
   iconOnly?: boolean;
 }
 
@@ -63,11 +65,13 @@ export function HexTile({
   honeycombHex,
   hexData,
   locationType,
+  locationName,
   dungeonTheme,
   isCapital,
   isSelected,
   onClick,
   showIcon = true,
+  showLabel = false,
   iconOnly = false,
 }: HexTileProps) {
   const points = hexToPolygonPoints(honeycombHex);
@@ -137,6 +141,22 @@ export function HexTile({
           strokeWidth={2}
           fill={iconFill}
         />
+      )}
+      {showLabel && locationName && (
+        <text
+          x={center.x}
+          y={center.y + 20}
+          textAnchor="middle"
+          fontSize={10}
+          fontWeight="bold"
+          fill="#1c1917"
+          stroke="#fafaf9"
+          strokeWidth={2}
+          paintOrder="stroke"
+          style={{ pointerEvents: "none" }}
+        >
+          {locationName}
+        </text>
       )}
     </g>
   );
