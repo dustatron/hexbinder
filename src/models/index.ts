@@ -707,6 +707,9 @@ export interface DungeonRoom {
   hazards: Hazard[];
   secrets: RoomSecret[];
   explored: boolean;
+  // Optional fields for type compatibility with SpatialRoom
+  discoveries?: Discovery[];
+  historicalClues?: string[];
 }
 
 export interface RoomConnection {

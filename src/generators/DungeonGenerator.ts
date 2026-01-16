@@ -27,6 +27,7 @@ import { generateDungeonEcology } from "./dungeon/DungeonEcologyGenerator";
 import { generateWanderingMonsters } from "./dungeon/WanderingMonsterGenerator";
 import { generateDungeonNPCs } from "./dungeon/DungeonNPCGenerator";
 import { generateKeyLocks } from "./dungeon/KeyLockGenerator";
+import { generateDungeonHistory } from "./dungeon/DungeonHistoryGenerator";
 
 // === Name Tables ===
 
@@ -326,6 +327,12 @@ function generateSpatialDungeon(
 
   // Generate dungeon ecology (builder culture, inhabitants, activities)
   const ecology = generateDungeonEcology(theme, rooms, seed);
+
+  // Generate history layers and add discoveries/clues to rooms
+  const historyLayers = generateDungeonHistory(theme, rooms, hooks, seed);
+  if (historyLayers.length > 0) {
+    ecology.historyLayers = historyLayers;
+  }
 
   // Generate wandering monster table
   const wanderingMonsters = generateWanderingMonsters(theme, depth, seed);

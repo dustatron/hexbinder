@@ -371,6 +371,23 @@ export function DungeonDetail({
               </span>
             </div>
           </div>
+          {/* History Layers */}
+          {(dungeon as SpatialDungeon).ecology?.historyLayers && (dungeon as SpatialDungeon).ecology!.historyLayers!.length > 0 && (
+            <div className="mt-3 border-t border-stone-700 pt-3">
+              <h4 className="text-xs font-semibold text-stone-400 mb-2">History Layers</h4>
+              <div className="space-y-2">
+                {(dungeon as SpatialDungeon).ecology!.historyLayers!.map((layer, i) => (
+                  <div key={i} className="text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-stone-300 capitalize">{layer.builders}</span>
+                      <span className="text-stone-500">({layer.era})</span>
+                    </div>
+                    <p className="text-stone-400 italic pl-2">{layer.fate}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

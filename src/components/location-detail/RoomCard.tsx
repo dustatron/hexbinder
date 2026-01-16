@@ -1,5 +1,5 @@
-import { ChevronDown, ChevronRight, Eye, EyeOff, Skull, AlertTriangle, Gem, Lock } from "lucide-react";
-import type { DungeonRoom, SpatialRoom, RoomSize } from "~/models";
+import { ChevronDown, ChevronRight, Eye, EyeOff, Skull, AlertTriangle, Gem, Lock, ScrollText, History } from "lucide-react";
+import type { DungeonRoom, SpatialRoom, RoomSize, Discovery } from "~/models";
 import { getMonster, type Monster } from "~/lib/monsters";
 
 interface RoomCardProps {
@@ -54,6 +54,8 @@ export function RoomCard({ room, roomNumber, expanded = false, selected = false,
   const hasHazards = room.hazards.some(h => !h.disarmed);
   const hasTreasure = room.treasure.some(t => !t.looted);
   const hasSecrets = room.secrets.some(s => !s.discovered);
+  const hasDiscoveries = (room.discoveries ?? []).some(d => !d.found);
+  const hasHistoricalClues = (room.historicalClues ?? []).length > 0;
 
   return (
     <div className={`rounded-lg border bg-stone-900 overflow-hidden ${
@@ -86,6 +88,8 @@ export function RoomCard({ room, roomNumber, expanded = false, selected = false,
           {hasHazards && <AlertTriangle className="h-4 w-4 text-amber-500" />}
           {hasTreasure && <Gem className="h-4 w-4 text-emerald-500" />}
           {hasSecrets && <Lock className="h-4 w-4 text-purple-500" />}
+          {hasDiscoveries && <ScrollText className="h-4 w-4 text-blue-500" />}
+          {hasHistoricalClues && <History className="h-4 w-4 text-stone-400" />}
         </div>
 
         {/* Size badge */}
@@ -272,6 +276,64 @@ export function RoomCard({ room, roomNumber, expanded = false, selected = false,
                         <span className="text-stone-400">Reward:</span> {secret.reward}
                       </p>
                     )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* Discoveries */}
+          {(room.discoveries ?? []).length > 0 && (
+            <section className="space-y-2">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-500">
+                Discoveries
+              </h4>
+              <ul className="space-y-2">
+                {(room.discoveries ?? []).map((discovery) => (
+                  <li
+                    key={discovery.id}
+                    className={`rounded bg-stone-800 p-2 text-sm ${discovery.found ? "opacity-50" : ""}`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <ScrollText className={`h-4 w-4 ${
+                        discovery.type === "document" ? "text-blue-500" :
+                        discovery.type === "evidence" ? "text-red-400" :
+                        discovery.type === "clue" ? "text-amber-500" :
+                        "text-purple-400"
+                      }`} />
+                      <span className="text-stone-300 capitalize">{discovery.type}</span>
+                      {discovery.found && (
+                        <span className="text-xs text-stone-600">(found)</span>
+                      )}
+                    </div>
+                    <p className="mt-1 text-stone-200">{discovery.description}</p>
+                    {discovery.content && (
+                      <details className="mt-2">
+                        <summary className="cursor-pointer text-xs text-stone-500 hover:text-stone-400">
+                          Read content (GM)
+                        </summary>
+                        <p className="mt-1 p-2 rounded bg-stone-900 text-xs text-stone-400 whitespace-pre-wrap">
+                          {discovery.content}
+                        </p>
+                      </details>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* Historical Clues */}
+          {(room.historicalClues ?? []).length > 0 && (
+            <section className="space-y-2">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-500">
+                Historical Clues
+              </h4>
+              <ul className="space-y-1">
+                {(room.historicalClues ?? []).map((clue, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm">
+                    <History className="h-4 w-4 text-stone-500 flex-shrink-0 mt-0.5" />
+                    <span className="text-stone-400 italic">{clue}</span>
                   </li>
                 ))}
               </ul>
