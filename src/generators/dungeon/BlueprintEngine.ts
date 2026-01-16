@@ -21,7 +21,7 @@ import { getBlueprint } from "./DungeonBlueprints";
 const GEOMETRY_TO_TYPES: Record<RoomGeometry, ThemeRoomType[]> = {
   corridor: ["corridor", "cart_tracks", "drain_grate", "burial_niches"],
   alcove: ["dead_end", "burial_niches", "familiar_den"],
-  gallery: ["gallery", "stalactite_hall", "nave", "memorial_hall"],
+  gallery: ["stalactite_hall", "nave", "memorial_hall", "chamber"],
   chamber: ["chamber"], // Most types work for chambers
 };
 

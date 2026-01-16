@@ -27,6 +27,8 @@ import { generateDungeonEcology } from "./dungeon/DungeonEcologyGenerator";
 import { generateWanderingMonsters } from "./dungeon/WanderingMonsterGenerator";
 import { generateDungeonNPCs } from "./dungeon/DungeonNPCGenerator";
 import { generateKeyLocks } from "./dungeon/KeyLockGenerator";
+import { generateDungeonHistory } from "./dungeon/DungeonHistoryGenerator";
+import { generateExitPoints } from "./dungeon/ExitPointGenerator";
 
 // === Name Tables ===
 
@@ -137,6 +139,8 @@ export interface DungeonPlacementOptions {
   hexes: Hex[];
   theme?: DungeonTheme;
   size?: DungeonSize;
+  forceCoord?: HexCoord;     // Force placement at specific coordinates
+  forceTheme?: DungeonTheme; // Force specific theme (overrides theme)
 }
 
 /**
@@ -147,25 +151,51 @@ export function placeDungeon(options: DungeonPlacementOptions): {
   dungeon: SpatialDungeon;
   hex: Hex;
 } | null {
-  const { seed, hexes, theme, size } = options;
+  const { seed, hexes, theme, size, forceCoord, forceTheme } = options;
   const rng = new SeededRandom(`${seed}-dungeon`);
 
-  // Find suitable hexes (hills/forest without locations)
-  const candidates = hexes.filter(
-    (h) => (h.terrain === "hills" || h.terrain === "forest") && !h.locationId
-  );
+  let hex: Hex | undefined;
 
-  if (candidates.length === 0) {
-    // Fallback to any non-water hex
-    const fallback = hexes.filter(
-      (h) => h.terrain !== "water" && !h.locationId
+  // If forceCoord is provided, find that hex directly
+  if (forceCoord) {
+    hex = hexes.find(
+      (h) => h.coord.q === forceCoord.q && h.coord.r === forceCoord.r
     );
-    if (fallback.length === 0) return null;
-    candidates.push(...fallback);
+    if (!hex) return null;
+  } else {
+    // Find suitable hexes (hills/forest without locations)
+    const candidates = hexes.filter(
+      (h) => (h.terrain === "hills" || h.terrain === "forest") && !h.locationId
+    );
+
+    if (candidates.length === 0) {
+      // Fallback to any non-water hex
+      const fallback = hexes.filter(
+        (h) => h.terrain !== "water" && !h.locationId
+      );
+      if (fallback.length === 0) return null;
+      candidates.push(...fallback);
+    }
+
+    hex = rng.pick(candidates);
   }
 
-  const hex = rng.pick(candidates);
-  const dungeon = generateSpatialDungeon(seed, hex.coord, theme, size);
+  // Use forceTheme if provided, otherwise fall back to theme
+  const finalTheme = forceTheme ?? theme;
+  const dungeon = generateSpatialDungeon(seed, hex.coord, finalTheme, size);
+
+  // Generate exit points to neighboring hexes
+  const exitPoints = generateExitPoints(
+    dungeon.theme,
+    dungeon.hexCoord,
+    hexes,
+    dungeon.rooms,
+    dungeon.size,
+    seed
+  );
+  if (exitPoints.length > 0) {
+    dungeon.exitPoints = exitPoints;
+  }
 
   // Update hex with location ID
   hex.locationId = dungeon.id;
@@ -200,6 +230,7 @@ const WILDERNESS_TERRAIN_PREFS: Record<DungeonTheme, TerrainType[]> = {
   sewer: ["plains"],
   crypt: ["hills"],
   lair: ["forest", "hills"],
+  shrine: ["forest", "hills", "mountains"],
 };
 
 export interface WildernessLairOptions {
@@ -310,6 +341,12 @@ function generateSpatialDungeon(
 
   // Generate dungeon ecology (builder culture, inhabitants, activities)
   const ecology = generateDungeonEcology(theme, rooms, seed);
+
+  // Generate history layers and add discoveries/clues to rooms
+  const historyLayers = generateDungeonHistory(theme, rooms, hooks, seed);
+  if (historyLayers.length > 0) {
+    ecology.historyLayers = historyLayers;
+  }
 
   // Generate wandering monster table
   const wanderingMonsters = generateWanderingMonsters(theme, depth, seed);

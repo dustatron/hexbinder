@@ -34,6 +34,8 @@ export interface Hex {
   encounterOverrides?: EncounterOverrides;
   // Timestamp of last encounter generation
   lastEncounterTimestamp?: number;
+  // Reroll counter for encounter seed (persisted)
+  encounterRerollCount?: number;
 }
 
 // === Hex Feature (Landmarks) ===
@@ -159,6 +161,7 @@ export interface Location {
   description: string;
   hexCoord: HexCoord;
   factionId?: string;
+  controllingFactionId?: string; // Faction that controls this location (for dungeons as lairs)
   tags: string[];
 }
 
@@ -706,6 +709,9 @@ export interface DungeonRoom {
   hazards: Hazard[];
   secrets: RoomSecret[];
   explored: boolean;
+  // Optional fields for type compatibility with SpatialRoom
+  discoveries?: Discovery[];
+  historicalClues?: string[];
 }
 
 export interface RoomConnection {
@@ -775,12 +781,15 @@ export interface SpatialRoom {
   features: RoomFeature[];
   hazards: Hazard[];
   secrets: RoomSecret[];
+  discoveries?: Discovery[];  // Environmental storytelling elements
   explored: boolean;
   // Ecology fields (optional for backwards compatibility)
   themeRoomType?: ThemeRoomType;
   geometry?: RoomGeometry;
   isDeadEnd?: boolean;
   activity?: CreatureActivity;
+  // Historical clues from dungeon history layers
+  historicalClues?: string[];
 }
 
 /** Passage between rooms with spatial path */
@@ -816,6 +825,25 @@ export interface SpatialDungeon extends Location {
   ecology?: DungeonEcology;
   wanderingMonsters?: WanderingMonsterTable;
   dungeonNPCs?: DungeonNPC[];
+  keyLockPairs?: KeyLockPair[];
+  // Connection points to other hexes
+  exitPoints?: ExitPoint[];
+}
+
+// === Dungeon Runtime State (mutable, separate from generated data) ===
+
+/** Alert level affecting dungeon inhabitant behavior */
+export type DungeonAlertLevel = "normal" | "cautious" | "alarmed" | "lockdown";
+
+/** Runtime state for a dungeon (stored separately from WorldData) */
+export interface DungeonRuntimeState {
+  dungeonId: string;
+  alertLevel: DungeonAlertLevel;
+  lastVisited?: number;           // Timestamp of last player visit
+  resources: number;              // 0-100, depletes over time (triggers raids)
+  clearedRoomIds: string[];       // Rooms cleared of encounters
+  discoveredExitIds: string[];    // Exit points that have been found
+  defeatedUniqueNpcIds: string[]; // Unique NPCs/bosses that won't respawn
 }
 
 // === Dungeon Ecology System ===
@@ -1020,11 +1048,27 @@ export interface RoomActivityAssignment {
   schedule?: "day" | "night" | "always";
 }
 
+/** History layer for multi-era dungeon storytelling */
+export interface HistoryLayer {
+  era: string;           // "300 years ago", "recently"
+  builders: string;      // "Dwarven miners", "Necromancer cult"
+  fate: string;          // "collapsed after earthquake", "destroyed by adventurers"
+  clueTypes: string[];   // ["runes", "equipment", "architecture"]
+}
+
 /** Dungeon ecology - who built it, who lives there */
 export interface DungeonEcology {
-  builders?: DungeonFactionProfile; // who built it (may be dead/gone)
-  inhabitants: DungeonFactionProfile; // who lives here now
-  activities: RoomActivityAssignment[];
+  // === Simple fields (current generator output) ===
+  builderCulture?: string;            // Simple string: "ancient empire"
+  currentInhabitants?: string;        // Simple string: "goblin tribe"
+  history?: string;                   // Generated history text
+  factionInfluence?: Record<string, string[]>; // Faction name -> room IDs they control
+
+  // === Structured fields (future use) ===
+  builders?: DungeonFactionProfile;   // Structured builder profile
+  historyLayers?: HistoryLayer[];     // Multi-era history (extends builders)
+  inhabitants?: DungeonFactionProfile; // Structured inhabitant profile
+  activities?: RoomActivityAssignment[];
 }
 
 /** Wandering monster table entry */
@@ -1044,11 +1088,39 @@ export interface WanderingMonsterTable {
 /** Key/lock relationship */
 export interface KeyLockPair {
   keyId: string;
-  keyDescription: string;
-  keyRoomId: string;
-  lockRoomId: string;
-  lockDescription: string;
-  clueText?: string; // hint about key location
+  keyName: string;                // Name of the key ("Iron Key", "Crypt Seal")
+  keyRoomId: string;              // Room where key is found
+  lockedPassageId: string;        // Passage that requires this key
+
+  // Optional enriched fields (for future use)
+  keyDescription?: string;        // Detailed key description
+  lockRoomId?: string;            // Alternative: room with the lock
+  lockDescription?: string;       // Description of the lock
+  clueText?: string;              // Hint about key location
+}
+
+/** Discovery types for environmental storytelling */
+export type DiscoveryType = "document" | "evidence" | "clue" | "secret";
+
+/** Discoverable narrative element in a dungeon room */
+export interface Discovery {
+  id: string;
+  type: DiscoveryType;
+  description: string;
+  content?: string;        // Journal text, letter contents, etc.
+  linkedHookId?: string;   // Connects to surface world hook
+  linkedItemId?: string;   // Points to significant item
+  found: boolean;          // Has been discovered by players
+}
+
+/** Exit point connecting dungeon to another hex */
+export interface ExitPoint {
+  id: string;
+  roomId: string;                // Which room has the exit
+  destinationHexId: string;      // Where it leads (hex ID)
+  destinationCoord: HexCoord;    // Hex coordinates of destination
+  description: string;           // "narrow tunnel descending into darkness"
+  discovered: boolean;           // Has been found/explored by players
 }
 
 /** Dungeon NPC category */
@@ -1057,18 +1129,41 @@ export type DungeonNPCCategory =
   | "prisoner" // rescue hook
   | "hermit" // info source, trader
   | "ghost" // cursed, haunts room
-  | "refugee"; // hiding from inhabitants
+  | "refugee" // hiding from inhabitants
+  | "faction_leader" // leader of controlling faction
+  | "faction_lieutenant" // lieutenant of controlling faction
+  | "faction_member" // regular member of controlling faction
+  | "rival_scout"; // scout from a rival faction
+
+/** Dungeon NPC disposition - gradients for negotiation */
+export type DungeonNPCDisposition = "hostile" | "wary" | "neutral" | "friendly";
+
+/** What a dungeon NPC wants (for negotiation) */
+export type DungeonNPCWant =
+  | "food"
+  | "safety"
+  | "wealth"
+  | "revenge"
+  | "freedom"
+  | "information"
+  | "companionship"
+  | "power";
 
 /** NPC present in a dungeon */
 export interface DungeonNPC {
   npcId: string; // reference to NPC
   category: DungeonNPCCategory;
   roomId: string;
-  disposition: "hostile" | "neutral" | "friendly";
+  disposition: DungeonNPCDisposition;
+  wants?: DungeonNPCWant[];    // What this NPC wants (enables negotiation)
   hasInfo?: string; // clue about dungeon
   hasItem?: string; // key or treasure
   wantsRescue?: boolean;
   partySize?: number; // for rival_party
+  // Faction-related fields
+  factionId?: string; // Which faction this NPC belongs to
+  isBoss?: boolean; // Is this the dungeon boss (faction leader)
+  scoutingFor?: string; // For rival_scout: which faction sent them
 }
 
 /** Extended spatial room with ecology fields */
@@ -1105,6 +1200,11 @@ export interface TreasureEntry {
   description?: string;
   magicItemId?: string; // if type is magic_item
   looted: boolean;
+
+  // === Narrative Fields (Setting Seeds style) ===
+  backstory?: string;      // Who owned it, how it got here
+  complication?: string;   // Why taking it might cause problems
+  originalOwner?: string;  // "A merchant prince", "The cult leader", etc.
 }
 
 // === Magic Item ===
@@ -1131,6 +1231,8 @@ export interface SignificantItem {
   history: string;                      // "Forged by the Flame Kings of old..."
   significance: string;                 // Why it matters to the setting
   status: SignificantItemStatus;
+  backstory?: string;                   // Who owned it, how it got here
+  complication?: string;                // "Taking it angers the local cult"
 
   // === Location/Ownership ===
   currentHolderId?: string;             // Faction or NPC ID if possessed

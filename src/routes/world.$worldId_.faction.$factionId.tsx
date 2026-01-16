@@ -58,6 +58,7 @@ function FactionPage() {
           locations={world.locations}
           hooks={hooks}
           significantItems={world.significantItems}
+          worldId={world.id}
         />
       </div>
     </div>

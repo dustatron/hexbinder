@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+import { Building2, MapPin, Crown } from "lucide-react";
 import type { Faction, Clock, NPC, Location, Hook, SignificantItem } from "~/models";
 import { NPCStatLine } from "~/components/npc/NPCStatLine";
 
@@ -8,6 +10,7 @@ interface FactionDetailProps {
   locations: Location[];
   hooks?: Hook[];
   significantItems?: SignificantItem[];
+  worldId: string;
 }
 
 const FACTION_TYPE_COLORS: Record<Faction["factionType"], string> = {
@@ -43,6 +46,7 @@ export function FactionDetail({
   locations,
   hooks = [],
   significantItems = [],
+  worldId,
 }: FactionDetailProps) {
   // Filter clocks owned by this faction
   const factionClocks = clocks.filter(
@@ -83,6 +87,16 @@ export function FactionDetail({
     ? npcs.find((n) => n.id === faction.seneschalId)
     : null;
 
+  // Get headquarters location
+  const headquarters = faction.headquartersId
+    ? locations.find((loc) => loc.id === faction.headquartersId)
+    : null;
+
+  // Get lair dungeon location
+  const lairDungeon = faction.lair?.dungeonId
+    ? locations.find((loc) => loc.id === faction.lair?.dungeonId)
+    : null;
+
   return (
     <div className="space-y-6 bg-stone-900 p-4 text-stone-100">
       {/* Header */}
@@ -114,6 +128,84 @@ export function FactionDetail({
           </p>
         )}
       </section>
+
+      {/* Seneschal - The Face */}
+      {seneschal && (
+        <section className="space-y-2">
+          <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-amber-400">
+            <Crown size={14} />
+            Seneschal
+          </h3>
+          <div className="rounded border border-amber-500/30 bg-amber-900/20 px-3 py-2">
+            <Link
+              to="/world/$worldId_/npc/$npcId"
+              params={{ worldId: worldId, npcId: seneschal.id }}
+              className="font-medium text-amber-200 hover:underline"
+            >
+              {seneschal.name}
+            </Link>
+            <p className="text-xs text-stone-400 capitalize">
+              {seneschal.race} {seneschal.archetype} · The public face of {faction.name}
+            </p>
+          </div>
+        </section>
+      )}
+
+      {/* Headquarters & Lair */}
+      {(headquarters || lairDungeon || faction.lair?.hexCoord) && (
+        <section className="space-y-3">
+          <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-cyan-400">
+            <Building2 size={14} />
+            Base of Operations
+          </h3>
+          <div className="space-y-2">
+            {headquarters && (
+              <div className="flex items-start gap-2 rounded bg-stone-800 px-3 py-2">
+                <Building2 size={16} className="mt-0.5 shrink-0 text-cyan-400" />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      to="/world/$worldId_/location/$locationId"
+                      params={{ worldId: worldId, locationId: headquarters.id }}
+                      className="font-medium text-stone-200 hover:underline"
+                    >
+                      {headquarters.name}
+                    </Link>
+                    <span className="text-xs text-cyan-400">Headquarters</span>
+                  </div>
+                  <p className="text-xs text-stone-400 capitalize">{headquarters.type}</p>
+                </div>
+              </div>
+            )}
+            {lairDungeon && (
+              <div className="flex items-start gap-2 rounded bg-stone-800 px-3 py-2">
+                <MapPin size={16} className="mt-0.5 shrink-0 text-red-400" />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      to="/world/$worldId_/location/$locationId"
+                      params={{ worldId: worldId, locationId: lairDungeon.id }}
+                      className="font-medium text-stone-200 hover:underline"
+                    >
+                      {lairDungeon.name}
+                    </Link>
+                    <span className="text-xs text-red-400">Lair</span>
+                  </div>
+                  <p className="text-xs text-stone-400 capitalize">{lairDungeon.type}</p>
+                </div>
+              </div>
+            )}
+            {faction.lair?.hexCoord && !lairDungeon && (
+              <div className="flex items-center gap-2 rounded bg-stone-800 px-3 py-2 text-sm text-stone-300">
+                <MapPin size={16} className="shrink-0 text-red-400" />
+                <span>
+                  Lair at hex ({faction.lair.hexCoord.q}, {faction.lair.hexCoord.r})
+                </span>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Advantages (Cairn-inspired) */}
       {faction.advantages && faction.advantages.length > 0 && (

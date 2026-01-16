@@ -35,9 +35,6 @@ export const Route = createFileRoute("/world/$worldId_/hex/$q/$r")({
 function HexDetailPage() {
   const { world: initialWorld, hex: initialHex } = Route.useLoaderData();
   const [world, setWorld] = useState(initialWorld);
-  // Stable seed - only changes on explicit re-roll, not on navigation
-  const [rerollCounter, setRerollCounter] = useState(0);
-  const seed = `${world.seed}-hex-${initialHex.coord.q},${initialHex.coord.r}${rerollCounter > 0 ? `-${rerollCounter}` : ""}`;
 
   // Re-derive hex and location from current world state
   const hex = world.hexes.find((h) => h.coord.q === initialHex.coord.q && h.coord.r === initialHex.coord.r)!;
@@ -45,16 +42,29 @@ function HexDetailPage() {
     ? world.locations.find((loc) => loc.id === hex.locationId)
     : null;
 
+  // Stable seed - uses persisted reroll counter from hex
+  const rerollCount = hex.encounterRerollCount ?? 0;
+  const seed = `${world.seed}-hex-${hex.coord.q},${hex.coord.r}${rerollCount > 0 ? `-${rerollCount}` : ""}`;
+
   const handleRegenerate = useCallback((type: RegenerationType, options?: RegenerateOptions) => {
     const newWorld = regenerateHex(world, hex.coord, type, options);
     saveWorld(newWorld);
     setWorld(newWorld);
-    setRerollCounter((c) => c + 1);
   }, [world, hex.coord]);
 
   const handleReroll = useCallback(() => {
-    setRerollCounter((c) => c + 1);
-  }, []);
+    const newCount = (hex.encounterRerollCount ?? 0) + 1;
+    const updated: WorldData = {
+      ...world,
+      hexes: world.hexes.map((h) =>
+        h.coord.q === hex.coord.q && h.coord.r === hex.coord.r
+          ? { ...h, encounterRerollCount: newCount, lastEncounterTimestamp: Date.now() }
+          : h
+      ),
+    };
+    saveWorld(updated);
+    setWorld(updated);
+  }, [world, hex]);
 
   const handleUpdateWorld = useCallback((updater: (world: WorldData) => WorldData) => {
     const updated = updater(world);
@@ -147,6 +157,9 @@ function HexDetailPage() {
           <DungeonDetail
             dungeon={location as Dungeon}
             hook={hook}
+            hooks={world.hooks.filter((h) => h.involvedLocationIds.includes(location.id))}
+            npcs={world.npcs}
+            factions={world.factions}
             worldId={world.id}
             onRegenerate={handleRegenerate}
             onReroll={handleReroll}

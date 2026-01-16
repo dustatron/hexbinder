@@ -14,6 +14,10 @@ Hexbinder is a procedural sandbox generator and campaign management tool for tab
 
 Use `bd` (Beads) for task management instead of TodoWrite. Git-backed, stored in `.beads/`.
 
+**Install:** `npm install -g @beads/bd` or `brew install steveyegge/beads/bd`
+
+**Initialize project tasks:** `./scripts/init-beads-tasks.sh`
+
 ```bash
 bd ready              # show unblocked tasks
 bd create "Title"     # new task

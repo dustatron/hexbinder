@@ -26,9 +26,10 @@ const BUILDER_CULTURES: Partial<Record<DungeonTheme, string[]>> = {
   cultist_lair: ["demon cult", "aberrant worshippers", "necromancer circle", "chaos cult"],
   witch_hut: ["hedge witch", "coven", "fey creature", "hermit mage"],
   sea_cave: ["pirates", "merfolk", "sea hag", "smugglers"],
-  goblin_warren: ["goblin tribe", "hobgoblin warlord", "bugbear gang"],
-  dragon_lair: ["ancient dragon", "dragon cult", "draconic sorcerer"],
+  beast_den: ["territorial beast", "pack alpha", "monstrous creature", "dragon"],
+  lair: ["goblin tribe", "hobgoblin warlord", "bugbear gang", "troll"],
   shrine: ["village faithful", "wandering priest", "nature spirit", "forgotten god"],
+  floating_keep: ["sky mages", "cloud giants", "elemental cultists", "ancient artificers"],
 };
 
 // Current inhabitant types by theme
@@ -44,47 +45,48 @@ const CURRENT_INHABITANTS: Partial<Record<DungeonTheme, string[]>> = {
   cultist_lair: ["demon cult", "devil worshippers", "aberrant servants", "undead congregation"],
   witch_hut: ["hag and minions", "fey creatures", "corrupted animals", "apprentice gone mad"],
   sea_cave: ["sahuagin raiders", "pirate crew", "sea spawn", "kraken cultists"],
-  goblin_warren: ["goblin horde", "hobgoblin legion", "bugbear gang", "nilbog chaos"],
-  dragon_lair: ["dragon and kobolds", "dragonborn cult", "treasure hunters", "elemental servants"],
+  beast_den: ["territorial predator", "beast pack", "dragon and kobolds", "elemental creature"],
+  lair: ["goblin horde", "hobgoblin legion", "bugbear gang", "troll and minions"],
   shrine: ["corrupted guardians", "desecrators", "nature spirits", "pilgrims and protectors"],
+  floating_keep: ["cloud giant court", "elemental servants", "sky pirates", "arcane constructs"],
 };
 
 // Activity distributions by theme - what creatures do in this dungeon
 const ACTIVITY_DISTRIBUTIONS: Partial<Record<DungeonTheme, Record<CreatureActivity, number>>> = {
   tomb: {
     sleeping: 30, patrolling: 15, guarding: 25, eating: 5,
-    working: 5, worshipping: 10, hiding: 5, fighting: 5,
+    working: 5, worshipping: 10, hiding: 5, fighting: 5, socializing: 0,
   },
   temple: {
     sleeping: 10, patrolling: 15, guarding: 20, eating: 5,
-    working: 10, worshipping: 30, hiding: 5, fighting: 5,
+    working: 10, worshipping: 30, hiding: 5, fighting: 5, socializing: 0,
   },
   fortress: {
     sleeping: 15, patrolling: 30, guarding: 25, eating: 10,
-    working: 10, worshipping: 0, hiding: 5, fighting: 5,
+    working: 10, worshipping: 0, hiding: 5, fighting: 5, socializing: 0,
   },
   cave: {
     sleeping: 35, patrolling: 10, guarding: 15, eating: 20,
-    working: 0, worshipping: 0, hiding: 15, fighting: 5,
+    working: 0, worshipping: 0, hiding: 15, fighting: 5, socializing: 0,
   },
   bandit_hideout: {
-    sleeping: 20, patrolling: 15, guarding: 20, eating: 15,
-    working: 10, worshipping: 0, hiding: 10, fighting: 10,
+    sleeping: 20, patrolling: 15, guarding: 15, eating: 15,
+    working: 10, worshipping: 0, hiding: 10, fighting: 5, socializing: 10,
   },
   cultist_lair: {
     sleeping: 10, patrolling: 10, guarding: 15, eating: 5,
-    working: 15, worshipping: 40, hiding: 0, fighting: 5,
+    working: 15, worshipping: 40, hiding: 0, fighting: 5, socializing: 0,
   },
   sewer: {
     sleeping: 25, patrolling: 15, guarding: 10, eating: 25,
-    working: 5, worshipping: 5, hiding: 10, fighting: 5,
+    working: 5, worshipping: 5, hiding: 10, fighting: 5, socializing: 0,
   },
 };
 
 // Default activity distribution
 const DEFAULT_ACTIVITIES: Record<CreatureActivity, number> = {
   sleeping: 20, patrolling: 20, guarding: 20, eating: 10,
-  working: 10, worshipping: 5, hiding: 10, fighting: 5,
+  working: 10, worshipping: 5, hiding: 10, fighting: 5, socializing: 0,
 };
 
 // Room types that suggest specific activities
@@ -287,6 +289,7 @@ export class DungeonEcologyGenerator {
       worshipping: "Rituals or prayers take place here",
       hiding: "Something lurks in concealment",
       fighting: "Conflict is ongoing here",
+      socializing: "Creatures are gathered and interacting",
     };
     return descriptions[activity];
   }

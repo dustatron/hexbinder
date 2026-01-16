@@ -23,11 +23,12 @@ import { placeSettlement } from "./SettlementGenerator";
 import { assignNPCsToBuildings, linkSitesToBuildings } from "./TownLayoutEngine";
 import { placeDungeon, placeWildernessLair } from "./DungeonGenerator";
 import { generateSites } from "./SiteGenerator";
-import { generateFactions } from "./FactionGenerator";
+import { generateFactions, pickFactionDungeonTheme } from "./FactionGenerator";
 import { generateFactionClock } from "./ClockGenerator";
 import { generateRoads } from "./RoadGenerator";
 import { generateBridges, type Bridge } from "./BridgeGenerator";
 import { generateNPC, generateSettlementNPCs, generateFactionNPCs } from "./NPCGenerator";
+import { populateFactionDungeon, addRivalFactionScouts } from "./dungeon/DungeonNPCGenerator";
 import { NameRegistry } from "./NameRegistry";
 import { generateNPCRelationships } from "./NPCRelationshipGenerator";
 import { weaveHooks } from "./HookWeaver";
@@ -42,6 +43,7 @@ import { generateHexEncounters } from "./HexEncounterGenerator";
 import { generateDwellings } from "./DwellingGenerator";
 import { generateQuestObjects } from "./QuestObjectGenerator";
 import { generateSignificantItems, placeItemInLocation } from "./SignificantItemGenerator";
+import { addTreasureBackstories } from "./dungeon/TreasureBackstoryGenerator";
 
 export interface WorldGeneratorOptions {
   name: string;
@@ -108,16 +110,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     count: significantItemCount,
   });
 
-  // Step 4: Generate factions (pass hexes and items for Cairn-style generation)
-  // Factions may possess or desire significant items
-  const factions = generateFactions({
-    seed,
-    count: factionCount,
-    hexes,
-    significantItems,
-  });
-
-  // Step 5: Place starting settlement at start position
+  // Step 4: Place settlements first (factions need them for HQ assignment)
   const settlements: Settlement[] = [];
   const settlementHexes: Hex[] = [];
 
@@ -134,27 +127,14 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       const sites = generateSites({ seed, settlement: startSettlement.settlement });
       startSettlement.settlement.sites = sites;
       linkSitesToBuildings(startSettlement.settlement);
-      startSettlement.settlement.rumors = generateRumors({
-        seed: `${seed}-rumors-0`,
-        factions,
-        settlements: [],
-        hexes,
-        currentSettlement: startSettlement.settlement,
-        significantItems,
-      });
-      startSettlement.settlement.notices = generateNotices({
-        seed: `${seed}-notices-0`,
-        settlementSize: startSettlement.settlement.size,
-        factions,
-        significantItems,
-      });
+      startSettlement.settlement.rumors = []; // Will populate after factions
+      startSettlement.settlement.notices = [];
       settlements.push(startSettlement.settlement);
       settlementHexes.push(startSettlement.hex);
     }
   }
 
-  // Step 6: Place additional settlements
-  // Use configured settlement count minus the starting settlement
+  // Place additional settlements
   const extraSettlementCount = settlementCount - 1;
 
   // First try POI locations on plains
@@ -172,20 +152,8 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       const sites = generateSites({ seed, settlement: result.settlement });
       result.settlement.sites = sites;
       linkSitesToBuildings(result.settlement);
-      result.settlement.rumors = generateRumors({
-        seed: `${seed}-rumors-${i + 1}`,
-        factions,
-        settlements,
-        hexes,
-        currentSettlement: result.settlement,
-        significantItems,
-      });
-      result.settlement.notices = generateNotices({
-        seed: `${seed}-notices-${i + 1}`,
-        settlementSize: result.settlement.size,
-        factions,
-        significantItems,
-      });
+      result.settlement.rumors = [];
+      result.settlement.notices = [];
       settlements.push(result.settlement);
       settlementHexes.push(result.hex);
     }
@@ -202,26 +170,43 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       const sites = generateSites({ seed, settlement: result.settlement });
       result.settlement.sites = sites;
       linkSitesToBuildings(result.settlement);
-      result.settlement.rumors = generateRumors({
-        seed: `${seed}-rumors-extra-${i}`,
-        factions,
-        settlements,
-        hexes,
-        currentSettlement: result.settlement,
-        significantItems,
-      });
-      result.settlement.notices = generateNotices({
-        seed: `${seed}-notices-extra-${i}`,
-        settlementSize: result.settlement.size,
-        factions,
-        significantItems,
-      });
+      result.settlement.rumors = [];
+      result.settlement.notices = [];
       settlements.push(result.settlement);
       settlementHexes.push(result.hex);
     }
   }
 
-  // Step 6b: Designate capital - largest settlement becomes regional seat of power
+  // Step 5: Generate factions (now with settlements for HQ assignment)
+  // Factions may possess or desire significant items
+  const factions = generateFactions({
+    seed,
+    count: factionCount,
+    hexes,
+    settlements: settlements.map((s) => ({ id: s.id, name: s.name })),
+    significantItems,
+  });
+
+  // Step 6: Generate rumors and notices for each settlement (now that factions exist)
+  for (let i = 0; i < settlements.length; i++) {
+    const settlement = settlements[i];
+    settlement.rumors = generateRumors({
+      seed: `${seed}-rumors-${i}`,
+      factions,
+      settlements,
+      hexes,
+      currentSettlement: settlement,
+      significantItems,
+    });
+    settlement.notices = generateNotices({
+      seed: `${seed}-notices-${i}`,
+      settlementSize: settlement.size,
+      factions,
+      significantItems,
+    });
+  }
+
+  // Step 7: Designate capital - largest settlement becomes regional seat of power
   if (settlements.length > 0) {
     const capitalRng = new SeededRandom(`${seed}-capital`);
 
@@ -258,14 +243,104 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   // Step 8: Generate bridges where roads cross rivers
   const bridges = generateBridges({ seed, roads, riverHexes });
 
-  // Step 9: Place dungeons
+  // Step 8b: Generate faction lair dungeons
+  // Factions with wilderness lairs get a dungeon generated at their lair hex
   const dungeons: SpatialDungeon[] = [];
+  const factionLairRng = new SeededRandom(`${seed}-faction-lairs`);
+
+  // Track faction NPCs per faction for dungeon population
+  const factionNPCsMap = new Map<string, NPC[]>();
+
+  // Pre-generate faction NPCs so they can be placed in dungeons
+  for (const faction of factions) {
+    const factionNPCs = generateFactionNPCs({ seed, faction, nameRegistry });
+    factionNPCsMap.set(faction.id, factionNPCs);
+  }
+
+  for (const faction of factions) {
+    if (faction.lair?.hexCoord) {
+      // Pick a theme appropriate for this faction type
+      const theme = pickFactionDungeonTheme(factionLairRng, faction.factionType);
+
+      // Generate dungeon at the faction's lair hex
+      const result = placeDungeon({
+        seed: `${seed}-faction-lair-${faction.id}`,
+        hexes,
+        forceCoord: faction.lair.hexCoord,
+        forceTheme: theme,
+      });
+
+      if (result) {
+        // Link dungeon to faction
+        result.dungeon.controllingFactionId = faction.id;
+        faction.headquartersId = result.dungeon.id;
+        faction.lair.dungeonId = result.dungeon.id;
+
+        // Populate rooms with standard content
+        result.dungeon.rooms = populateSpatialDungeonRooms(
+          `${seed}-faction-lair-${faction.id}`,
+          result.dungeon.rooms,
+          result.dungeon.depth
+        );
+
+        // Add backstories to treasure items
+        for (const room of result.dungeon.rooms) {
+          room.treasure = addTreasureBackstories(room.treasure, {
+            seed: `${seed}-faction-lair-${faction.id}-${room.id}`,
+            theme: result.dungeon.theme,
+            historyLayers: result.dungeon.ecology?.historyLayers,
+          });
+        }
+
+        // Populate dungeon with faction NPCs
+        const factionNPCs = factionNPCsMap.get(faction.id) ?? [];
+        if (factionNPCs.length > 0) {
+          // Update faction NPCs to be located in this dungeon
+          for (const npc of factionNPCs) {
+            npc.locationId = result.dungeon.id;
+          }
+
+          // Generate dungeon NPCs for faction members
+          const dungeonNPCs = populateFactionDungeon(
+            result.dungeon.rooms,
+            faction,
+            factionNPCs,
+            `${seed}-faction-lair-${faction.id}`
+          );
+
+          // Add rival faction scouts
+          const rivalScouts = addRivalFactionScouts(
+            result.dungeon.rooms,
+            faction,
+            factions.filter((f) => f.id !== faction.id),
+            `${seed}-faction-lair-${faction.id}`
+          );
+
+          result.dungeon.dungeonNPCs = [...dungeonNPCs, ...rivalScouts];
+        }
+
+        dungeons.push(result.dungeon);
+      }
+    }
+  }
+
+  // Step 9: Place additional dungeons
 
   for (let i = 0; i < dungeonCount; i++) {
     const result = placeDungeon({ seed: `${seed}-dungeon-${i}`, hexes });
     if (result) {
       // Populate dungeon rooms with encounters and treasure
       result.dungeon.rooms = populateSpatialDungeonRooms(seed, result.dungeon.rooms, result.dungeon.depth);
+
+      // Add backstories to treasure items
+      for (const room of result.dungeon.rooms) {
+        room.treasure = addTreasureBackstories(room.treasure, {
+          seed: `${seed}-dungeon-${i}-${room.id}`,
+          theme: result.dungeon.theme,
+          historyLayers: result.dungeon.ecology?.historyLayers,
+        });
+      }
+
       dungeons.push(result.dungeon);
     }
   }
@@ -275,6 +350,16 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     const result = placeWildernessLair({ seed: `${seed}-wilderness-${i}`, hexes });
     if (result) {
       result.dungeon.rooms = populateSpatialDungeonRooms(seed, result.dungeon.rooms, result.dungeon.depth);
+
+      // Add backstories to treasure items
+      for (const room of result.dungeon.rooms) {
+        room.treasure = addTreasureBackstories(room.treasure, {
+          seed: `${seed}-wilderness-${i}-${room.id}`,
+          theme: result.dungeon.theme,
+          historyLayers: result.dungeon.ecology?.historyLayers,
+        });
+      }
+
       dungeons.push(result.dungeon);
     }
   }
@@ -389,10 +474,12 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     }
   }
 
-  // Faction NPCs
+  // Faction NPCs (use pre-generated NPCs from dungeon population step)
   for (const faction of factions) {
-    const factionNPCs = generateFactionNPCs({ seed, faction, nameRegistry });
-    npcs.push(...factionNPCs);
+    const factionNPCs = factionNPCsMap.get(faction.id);
+    if (factionNPCs) {
+      npcs.push(...factionNPCs);
+    }
   }
 
   // Step 16: Generate NPC relationships (family clusters, rivalries)

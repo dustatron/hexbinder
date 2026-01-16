@@ -91,7 +91,7 @@ export function TownMap({
     <div className="relative">
       <div
         ref={containerRef}
-        className="h-[48rem] w-full overflow-hidden touch-none rounded-lg border border-stone-400"
+        className="h-[20rem] w-full overflow-hidden touch-none rounded-lg border border-stone-400 lg:h-[48rem]"
         style={{ backgroundColor: PARCHMENT_BG }}
         {...bind()}
       >
