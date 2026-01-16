@@ -23,7 +23,7 @@ import { placeSettlement } from "./SettlementGenerator";
 import { assignNPCsToBuildings, linkSitesToBuildings } from "./TownLayoutEngine";
 import { placeDungeon, placeWildernessLair } from "./DungeonGenerator";
 import { generateSites } from "./SiteGenerator";
-import { generateFactions } from "./FactionGenerator";
+import { generateFactions, pickFactionDungeonTheme } from "./FactionGenerator";
 import { generateFactionClock } from "./ClockGenerator";
 import { generateRoads } from "./RoadGenerator";
 import { generateBridges, type Bridge } from "./BridgeGenerator";
@@ -241,8 +241,43 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   // Step 8: Generate bridges where roads cross rivers
   const bridges = generateBridges({ seed, roads, riverHexes });
 
-  // Step 9: Place dungeons
+  // Step 8b: Generate faction lair dungeons
+  // Factions with wilderness lairs get a dungeon generated at their lair hex
   const dungeons: SpatialDungeon[] = [];
+  const factionLairRng = new SeededRandom(`${seed}-faction-lairs`);
+
+  for (const faction of factions) {
+    if (faction.lair?.hexCoord) {
+      // Pick a theme appropriate for this faction type
+      const theme = pickFactionDungeonTheme(factionLairRng, faction.factionType);
+
+      // Generate dungeon at the faction's lair hex
+      const result = placeDungeon({
+        seed: `${seed}-faction-lair-${faction.id}`,
+        hexes,
+        forceCoord: faction.lair.hexCoord,
+        forceTheme: theme,
+      });
+
+      if (result) {
+        // Link dungeon to faction
+        result.dungeon.controllingFactionId = faction.id;
+        faction.headquartersId = result.dungeon.id;
+        faction.lair.dungeonId = result.dungeon.id;
+
+        // Populate rooms
+        result.dungeon.rooms = populateSpatialDungeonRooms(
+          `${seed}-faction-lair-${faction.id}`,
+          result.dungeon.rooms,
+          result.dungeon.depth
+        );
+
+        dungeons.push(result.dungeon);
+      }
+    }
+  }
+
+  // Step 9: Place additional dungeons
 
   for (let i = 0; i < dungeonCount; i++) {
     const result = placeDungeon({ seed: `${seed}-dungeon-${i}`, hexes });

@@ -147,6 +147,7 @@ function HexDetailPage() {
           <DungeonDetail
             dungeon={location as Dungeon}
             hook={hook}
+            factions={world.factions}
             worldId={world.id}
             onRegenerate={handleRegenerate}
             onReroll={handleReroll}

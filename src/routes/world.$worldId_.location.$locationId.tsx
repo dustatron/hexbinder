@@ -146,6 +146,7 @@ function LocationPage() {
           <DungeonDetail
             dungeon={location as Dungeon}
             hook={hooks.find((h) => h.status === "active")}
+            factions={world.factions}
             worldId={world.id}
             onRegenerate={handleRegenerate}
             seed={seed}

@@ -3,7 +3,7 @@ import {
   CheckCircle2, Skull, Gem, MapPin, User, Map as MapIcon, ScrollText,
   BookOpen, Users, Ghost, AlertTriangle, Footprints, Key
 } from "lucide-react";
-import type { Dungeon, Hook, DungeonTheme, NPC, SpatialDungeon, DungeonNPC, KeyLockPair } from "~/models";
+import type { Dungeon, Hook, DungeonTheme, NPC, SpatialDungeon, DungeonNPC, KeyLockPair, Faction } from "~/models";
 import { isSpatialDungeon } from "~/models";
 import type { RegenerationType, RegenerateOptions } from "~/lib/hex-regenerate";
 import { EncounterTable } from "~/components/encounter-table/EncounterTable";
@@ -17,6 +17,7 @@ interface DungeonDetailProps {
   hook?: Hook;
   hooks?: Hook[]; // All hooks targeting this dungeon
   npcs?: NPC[]; // All NPCs for lookup
+  factions?: Faction[]; // All factions for lookup
   worldId: string;
   onRegenerate: (type: RegenerationType, options?: RegenerateOptions) => void;
   onReroll?: () => void;
@@ -46,6 +47,7 @@ export function DungeonDetail({
   hook,
   hooks = [],
   npcs = [],
+  factions = [],
   worldId,
   onRegenerate,
   onReroll,
@@ -55,6 +57,11 @@ export function DungeonDetail({
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "map">("map");
   const roomCardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+
+  // Find controlling faction if any
+  const controllingFaction = dungeon.controllingFactionId
+    ? factions.find((f) => f.id === dungeon.controllingFactionId)
+    : undefined;
 
   // Scroll to selected room when clicking on map
   const handleRoomClick = (roomId: string) => {
@@ -315,6 +322,30 @@ export function DungeonDetail({
           </div>
         </div>
       </div>
+
+      {/* Controlling Faction */}
+      {controllingFaction && (
+        <div className="rounded-lg border border-amber-900/50 bg-amber-950/30 p-4 space-y-2">
+          <div className="flex items-center gap-2">
+            <Users className="h-4 w-4 text-amber-400" />
+            <h3 className="text-sm font-semibold text-amber-300">Faction Lair</h3>
+          </div>
+          <div className="flex items-center justify-between">
+            <a
+              href={`/world/${worldId}/faction/${controllingFaction.id}`}
+              className="text-sm font-medium text-amber-200 hover:text-amber-100 hover:underline"
+            >
+              {controllingFaction.name}
+            </a>
+            <span className="text-xs text-amber-400/70 capitalize">
+              {controllingFaction.factionType}
+            </span>
+          </div>
+          <p className="text-xs text-stone-400 italic">
+            {controllingFaction.purpose}
+          </p>
+        </div>
+      )}
 
       {/* Dungeon Ecology */}
       {hasSpatialLayout && (dungeon as SpatialDungeon).ecology && (

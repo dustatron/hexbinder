@@ -137,6 +137,8 @@ export interface DungeonPlacementOptions {
   hexes: Hex[];
   theme?: DungeonTheme;
   size?: DungeonSize;
+  forceCoord?: HexCoord;     // Force placement at specific coordinates
+  forceTheme?: DungeonTheme; // Force specific theme (overrides theme)
 }
 
 /**
@@ -147,25 +149,38 @@ export function placeDungeon(options: DungeonPlacementOptions): {
   dungeon: SpatialDungeon;
   hex: Hex;
 } | null {
-  const { seed, hexes, theme, size } = options;
+  const { seed, hexes, theme, size, forceCoord, forceTheme } = options;
   const rng = new SeededRandom(`${seed}-dungeon`);
 
-  // Find suitable hexes (hills/forest without locations)
-  const candidates = hexes.filter(
-    (h) => (h.terrain === "hills" || h.terrain === "forest") && !h.locationId
-  );
+  let hex: Hex | undefined;
 
-  if (candidates.length === 0) {
-    // Fallback to any non-water hex
-    const fallback = hexes.filter(
-      (h) => h.terrain !== "water" && !h.locationId
+  // If forceCoord is provided, find that hex directly
+  if (forceCoord) {
+    hex = hexes.find(
+      (h) => h.coord.q === forceCoord.q && h.coord.r === forceCoord.r
     );
-    if (fallback.length === 0) return null;
-    candidates.push(...fallback);
+    if (!hex) return null;
+  } else {
+    // Find suitable hexes (hills/forest without locations)
+    const candidates = hexes.filter(
+      (h) => (h.terrain === "hills" || h.terrain === "forest") && !h.locationId
+    );
+
+    if (candidates.length === 0) {
+      // Fallback to any non-water hex
+      const fallback = hexes.filter(
+        (h) => h.terrain !== "water" && !h.locationId
+      );
+      if (fallback.length === 0) return null;
+      candidates.push(...fallback);
+    }
+
+    hex = rng.pick(candidates);
   }
 
-  const hex = rng.pick(candidates);
-  const dungeon = generateSpatialDungeon(seed, hex.coord, theme, size);
+  // Use forceTheme if provided, otherwise fall back to theme
+  const finalTheme = forceTheme ?? theme;
+  const dungeon = generateSpatialDungeon(seed, hex.coord, finalTheme, size);
 
   // Update hex with location ID
   hex.locationId = dungeon.id;

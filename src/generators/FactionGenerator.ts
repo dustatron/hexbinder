@@ -16,8 +16,28 @@ import type {
   SignificantItem,
   HexCoord,
   Hex,
+  DungeonTheme,
 } from "~/models";
 import { SeededRandom, createWeightedTable } from "./SeededRandom";
+
+// === Faction to Dungeon Theme Mapping ===
+// Used when generating dungeons at faction lair locations
+
+export const FACTION_TO_DUNGEON_THEME: Record<FactionType, DungeonTheme[]> = {
+  cult: ["cultist_lair", "temple", "crypt", "shrine"],
+  militia: ["fortress", "bandit_hideout"],
+  syndicate: ["sewer", "bandit_hideout"],
+  guild: ["mine", "fortress"],
+  tribe: ["cave", "beast_den", "lair"],
+};
+
+/**
+ * Pick a dungeon theme appropriate for a faction type.
+ */
+export function pickFactionDungeonTheme(rng: SeededRandom, factionType: FactionType): DungeonTheme {
+  const themes = FACTION_TO_DUNGEON_THEME[factionType];
+  return rng.pick(themes);
+}
 
 // === Name Tables ===
 
