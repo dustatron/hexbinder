@@ -1198,6 +1198,11 @@ export interface TreasureEntry {
   description?: string;
   magicItemId?: string; // if type is magic_item
   looted: boolean;
+
+  // === Narrative Fields (Setting Seeds style) ===
+  backstory?: string;      // Who owned it, how it got here
+  complication?: string;   // Why taking it might cause problems
+  originalOwner?: string;  // "A merchant prince", "The cult leader", etc.
 }
 
 // === Magic Item ===

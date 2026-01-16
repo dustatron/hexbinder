@@ -43,6 +43,7 @@ import { generateHexEncounters } from "./HexEncounterGenerator";
 import { generateDwellings } from "./DwellingGenerator";
 import { generateQuestObjects } from "./QuestObjectGenerator";
 import { generateSignificantItems, placeItemInLocation } from "./SignificantItemGenerator";
+import { addTreasureBackstories } from "./dungeon/TreasureBackstoryGenerator";
 
 export interface WorldGeneratorOptions {
   name: string;
@@ -282,6 +283,15 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
           result.dungeon.depth
         );
 
+        // Add backstories to treasure items
+        for (const room of result.dungeon.rooms) {
+          room.treasure = addTreasureBackstories(room.treasure, {
+            seed: `${seed}-faction-lair-${faction.id}-${room.id}`,
+            theme: result.dungeon.theme,
+            historyLayers: result.dungeon.ecology?.historyLayers,
+          });
+        }
+
         // Populate dungeon with faction NPCs
         const factionNPCs = factionNPCsMap.get(faction.id) ?? [];
         if (factionNPCs.length > 0) {
@@ -321,6 +331,16 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     if (result) {
       // Populate dungeon rooms with encounters and treasure
       result.dungeon.rooms = populateSpatialDungeonRooms(seed, result.dungeon.rooms, result.dungeon.depth);
+
+      // Add backstories to treasure items
+      for (const room of result.dungeon.rooms) {
+        room.treasure = addTreasureBackstories(room.treasure, {
+          seed: `${seed}-dungeon-${i}-${room.id}`,
+          theme: result.dungeon.theme,
+          historyLayers: result.dungeon.ecology?.historyLayers,
+        });
+      }
+
       dungeons.push(result.dungeon);
     }
   }
@@ -330,6 +350,16 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     const result = placeWildernessLair({ seed: `${seed}-wilderness-${i}`, hexes });
     if (result) {
       result.dungeon.rooms = populateSpatialDungeonRooms(seed, result.dungeon.rooms, result.dungeon.depth);
+
+      // Add backstories to treasure items
+      for (const room of result.dungeon.rooms) {
+        room.treasure = addTreasureBackstories(room.treasure, {
+          seed: `${seed}-wilderness-${i}-${room.id}`,
+          theme: result.dungeon.theme,
+          historyLayers: result.dungeon.ecology?.historyLayers,
+        });
+      }
+
       dungeons.push(result.dungeon);
     }
   }

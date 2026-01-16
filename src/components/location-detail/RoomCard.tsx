@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight, Eye, EyeOff, Skull, AlertTriangle, Gem, Lock, ScrollText, History } from "lucide-react";
+import { ChevronDown, ChevronRight, Eye, EyeOff, Skull, AlertTriangle, Gem, Lock, ScrollText, History, BookOpen } from "lucide-react";
 import type { DungeonRoom, SpatialRoom, RoomSize, Discovery } from "~/models";
 import { getMonster, type Monster } from "~/lib/monsters";
 
@@ -194,24 +194,50 @@ export function RoomCard({ room, roomNumber, expanded = false, selected = false,
               <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-500">
                 Treasure
               </h4>
-              <ul className="space-y-1">
+              <ul className="space-y-2">
                 {room.treasure.map((item) => (
                   <li
                     key={item.id}
-                    className={`flex items-center gap-2 text-sm ${item.looted ? "opacity-50 line-through" : ""}`}
+                    className={`rounded bg-stone-800 p-2 text-sm ${item.looted ? "opacity-50" : ""}`}
                   >
-                    <Gem className={`h-3 w-3 ${
-                      item.type === "magic_item" ? "text-purple-500" :
-                      item.type === "gems" ? "text-cyan-500" :
-                      item.type === "art" ? "text-pink-500" :
-                      "text-amber-500"
-                    }`} />
-                    <span className="text-stone-200">{item.name}</span>
-                    {item.value && (
-                      <span className="text-xs text-stone-500">{item.value}</span>
+                    <div className={`flex items-center gap-2 ${item.looted ? "line-through" : ""}`}>
+                      <Gem className={`h-4 w-4 flex-shrink-0 ${
+                        item.type === "magic_item" ? "text-purple-500" :
+                        item.type === "gems" ? "text-cyan-500" :
+                        item.type === "art" ? "text-pink-500" :
+                        "text-amber-500"
+                      }`} />
+                      <span className="text-stone-200">{item.name}</span>
+                      {item.value && (
+                        <span className="text-xs text-stone-500">{item.value}</span>
+                      )}
+                      {item.looted && (
+                        <span className="text-xs text-stone-600">(looted)</span>
+                      )}
+                    </div>
+                    {item.description && !item.backstory && (
+                      <p className="mt-1 text-xs text-stone-500">{item.description}</p>
                     )}
-                    {item.description && (
-                      <span className="text-xs text-stone-600">— {item.description}</span>
+                    {item.backstory && (
+                      <div className="mt-2 flex items-start gap-2">
+                        <BookOpen className="h-3 w-3 text-amber-600 flex-shrink-0 mt-0.5" />
+                        <p className="text-xs text-stone-400 italic">{item.backstory}</p>
+                      </div>
+                    )}
+                    {item.originalOwner && !item.backstory && (
+                      <p className="mt-1 text-xs text-stone-500">
+                        <span className="text-stone-600">Originally owned by:</span> {item.originalOwner}
+                      </p>
+                    )}
+                    {item.complication && (
+                      <details className="mt-2">
+                        <summary className="cursor-pointer text-xs text-red-400 hover:text-red-300">
+                          Complication (GM)
+                        </summary>
+                        <p className="mt-1 p-2 rounded bg-stone-900 text-xs text-red-300">
+                          {item.complication}
+                        </p>
+                      </details>
                     )}
                   </li>
                 ))}
