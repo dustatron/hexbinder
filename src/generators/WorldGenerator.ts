@@ -108,16 +108,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     count: significantItemCount,
   });
 
-  // Step 4: Generate factions (pass hexes and items for Cairn-style generation)
-  // Factions may possess or desire significant items
-  const factions = generateFactions({
-    seed,
-    count: factionCount,
-    hexes,
-    significantItems,
-  });
-
-  // Step 5: Place starting settlement at start position
+  // Step 4: Place settlements first (factions need them for HQ assignment)
   const settlements: Settlement[] = [];
   const settlementHexes: Hex[] = [];
 
@@ -134,27 +125,14 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       const sites = generateSites({ seed, settlement: startSettlement.settlement });
       startSettlement.settlement.sites = sites;
       linkSitesToBuildings(startSettlement.settlement);
-      startSettlement.settlement.rumors = generateRumors({
-        seed: `${seed}-rumors-0`,
-        factions,
-        settlements: [],
-        hexes,
-        currentSettlement: startSettlement.settlement,
-        significantItems,
-      });
-      startSettlement.settlement.notices = generateNotices({
-        seed: `${seed}-notices-0`,
-        settlementSize: startSettlement.settlement.size,
-        factions,
-        significantItems,
-      });
+      startSettlement.settlement.rumors = []; // Will populate after factions
+      startSettlement.settlement.notices = [];
       settlements.push(startSettlement.settlement);
       settlementHexes.push(startSettlement.hex);
     }
   }
 
-  // Step 6: Place additional settlements
-  // Use configured settlement count minus the starting settlement
+  // Place additional settlements
   const extraSettlementCount = settlementCount - 1;
 
   // First try POI locations on plains
@@ -172,20 +150,8 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       const sites = generateSites({ seed, settlement: result.settlement });
       result.settlement.sites = sites;
       linkSitesToBuildings(result.settlement);
-      result.settlement.rumors = generateRumors({
-        seed: `${seed}-rumors-${i + 1}`,
-        factions,
-        settlements,
-        hexes,
-        currentSettlement: result.settlement,
-        significantItems,
-      });
-      result.settlement.notices = generateNotices({
-        seed: `${seed}-notices-${i + 1}`,
-        settlementSize: result.settlement.size,
-        factions,
-        significantItems,
-      });
+      result.settlement.rumors = [];
+      result.settlement.notices = [];
       settlements.push(result.settlement);
       settlementHexes.push(result.hex);
     }
@@ -202,26 +168,43 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       const sites = generateSites({ seed, settlement: result.settlement });
       result.settlement.sites = sites;
       linkSitesToBuildings(result.settlement);
-      result.settlement.rumors = generateRumors({
-        seed: `${seed}-rumors-extra-${i}`,
-        factions,
-        settlements,
-        hexes,
-        currentSettlement: result.settlement,
-        significantItems,
-      });
-      result.settlement.notices = generateNotices({
-        seed: `${seed}-notices-extra-${i}`,
-        settlementSize: result.settlement.size,
-        factions,
-        significantItems,
-      });
+      result.settlement.rumors = [];
+      result.settlement.notices = [];
       settlements.push(result.settlement);
       settlementHexes.push(result.hex);
     }
   }
 
-  // Step 6b: Designate capital - largest settlement becomes regional seat of power
+  // Step 5: Generate factions (now with settlements for HQ assignment)
+  // Factions may possess or desire significant items
+  const factions = generateFactions({
+    seed,
+    count: factionCount,
+    hexes,
+    settlements: settlements.map((s) => ({ id: s.id, name: s.name })),
+    significantItems,
+  });
+
+  // Step 6: Generate rumors and notices for each settlement (now that factions exist)
+  for (let i = 0; i < settlements.length; i++) {
+    const settlement = settlements[i];
+    settlement.rumors = generateRumors({
+      seed: `${seed}-rumors-${i}`,
+      factions,
+      settlements,
+      hexes,
+      currentSettlement: settlement,
+      significantItems,
+    });
+    settlement.notices = generateNotices({
+      seed: `${seed}-notices-${i}`,
+      settlementSize: settlement.size,
+      factions,
+      significantItems,
+    });
+  }
+
+  // Step 7: Designate capital - largest settlement becomes regional seat of power
   if (settlements.length > 0) {
     const capitalRng = new SeededRandom(`${seed}-capital`);
 

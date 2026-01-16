@@ -534,6 +534,7 @@ export interface FactionGeneratorOptions {
   seed: string;
   count?: number;
   hexes?: Hex[]; // for lair placement
+  settlements?: Array<{ id: string; name: string }>; // for HQ assignment
   significantItems?: SignificantItem[]; // for item-driven agendas
   existingFactions?: Faction[]; // for creating obstacles that reference other factions
 }
@@ -542,7 +543,7 @@ export interface FactionGeneratorOptions {
  * Generate factions for the world.
  */
 export function generateFactions(options: FactionGeneratorOptions): Faction[] {
-  const { seed, count = 2, hexes = [], significantItems = [] } = options;
+  const { seed, count = 2, hexes = [], settlements = [], significantItems = [] } = options;
   const rng = new SeededRandom(`${seed}-factions`);
   const factions: Faction[] = [];
 
@@ -555,11 +556,16 @@ export function generateFactions(options: FactionGeneratorOptions): Faction[] {
   const claimedItemIds = new Set<string>();
   const desiredItemIds = new Map<string, string[]>(); // itemId -> factionIds
 
+  // Track which settlements are claimed as HQs
+  const claimedSettlementIds = new Set<string>();
+
   for (let i = 0; i < count; i++) {
     const faction = generateFaction(
       rng,
       `faction-${i}`,
       lairHexes,
+      settlements,
+      claimedSettlementIds,
       significantItems,
       claimedItemIds,
       desiredItemIds,
@@ -632,10 +638,21 @@ function generateFactionRelationships(
   }
 }
 
+// Chance of wilderness lair vs settlement HQ by faction type
+const LAIR_CHANCE_BY_TYPE: Record<FactionType, number> = {
+  cult: 0.7,      // Cults prefer hidden wilderness lairs
+  tribe: 0.8,     // Tribes are wilderness-based
+  militia: 0.3,   // Militias usually in settlements
+  guild: 0.1,     // Guilds are urban
+  syndicate: 0.3, // Syndicates operate from cities but may have hideouts
+};
+
 function generateFaction(
   rng: SeededRandom,
   idSuffix: string,
   lairHexes: Hex[],
+  settlements: Array<{ id: string; name: string }>,
+  claimedSettlementIds: Set<string>,
   significantItems: SignificantItem[],
   claimedItemIds: Set<string>,
   desiredItemIds: Map<string, string[]>,
@@ -647,12 +664,32 @@ function generateFaction(
   const purpose = rng.pick(PURPOSE_BY_TYPE[factionType]);
   const factionId = `faction-${nanoid(8)}`;
 
-  // 40% chance of lair
+  // Determine base type: wilderness lair OR settlement HQ
+  // Every faction gets one or the other
   let lair: FactionLair | undefined;
-  if (lairHexes.length > 0 && rng.chance(0.4)) {
+  let headquartersId: string | undefined;
+  let territoryIds: string[] = [];
+
+  const lairChance = LAIR_CHANCE_BY_TYPE[factionType];
+  const wantsLair = rng.chance(lairChance);
+  const availableSettlements = settlements.filter((s) => !claimedSettlementIds.has(s.id));
+
+  if (wantsLair && lairHexes.length > 0) {
+    // Wilderness lair
+    const lairHex = rng.pick(lairHexes);
+    lair = { hexCoord: { q: lairHex.coord.q, r: lairHex.coord.r } };
+  } else if (availableSettlements.length > 0) {
+    // Settlement HQ - claim a settlement
+    const hqSettlement = rng.pick(availableSettlements);
+    headquartersId = hqSettlement.id;
+    territoryIds = [hqSettlement.id];
+    claimedSettlementIds.add(hqSettlement.id);
+  } else if (lairHexes.length > 0) {
+    // Fallback to lair if no settlements available
     const lairHex = rng.pick(lairHexes);
     lair = { hexCoord: { q: lairHex.coord.q, r: lairHex.coord.r } };
   }
+  // If neither available, faction has no physical base (rare edge case)
 
   // Generate Cairn-inspired advantages (2-3)
   const advantages = generateAdvantages(
@@ -704,7 +741,8 @@ function generateFaction(
     resources: advantages.map((a) => a.name), // Populate legacy field
 
     relationships: [],
-    territoryIds: [],
+    headquartersId,
+    territoryIds,
     influenceIds: [],
     recruitmentHookIds: [],
     goalRumorIds: [],
