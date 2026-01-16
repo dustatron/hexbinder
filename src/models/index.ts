@@ -687,6 +687,13 @@ export interface Hazard {
   damage?: string;
   save?: string;
   disarmed: boolean;
+
+  // === Cairn-style Fields ===
+  warningSign?: string;      // How players notice before triggering ("Scratches on floor", "Faint clicking")
+  tell?: string;             // Obvious indication for careful explorers ("Thin wire across passage")
+  disarmMethods?: string[];  // Creative solutions ("Jam mechanism with piton", "Pour water on plate")
+  consequence?: string;      // Beyond damage ("Alerts nearby enemies", "Blocks passage with rubble")
+  targetAttribute?: "STR" | "DEX" | "WIS" | "CON"; // Cairn: traps target attributes, not HP
 }
 
 export interface RoomSecret {
@@ -1016,6 +1023,13 @@ export interface TrapTemplate {
   save: string;
   themes: (DungeonTheme | "*")[]; // "*" means universal
   locations: ("room" | "passage")[];
+
+  // === Cairn-style Fields ===
+  warningSign: string;       // How players notice before triggering
+  tell: string;              // Obvious indication for careful explorers
+  disarmMethods: string[];   // Creative solutions (inventory/environment based)
+  consequence?: string;      // Beyond damage (alerts enemies, blocks path, etc.)
+  targetAttribute?: "STR" | "DEX" | "WIS" | "CON"; // Which attribute takes damage
 }
 
 /** Blueprint for guided dungeon generation */

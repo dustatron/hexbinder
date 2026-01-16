@@ -245,30 +245,87 @@ export function RoomCard({ room, roomNumber, expanded = false, selected = false,
             </section>
           )}
 
-          {/* Hazards */}
+          {/* Hazards/Traps (Cairn-style) */}
           {room.hazards.length > 0 && (
             <section className="space-y-2">
               <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-500">
-                Hazards
+                Traps & Hazards
               </h4>
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {room.hazards.map((hazard, i) => (
                   <li
                     key={i}
-                    className={`rounded bg-stone-800 p-2 text-sm ${hazard.disarmed ? "opacity-50" : ""}`}
+                    className={`rounded bg-stone-800 p-3 text-sm ${hazard.disarmed ? "opacity-50" : ""}`}
                   >
+                    {/* Header */}
                     <div className="flex items-center gap-2">
-                      <AlertTriangle className={`h-4 w-4 ${hazard.disarmed ? "text-stone-600" : "text-amber-500"}`} />
-                      <span className="text-stone-200">{hazard.name}</span>
+                      <AlertTriangle className={`h-4 w-4 flex-shrink-0 ${hazard.disarmed ? "text-stone-600" : "text-amber-500"}`} />
+                      <span className="font-medium text-stone-200">{hazard.name}</span>
+                      {hazard.targetAttribute && (
+                        <span className="text-xs px-1.5 py-0.5 rounded bg-red-900/50 text-red-300">
+                          {hazard.targetAttribute}
+                        </span>
+                      )}
                       {hazard.disarmed && (
                         <span className="text-xs text-stone-600">(disarmed)</span>
                       )}
                     </div>
-                    <p className="mt-1 text-stone-400">{hazard.description}</p>
-                    <div className="mt-1 flex gap-3 text-xs text-stone-500">
-                      {hazard.save && <span>Save: {hazard.save}</span>}
-                      {hazard.damage && <span>Damage: {hazard.damage}</span>}
+
+                    {/* Description */}
+                    <p className="mt-2 text-stone-400">{hazard.description}</p>
+
+                    {/* Mechanics */}
+                    <div className="mt-2 flex flex-wrap gap-3 text-xs">
+                      {hazard.damage && (
+                        <span className="text-red-400">
+                          <span className="text-stone-500">Damage:</span> {hazard.damage}
+                        </span>
+                      )}
+                      {hazard.save && (
+                        <span className="text-amber-400">
+                          <span className="text-stone-500">Save:</span> {hazard.save}
+                        </span>
+                      )}
                     </div>
+
+                    {/* Cairn-style: Warning Sign & Tell */}
+                    {(hazard.warningSign || hazard.tell) && (
+                      <div className="mt-3 space-y-1 border-t border-stone-700 pt-2">
+                        {hazard.warningSign && (
+                          <p className="text-xs">
+                            <span className="text-yellow-500">⚠ Warning:</span>{" "}
+                            <span className="text-stone-400">{hazard.warningSign}</span>
+                          </p>
+                        )}
+                        {hazard.tell && (
+                          <p className="text-xs">
+                            <span className="text-cyan-500">👁 Obvious:</span>{" "}
+                            <span className="text-stone-400">{hazard.tell}</span>
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Cairn-style: Disarm Methods */}
+                    {hazard.disarmMethods && hazard.disarmMethods.length > 0 && (
+                      <details className="mt-2">
+                        <summary className="cursor-pointer text-xs text-emerald-500 hover:text-emerald-400">
+                          Disarm Methods ({hazard.disarmMethods.length})
+                        </summary>
+                        <ul className="mt-1 ml-4 space-y-1 text-xs text-stone-400">
+                          {hazard.disarmMethods.map((method, j) => (
+                            <li key={j} className="list-disc">{method}</li>
+                          ))}
+                        </ul>
+                      </details>
+                    )}
+
+                    {/* Cairn-style: Consequence */}
+                    {hazard.consequence && (
+                      <p className="mt-2 text-xs text-orange-400">
+                        <span className="text-stone-500">Consequence:</span> {hazard.consequence}
+                      </p>
+                    )}
                   </li>
                 ))}
               </ul>
