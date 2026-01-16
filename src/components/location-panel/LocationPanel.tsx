@@ -1,13 +1,16 @@
+import { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { X, Sparkles, Skull, Home, ChevronRight } from "lucide-react";
 import type { Hex, Location, TerrainType, Dwelling, DwellingType } from "~/models";
+import { generateImprovedEncounter, type ImprovedEncounterResult } from "~/generators/EncounterGenerator";
 
 interface LocationPanelProps {
   location: Location | null;
   hex: Hex | null;
   dwelling: Dwelling | null;
   worldId: string;
+  worldSeed: string;
   onClose: () => void;
 }
 
@@ -28,8 +31,19 @@ const DWELLING_LABELS: Record<DwellingType, string> = {
   roadside_inn: "Roadside Inn",
 };
 
-export function LocationPanel({ location, hex, dwelling, worldId, onClose }: LocationPanelProps) {
+export function LocationPanel({ location, hex, dwelling, worldId, worldSeed, onClose }: LocationPanelProps) {
   const isOpen = hex !== null;
+
+  // Generate encounter result for wilderness hexes
+  const encounterResult = useMemo(() => {
+    if (!hex || location) return null;
+    const seed = `${worldSeed}-hex-${hex.coord.q},${hex.coord.r}`;
+    return generateImprovedEncounter({
+      seed,
+      terrain: hex.terrain,
+      overrides: hex.encounterOverrides,
+    });
+  }, [hex, location, worldSeed]);
 
   return (
     <AnimatePresence>
@@ -97,6 +111,23 @@ export function LocationPanel({ location, hex, dwelling, worldId, onClose }: Loc
                 {hex.description ||
                   `The ${hex.terrain.replace("_", " ")} stretches before you.`}
               </p>
+
+              {/* Improved Encounter Result */}
+              {encounterResult && (
+                <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3">
+                  <div className="flex items-start gap-2">
+                    <Sparkles size={14} className="mt-0.5 shrink-0 text-amber-400" />
+                    <span className="whitespace-pre-line font-medium text-amber-200">
+                      {buildEncounterSummary(encounterResult)}
+                    </span>
+                  </div>
+                  {hex.lastEncounterTimestamp && (
+                    <p className="mt-1 text-xs text-stone-500">
+                      Last rolled: {formatTimestamp(hex.lastEncounterTimestamp)}
+                    </p>
+                  )}
+                </div>
+              )}
 
               {/* Feature */}
               {hex.feature && (
@@ -178,4 +209,55 @@ export function LocationPanel({ location, hex, dwelling, worldId, onClose }: Loc
       )}
     </AnimatePresence>
   );
+}
+
+// === Helpers ===
+
+function buildEncounterSummary(result: ImprovedEncounterResult): string {
+  const { encounterType } = result;
+
+  switch (encounterType) {
+    case "creature":
+      if (result.creature) {
+        return `${result.creature.count}x ${result.creature.entry.name} - ${result.reaction}`;
+      }
+      return "Creature encounter";
+
+    case "npc":
+      if (result.npc) {
+        const wantLine = result.npc.flavorWant ? `\nwants: ${result.npc.flavorWant}` : "";
+        return `${result.npc.name} (${result.npc.archetype}) - ${result.reaction}${wantLine}`;
+      }
+      return `NPC - ${result.reaction}`;
+
+    case "sign":
+      return result.sign?.text ?? "Sign/Omen";
+
+    case "environment":
+      return result.environment?.text ?? "Environment change";
+
+    case "loss":
+      return result.loss?.text ?? "Resource loss";
+
+    case "area-effect":
+      return result.areaEffect?.text ?? "Discovery";
+
+    default:
+      return "Encounter";
+  }
+}
+
+function formatTimestamp(timestamp: number): string {
+  const now = new Date();
+  const diffMs = now.getTime() - timestamp;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffMins < 1) return "just now";
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+
+  return new Date(timestamp).toLocaleDateString();
 }

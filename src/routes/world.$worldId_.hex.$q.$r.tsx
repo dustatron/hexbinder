@@ -1,13 +1,12 @@
 import { useState, useCallback } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { nanoid } from "nanoid";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/lib/hex-regenerate";
 import { WildernessDetail } from "~/components/location-detail/WildernessDetail";
 import { SettlementDetail } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
-import type { Settlement, Dungeon, WorldData } from "~/models";
+import type { EncounterOverrides, Settlement, Dungeon, WorldData } from "~/models";
 
 export const Route = createFileRoute("/world/$worldId_/hex/$q/$r")({
   loader: ({ params }) => {
@@ -36,7 +35,9 @@ export const Route = createFileRoute("/world/$worldId_/hex/$q/$r")({
 function HexDetailPage() {
   const { world: initialWorld, hex: initialHex } = Route.useLoaderData();
   const [world, setWorld] = useState(initialWorld);
-  const [seed, setSeed] = useState(() => `${world.seed}-hex-${initialHex.coord.q},${initialHex.coord.r}-${nanoid(4)}`);
+  // Stable seed - only changes on explicit re-roll, not on navigation
+  const [rerollCounter, setRerollCounter] = useState(0);
+  const seed = `${world.seed}-hex-${initialHex.coord.q},${initialHex.coord.r}${rerollCounter > 0 ? `-${rerollCounter}` : ""}`;
 
   // Re-derive hex and location from current world state
   const hex = world.hexes.find((h) => h.coord.q === initialHex.coord.q && h.coord.r === initialHex.coord.r)!;
@@ -48,18 +49,31 @@ function HexDetailPage() {
     const newWorld = regenerateHex(world, hex.coord, type, options);
     saveWorld(newWorld);
     setWorld(newWorld);
-    setSeed(`${newWorld.seed}-hex-${hex.coord.q},${hex.coord.r}-${nanoid(4)}`);
+    setRerollCounter((c) => c + 1);
   }, [world, hex.coord]);
 
   const handleReroll = useCallback(() => {
-    setSeed(`${world.seed}-hex-${hex.coord.q},${hex.coord.r}-${nanoid(4)}`);
-  }, [world.seed, hex.coord]);
+    setRerollCounter((c) => c + 1);
+  }, []);
 
   const handleUpdateWorld = useCallback((updater: (world: WorldData) => WorldData) => {
     const updated = updater(world);
     saveWorld(updated);
     setWorld(updated);
   }, [world]);
+
+  const handleOverridesChange = useCallback((overrides: EncounterOverrides) => {
+    const updated: WorldData = {
+      ...world,
+      hexes: world.hexes.map((h) =>
+        h.coord.q === hex.coord.q && h.coord.r === hex.coord.r
+          ? { ...h, encounterOverrides: overrides, lastEncounterTimestamp: Date.now() }
+          : h
+      ),
+    };
+    saveWorld(updated);
+    setWorld(updated);
+  }, [world, hex.coord]);
 
   // Get today's events for settlements
   const todayRecord = world.state.calendar.find((r) => r.day === world.state.day);
@@ -74,6 +88,11 @@ function HexDetailPage() {
   const hook = location?.type === "dungeon"
     ? world.hooks.find((h) => h.involvedLocationIds.includes(location.id))
     : undefined;
+
+  // Find dwelling at this hex
+  const dwelling = hex.dwellingId
+    ? world.dwellings.find((d) => d.id === hex.dwellingId)
+    : null;
 
   // Build page title
   const title = location?.name ?? `Hex (${hex.coord.q}, ${hex.coord.r})`;
@@ -99,9 +118,11 @@ function HexDetailPage() {
         {!location && (
           <WildernessDetail
             hex={hex}
+            dwelling={dwelling}
             worldId={world.id}
             onRegenerate={handleRegenerate}
             onReroll={handleReroll}
+            onOverridesChange={handleOverridesChange}
             seed={seed}
           />
         )}
