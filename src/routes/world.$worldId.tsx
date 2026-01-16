@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Cloud, Sun, CloudRain, Settings, ChevronRight } from "lucide-react";
+import { ArrowLeft, Cloud, Sun, CloudRain, Settings, ChevronRight, Tag } from "lucide-react";
 import { HexMap } from "~/components/hex-map";
 import { LocationPanel } from "~/components/location-panel";
 import { loadWorld, saveWorld } from "~/lib/storage";
@@ -31,6 +31,7 @@ function WorldPage() {
   const initialWorld = Route.useLoaderData();
   const [world, setWorld] = useState<WorldData>(initialWorld);
   const [selectedCoord, setSelectedCoord] = useState<HexCoord | null>(null);
+  const [showLabels, setShowLabels] = useState(false);
 
   // Sync state when navigating back (loader runs again with fresh localStorage data)
   useEffect(() => {
@@ -136,12 +137,28 @@ function WorldPage() {
 
       {/* Hex Map */}
       <div className="relative flex-1 overflow-hidden">
+        {/* Map Controls */}
+        <div className="absolute top-2 left-2 z-10 flex gap-1">
+          <button
+            onClick={() => setShowLabels(!showLabels)}
+            className={`p-2 rounded border transition-colors ${
+              showLabels
+                ? "bg-amber-600 border-amber-500 text-white"
+                : "bg-stone-800/90 border-stone-600 text-stone-300 hover:bg-stone-700"
+            }`}
+            title={showLabels ? "Hide location labels" : "Show location labels"}
+          >
+            <Tag size={16} />
+          </button>
+        </div>
+
         <HexMap
           hexes={world.hexes}
           edges={world.edges}
           locations={world.locations}
           selectedCoord={selectedCoord}
           onHexClick={setSelectedCoord}
+          showLabels={showLabels}
         />
 
         {/* Location Panel */}

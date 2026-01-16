@@ -3,6 +3,7 @@ import type {
   WorldData,
   WorldState,
   Hex,
+  HexCoord,
   HexEdge,
   Location,
   Settlement,
@@ -138,6 +139,12 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   // This ensures settlements are spread out rather than clustered
   const extraSettlementCount = settlementCount - 1;
 
+  // Convert riverHexes Set to array of HexCoords for river affinity bonus
+  const riverAdjacentCoords: HexCoord[] = Array.from(riverHexes).map(key => {
+    const [q, r] = key.split(",").map(Number);
+    return { q, r };
+  });
+
   for (let i = 0; i < extraSettlementCount; i++) {
     // Collect coordinates of all existing settlements for distance weighting
     const existingCoords = settlementHexes.map(h => h.coord);
@@ -146,6 +153,9 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       seed: `${seed}-settlement-${i + 1}`,
       hexes,
       existingSettlementCoords: existingCoords,
+      riverAdjacentCoords,
+      settlementIndex: i + 1, // +1 because starting settlement is index 0
+      totalSettlements: settlementCount,
     });
     if (result) {
       const sites = generateSites({ seed, settlement: result.settlement });

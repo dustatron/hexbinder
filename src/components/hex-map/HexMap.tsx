@@ -11,6 +11,7 @@ interface HexMapProps {
   locations: Location[];
   selectedCoord: HexCoord | null;
   onHexClick: (coord: HexCoord) => void;
+  showLabels?: boolean;
 }
 
 export function HexMap({
@@ -19,6 +20,7 @@ export function HexMap({
   locations,
   selectedCoord,
   onHexClick,
+  showLabels = false,
 }: HexMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -147,10 +149,12 @@ export function HexMap({
                 honeycombHex={honeycombHex}
                 hexData={hexData}
                 locationType={location?.type}
+                locationName={location?.name}
                 dungeonTheme={dungeonTheme}
                 isCapital={isCapital}
                 isSelected={isSelected}
                 onClick={onHexClick}
+                showLabel={showLabels}
               />
             );
           })}

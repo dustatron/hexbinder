@@ -128,29 +128,60 @@ export interface SettlementPlacementOptions {
   forceCoord?: HexCoord;    // Place at specific coordinate
   forceSize?: SettlementSize; // Force specific settlement size
   existingSettlementCoords?: HexCoord[]; // For distance-weighted placement
+  riverAdjacentCoords?: HexCoord[]; // Hexes adjacent to rivers (bonus weight)
+  settlementIndex?: number; // Which settlement this is (0-based)
+  totalSettlements?: number; // Total planned settlements
 }
 
 /**
- * Calculate distance weight for a hex based on distance from existing settlements.
- * Higher weight = farther from settlements = more likely to be selected.
+ * Check if a coordinate is in a list of coordinates.
+ */
+function coordInList(coord: HexCoord, list: HexCoord[]): boolean {
+  return list.some(c => c.q === coord.q && c.r === coord.r);
+}
+
+/**
+ * Calculate distance weight for a hex based on multiple factors:
+ * - Distance from existing settlements (farther = higher weight)
+ * - River adjacency (bonus weight for river-adjacent hexes)
+ * - Graduated spacing (early settlements can be closer)
  */
 function calculateDistanceWeight(
   coord: HexCoord,
-  existingCoords: HexCoord[]
+  existingCoords: HexCoord[],
+  riverAdjacentCoords: HexCoord[],
+  settlementIndex: number,
+  totalSettlements: number
 ): number {
-  if (existingCoords.length === 0) return 1;
+  let weight = 1;
 
-  // Find minimum distance to any existing settlement
-  let minDistance = Infinity;
-  for (const existing of existingCoords) {
-    const dist = hexDistance(coord, existing);
-    if (dist < minDistance) minDistance = dist;
+  if (existingCoords.length > 0) {
+    // Find minimum distance to any existing settlement
+    let minDistance = Infinity;
+    for (const existing of existingCoords) {
+      const dist = hexDistance(coord, existing);
+      if (dist < minDistance) minDistance = dist;
+    }
+
+    // Graduated spacing: first ~30% of settlements use linear distance,
+    // remaining settlements use squared distance for stronger spreading
+    const earlySettlementThreshold = Math.ceil(totalSettlements * 0.3);
+    if (settlementIndex < earlySettlementThreshold) {
+      // Early settlements: linear distance (allows closer placement)
+      weight = Math.max(1, minDistance);
+    } else {
+      // Later settlements: squared distance (forces spreading)
+      weight = Math.max(1, minDistance * minDistance);
+    }
   }
 
-  // Weight is the square of the minimum distance
-  // This strongly favors hexes far from all settlements
-  // Minimum weight of 1 to avoid zero-weight candidates
-  return Math.max(1, minDistance * minDistance);
+  // River affinity: double weight for river-adjacent hexes
+  // Settlements naturally form along rivers for trade and water
+  if (coordInList(coord, riverAdjacentCoords)) {
+    weight *= 2;
+  }
+
+  return weight;
 }
 
 /**
@@ -161,7 +192,16 @@ export function placeSettlement(options: SettlementPlacementOptions): {
   settlement: SpatialSettlement;
   hex: Hex;
 } | null {
-  const { seed, hexes, forceCoord, forceSize, existingSettlementCoords = [] } = options;
+  const {
+    seed,
+    hexes,
+    forceCoord,
+    forceSize,
+    existingSettlementCoords = [],
+    riverAdjacentCoords = [],
+    settlementIndex = 0,
+    totalSettlements = 1,
+  } = options;
   const rng = new SeededRandom(`${seed}-settlement`);
 
   let hex: Hex | undefined;
@@ -171,10 +211,23 @@ export function placeSettlement(options: SettlementPlacementOptions): {
     hex = hexes.find(h => h.coord.q === forceCoord.q && h.coord.r === forceCoord.r);
     if (!hex || hex.locationId) return null;
   } else {
-    // Find suitable hexes (plains without locations)
-    let candidates = hexes.filter(
-      (h) => h.terrain === "plains" && !h.locationId
-    );
+    // Terrain variety: 20% chance to consider non-plains terrain
+    // This creates hill towns, forest villages, coastal hamlets
+    const allowVariedTerrain = rng.chance(0.2);
+
+    // Find suitable hexes
+    let candidates: Hex[];
+    if (allowVariedTerrain) {
+      // Include forest, hills, and swamp (not water or mountains)
+      candidates = hexes.filter(
+        (h) => h.terrain !== "water" && h.terrain !== "mountains" && !h.locationId
+      );
+    } else {
+      // Prefer plains (most common settlement terrain)
+      candidates = hexes.filter(
+        (h) => h.terrain === "plains" && !h.locationId
+      );
+    }
 
     if (candidates.length === 0) {
       // Fallback to any non-water/mountain hex
@@ -184,33 +237,33 @@ export function placeSettlement(options: SettlementPlacementOptions): {
       if (candidates.length === 0) return null;
     }
 
-    // Use distance-weighted selection if we have existing settlements
-    if (existingSettlementCoords.length > 0) {
-      // Build weighted table based on distance from existing settlements
-      const weightedCandidates = candidates.map(h => ({
-        hex: h,
-        weight: calculateDistanceWeight(h.coord, existingSettlementCoords),
-      }));
+    // Build weighted table based on distance, river affinity, and graduated spacing
+    const weightedCandidates = candidates.map(h => ({
+      hex: h,
+      weight: calculateDistanceWeight(
+        h.coord,
+        existingSettlementCoords,
+        riverAdjacentCoords,
+        settlementIndex,
+        totalSettlements
+      ),
+    }));
 
-      // Calculate total weight
-      const totalWeight = weightedCandidates.reduce((sum, c) => sum + c.weight, 0);
+    // Calculate total weight
+    const totalWeight = weightedCandidates.reduce((sum, c) => sum + c.weight, 0);
 
-      // Weighted random selection
-      let roll = rng.next() * totalWeight;
-      for (const candidate of weightedCandidates) {
-        roll -= candidate.weight;
-        if (roll <= 0) {
-          hex = candidate.hex;
-          break;
-        }
+    // Weighted random selection
+    let roll = rng.next() * totalWeight;
+    for (const candidate of weightedCandidates) {
+      roll -= candidate.weight;
+      if (roll <= 0) {
+        hex = candidate.hex;
+        break;
       }
-
-      // Fallback to last candidate
-      if (!hex) hex = weightedCandidates[weightedCandidates.length - 1].hex;
-    } else {
-      // No existing settlements, pure random
-      hex = rng.pick(candidates);
     }
+
+    // Fallback to last candidate
+    if (!hex) hex = weightedCandidates[weightedCandidates.length - 1].hex;
   }
 
   if (!hex) return null;
