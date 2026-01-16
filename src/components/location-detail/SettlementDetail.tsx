@@ -93,8 +93,8 @@ function LinkedText({
         result.push(
           <Link
             key={`${match.type}-${match.id}-${match.start}`}
-            to="/world/$worldId_/faction/$factionId"
-            params={{ worldId_: worldId, factionId: match.id }}
+            to="/world/$worldId/faction/$factionId"
+            params={{ worldId: worldId, factionId: match.id }}
             className="mx-0.5 inline-flex items-center rounded bg-purple-500/30 px-1.5 py-0.5 text-xs font-medium text-purple-300 hover:bg-purple-500/50"
             onClick={(e) => e.stopPropagation()}
           >
@@ -105,8 +105,8 @@ function LinkedText({
         result.push(
           <Link
             key={`${match.type}-${match.id}-${match.start}`}
-            to="/world/$worldId_/location/$locationId"
-            params={{ worldId_: worldId, locationId: match.id }}
+            to="/world/$worldId/location/$locationId"
+            params={{ worldId: worldId, locationId: match.id }}
             className="mx-0.5 inline-flex items-center rounded bg-amber-500/30 px-1.5 py-0.5 text-xs font-medium text-amber-300 hover:bg-amber-500/50"
             onClick={(e) => e.stopPropagation()}
           >

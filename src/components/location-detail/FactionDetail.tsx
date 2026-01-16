@@ -1,4 +1,5 @@
 import type { Faction, Clock, NPC, Location, Hook, SignificantItem } from "~/models";
+import { NPCStatLine } from "~/components/npc/NPCStatLine";
 
 interface FactionDetailProps {
   faction: Faction;

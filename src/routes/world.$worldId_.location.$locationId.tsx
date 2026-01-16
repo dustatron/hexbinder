@@ -85,6 +85,10 @@ function LocationPage() {
     setWorld(updated);
   }, [world]);
 
+  const handleReroll = useCallback(() => {
+    setSeed(`${world.seed}-${initialLocation.id}-${Date.now()}`);
+  }, [world.seed, initialLocation.id]);
+
   // Location not found (shouldn't happen in normal flow)
   if (!location) {
     return (
