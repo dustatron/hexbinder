@@ -34,6 +34,8 @@ export interface Hex {
   encounterOverrides?: EncounterOverrides;
   // Timestamp of last encounter generation
   lastEncounterTimestamp?: number;
+  // Reroll counter for encounter seed (persisted)
+  encounterRerollCount?: number;
 }
 
 // === Hex Feature (Landmarks) ===

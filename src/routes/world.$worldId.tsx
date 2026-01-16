@@ -15,6 +15,8 @@ export const Route = createFileRoute("/world/$worldId")({
   },
   // Only load on client - localStorage doesn't exist on server
   ssr: false,
+  // Always reload to get fresh data from localStorage
+  shouldReload: true,
   component: WorldPage,
 });
 

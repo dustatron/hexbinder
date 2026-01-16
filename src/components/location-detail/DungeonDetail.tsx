@@ -11,6 +11,7 @@ import { RegenerateButton } from "./RegenerateButton";
 import { RoomCard } from "./RoomCard";
 import { DungeonMap } from "~/components/dungeon-map";
 import { NPCStatLine } from "~/components/npc/NPCStatLine";
+import { getMonster } from "~/lib/monsters";
 
 interface DungeonDetailProps {
   dungeon: Dungeon | SpatialDungeon;
@@ -195,6 +196,50 @@ export function DungeonDetail({
         <p className="text-sm text-stone-400">{dungeon.description}</p>
       </div>
 
+      {/* Dungeon Lore - Above tabs */}
+      {hasSpatialLayout && (dungeon as SpatialDungeon).ecology && (
+        <div className="rounded-lg border border-stone-700 bg-stone-800/50 p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-stone-400" />
+            <h3 className="text-sm font-semibold text-stone-200">Dungeon Lore</h3>
+          </div>
+          <p className="text-sm text-stone-300 italic">
+            {(dungeon as SpatialDungeon).ecology?.history}
+          </p>
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <span className="text-stone-500">Built by:</span>
+              <span className="ml-2 text-stone-300 capitalize">
+                {(dungeon as SpatialDungeon).ecology?.builderCulture}
+              </span>
+            </div>
+            <div>
+              <span className="text-stone-500">Inhabitants:</span>
+              <span className="ml-2 text-stone-300 capitalize">
+                {(dungeon as SpatialDungeon).ecology?.currentInhabitants}
+              </span>
+            </div>
+          </div>
+          {/* History Layers */}
+          {(dungeon as SpatialDungeon).ecology?.historyLayers && (dungeon as SpatialDungeon).ecology!.historyLayers!.length > 0 && (
+            <div className="mt-3 border-t border-stone-700 pt-3">
+              <h4 className="text-xs font-semibold text-stone-400 mb-2">History Layers</h4>
+              <div className="space-y-2">
+                {(dungeon as SpatialDungeon).ecology!.historyLayers!.map((layer, i) => (
+                  <div key={i} className="text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-stone-300 capitalize">{layer.builders}</span>
+                      <span className="text-stone-500">({layer.era})</span>
+                    </div>
+                    <p className="text-stone-400 italic pl-2">{layer.fate}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Tab Bar */}
       <div className="flex gap-1 rounded-lg border border-stone-700 bg-stone-800 p-1">
         <button
@@ -347,72 +392,6 @@ export function DungeonDetail({
         </div>
       )}
 
-      {/* Dungeon Ecology */}
-      {hasSpatialLayout && (dungeon as SpatialDungeon).ecology && (
-        <div className="rounded-lg border border-stone-700 bg-stone-800/50 p-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-stone-400" />
-            <h3 className="text-sm font-semibold text-stone-200">Dungeon Lore</h3>
-          </div>
-          <p className="text-sm text-stone-300 italic">
-            {(dungeon as SpatialDungeon).ecology?.history}
-          </p>
-          <div className="grid grid-cols-2 gap-3 text-xs">
-            <div>
-              <span className="text-stone-500">Built by:</span>
-              <span className="ml-2 text-stone-300 capitalize">
-                {(dungeon as SpatialDungeon).ecology?.builderCulture}
-              </span>
-            </div>
-            <div>
-              <span className="text-stone-500">Inhabitants:</span>
-              <span className="ml-2 text-stone-300 capitalize">
-                {(dungeon as SpatialDungeon).ecology?.currentInhabitants}
-              </span>
-            </div>
-          </div>
-          {/* History Layers */}
-          {(dungeon as SpatialDungeon).ecology?.historyLayers && (dungeon as SpatialDungeon).ecology!.historyLayers!.length > 0 && (
-            <div className="mt-3 border-t border-stone-700 pt-3">
-              <h4 className="text-xs font-semibold text-stone-400 mb-2">History Layers</h4>
-              <div className="space-y-2">
-                {(dungeon as SpatialDungeon).ecology!.historyLayers!.map((layer, i) => (
-                  <div key={i} className="text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-stone-300 capitalize">{layer.builders}</span>
-                      <span className="text-stone-500">({layer.era})</span>
-                    </div>
-                    <p className="text-stone-400 italic pl-2">{layer.fate}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Wandering Monsters */}
-      {hasSpatialLayout && (dungeon as SpatialDungeon).wanderingMonsters && (
-        <div className="rounded-lg border border-red-900/50 bg-red-950/30 p-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <Footprints className="h-4 w-4 text-red-400" />
-            <h3 className="text-sm font-semibold text-red-300">Wandering Monsters</h3>
-          </div>
-          <p className="text-xs text-stone-400">
-            Check: {(dungeon as SpatialDungeon).wanderingMonsters?.checkFrequency}
-          </p>
-          <div className="space-y-1">
-            {(dungeon as SpatialDungeon).wanderingMonsters?.entries.map((entry, i) => (
-              <div key={i} className="flex items-center gap-2 text-sm">
-                <span className="w-8 text-xs text-stone-500">{entry.count}</span>
-                <span className="text-stone-200">{entry.creatureType}</span>
-                <span className="text-xs text-stone-500 italic">({entry.activity})</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Dungeon NPCs */}
       {hasSpatialLayout && (dungeon as SpatialDungeon).dungeonNPCs && (dungeon as SpatialDungeon).dungeonNPCs!.length > 0 && (
         <div className="rounded-lg border border-purple-900/50 bg-purple-950/30 p-4 space-y-3">
@@ -466,22 +445,31 @@ export function DungeonDetail({
       {/* Map Tab - Two-column layout: Map (left) + Rooms (right) on desktop */}
       {activeTab === "map" && (
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Left column: Dungeon Map */}
+        {/* Left column: Dungeon Map + Wandering Monsters (desktop) */}
         {hasSpatialLayout && (
-          <section className="space-y-3 lg:sticky lg:top-4 lg:self-start">
-            <div className="flex items-center gap-2">
-              <MapIcon className="h-4 w-4 text-stone-400" />
-              <h3 className="text-sm font-semibold text-stone-200">Dungeon Map</h3>
+          <section className="space-y-4 lg:sticky lg:top-4 lg:self-start">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <MapIcon className="h-4 w-4 text-stone-400" />
+                <h3 className="text-sm font-semibold text-stone-200">Dungeon Map</h3>
+              </div>
+              <DungeonMap
+                dungeon={dungeon as SpatialDungeon}
+                selectedRoomId={selectedRoomId}
+                onRoomClick={handleRoomClick}
+                roomNumberMap={roomNumberMap}
+              />
+              <p className="text-xs text-stone-500">
+                Click a room to see details. Pan and zoom with gestures.
+              </p>
             </div>
-            <DungeonMap
-              dungeon={dungeon as SpatialDungeon}
-              selectedRoomId={selectedRoomId}
-              onRoomClick={handleRoomClick}
-              roomNumberMap={roomNumberMap}
-            />
-            <p className="text-xs text-stone-500">
-              Click a room to see details. Pan and zoom with gestures.
-            </p>
+
+            {/* Wandering Monsters - Desktop only (under map) */}
+            {(dungeon as SpatialDungeon).wanderingMonsters && (
+              <div className="hidden lg:block">
+                <WanderingMonstersSection dungeon={dungeon as SpatialDungeon} />
+              </div>
+            )}
           </section>
         )}
 
@@ -507,6 +495,13 @@ export function DungeonDetail({
               </div>
             ))}
           </div>
+
+          {/* Wandering Monsters - Mobile only (under rooms) */}
+          {hasSpatialLayout && (dungeon as SpatialDungeon).wanderingMonsters && (
+            <div className="lg:hidden">
+              <WanderingMonstersSection dungeon={dungeon as SpatialDungeon} />
+            </div>
+          )}
         </div>
       </div>
       )}
@@ -666,6 +661,68 @@ function ExitPointCard({ exit, roomNumberMap }: ExitPointCardProps) {
           Located in: <span className="text-stone-400">Room #{roomNum}</span>
         </p>
       )}
+    </div>
+  );
+}
+
+interface WanderingMonstersSectionProps {
+  dungeon: SpatialDungeon;
+}
+
+function WanderingMonstersSection({ dungeon }: WanderingMonstersSectionProps) {
+  if (!dungeon.wanderingMonsters) return null;
+
+  const entries = dungeon.wanderingMonsters.entries;
+  const dieSize = entries.length;
+
+  return (
+    <div className="rounded-lg border border-red-900/50 bg-red-950/30 p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Footprints className="h-4 w-4 text-red-400" />
+          <h3 className="text-sm font-semibold text-red-300">Wandering Monsters</h3>
+        </div>
+        <span className="rounded bg-red-900/50 px-2 py-0.5 text-xs font-medium text-red-300">
+          1d{dieSize}
+        </span>
+      </div>
+      <p className="text-xs text-stone-400">
+        Check: {dungeon.wanderingMonsters.checkFrequency}
+      </p>
+      <div className="overflow-hidden rounded border border-stone-700">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-stone-700 bg-stone-800/50 text-xs text-stone-400">
+              <th className="px-2 py-1 text-left w-8">#</th>
+              <th className="px-2 py-1 text-left">Creature</th>
+              <th className="px-2 py-1 text-center w-10">Lv</th>
+              <th className="px-2 py-1 text-center w-10">AC</th>
+              <th className="px-2 py-1 text-center w-10">HP</th>
+              <th className="px-2 py-1 text-left">Atk</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-stone-700/50">
+            {entries.map((entry, i) => {
+              const monster = getMonster(entry.creatureType);
+              return (
+                <tr key={i} className="text-stone-300">
+                  <td className="px-2 py-1.5 text-stone-500">{i + 1}</td>
+                  <td className="px-2 py-1.5">
+                    <div className="font-medium text-stone-200">
+                      {entry.count} {entry.creatureType}
+                    </div>
+                    <div className="text-xs text-stone-500 italic">{entry.activity}</div>
+                  </td>
+                  <td className="px-2 py-1.5 text-center text-xs">{monster?.level ?? "?"}</td>
+                  <td className="px-2 py-1.5 text-center text-xs">{monster?.armor_class ?? "?"}</td>
+                  <td className="px-2 py-1.5 text-center text-xs">{monster?.hit_points ?? "?"}</td>
+                  <td className="px-2 py-1.5 text-xs text-stone-400">{monster?.attacks ?? "?"}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

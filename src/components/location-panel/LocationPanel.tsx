@@ -37,7 +37,8 @@ export function LocationPanel({ location, hex, dwelling, worldId, worldSeed, onC
   // Generate encounter result for wilderness hexes
   const encounterResult = useMemo(() => {
     if (!hex || location) return null;
-    const seed = `${worldSeed}-hex-${hex.coord.q},${hex.coord.r}`;
+    const rerollCount = hex.encounterRerollCount ?? 0;
+    const seed = `${worldSeed}-hex-${hex.coord.q},${hex.coord.r}${rerollCount > 0 ? `-${rerollCount}` : ""}`;
     return generateImprovedEncounter({
       seed,
       terrain: hex.terrain,
