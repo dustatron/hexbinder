@@ -64,6 +64,15 @@ export type { Bridge, BridgeGeneratorOptions } from "./BridgeGenerator";
 export { generateCompleteMagicItem, generateRandomMagicItem } from "./MagicItemGenerator";
 export type { MagicItemGeneratorOptions } from "./MagicItemGenerator";
 
+export {
+  generateSignificantItems,
+  assignItemToFaction,
+  addFactionDesire,
+  placeItemInLocation,
+  generateItemRumorText,
+} from "./SignificantItemGenerator";
+export type { SignificantItemGeneratorOptions, SignificantItemCategory } from "./SignificantItemGenerator";
+
 export { generateHook, generateSettlementHooks, generateDungeonHook, generateFactionHook, updateHookStatus } from "./HookGenerator";
 export type { HookGeneratorOptions } from "./HookGenerator";
 

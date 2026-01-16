@@ -57,6 +57,7 @@ function FactionPage() {
           npcs={npcs}
           locations={world.locations}
           hooks={hooks}
+          significantItems={world.significantItems}
         />
       </div>
     </div>

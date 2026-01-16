@@ -14,6 +14,7 @@ import type {
   Dwelling,
   SettlementSize,
   DayRecord,
+  SignificantItem,
 } from "~/models";
 import { SeededRandom } from "./SeededRandom";
 import { generateSpiralTerrain, type MapSize, type StartPosition } from "./SpiralTerrainGenerator";
@@ -40,6 +41,7 @@ import { generateFeatures } from "./FeatureGenerator";
 import { generateHexEncounters } from "./HexEncounterGenerator";
 import { generateDwellings } from "./DwellingGenerator";
 import { generateQuestObjects } from "./QuestObjectGenerator";
+import { generateSignificantItems, placeItemInLocation } from "./SignificantItemGenerator";
 
 export interface WorldGeneratorOptions {
   name: string;
@@ -51,6 +53,7 @@ export interface WorldGeneratorOptions {
   dungeonCount?: number;
   wildernessLairCount?: number;
   factionCount?: number;
+  significantItemCount?: number; // Setting Seed items (default: 4)
 }
 
 export interface GeneratedWorld {
@@ -97,10 +100,24 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   // Step 2: Generate rivers
   const { rivers, riverHexes } = generateRivers({ seed, hexes, riverCount: 2 });
 
-  // Step 3: Generate factions (pass hexes for lair placement)
-  const factions = generateFactions({ seed, count: factionCount, hexes });
+  // Step 3: Generate significant items (Setting Seeds - narrative artifacts)
+  // These drive faction conflict and dungeon purpose
+  const significantItemCount = options.significantItemCount ?? 4;
+  const significantItems = generateSignificantItems({
+    seed,
+    count: significantItemCount,
+  });
 
-  // Step 4: Place starting settlement at start position
+  // Step 4: Generate factions (pass hexes and items for Cairn-style generation)
+  // Factions may possess or desire significant items
+  const factions = generateFactions({
+    seed,
+    count: factionCount,
+    hexes,
+    significantItems,
+  });
+
+  // Step 5: Place starting settlement at start position
   const settlements: Settlement[] = [];
   const settlementHexes: Hex[] = [];
 
@@ -123,14 +140,20 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
         settlements: [],
         hexes,
         currentSettlement: startSettlement.settlement,
+        significantItems,
       });
-      startSettlement.settlement.notices = generateNotices({ seed: `${seed}-notices-0`, settlementSize: startSettlement.settlement.size });
+      startSettlement.settlement.notices = generateNotices({
+        seed: `${seed}-notices-0`,
+        settlementSize: startSettlement.settlement.size,
+        factions,
+        significantItems,
+      });
       settlements.push(startSettlement.settlement);
       settlementHexes.push(startSettlement.hex);
     }
   }
 
-  // Step 5: Place additional settlements
+  // Step 6: Place additional settlements
   // Use configured settlement count minus the starting settlement
   const extraSettlementCount = settlementCount - 1;
 
@@ -155,8 +178,14 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
         settlements,
         hexes,
         currentSettlement: result.settlement,
+        significantItems,
       });
-      result.settlement.notices = generateNotices({ seed: `${seed}-notices-${i + 1}`, settlementSize: result.settlement.size });
+      result.settlement.notices = generateNotices({
+        seed: `${seed}-notices-${i + 1}`,
+        settlementSize: result.settlement.size,
+        factions,
+        significantItems,
+      });
       settlements.push(result.settlement);
       settlementHexes.push(result.hex);
     }
@@ -179,14 +208,20 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
         settlements,
         hexes,
         currentSettlement: result.settlement,
+        significantItems,
       });
-      result.settlement.notices = generateNotices({ seed: `${seed}-notices-extra-${i}`, settlementSize: result.settlement.size });
+      result.settlement.notices = generateNotices({
+        seed: `${seed}-notices-extra-${i}`,
+        settlementSize: result.settlement.size,
+        factions,
+        significantItems,
+      });
       settlements.push(result.settlement);
       settlementHexes.push(result.hex);
     }
   }
 
-  // Step 5b: Designate capital - largest settlement becomes regional seat of power
+  // Step 6b: Designate capital - largest settlement becomes regional seat of power
   if (settlements.length > 0) {
     const capitalRng = new SeededRandom(`${seed}-capital`);
 
@@ -217,13 +252,13 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     settlements.sort((a, b) => a.id.localeCompare(b.id));
   }
 
-  // Step 6: Generate roads between settlements
+  // Step 7: Generate roads between settlements
   const { roads, roadHexes } = generateRoads({ seed, hexes, settlementHexes });
 
-  // Step 7: Generate bridges where roads cross rivers
+  // Step 8: Generate bridges where roads cross rivers
   const bridges = generateBridges({ seed, roads, riverHexes });
 
-  // Step 8: Place dungeons
+  // Step 9: Place dungeons
   const dungeons: SpatialDungeon[] = [];
 
   for (let i = 0; i < dungeonCount; i++) {
@@ -235,7 +270,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     }
   }
 
-  // Step 8b: Place wilderness lairs (mini-dungeons)
+  // Step 9b: Place wilderness lairs (mini-dungeons)
   for (let i = 0; i < wildernessLairCount; i++) {
     const result = placeWildernessLair({ seed: `${seed}-wilderness-${i}`, hexes });
     if (result) {
@@ -244,7 +279,36 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     }
   }
 
-  // Step 9: Generate dwellings
+  // Step 9c: Place hidden significant items in dungeons
+  // Items that aren't possessed by factions get placed in dungeons
+  const itemRng = new SeededRandom(`${seed}-item-placement`);
+  const hiddenItems = significantItems.filter(
+    (item) => item.status === "hidden" || item.status === "lost"
+  );
+
+  for (const item of hiddenItems) {
+    if (dungeons.length === 0) break;
+
+    // Pick a dungeon that doesn't have too many items already
+    const eligibleDungeons = dungeons.filter(
+      (d) => !significantItems.some((i) => i.locationId === d.id)
+    );
+
+    if (eligibleDungeons.length > 0) {
+      const targetDungeon = itemRng.pick(eligibleDungeons);
+      const dungeonHex = hexes.find(
+        (h) => h.coord.q === targetDungeon.hexCoord.q && h.coord.r === targetDungeon.hexCoord.r
+      );
+
+      // Update the item with its location
+      item.locationId = targetDungeon.id;
+      item.hexCoord = targetDungeon.hexCoord;
+      item.status = "hidden";
+      item.locationKnown = itemRng.chance(0.3); // 30% chance location is known
+    }
+  }
+
+  // Step 10: Generate dwellings
   const { dwellings, hexes: hexesWithDwellings } = generateDwellings({
     seed,
     hexes,
@@ -252,7 +316,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   });
   let updatedHexes = hexesWithDwellings;
 
-  // Step 10: Generate features
+  // Step 11: Generate features
   const { hexes: hexesWithFeatures } = generateFeatures({
     seed,
     hexes: updatedHexes,
@@ -260,20 +324,20 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   });
   updatedHexes = hexesWithFeatures;
 
-  // Step 11: Generate hex encounters
+  // Step 12: Generate hex encounters
   updatedHexes = generateHexEncounters({ seed, hexes: updatedHexes });
 
-  // Step 12: Generate quest objects
+  // Step 13: Generate quest objects
   updatedHexes = generateQuestObjects({ seed, hexes: updatedHexes });
 
-  // Step 13: Add terrain descriptions to all hexes
+  // Step 14: Add terrain descriptions to all hexes
   const terrainRng = new SeededRandom(`${seed}-terrain-desc`);
   updatedHexes = updatedHexes.map((hex) => ({
     ...hex,
     description: generateTerrainDescription(hex.terrain, terrainRng),
   }));
 
-  // Step 14: Generate NPCs
+  // Step 15: Generate NPCs
   const npcs: NPC[] = [];
 
   // Settlement NPCs
@@ -331,21 +395,21 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     npcs.push(...factionNPCs);
   }
 
-  // Step 15: Generate NPC relationships (family clusters, rivalries)
+  // Step 16: Generate NPC relationships (family clusters, rivalries)
   const { npcs: npcsWithRelationships } = generateNPCRelationships({
     seed,
     npcs,
     settlements,
   });
 
-  // Step 16: Generate clocks for factions
+  // Step 17: Generate clocks for factions
   const clocks: Clock[] = [];
   for (const faction of factions) {
     const clock = generateFactionClock({ seed, faction });
     clocks.push(clock);
   }
 
-  // Step 17: Generate interconnected hooks using HookWeaver
+  // Step 18: Generate interconnected hooks using HookWeaver
   const { hooks: wovenHooks, npcs: npcsWithWants } = weaveHooks({
     seed,
     npcs: npcsWithRelationships,
@@ -376,7 +440,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     }
   }
 
-  // Step 17b: Distribute hook rumors to settlements
+  // Step 18b: Distribute hook rumors to settlements
   const hookRng = new SeededRandom(`${seed}-hook-rumors`);
   for (const hook of wovenHooks) {
     // Find source settlement for this hook
@@ -404,7 +468,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     }
   }
 
-  // Step 17c: Link faction recruitment hooks and distribute goal rumors
+  // Step 18c: Link faction recruitment hooks and distribute goal rumors
   for (const faction of factions) {
     // Recruitment hooks already linked in weaveHooks
 
@@ -436,7 +500,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     }
   }
 
-  // Step 17d: Create notice board postings from hooks
+  // Step 18d: Create notice board postings from hooks
   for (const hook of wovenHooks) {
     if (!hook.sourceNpcId) continue;
 
@@ -469,20 +533,20 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   // Update npcs to final version with relationships and wants
   const finalNPCs = npcsWithWants;
 
-  // Step 17: Build edges array (roads + rivers)
+  // Step 19: Build edges array (roads + rivers)
   const edges: HexEdge[] = [...roads, ...rivers];
 
-  // Step 18: Build locations array
+  // Step 20: Build locations array
   const locations: Location[] = [...settlements, ...dungeons];
 
-  // Step 19: Generate initial weather/time state
+  // Step 21: Generate initial weather/time state
   const day = 1;
   const year = 1;
   const season = getSeasonFromDay(day);
   const weather = generateWeather({ seed, season, day });
   const moonPhase = getMoonPhase(day);
 
-  // Step 20: Assemble world data (without calendar first)
+  // Step 22: Assemble world data (without calendar first)
   const FORECAST_DAYS = 28;
   const world: WorldData = {
     id: worldId,
@@ -505,11 +569,12 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     dwellings,
     npcs: finalNPCs,
     factions,
+    significantItems, // Setting Seed narrative items
     hooks,
     clocks,
   };
 
-  // Step 21: Pre-generate 28 days of events/weather
+  // Step 23: Pre-generate 28 days of events/weather
   for (let d = 1; d <= FORECAST_DAYS; d++) {
     const daySeason = getSeasonFromDay(d);
     const dayWeather = generateWeather({ seed, season: daySeason, day: d });

@@ -9,6 +9,8 @@ import type {
   Settlement,
   Hex,
   Location,
+  SignificantItem,
+  AgendaGoal,
 } from "~/models";
 import { SeededRandom } from "./SeededRandom";
 
@@ -20,7 +22,9 @@ type RumorType =
   | "faction_intrigue"
   | "settlement_trouble"
   | "treasure_hint"
-  | "danger_warning";
+  | "danger_warning"
+  | "item_rumor"
+  | "agenda_rumor";
 
 // === Dungeon Lead Templates ===
 // Point players toward dungeons with mystery and stakes
@@ -175,6 +179,8 @@ export interface RumorGeneratorOptions {
   settlements?: Settlement[];
   hexes?: Hex[];
   currentSettlement?: Settlement;
+  // Cairn-inspired Setting Seeds data
+  significantItems?: SignificantItem[];
 }
 
 const MAX_RUMORS = 8;
@@ -190,20 +196,48 @@ export function generateRumors(options: RumorGeneratorOptions): Rumor[] {
     settlements = [],
     hexes = [],
     currentSettlement,
+    significantItems = [],
   } = options;
 
   const rng = new SeededRandom(`${seed}-rumors`);
   const rumors: Rumor[] = [];
   const targetCount = Math.min(count, MAX_RUMORS);
-  const usedTypes = new Set<RumorType>();
 
-  // Helper to get NPC by ID
-  const getNpc = (id: string) => npcs.find((n) => n.id === id);
+  // Priority 1: Significant item rumors (Cairn-style - most interesting to players)
+  const desiredItems = significantItems.filter(
+    (item) => item.desiredByFactionIds.length > 0 || item.status === "hidden" || item.status === "lost"
+  );
+  for (const item of desiredItems.slice(0, 2)) {
+    if (rumors.length >= targetCount) break;
+    const rumor = generateItemRumor(rng, item, factions);
+    if (rumor) {
+      rumors.push({
+        id: `rumor-${nanoid(8)}`,
+        text: rumor,
+        isTrue: true,
+        source: rng.pick(RUMOR_SOURCES),
+      });
+    }
+  }
 
-  // Priority 1: Hook-linked rumors (if available) - shuffle to get different hooks each time
+  // Priority 2: Faction agenda rumors (what factions are actively doing)
+  for (const faction of factions.slice(0, 2)) {
+    if (rumors.length >= targetCount) break;
+    const agendaRumor = generateAgendaRumor(rng, faction);
+    if (agendaRumor) {
+      rumors.push({
+        id: `rumor-${nanoid(8)}`,
+        text: agendaRumor,
+        isTrue: true,
+        source: rng.pick(RUMOR_SOURCES),
+      });
+    }
+  }
+
+  // Priority 3: Hook-linked rumors (if available) - shuffle to get different hooks each time
   const shuffledHooks = [...hooks];
   rng.shuffle(shuffledHooks);
-  for (const hook of shuffledHooks.slice(0, 4)) {
+  for (const hook of shuffledHooks.slice(0, 2)) {
     if (rumors.length >= targetCount) break;
     rumors.push({
       id: `rumor-${nanoid(8)}`,
@@ -270,6 +304,108 @@ export function generateRumors(options: RumorGeneratorOptions): Rumor[] {
   }
 
   return rumors;
+}
+
+// === Cairn-style Item Rumors ===
+
+/**
+ * Generate a rumor about a significant item.
+ */
+function generateItemRumor(
+  rng: SeededRandom,
+  item: SignificantItem,
+  factions: Faction[]
+): string | null {
+  const templates: string[] = [];
+
+  // Rumors about the item's existence
+  if (item.knownToExist) {
+    templates.push(
+      `They say ${item.name} still exists somewhere in the realm`,
+      `My grandfather spoke of ${item.name} - a ${item.type} of great power`,
+      `${item.name}... I've heard that name before. Something about ${item.effect.toLowerCase().slice(0, 30)}...`
+    );
+  }
+
+  // Rumors about factions seeking it
+  if (item.desiredByFactionIds.length > 0) {
+    const seekingFaction = factions.find((f) => item.desiredByFactionIds.includes(f.id));
+    if (seekingFaction) {
+      templates.push(
+        `${seekingFaction.name} has been asking questions about ${item.name}`,
+        `I heard ${seekingFaction.name} agents are searching for some artifact... ${item.name}, I think`,
+        `Watch yourself - ${seekingFaction.name} wants ${item.name} badly, and they'll do anything to get it`
+      );
+    }
+  }
+
+  // Rumors about location (vague)
+  if (item.status === "hidden" && item.locationKnown) {
+    templates.push(
+      `Some say ${item.name} lies in a dungeon to the ${rng.pick(["east", "west", "north", "south"])}`,
+      `${item.name} was hidden away long ago - in a place of darkness`,
+      `If you're brave enough to seek ${item.name}, look in the old ruins`
+    );
+  }
+
+  // Rumors about lost items
+  if (item.status === "lost") {
+    templates.push(
+      `${item.name} was lost ages ago - no one knows where`,
+      `Many have sought ${item.name}. None have found it`,
+      `The location of ${item.name} died with its last owner`
+    );
+  }
+
+  // Rumors about possessed items
+  if (item.status === "possessed" && item.currentHolderId) {
+    const holder = factions.find((f) => f.id === item.currentHolderId);
+    if (holder) {
+      templates.push(
+        `${holder.name} guards ${item.name} jealously`,
+        `They say ${holder.name} draws power from ${item.name}`,
+        `Want ${item.name}? You'd have to take it from ${holder.name} first`
+      );
+    }
+  }
+
+  if (templates.length === 0) return null;
+  return rng.pick(templates);
+}
+
+/**
+ * Generate a rumor about a faction's current agenda progress.
+ */
+function generateAgendaRumor(rng: SeededRandom, faction: Faction): string | null {
+  // Find the in-progress goal
+  const currentGoal = faction.agenda?.find((g) => g.status === "in_progress");
+  if (!currentGoal) return null;
+
+  const templates = [
+    `${faction.name} is working on something - "${currentGoal.description.toLowerCase()}" they say`,
+    `Word is ${faction.name} plans to ${currentGoal.description.toLowerCase()}`,
+    `${faction.name} agents have been busy lately. Something about "${currentGoal.description.toLowerCase()}"`,
+    `I overheard ${faction.name} members talking - they're trying to ${currentGoal.description.toLowerCase()}`,
+  ];
+
+  // Add obstacle-related rumors
+  if (faction.obstacle) {
+    templates.push(
+      `${faction.name} seems frustrated - ${faction.obstacle.description.toLowerCase()}`,
+      `Something's blocking ${faction.name}'s plans. ${faction.obstacle.description}`
+    );
+  }
+
+  // Add advantage-related rumors
+  if (faction.advantages && faction.advantages.length > 0) {
+    const advantage = rng.pick(faction.advantages);
+    templates.push(
+      `${faction.name}'s power comes from their ${advantage.name.toLowerCase()}`,
+      `Don't underestimate ${faction.name} - they have ${advantage.name.toLowerCase()}`
+    );
+  }
+
+  return rng.pick(templates);
 }
 
 // === Rumor Generators ===
@@ -554,7 +690,7 @@ function generateGenericRumor(
   };
 }
 
-// === Notice Generator (unchanged) ===
+// === Notice Generator ===
 
 type NoticeType = "bounty" | "job" | "warning" | "announcement" | "request";
 
@@ -619,10 +755,22 @@ export interface NoticeGeneratorOptions {
   seed: string;
   count?: number;
   settlementSize?: string;
+  factions?: Faction[];
+  significantItems?: SignificantItem[];
 }
 
+/**
+ * Generate notice board postings.
+ * Includes faction-driven and item-driven notices.
+ */
 export function generateNotices(options: NoticeGeneratorOptions): Notice[] {
-  const { seed, count = 2, settlementSize = "village" } = options;
+  const {
+    seed,
+    count = 2,
+    settlementSize = "village",
+    factions = [],
+    significantItems = [],
+  } = options;
   const rng = new SeededRandom(`${seed}-notices`);
   const notices: Notice[] = [];
 
@@ -630,9 +778,49 @@ export function generateNotices(options: NoticeGeneratorOptions): Notice[] {
     : settlementSize === "town" ? count + 1
     : count;
 
+  // Priority 1: Faction agenda-driven notices (hiring adventurers)
+  for (const faction of factions.slice(0, 2)) {
+    if (notices.length >= actualCount) break;
+
+    const agendaNotice = generateAgendaNotice(rng, faction);
+    if (agendaNotice) {
+      notices.push(agendaNotice);
+    }
+  }
+
+  // Priority 2: Item-seeking notices
+  const soughtItems = significantItems.filter(
+    (item) => item.desiredByFactionIds.length > 0 && item.status !== "possessed"
+  );
+  for (const item of soughtItems.slice(0, 1)) {
+    if (notices.length >= actualCount) break;
+
+    const seekingFaction = factions.find((f) => item.desiredByFactionIds.includes(f.id));
+    const itemNotice = generateItemNotice(rng, item, seekingFaction);
+    if (itemNotice) {
+      notices.push(itemNotice);
+    }
+  }
+
+  // Priority 3: Counter-notices (warnings about faction activity)
+  for (const faction of factions) {
+    if (notices.length >= actualCount) break;
+
+    // 30% chance for a warning notice about a faction
+    if (rng.chance(0.3)) {
+      notices.push({
+        id: `notice-${nanoid(8)}`,
+        title: "WARNING",
+        description: `Beware: ${faction.name} agents have been spotted in the area. Report suspicious activity to the guard.`,
+        noticeType: "warning",
+      });
+    }
+  }
+
+  // Fill remaining with generic notices
   const noticeTypes: NoticeType[] = ["bounty", "job", "warning", "announcement", "request"];
 
-  for (let i = 0; i < actualCount; i++) {
+  while (notices.length < actualCount) {
     const noticeType = rng.pick(noticeTypes);
     const template = rng.pick(NOTICE_TEMPLATES[noticeType]);
 
@@ -646,6 +834,96 @@ export function generateNotices(options: NoticeGeneratorOptions): Notice[] {
   }
 
   return notices;
+}
+
+/**
+ * Generate a notice related to a faction's current agenda goal.
+ * These are jobs that (unknowingly) help the faction.
+ */
+function generateAgendaNotice(rng: SeededRandom, faction: Faction): Notice | null {
+  const currentGoal = faction.agenda?.find((g) => g.status === "in_progress");
+  if (!currentGoal) return null;
+
+  // Create a notice that hires adventurers to help with the goal
+  const templates: Array<{ title: string; desc: string; type: NoticeType }> = [
+    {
+      title: "ADVENTURERS WANTED",
+      desc: `Seeking capable individuals for discreet work. Good pay. Ask for representatives of "${faction.name.replace("The ", "")}" at the inn.`,
+      type: "job",
+    },
+    {
+      title: "ESCORTS NEEDED",
+      desc: `Protection required for sensitive cargo. ${rng.between(20, 50)} gp. Inquire with ${faction.name} contacts.`,
+      type: "job",
+    },
+    {
+      title: "INFORMATION WANTED",
+      desc: `${faction.name} seeks information regarding ${currentGoal.description.toLowerCase().slice(0, 30)}. Rewards for credible leads.`,
+      type: "request",
+    },
+    {
+      title: "SKILLED HELP NEEDED",
+      desc: `${faction.name} requires specialists. Nature of work: confidential. Generous compensation.`,
+      type: "job",
+    },
+  ];
+
+  // If goal targets an item, make it more specific
+  if (currentGoal.targetType === "item") {
+    templates.push({
+      title: "ARTIFACT SOUGHT",
+      desc: `Substantial reward for information leading to the recovery of a certain relic. Discretion required. Contact ${faction.name}.`,
+      type: "request",
+    });
+  }
+
+  const choice = rng.pick(templates);
+
+  return {
+    id: `notice-${nanoid(8)}`,
+    title: choice.title,
+    description: choice.desc,
+    noticeType: choice.type,
+    reward: rng.chance(0.5) ? `${rng.between(30, 100)} gp` : undefined,
+  };
+}
+
+/**
+ * Generate a notice about seeking a significant item.
+ */
+function generateItemNotice(
+  rng: SeededRandom,
+  item: SignificantItem,
+  seekingFaction?: Faction
+): Notice | null {
+  const contactName = seekingFaction
+    ? `agents of ${seekingFaction.name}`
+    : rng.pick(["a cloaked stranger", "V.", "an anonymous patron", "the hooded figure at the Serpent's Rest"]);
+
+  const templates: Array<{ title: string; desc: string }> = [
+    {
+      title: "RELIC SOUGHT",
+      desc: `REWARD: Information regarding "${item.name}". No questions asked. Contact ${contactName}.`,
+    },
+    {
+      title: "SEEKING ANTIQUITIES",
+      desc: `Collector seeks items of historical significance, particularly "${item.name}". Top prices paid. ${contactName}.`,
+    },
+    {
+      title: "EXPEDITION MEMBERS WANTED",
+      desc: `Dangerous expedition planned. Destination: classified. Object: artifact recovery. Speak to ${contactName}.`,
+    },
+  ];
+
+  const choice = rng.pick(templates);
+
+  return {
+    id: `notice-${nanoid(8)}`,
+    title: choice.title,
+    description: choice.desc,
+    noticeType: "request",
+    reward: `${rng.between(50, 200)} gp`,
+  };
 }
 
 function fillNoticeTemplate(rng: SeededRandom, template: string): string {

@@ -118,6 +118,7 @@ export function createMockWorld(name?: string, seed?: string): WorldData {
     dwellings: [],
     npcs: [],
     factions: [],
+    significantItems: [],
     hooks: [],
     clocks: [],
   };
