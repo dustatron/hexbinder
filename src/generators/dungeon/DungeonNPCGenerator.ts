@@ -9,6 +9,7 @@ import type {
   SpatialRoom,
   DungeonNPC,
   DungeonNPCCategory,
+  DungeonNPCWant,
   NPC,
   Hook,
   Faction,
@@ -84,6 +85,48 @@ const GHOST_MOTIVATIONS = [
   "relives their final moments",
   "searches for a lost love",
 ];
+
+// === NPC Wants by Category ===
+// These define what NPCs want for negotiation purposes
+
+const WANTS_BY_CATEGORY: Record<DungeonNPCCategory, DungeonNPCWant[]> = {
+  rival_party: ["wealth", "information", "safety"],
+  prisoner: ["freedom", "safety", "revenge"],
+  hermit: ["safety", "food", "companionship"],
+  ghost: ["revenge", "freedom", "information"],
+  refugee: ["safety", "food", "freedom"],
+  faction_leader: ["power", "wealth", "information"],
+  faction_lieutenant: ["power", "wealth", "safety"],
+  faction_member: ["wealth", "safety", "food"],
+  rival_scout: ["safety", "information", "freedom"],
+};
+
+// How many wants each category typically has
+const WANT_COUNT_BY_CATEGORY: Record<DungeonNPCCategory, [number, number]> = {
+  rival_party: [1, 2],
+  prisoner: [2, 3],
+  hermit: [1, 2],
+  ghost: [1, 1],
+  refugee: [2, 3],
+  faction_leader: [1, 2],
+  faction_lieutenant: [1, 2],
+  faction_member: [1, 2],
+  rival_scout: [2, 2],
+};
+
+/**
+ * Generate wants for a dungeon NPC based on their category.
+ */
+function generateWants(
+  rng: SeededRandom,
+  category: DungeonNPCCategory
+): DungeonNPCWant[] {
+  const possibleWants = WANTS_BY_CATEGORY[category] ?? ["safety"];
+  const [min, max] = WANT_COUNT_BY_CATEGORY[category] ?? [1, 2];
+  const count = rng.between(min, max);
+
+  return rng.sample(possibleWants, Math.min(count, possibleWants.length));
+}
 
 export class DungeonNPCGenerator {
   private rng: SeededRandom;
@@ -173,6 +216,7 @@ export class DungeonNPCGenerator {
       disposition: "friendly",
       wantsRescue: true,
       hasInfo: `Knows about the dungeon from being ${reason}.`,
+      wants: generateWants(this.rng, "prisoner"),
     };
   }
 
@@ -210,6 +254,7 @@ export class DungeonNPCGenerator {
       disposition,
       partySize,
       hasInfo: `${firstName} ${epithet}, a ${leaderClass}, leads a party of ${partySize}. They seek treasure and glory.`,
+      wants: generateWants(this.rng, "rival_party"),
     };
   }
 
@@ -240,6 +285,7 @@ export class DungeonNPCGenerator {
       roomId: room.id,
       disposition,
       hasInfo: `A ${hermitType.type.replace("_", " ")} who knows ${hermitType.info}.`,
+      wants: generateWants(this.rng, "hermit"),
     };
   }
 
@@ -283,6 +329,7 @@ export class DungeonNPCGenerator {
       roomId: room.id,
       disposition,
       hasInfo: `A restless spirit that ${motivation}.`,
+      wants: generateWants(this.rng, "ghost"),
     };
   }
 }
@@ -365,6 +412,7 @@ export function populateFactionDungeon(
       hasInfo: `Leader of ${faction.name}. Knows all faction secrets and plans.`,
       factionId: faction.id,
       isBoss: true,
+      wants: generateWants(rng, "faction_leader"),
     });
   }
 
@@ -391,6 +439,7 @@ export function populateFactionDungeon(
         disposition: "hostile",
         hasInfo: `Lieutenant of ${faction.name}. Knows the leader's location and current orders.`,
         factionId: faction.id,
+        wants: generateWants(rng, "faction_lieutenant"),
       });
     }
   }
@@ -415,6 +464,7 @@ export function populateFactionDungeon(
       disposition: rng.chance(0.8) ? "hostile" : "wary",
       hasInfo: `Member of ${faction.name}. May know patrol routes and guard positions.`,
       factionId: faction.id,
+      wants: generateWants(rng, "faction_member"),
     });
   }
 
@@ -457,6 +507,7 @@ export function addRivalFactionScouts(
       hasInfo: `Scout from ${rival.name}. Knows their faction's interest in this dungeon.`,
       factionId: rival.id,
       scoutingFor: rival.id,
+      wants: generateWants(rng, "rival_scout"),
     });
   }
 

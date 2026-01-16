@@ -580,6 +580,21 @@ function DungeonNPCCard({ npc, roomNumberMap }: DungeonNPCCardProps) {
           Spying for rival faction
         </span>
       )}
+      {npc.wants && npc.wants.length > 0 && (
+        <div className="flex items-center gap-1.5 pt-1">
+          <span className="text-xs text-stone-500">Wants:</span>
+          <div className="flex flex-wrap gap-1">
+            {npc.wants.map((want) => (
+              <span
+                key={want}
+                className="rounded bg-stone-700/50 px-1.5 py-0.5 text-xs text-stone-300 capitalize"
+              >
+                {want}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
