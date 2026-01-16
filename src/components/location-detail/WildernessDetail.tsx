@@ -1,16 +1,26 @@
-import { RefreshCw, MapPin, Skull, Sparkles } from "lucide-react";
-import type { Hex, TerrainType } from "~/models";
+import { RefreshCw, MapPin, Skull, Sparkles, Home } from "lucide-react";
+import type { Dwelling, DwellingType, EncounterOverrides, Hex, TerrainType } from "~/models";
 import type { RegenerationType } from "~/lib/hex-regenerate";
-import { EncounterTable } from "~/components/encounter-table/EncounterTable";
+import { ImprovedEncounterTable } from "~/components/encounter-table/ImprovedEncounterTable";
 import { RegenerateButton } from "./RegenerateButton";
 
 interface WildernessDetailProps {
   hex: Hex;
+  dwelling?: Dwelling | null;
   worldId: string;
   onRegenerate: (type: RegenerationType) => void;
   onReroll: () => void;
+  onOverridesChange?: (overrides: EncounterOverrides) => void;
   seed: string;
 }
+
+const DWELLING_LABELS: Record<DwellingType, string> = {
+  farmstead: "Farmstead",
+  cottage: "Cottage",
+  hermitage: "Hermitage",
+  ranger_station: "Ranger Station",
+  roadside_inn: "Roadside Inn",
+};
 
 const TERRAIN_COLORS: Record<TerrainType, string> = {
   plains: "bg-amber-600",
@@ -38,12 +48,14 @@ const TERRAIN_DESCRIPTIONS: Record<TerrainType, string> = {
 
 export function WildernessDetail({
   hex,
+  dwelling,
   worldId,
   onRegenerate,
   onReroll,
+  onOverridesChange,
   seed,
 }: WildernessDetailProps) {
-  const { coord, terrain, feature, encounter, questObject, description } = hex;
+  const { coord, terrain, feature, encounter, questObject, description, encounterOverrides, lastEncounterTimestamp } = hex;
 
   return (
     <div className="space-y-6 bg-stone-900 p-4 text-stone-100">
@@ -77,16 +89,16 @@ export function WildernessDetail({
         </div>
       </header>
 
-      {/* Terrain Description */}
-      <section className="space-y-2">
-        <p className="text-stone-300">
-          {description ?? TERRAIN_DESCRIPTIONS[terrain]}
-        </p>
-      </section>
-
-      {/* Encounter Table */}
+      {/* Improved Encounter Table (includes First Impressions + Quick Names) */}
       <section className="space-y-3">
-        <EncounterTable seed={seed} terrain={terrain} onReroll={onReroll} />
+        <ImprovedEncounterTable
+          seed={seed}
+          terrain={terrain}
+          overrides={encounterOverrides}
+          onOverridesChange={onOverridesChange}
+          onReroll={onReroll}
+          lastEncounterTimestamp={lastEncounterTimestamp}
+        />
       </section>
 
       {/* Feature */}
@@ -189,6 +201,36 @@ export function WildernessDetail({
             {questObject.found && (
               <span className="mt-2 inline-block rounded bg-green-900 px-2 py-0.5 text-xs text-green-300">
                 Found
+              </span>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Dwelling */}
+      {dwelling && (
+        <section className="space-y-3">
+          <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-stone-400">
+            <Home size={14} />
+            Dwelling
+          </h3>
+          <div className="rounded-lg border border-stone-700 bg-stone-800 p-3">
+            <div className="flex items-center justify-between">
+              <span className="font-medium text-stone-200">
+                {dwelling.name}
+              </span>
+              <span className="rounded bg-stone-700 px-2 py-0.5 text-xs text-stone-400">
+                {DWELLING_LABELS[dwelling.type]}
+              </span>
+            </div>
+            {dwelling.description && (
+              <p className="mt-1 text-sm text-stone-400">
+                {dwelling.description}
+              </p>
+            )}
+            {dwelling.hasQuest && (
+              <span className="mt-2 inline-block rounded bg-amber-900 px-2 py-0.5 text-xs text-amber-300">
+                Has Quest
               </span>
             )}
           </div>

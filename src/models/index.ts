@@ -30,6 +30,10 @@ export interface Hex {
   questObject?: QuestObject;
   dwellingId?: string;
   description?: string; // terrain flavor text
+  // Improved encounter system overrides
+  encounterOverrides?: EncounterOverrides;
+  // Timestamp of last encounter generation
+  lastEncounterTimestamp?: number;
 }
 
 // === Hex Feature (Landmarks) ===
@@ -88,6 +92,33 @@ export interface HexEncounter {
   treasure?: TreasureEntry;
   rumor?: string;
   defeated?: boolean;
+}
+
+// === Improved Encounter System ===
+
+/** Master encounter table result (1d6) */
+export type EncounterType =
+  | "creature"
+  | "sign"
+  | "environment"
+  | "loss"
+  | "npc"
+  | "area-effect";
+
+/** Reaction roll result (1d10) - applies to creature and NPC encounters */
+export type Reaction =
+  | "hostile"
+  | "wary"
+  | "curious"
+  | "friendly"
+  | "helpful";
+
+/** Override flags for manual encounter selections (index pointers, not data) */
+export interface EncounterOverrides {
+  masterIndex?: number;     // 0-5 for 1d6 result
+  creatureIndex?: number;   // index in terrain creature list
+  reactionIndex?: number;   // 0-4 for reaction result
+  subTableIndex?: number;   // for sign/env/loss/area-effect sub-tables
 }
 
 // === Quest Object ===
