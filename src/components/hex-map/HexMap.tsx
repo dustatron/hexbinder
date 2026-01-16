@@ -1,11 +1,14 @@
 import { useMemo, useRef } from "react";
 import { useGesture } from "@use-gesture/react";
 import { motion, useMotionValue } from "framer-motion";
+import { Plus, Minus, RotateCcw } from "lucide-react";
 import type { Hex, HexCoord, Location, HexEdge, Dungeon, Settlement } from "~/models";
 import { Tile, HEX_SIZE } from "~/lib/hex-utils";
 import { HexTile } from "./HexTile";
 
 const MAX_LABEL_CHARS = 10;
+const MIN_ZOOM = 0.5;
+const MAX_ZOOM = 4;
 
 /**
  * Split a label into multiple lines for better readability.
@@ -107,13 +110,12 @@ export function HexMap({
         y.set(oy);
       },
       onPinch: ({ offset: [s] }) => {
-        // Clamp scale between 0.5 and 2
-        scale.set(Math.min(Math.max(s, 0.5), 2));
+        scale.set(Math.min(Math.max(s, MIN_ZOOM), MAX_ZOOM));
       },
       onWheel: ({ delta: [, dy] }) => {
         // Zoom with mouse wheel
         const currentScale = scale.get();
-        const newScale = Math.min(Math.max(currentScale - dy * 0.001, 0.5), 2);
+        const newScale = Math.min(Math.max(currentScale - dy * 0.001, MIN_ZOOM), MAX_ZOOM);
         scale.set(newScale);
       },
     },
@@ -123,17 +125,58 @@ export function HexMap({
       },
       pinch: {
         from: () => [scale.get(), 0],
-        scaleBounds: { min: 0.5, max: 2 },
+        scaleBounds: { min: MIN_ZOOM, max: MAX_ZOOM },
       },
     },
   );
 
+  // Zoom control handlers
+  const handleZoomIn = () => {
+    const currentScale = scale.get();
+    scale.set(Math.min(currentScale * 1.3, MAX_ZOOM));
+  };
+
+  const handleZoomOut = () => {
+    const currentScale = scale.get();
+    scale.set(Math.max(currentScale / 1.3, MIN_ZOOM));
+  };
+
+  const handleReset = () => {
+    scale.set(1);
+    x.set(0);
+    y.set(0);
+  };
+
   return (
     <div
       ref={containerRef}
-      className="h-full w-full overflow-hidden touch-none"
+      className="relative h-full w-full overflow-hidden touch-none"
       {...bind()}
     >
+      {/* Zoom controls */}
+      <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
+        <button
+          onClick={handleZoomIn}
+          className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
+          title="Zoom In"
+        >
+          <Plus size={16} />
+        </button>
+        <button
+          onClick={handleZoomOut}
+          className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
+          title="Zoom Out"
+        >
+          <Minus size={16} />
+        </button>
+        <button
+          onClick={handleReset}
+          className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
+          title="Reset View"
+        >
+          <RotateCcw size={16} />
+        </button>
+      </div>
       <motion.svg
         className="h-full w-full"
         viewBox={`${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`}
