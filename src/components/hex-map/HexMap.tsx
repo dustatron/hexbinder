@@ -5,6 +5,30 @@ import type { Hex, HexCoord, Location, HexEdge, Dungeon, Settlement } from "~/mo
 import { Tile, HEX_SIZE } from "~/lib/hex-utils";
 import { HexTile } from "./HexTile";
 
+const MAX_LABEL_CHARS = 10;
+
+/**
+ * Split a label into multiple lines for better readability.
+ * Tries to split at word boundaries, falls back to mid-word split.
+ */
+function splitLabel(name: string): string[] {
+  if (name.length <= MAX_LABEL_CHARS) {
+    return [name];
+  }
+
+  // Try to split at a space near the middle
+  const mid = Math.floor(name.length / 2);
+  const spaceIndex = name.lastIndexOf(" ", mid + 3);
+
+  if (spaceIndex > 2) {
+    return [name.slice(0, spaceIndex), name.slice(spaceIndex + 1)];
+  }
+
+  // No good space - split mid-word with hyphen
+  const splitAt = Math.min(MAX_LABEL_CHARS - 1, mid);
+  return [name.slice(0, splitAt) + "-", name.slice(splitAt)];
+}
+
 interface HexMapProps {
   hexes: Hex[];
   edges: HexEdge[];
@@ -231,13 +255,18 @@ export function HexMap({
               const location = locationByHex.get(coordKey);
               if (!location) return null;
 
+              const lines = splitLabel(location.name);
+              // Offset first line up if multi-line so label stays centered below icon
+              const baseY = honeycombHex.y + 20;
+              const startY = lines.length > 1 ? baseY - 5 : baseY;
+
               return (
                 <text
                   key={`label-${coordKey}`}
                   x={honeycombHex.x}
-                  y={honeycombHex.y + 20}
+                  y={startY}
                   textAnchor="middle"
-                  fontSize={10}
+                  fontSize={9}
                   fontWeight="bold"
                   fill="#1c1917"
                   stroke="#fafaf9"
@@ -245,7 +274,15 @@ export function HexMap({
                   paintOrder="stroke"
                   style={{ pointerEvents: "none" }}
                 >
-                  {location.name}
+                  {lines.map((line, i) => (
+                    <tspan
+                      key={i}
+                      x={honeycombHex.x}
+                      dy={i === 0 ? 0 : 11}
+                    >
+                      {line}
+                    </tspan>
+                  ))}
                 </text>
               );
             })}
