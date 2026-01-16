@@ -114,7 +114,7 @@ export function DungeonMap({
   return (
     <div
       ref={containerRef}
-      className="relative h-[32rem] w-full overflow-hidden touch-none rounded-lg bg-stone-900 border border-stone-700"
+      className="relative h-[20rem] lg:h-[32rem] w-full overflow-hidden touch-none rounded-lg bg-stone-900 border border-stone-700"
       {...bind()}
     >
       {/* Zoom controls */}
