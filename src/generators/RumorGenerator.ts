@@ -757,6 +757,7 @@ export interface NoticeGeneratorOptions {
   settlementSize?: string;
   factions?: Faction[];
   significantItems?: SignificantItem[];
+  npcs?: NPC[]; // Settlement NPCs for contact assignments
 }
 
 /**
@@ -770,6 +771,7 @@ export function generateNotices(options: NoticeGeneratorOptions): Notice[] {
     settlementSize = "village",
     factions = [],
     significantItems = [],
+    npcs = [],
   } = options;
   const rng = new SeededRandom(`${seed}-notices`);
   const notices: Notice[] = [];
@@ -782,7 +784,7 @@ export function generateNotices(options: NoticeGeneratorOptions): Notice[] {
   for (const faction of factions.slice(0, 2)) {
     if (notices.length >= actualCount) break;
 
-    const agendaNotice = generateAgendaNotice(rng, faction);
+    const agendaNotice = generateAgendaNotice(rng, faction, npcs);
     if (agendaNotice) {
       notices.push(agendaNotice);
     }
@@ -796,7 +798,7 @@ export function generateNotices(options: NoticeGeneratorOptions): Notice[] {
     if (notices.length >= actualCount) break;
 
     const seekingFaction = factions.find((f) => item.desiredByFactionIds.includes(f.id));
-    const itemNotice = generateItemNotice(rng, item, seekingFaction);
+    const itemNotice = generateItemNotice(rng, item, seekingFaction, npcs);
     if (itemNotice) {
       notices.push(itemNotice);
     }
@@ -839,31 +841,52 @@ export function generateNotices(options: NoticeGeneratorOptions): Notice[] {
 /**
  * Generate a notice related to a faction's current agenda goal.
  * These are jobs that (unknowingly) help the faction.
+ * Links to a real NPC in the settlement when available.
  */
-function generateAgendaNotice(rng: SeededRandom, faction: Faction): Notice | null {
+function generateAgendaNotice(rng: SeededRandom, faction: Faction, npcs: NPC[]): Notice | null {
   const currentGoal = faction.agenda?.find((g) => g.status === "in_progress");
   if (!currentGoal) return null;
+
+  // Find a suitable NPC contact in town
+  // Priority: faction members > innkeeper > merchant > any NPC
+  const factionMembers = npcs.filter((n) => n.factionId === faction.id);
+  const innkeepers = npcs.filter((n) => n.role === "innkeeper");
+  const merchants = npcs.filter((n) => n.role === "merchant" || n.archetype === "merchant");
+
+  let contactNpc: NPC | undefined;
+  if (factionMembers.length > 0) {
+    contactNpc = rng.pick(factionMembers);
+  } else if (innkeepers.length > 0) {
+    contactNpc = rng.pick(innkeepers);
+  } else if (merchants.length > 0) {
+    contactNpc = rng.pick(merchants);
+  } else if (npcs.length > 0) {
+    contactNpc = rng.pick(npcs);
+  }
+
+  const contactName = contactNpc?.name ?? `a representative of ${faction.name}`;
+  const contactLocation = contactNpc ? "at the inn" : "";
 
   // Create a notice that hires adventurers to help with the goal
   const templates: Array<{ title: string; desc: string; type: NoticeType }> = [
     {
       title: "ADVENTURERS WANTED",
-      desc: `Seeking capable individuals for discreet work. Good pay. Ask for representatives of "${faction.name.replace("The ", "")}" at the inn.`,
+      desc: `Seeking capable individuals for discreet work. Good pay. Ask for ${contactName}${contactLocation ? ` ${contactLocation}` : ""}.`,
       type: "job",
     },
     {
       title: "ESCORTS NEEDED",
-      desc: `Protection required for sensitive cargo. ${rng.between(20, 50)} gp. Inquire with ${faction.name} contacts.`,
+      desc: `Protection required for sensitive cargo. ${rng.between(20, 50)} gp. Inquire with ${contactName}.`,
       type: "job",
     },
     {
       title: "INFORMATION WANTED",
-      desc: `${faction.name} seeks information regarding ${currentGoal.description.toLowerCase().slice(0, 30)}. Rewards for credible leads.`,
+      desc: `Information sought regarding ${currentGoal.description.toLowerCase().slice(0, 40)}. Rewards for credible leads. Contact ${contactName}.`,
       type: "request",
     },
     {
       title: "SKILLED HELP NEEDED",
-      desc: `${faction.name} requires specialists. Nature of work: confidential. Generous compensation.`,
+      desc: `Specialists required. Nature of work: confidential. Generous compensation. See ${contactName}.`,
       type: "job",
     },
   ];
@@ -872,7 +895,7 @@ function generateAgendaNotice(rng: SeededRandom, faction: Faction): Notice | nul
   if (currentGoal.targetType === "item") {
     templates.push({
       title: "ARTIFACT SOUGHT",
-      desc: `Substantial reward for information leading to the recovery of a certain relic. Discretion required. Contact ${faction.name}.`,
+      desc: `Substantial reward for information leading to the recovery of a certain relic. Discretion required. Contact ${contactName}.`,
       type: "request",
     });
   }
@@ -885,20 +908,45 @@ function generateAgendaNotice(rng: SeededRandom, faction: Faction): Notice | nul
     description: choice.desc,
     noticeType: choice.type,
     reward: rng.chance(0.5) ? `${rng.between(30, 100)} gp` : undefined,
+    posterId: contactNpc?.id,
   };
 }
 
 /**
  * Generate a notice about seeking a significant item.
+ * Links to a real NPC in the settlement when available.
  */
 function generateItemNotice(
   rng: SeededRandom,
   item: SignificantItem,
-  seekingFaction?: Faction
+  seekingFaction?: Faction,
+  npcs: NPC[] = []
 ): Notice | null {
-  const contactName = seekingFaction
-    ? `agents of ${seekingFaction.name}`
-    : rng.pick(["a cloaked stranger", "V.", "an anonymous patron", "the hooded figure at the Serpent's Rest"]);
+  // Find a suitable NPC contact
+  // Priority: faction members > shady types > any NPC
+  let contactNpc: NPC | undefined;
+
+  if (seekingFaction) {
+    const factionMembers = npcs.filter((n) => n.factionId === seekingFaction.id);
+    if (factionMembers.length > 0) {
+      contactNpc = rng.pick(factionMembers);
+    }
+  }
+
+  if (!contactNpc) {
+    // Look for shady-sounding NPCs
+    const shadyTypes = npcs.filter(
+      (n) => n.archetype === "thief" || n.archetype === "merchant" || n.role === "criminal"
+    );
+    if (shadyTypes.length > 0) {
+      contactNpc = rng.pick(shadyTypes);
+    } else if (npcs.length > 0) {
+      contactNpc = rng.pick(npcs);
+    }
+  }
+
+  const contactName = contactNpc?.name
+    ?? (seekingFaction ? `agents of ${seekingFaction.name}` : "an anonymous patron");
 
   const templates: Array<{ title: string; desc: string }> = [
     {
@@ -907,7 +955,7 @@ function generateItemNotice(
     },
     {
       title: "SEEKING ANTIQUITIES",
-      desc: `Collector seeks items of historical significance, particularly "${item.name}". Top prices paid. ${contactName}.`,
+      desc: `Collector seeks items of historical significance, particularly "${item.name}". Top prices paid. See ${contactName}.`,
     },
     {
       title: "EXPEDITION MEMBERS WANTED",
@@ -923,6 +971,7 @@ function generateItemNotice(
     description: choice.desc,
     noticeType: "request",
     reward: `${rng.between(50, 200)} gp`,
+    posterId: contactNpc?.id,
   };
 }
 

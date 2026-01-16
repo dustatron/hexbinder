@@ -14,7 +14,7 @@ import { Link } from "@tanstack/react-router";
 // Entity types for linked text
 type EntityMatch = {
   name: string;
-  type: "faction" | "location";
+  type: "faction" | "location" | "npc";
   id: string;
   start: number;
   end: number;
@@ -25,12 +25,14 @@ function LinkedText({
   text,
   factions,
   locations,
+  npcs,
   worldId,
   className,
 }: {
   text: string;
   factions: Faction[];
   locations: Location[];
+  npcs?: NPC[];
   worldId: string;
   className?: string;
 }) {
@@ -38,6 +40,7 @@ function LinkedText({
     // Safety check for empty/undefined arrays
     const safeFactions = factions ?? [];
     const safeLocations = locations ?? [];
+    const safeNpcs = npcs ?? [];
 
     // Find all entity matches in text
     const matches: EntityMatch[] = [];
@@ -75,6 +78,24 @@ function LinkedText({
       }
     }
 
+    // Check for NPC names
+    for (const npc of safeNpcs) {
+      let idx = 0;
+      while ((idx = text.indexOf(npc.name, idx)) !== -1) {
+        // Avoid duplicate matches at same position
+        if (!matches.some((m) => m.start === idx)) {
+          matches.push({
+            name: npc.name,
+            type: "npc",
+            id: npc.id,
+            start: idx,
+            end: idx + npc.name.length,
+          });
+        }
+        idx += npc.name.length;
+      }
+    }
+
     // Sort by position
     matches.sort((a, b) => a.start - b.start);
 
@@ -93,20 +114,31 @@ function LinkedText({
         result.push(
           <Link
             key={`${match.type}-${match.id}-${match.start}`}
-            to="/world/$worldId_/faction/$factionId"
-            params={{ worldId_: worldId, factionId: match.id }}
+            to="/world/$worldId/faction/$factionId"
+            params={{ worldId: worldId, factionId: match.id }}
             className="mx-0.5 inline-flex items-center rounded bg-purple-500/30 px-1.5 py-0.5 text-xs font-medium text-purple-300 hover:bg-purple-500/50"
             onClick={(e) => e.stopPropagation()}
           >
             {match.name}
           </Link>
         );
+      } else if (match.type === "npc") {
+        result.push(
+          <a
+            key={`${match.type}-${match.id}-${match.start}`}
+            href={`#npc-${match.id}`}
+            className="mx-0.5 inline-flex items-center rounded bg-cyan-500/30 px-1.5 py-0.5 text-xs font-medium text-cyan-300 hover:bg-cyan-500/50"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {match.name}
+          </a>
+        );
       } else {
         result.push(
           <Link
             key={`${match.type}-${match.id}-${match.start}`}
-            to="/world/$worldId_/location/$locationId"
-            params={{ worldId_: worldId, locationId: match.id }}
+            to="/world/$worldId/location/$locationId"
+            params={{ worldId: worldId, locationId: match.id }}
             className="mx-0.5 inline-flex items-center rounded bg-amber-500/30 px-1.5 py-0.5 text-xs font-medium text-amber-300 hover:bg-amber-500/50"
             onClick={(e) => e.stopPropagation()}
           >
@@ -124,7 +156,7 @@ function LinkedText({
     }
 
     return result.length > 0 ? result : [text];
-  }, [text, factions, locations, worldId]);
+  }, [text, factions, locations, npcs, worldId]);
 
   return <span className={className}>{parts}</span>;
 }
@@ -720,6 +752,7 @@ export function SettlementDetail({
                             text={rumor.text}
                             factions={factions}
                             locations={locations}
+                            npcs={npcs}
                             worldId={worldId}
                           />"
                         </p>
@@ -775,6 +808,7 @@ export function SettlementDetail({
                               text={notice.description}
                               factions={factions}
                               locations={locations}
+                              npcs={npcs}
                               worldId={worldId}
                             />
                           </p>
