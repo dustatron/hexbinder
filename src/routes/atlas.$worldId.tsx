@@ -548,84 +548,84 @@ function AtlasPage() {
         </section>
         )}
 
-        {/* Significant Items (Setting Seeds) */}
-        {world.significantItems && world.significantItems.length > 0 && (
-          <section className="rounded-lg border border-amber-700/50 bg-stone-800 p-4">
-            <h2 className="mb-3 flex items-center gap-2 font-semibold text-amber-400">
-              <Gem size={18} />
-              Significant Items ({world.significantItems.length})
-            </h2>
-            <p className="mb-4 text-xs text-stone-400">
-              Narrative artifacts that drive faction conflict and dungeon purpose
-            </p>
-            <ul className="space-y-4">
-              {world.significantItems.map((item) => {
-                const ItemIcon = ITEM_TYPE_ICONS[item.type] || Gem;
-                const statusColors = ITEM_STATUS_COLORS[item.status] || ITEM_STATUS_COLORS.lost;
-                const holder = getItemHolder(item, world.factions);
-                const seekers = getItemSeekers(item, world.factions);
-                const dungeon = item.locationId
-                  ? dungeons.find((d) => d.id === item.locationId)
-                  : null;
-
-                return (
-                  <li key={item.id} className="rounded border border-stone-600 bg-stone-700/50 p-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-2">
-                        <ItemIcon size={16} className="text-amber-400" />
-                        <span className="font-medium text-amber-200">{item.name}</span>
-                      </div>
-                      <span className={`rounded px-2 py-0.5 text-xs capitalize ${statusColors.bg} ${statusColors.text}`}>
-                        {item.status}
-                      </span>
-                    </div>
-
-                    <p className="mt-2 text-sm text-stone-300">{item.effect}</p>
-
-                    {item.significance && (
-                      <p className="mt-1 text-xs italic text-stone-400">{item.significance}</p>
-                    )}
-
-                    <div className="mt-3 space-y-1 text-xs">
-                      {holder && (
-                        <div className="flex items-center gap-2 text-purple-300">
-                          <Shield size={12} />
-                          <span>Held by: {holder}</span>
-                        </div>
-                      )}
-
-                      {dungeon && (
-                        <div className="flex items-center gap-2 text-amber-300">
-                          <Skull size={12} />
-                          <span>
-                            Hidden in:{" "}
-                            <Link
-                              to="/world/$worldId/location/$locationId"
-                              params={{ worldId: world.id, locationId: dungeon.id }}
-                              className="underline hover:text-amber-200"
-                            >
-                              {dungeon.name}
-                            </Link>
-                          </span>
-                        </div>
-                      )}
-
-                      {seekers.length > 0 && (
-                        <div className="flex items-center gap-2 text-red-300">
-                          <Target size={12} />
-                          <span>Sought by: {seekers.join(", ")}</span>
-                        </div>
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-        )}
-
         {/* Factions */}
         {activeTab === "factions" && (
+          <>
+          {/* Significant Items (Setting Seeds) */}
+          {world.significantItems && world.significantItems.length > 0 && (
+            <section className="rounded-lg border border-amber-700/50 bg-stone-800 p-4">
+              <h2 className="mb-3 flex items-center gap-2 font-semibold text-amber-400">
+                <Gem size={18} />
+                Significant Items ({world.significantItems.length})
+              </h2>
+              <p className="mb-4 text-xs text-stone-400">
+                Narrative artifacts that drive faction conflict and dungeon purpose
+              </p>
+              <ul className="space-y-4">
+                {world.significantItems.map((item) => {
+                  const ItemIcon = ITEM_TYPE_ICONS[item.type] || Gem;
+                  const statusColors = ITEM_STATUS_COLORS[item.status] || ITEM_STATUS_COLORS.lost;
+                  const holder = getItemHolder(item, world.factions);
+                  const seekers = getItemSeekers(item, world.factions);
+                  const dungeon = item.locationId
+                    ? dungeons.find((d) => d.id === item.locationId)
+                    : null;
+
+                  return (
+                    <li key={item.id} className="rounded border border-stone-600 bg-stone-700/50 p-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-2">
+                          <ItemIcon size={16} className="text-amber-400" />
+                          <span className="font-medium text-amber-200">{item.name}</span>
+                        </div>
+                        <span className={`rounded px-2 py-0.5 text-xs capitalize ${statusColors.bg} ${statusColors.text}`}>
+                          {item.status}
+                        </span>
+                      </div>
+
+                      <p className="mt-2 text-sm text-stone-300">{item.effect}</p>
+
+                      {item.significance && (
+                        <p className="mt-1 text-xs italic text-stone-400">{item.significance}</p>
+                      )}
+
+                      <div className="mt-3 space-y-1 text-xs">
+                        {holder && (
+                          <div className="flex items-center gap-2 text-purple-300">
+                            <Shield size={12} />
+                            <span>Held by: {holder}</span>
+                          </div>
+                        )}
+
+                        {dungeon && (
+                          <div className="flex items-center gap-2 text-amber-300">
+                            <Skull size={12} />
+                            <span>
+                              Hidden in:{" "}
+                              <Link
+                                to="/world/$worldId/location/$locationId"
+                                params={{ worldId: world.id, locationId: dungeon.id }}
+                                className="underline hover:text-amber-200"
+                              >
+                                {dungeon.name}
+                              </Link>
+                            </span>
+                          </div>
+                        )}
+
+                        {seekers.length > 0 && (
+                          <div className="flex items-center gap-2 text-red-300">
+                            <Target size={12} />
+                            <span>Sought by: {seekers.join(", ")}</span>
+                          </div>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          )}
         <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
           <h2 className="mb-3 flex items-center gap-2 font-semibold">
             <Users size={18} className="text-purple-400" />
@@ -726,6 +726,7 @@ function AtlasPage() {
             </ul>
           )}
         </section>
+        </>
         )}
 
         {/* Settlements */}
