@@ -485,6 +485,11 @@ const NPC_CATEGORY_CONFIG: Record<string, { icon: typeof User; color: string; la
   prisoner: { icon: User, color: "text-blue-400", label: "Prisoner" },
   hermit: { icon: User, color: "text-green-400", label: "Hermit" },
   ghost: { icon: Ghost, color: "text-purple-400", label: "Ghost" },
+  refugee: { icon: User, color: "text-cyan-400", label: "Refugee" },
+  faction_leader: { icon: Skull, color: "text-red-400", label: "Faction Leader" },
+  faction_lieutenant: { icon: Users, color: "text-orange-400", label: "Faction Lieutenant" },
+  faction_member: { icon: User, color: "text-orange-300", label: "Faction Member" },
+  rival_scout: { icon: AlertTriangle, color: "text-yellow-400", label: "Rival Scout" },
 };
 
 interface DungeonNPCCardProps {
@@ -500,14 +505,24 @@ function DungeonNPCCard({ npc, roomNumberMap }: DungeonNPCCardProps) {
   const dispositionColors: Record<string, string> = {
     friendly: "bg-green-900/50 text-green-300",
     neutral: "bg-stone-700 text-stone-300",
+    wary: "bg-yellow-900/50 text-yellow-300",
     hostile: "bg-red-900/50 text-red-300",
   };
 
   return (
-    <div className="rounded border border-stone-700 bg-stone-800/50 p-2 space-y-1">
+    <div className={`rounded border p-2 space-y-1 ${
+      npc.isBoss
+        ? "border-red-600 bg-red-950/30"
+        : "border-stone-700 bg-stone-800/50"
+    }`}>
       <div className="flex items-center gap-2">
         <Icon className={`h-4 w-4 ${config.color}`} />
         <span className="text-sm font-medium text-stone-200">{config.label}</span>
+        {npc.isBoss && (
+          <span className="rounded bg-red-900 px-1.5 py-0.5 text-xs font-bold text-red-200">
+            BOSS
+          </span>
+        )}
         {roomNum && (
           <span className="text-xs text-stone-500">Room #{roomNum}</span>
         )}
@@ -522,6 +537,12 @@ function DungeonNPCCard({ npc, roomNumberMap }: DungeonNPCCardProps) {
         <span className="inline-flex items-center gap-1 rounded bg-blue-900/50 px-1.5 py-0.5 text-xs text-blue-300">
           <AlertTriangle className="h-3 w-3" />
           Needs rescue
+        </span>
+      )}
+      {npc.scoutingFor && (
+        <span className="inline-flex items-center gap-1 rounded bg-yellow-900/50 px-1.5 py-0.5 text-xs text-yellow-300">
+          <AlertTriangle className="h-3 w-3" />
+          Spying for rival faction
         </span>
       )}
     </div>

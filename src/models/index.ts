@@ -1124,7 +1124,11 @@ export type DungeonNPCCategory =
   | "prisoner" // rescue hook
   | "hermit" // info source, trader
   | "ghost" // cursed, haunts room
-  | "refugee"; // hiding from inhabitants
+  | "refugee" // hiding from inhabitants
+  | "faction_leader" // leader of controlling faction
+  | "faction_lieutenant" // lieutenant of controlling faction
+  | "faction_member" // regular member of controlling faction
+  | "rival_scout"; // scout from a rival faction
 
 /** Dungeon NPC disposition - gradients for negotiation */
 export type DungeonNPCDisposition = "hostile" | "wary" | "neutral" | "friendly";
@@ -1151,6 +1155,10 @@ export interface DungeonNPC {
   hasItem?: string; // key or treasure
   wantsRescue?: boolean;
   partySize?: number; // for rival_party
+  // Faction-related fields
+  factionId?: string; // Which faction this NPC belongs to
+  isBoss?: boolean; // Is this the dungeon boss (faction leader)
+  scoutingFor?: string; // For rival_scout: which faction sent them
 }
 
 /** Extended spatial room with ecology fields */

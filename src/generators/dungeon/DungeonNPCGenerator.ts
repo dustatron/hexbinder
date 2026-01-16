@@ -11,6 +11,8 @@ import type {
   DungeonNPCCategory,
   NPC,
   Hook,
+  Faction,
+  FactionType,
 } from "~/models";
 import { SeededRandom } from "../SeededRandom";
 
@@ -296,4 +298,179 @@ export function generateDungeonNPCs(
 ): DungeonNPC[] {
   const generator = new DungeonNPCGenerator(theme, seed);
   return generator.generateNPCs(rooms, hooks);
+}
+
+// === Faction Dungeon Population ===
+
+// Faction-type specific activities that override standard dungeon ecology
+const FACTION_ACTIVITY_OVERRIDES: Record<FactionType, string[]> = {
+  cult: ["performing rituals", "chanting prayers", "preparing sacrifices", "meditating"],
+  militia: ["drilling", "maintaining weapons", "standing guard", "patrolling"],
+  syndicate: ["counting loot", "planning operations", "interrogating", "smuggling"],
+  guild: ["crafting", "cataloging resources", "negotiating", "training"],
+  tribe: ["feasting", "preparing for hunt", "telling stories", "crafting totems"],
+};
+
+// Room types where faction leaders should be placed
+const LEADER_ROOM_TYPES = [
+  "throne_room",
+  "summoning_circle",
+  "leaders_chamber",
+  "war_room",
+  "altar_room",
+  "planning_room",
+];
+
+// Room types where lieutenants should be placed
+const LIEUTENANT_ROOM_TYPES = [
+  "armory",
+  "barracks",
+  "guardroom",
+  "initiates_quarters",
+  "loot_storage",
+  "priest_quarters",
+];
+
+/**
+ * Populate a faction-controlled dungeon with faction NPCs.
+ * Places leader in boss room, lieutenants in key rooms, and members throughout.
+ */
+export function populateFactionDungeon(
+  rooms: SpatialRoom[],
+  faction: Faction,
+  factionNPCs: NPC[],
+  seed: string
+): DungeonNPC[] {
+  const rng = new SeededRandom(`${seed}-faction-dungeon-pop`);
+  const dungeonNPCs: DungeonNPC[] = [];
+
+  // Sort rooms by depth (boss room is typically deepest)
+  const sortedRooms = [...rooms]
+    .filter((r) => r.type !== "entrance")
+    .sort((a, b) => b.depth - a.depth);
+
+  // Find the boss room (deepest dead-end or leader room type)
+  const bossRoom = sortedRooms.find(
+    (r) => r.themeRoomType && LEADER_ROOM_TYPES.includes(r.themeRoomType)
+  ) ?? sortedRooms.find((r) => r.isDeadEnd) ?? sortedRooms[0];
+
+  // Find leader NPC
+  const leader = factionNPCs.find((n) => n.factionRole === "leader");
+  if (leader && bossRoom) {
+    dungeonNPCs.push({
+      npcId: leader.id,
+      category: "faction_leader",
+      roomId: bossRoom.id,
+      disposition: "hostile",
+      hasInfo: `Leader of ${faction.name}. Knows all faction secrets and plans.`,
+      factionId: faction.id,
+      isBoss: true,
+    });
+  }
+
+  // Find lieutenant rooms
+  const lieutenantRooms = sortedRooms.filter(
+    (r) =>
+      r.id !== bossRoom?.id &&
+      r.themeRoomType &&
+      LIEUTENANT_ROOM_TYPES.includes(r.themeRoomType)
+  );
+
+  // Place lieutenants
+  const lieutenants = factionNPCs.filter((n) => n.factionRole === "lieutenant");
+  for (let i = 0; i < lieutenants.length; i++) {
+    const lt = lieutenants[i];
+    const room = lieutenantRooms[i] ?? rng.pick(sortedRooms.filter(
+      (r) => r.id !== bossRoom?.id && r.depth >= 1
+    ));
+    if (room) {
+      dungeonNPCs.push({
+        npcId: lt.id,
+        category: "faction_lieutenant",
+        roomId: room.id,
+        disposition: "hostile",
+        hasInfo: `Lieutenant of ${faction.name}. Knows the leader's location and current orders.`,
+        factionId: faction.id,
+      });
+    }
+  }
+
+  // Place regular members in remaining rooms
+  const members = factionNPCs.filter((n) => n.factionRole === "member");
+  const usedRoomIds = new Set(dungeonNPCs.map((n) => n.roomId));
+  const availableRooms = sortedRooms.filter((r) => !usedRoomIds.has(r.id));
+
+  for (const member of members) {
+    // Each member has a chance to be placed
+    if (availableRooms.length === 0) break;
+
+    const roomIndex = rng.between(0, availableRooms.length - 1);
+    const room = availableRooms[roomIndex];
+    availableRooms.splice(roomIndex, 1);
+
+    dungeonNPCs.push({
+      npcId: member.id,
+      category: "faction_member",
+      roomId: room.id,
+      disposition: rng.chance(0.8) ? "hostile" : "wary",
+      hasInfo: `Member of ${faction.name}. May know patrol routes and guard positions.`,
+      factionId: faction.id,
+    });
+  }
+
+  return dungeonNPCs;
+}
+
+/**
+ * Add rival faction scouts to a dungeon.
+ * Used when the dungeon is controlled by a faction that has enemies.
+ */
+export function addRivalFactionScouts(
+  rooms: SpatialRoom[],
+  controllingFaction: Faction,
+  rivalFactions: Faction[],
+  seed: string
+): DungeonNPC[] {
+  const rng = new SeededRandom(`${seed}-rival-scouts`);
+  const scouts: DungeonNPC[] = [];
+
+  // 25% chance per hostile/rival faction to have scouts
+  const hostileRivals = rivalFactions.filter((f) => {
+    const rel = controllingFaction.relationships.find((r) => r.factionId === f.id);
+    return rel?.type === "hostile" || rel?.type === "rival" || rel?.type === "war";
+  });
+
+  for (const rival of hostileRivals) {
+    if (!rng.chance(0.25)) continue;
+
+    // Place scouts near the entrance (depth 0-1)
+    const entranceRooms = rooms.filter((r) => r.depth <= 1 && r.type !== "entrance");
+    if (entranceRooms.length === 0) continue;
+
+    const scoutRoom = rng.pick(entranceRooms);
+
+    scouts.push({
+      npcId: `scout-${rival.id}-${nanoid(6)}`,
+      category: "rival_scout",
+      roomId: scoutRoom.id,
+      disposition: "wary",
+      hasInfo: `Scout from ${rival.name}. Knows their faction's interest in this dungeon.`,
+      factionId: rival.id,
+      scoutingFor: rival.id,
+    });
+  }
+
+  return scouts;
+}
+
+/**
+ * Get faction-specific activity for a room.
+ */
+export function getFactionActivity(
+  factionType: FactionType,
+  roomType: string | undefined,
+  rng: SeededRandom
+): string {
+  const activities = FACTION_ACTIVITY_OVERRIDES[factionType];
+  return rng.pick(activities);
 }

@@ -28,6 +28,7 @@ import { generateFactionClock } from "./ClockGenerator";
 import { generateRoads } from "./RoadGenerator";
 import { generateBridges, type Bridge } from "./BridgeGenerator";
 import { generateNPC, generateSettlementNPCs, generateFactionNPCs } from "./NPCGenerator";
+import { populateFactionDungeon, addRivalFactionScouts } from "./dungeon/DungeonNPCGenerator";
 import { NameRegistry } from "./NameRegistry";
 import { generateNPCRelationships } from "./NPCRelationshipGenerator";
 import { weaveHooks } from "./HookWeaver";
@@ -246,6 +247,15 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   const dungeons: SpatialDungeon[] = [];
   const factionLairRng = new SeededRandom(`${seed}-faction-lairs`);
 
+  // Track faction NPCs per faction for dungeon population
+  const factionNPCsMap = new Map<string, NPC[]>();
+
+  // Pre-generate faction NPCs so they can be placed in dungeons
+  for (const faction of factions) {
+    const factionNPCs = generateFactionNPCs({ seed, faction, nameRegistry });
+    factionNPCsMap.set(faction.id, factionNPCs);
+  }
+
   for (const faction of factions) {
     if (faction.lair?.hexCoord) {
       // Pick a theme appropriate for this faction type
@@ -265,12 +275,39 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
         faction.headquartersId = result.dungeon.id;
         faction.lair.dungeonId = result.dungeon.id;
 
-        // Populate rooms
+        // Populate rooms with standard content
         result.dungeon.rooms = populateSpatialDungeonRooms(
           `${seed}-faction-lair-${faction.id}`,
           result.dungeon.rooms,
           result.dungeon.depth
         );
+
+        // Populate dungeon with faction NPCs
+        const factionNPCs = factionNPCsMap.get(faction.id) ?? [];
+        if (factionNPCs.length > 0) {
+          // Update faction NPCs to be located in this dungeon
+          for (const npc of factionNPCs) {
+            npc.locationId = result.dungeon.id;
+          }
+
+          // Generate dungeon NPCs for faction members
+          const dungeonNPCs = populateFactionDungeon(
+            result.dungeon.rooms,
+            faction,
+            factionNPCs,
+            `${seed}-faction-lair-${faction.id}`
+          );
+
+          // Add rival faction scouts
+          const rivalScouts = addRivalFactionScouts(
+            result.dungeon.rooms,
+            faction,
+            factions.filter((f) => f.id !== faction.id),
+            `${seed}-faction-lair-${faction.id}`
+          );
+
+          result.dungeon.dungeonNPCs = [...dungeonNPCs, ...rivalScouts];
+        }
 
         dungeons.push(result.dungeon);
       }
@@ -407,10 +444,12 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     }
   }
 
-  // Faction NPCs
+  // Faction NPCs (use pre-generated NPCs from dungeon population step)
   for (const faction of factions) {
-    const factionNPCs = generateFactionNPCs({ seed, faction, nameRegistry });
-    npcs.push(...factionNPCs);
+    const factionNPCs = factionNPCsMap.get(faction.id);
+    if (factionNPCs) {
+      npcs.push(...factionNPCs);
+    }
   }
 
   // Step 16: Generate NPC relationships (family clusters, rivalries)
