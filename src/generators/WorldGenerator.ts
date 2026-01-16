@@ -134,37 +134,18 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     }
   }
 
-  // Place additional settlements
+  // Place additional settlements using distance-weighted selection
+  // This ensures settlements are spread out rather than clustered
   const extraSettlementCount = settlementCount - 1;
 
-  // First try POI locations on plains
-  const poiForSettlements = poiCoords.filter(c =>
-    hexes.find(h => h.coord.q === c.q && h.coord.r === c.r)?.terrain === "plains"
-  );
+  for (let i = 0; i < extraSettlementCount; i++) {
+    // Collect coordinates of all existing settlements for distance weighting
+    const existingCoords = settlementHexes.map(h => h.coord);
 
-  for (let i = 0; i < Math.min(poiForSettlements.length, extraSettlementCount); i++) {
     const result = placeSettlement({
       seed: `${seed}-settlement-${i + 1}`,
       hexes,
-      forceCoord: poiForSettlements[i],
-    });
-    if (result) {
-      const sites = generateSites({ seed, settlement: result.settlement });
-      result.settlement.sites = sites;
-      linkSitesToBuildings(result.settlement);
-      result.settlement.rumors = [];
-      result.settlement.notices = [];
-      settlements.push(result.settlement);
-      settlementHexes.push(result.hex);
-    }
-  }
-
-  // If not enough POI settlements, place more at random plains
-  const remainingCount = extraSettlementCount - (settlements.length - 1);
-  for (let i = 0; i < remainingCount; i++) {
-    const result = placeSettlement({
-      seed: `${seed}-settlement-extra-${i}`,
-      hexes,
+      existingSettlementCoords: existingCoords,
     });
     if (result) {
       const sites = generateSites({ seed, settlement: result.settlement });

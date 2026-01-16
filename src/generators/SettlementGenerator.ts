@@ -14,6 +14,7 @@ import type {
 } from "~/models";
 import { SeededRandom, createWeightedTable } from "./SeededRandom";
 import { generateTownLayout } from "./TownLayoutEngine";
+import { hexDistance } from "~/lib/hex-utils";
 
 // === Name Tables ===
 
@@ -126,6 +127,30 @@ export interface SettlementPlacementOptions {
   hexes: Hex[];
   forceCoord?: HexCoord;    // Place at specific coordinate
   forceSize?: SettlementSize; // Force specific settlement size
+  existingSettlementCoords?: HexCoord[]; // For distance-weighted placement
+}
+
+/**
+ * Calculate distance weight for a hex based on distance from existing settlements.
+ * Higher weight = farther from settlements = more likely to be selected.
+ */
+function calculateDistanceWeight(
+  coord: HexCoord,
+  existingCoords: HexCoord[]
+): number {
+  if (existingCoords.length === 0) return 1;
+
+  // Find minimum distance to any existing settlement
+  let minDistance = Infinity;
+  for (const existing of existingCoords) {
+    const dist = hexDistance(coord, existing);
+    if (dist < minDistance) minDistance = dist;
+  }
+
+  // Weight is the square of the minimum distance
+  // This strongly favors hexes far from all settlements
+  // Minimum weight of 1 to avoid zero-weight candidates
+  return Math.max(1, minDistance * minDistance);
 }
 
 /**
@@ -136,7 +161,7 @@ export function placeSettlement(options: SettlementPlacementOptions): {
   settlement: SpatialSettlement;
   hex: Hex;
 } | null {
-  const { seed, hexes, forceCoord, forceSize } = options;
+  const { seed, hexes, forceCoord, forceSize, existingSettlementCoords = [] } = options;
   const rng = new SeededRandom(`${seed}-settlement`);
 
   let hex: Hex | undefined;
@@ -147,20 +172,45 @@ export function placeSettlement(options: SettlementPlacementOptions): {
     if (!hex || hex.locationId) return null;
   } else {
     // Find suitable hexes (plains without locations)
-    const candidates = hexes.filter(
+    let candidates = hexes.filter(
       (h) => h.terrain === "plains" && !h.locationId
     );
 
     if (candidates.length === 0) {
       // Fallback to any non-water/mountain hex
-      const fallback = hexes.filter(
+      candidates = hexes.filter(
         (h) => h.terrain !== "water" && h.terrain !== "mountains" && !h.locationId
       );
-      if (fallback.length === 0) return null;
-      candidates.push(...fallback);
+      if (candidates.length === 0) return null;
     }
 
-    hex = rng.pick(candidates);
+    // Use distance-weighted selection if we have existing settlements
+    if (existingSettlementCoords.length > 0) {
+      // Build weighted table based on distance from existing settlements
+      const weightedCandidates = candidates.map(h => ({
+        hex: h,
+        weight: calculateDistanceWeight(h.coord, existingSettlementCoords),
+      }));
+
+      // Calculate total weight
+      const totalWeight = weightedCandidates.reduce((sum, c) => sum + c.weight, 0);
+
+      // Weighted random selection
+      let roll = rng.next() * totalWeight;
+      for (const candidate of weightedCandidates) {
+        roll -= candidate.weight;
+        if (roll <= 0) {
+          hex = candidate.hex;
+          break;
+        }
+      }
+
+      // Fallback to last candidate
+      if (!hex) hex = weightedCandidates[weightedCandidates.length - 1].hex;
+    } else {
+      // No existing settlements, pure random
+      hex = rng.pick(candidates);
+    }
   }
 
   if (!hex) return null;
