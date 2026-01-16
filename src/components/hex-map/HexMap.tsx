@@ -173,12 +173,10 @@ export function HexMap({
                 honeycombHex={honeycombHex}
                 hexData={hexData}
                 locationType={location?.type}
-                locationName={location?.name}
                 dungeonTheme={dungeonTheme}
                 isCapital={isCapital}
                 isSelected={isSelected}
                 onClick={onHexClick}
-                showLabel={showLabels}
               />
             );
           })}
