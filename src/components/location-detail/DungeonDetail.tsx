@@ -422,6 +422,113 @@ export function DungeonDetail({
         </div>
       )}
 
+      {/* Traps Overview */}
+      {hasSpatialLayout && (() => {
+        const spatial = dungeon as SpatialDungeon;
+        const passageTraps = spatial.passages?.filter(p => p.trap && !p.trap.disarmed) ?? [];
+        const roomTraps = spatial.rooms?.flatMap(r =>
+          r.hazards.filter(h => !h.disarmed).map(h => ({ ...h, roomId: r.id }))
+        ) ?? [];
+        const totalTraps = passageTraps.length + roomTraps.length;
+
+        if (totalTraps === 0) return null;
+
+        return (
+          <div className="rounded-lg border border-amber-900/50 bg-amber-950/30 p-4 space-y-3">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-amber-400" />
+              <h3 className="text-sm font-semibold text-amber-300">
+                Traps & Hazards ({totalTraps})
+              </h3>
+            </div>
+
+            {/* Passage Traps */}
+            {passageTraps.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-xs font-semibold text-stone-400">Passage Traps</h4>
+                {passageTraps.map(passage => {
+                  const fromRoom = roomNumberMap.get(passage.fromRoomId);
+                  const toRoom = roomNumberMap.get(passage.toRoomId);
+                  const trap = passage.trap!;
+                  return (
+                    <div key={passage.id} className="rounded bg-stone-800 p-3 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <AlertTriangle className="h-3 w-3 text-amber-500" />
+                        <span className="text-sm font-medium text-stone-200">{trap.name}</span>
+                        {trap.targetAttribute && (
+                          <span className="text-xs px-1 py-0.5 rounded bg-red-900/50 text-red-300">
+                            {trap.targetAttribute}
+                          </span>
+                        )}
+                        <span className="text-xs text-stone-500 ml-auto">
+                          Room {fromRoom} → {toRoom}
+                        </span>
+                      </div>
+                      <p className="text-xs text-stone-400">{trap.description}</p>
+                      {trap.trigger && (
+                        <p className="text-xs">
+                          <span className="text-red-500">⚡ Trigger:</span>{" "}
+                          <span className="text-stone-400">{trap.trigger}</span>
+                        </p>
+                      )}
+                      {trap.passiveHint && (
+                        <p className="text-xs">
+                          <span className="text-yellow-500">👂 Passive:</span>{" "}
+                          <span className="text-stone-400">{trap.passiveHint}</span>
+                        </p>
+                      )}
+                      {trap.activeHint && (
+                        <p className="text-xs">
+                          <span className="text-cyan-500">🔍 Active:</span>{" "}
+                          <span className="text-stone-400">{trap.activeHint}</span>
+                        </p>
+                      )}
+                      <div className="flex gap-3 text-xs">
+                        {trap.damage && <span className="text-red-400">Dmg: {trap.damage}</span>}
+                        {trap.save && <span className="text-amber-400">Save: {trap.save}</span>}
+                      </div>
+                      {trap.disarmMethods && trap.disarmMethods.length > 0 && (
+                        <div className="border-t border-stone-700 pt-2">
+                          <p className="text-xs text-emerald-500 mb-1">✓ Disarm Methods</p>
+                          <ul className="ml-4 space-y-0.5 text-xs text-stone-400">
+                            {trap.disarmMethods.map((method, j) => (
+                              <li key={j} className="list-disc">{method}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {trap.consequence && (
+                        <p className="text-xs text-orange-400">
+                          <span className="text-stone-500">Consequence:</span> {trap.consequence}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Room Traps Summary */}
+            {roomTraps.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-xs font-semibold text-stone-400">Room Traps</h4>
+                <div className="text-xs text-stone-400">
+                  {roomTraps.map((trap, i) => (
+                    <div key={i} className="flex items-center gap-2 py-1 border-b border-stone-700/50 last:border-0">
+                      <span className="text-amber-400">{trap.name}</span>
+                      <span className="text-stone-500">in Room {roomNumberMap.get(trap.roomId)}</span>
+                      {trap.targetAttribute && (
+                        <span className="text-red-300 text-xs">({trap.targetAttribute})</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })()}
+
       {/* Exit Points */}
       {hasSpatialLayout && (dungeon as SpatialDungeon).exitPoints && (dungeon as SpatialDungeon).exitPoints!.length > 0 && (
         <div className="rounded-lg border border-cyan-900/50 bg-cyan-950/30 p-4 space-y-3">

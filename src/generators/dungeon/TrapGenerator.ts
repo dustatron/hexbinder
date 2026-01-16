@@ -125,6 +125,7 @@ export class TrapGenerator {
 
   /**
    * Generate a trap from the theme pool for a specific location type.
+   * Includes Cairn-style warning signs, tells, and disarm methods.
    */
   private generateTrap(location: "room" | "passage"): Hazard {
     // Filter traps that can appear in this location
@@ -133,13 +134,19 @@ export class TrapGenerator {
     );
 
     if (validTraps.length === 0) {
-      // Fallback to universal trap
+      // Fallback to universal trap with Cairn-style fields
       return {
         name: "Hidden Trap",
         description: "A concealed trap mechanism",
-        damage: "2d6",
+        damage: "2d6 STR",
         save: "DC 13 DEX",
         disarmed: false,
+        trigger: "Stepping on the trigger mechanism",
+        passiveHint: "Something feels wrong here",
+        activeHint: "Faint scratches on the floor suggest movement",
+        disarmMethods: ["Move slowly and watch your step", "Probe ahead with a pole"],
+        consequence: "The noise alerts nearby creatures",
+        targetAttribute: "STR",
       };
     }
 
@@ -150,6 +157,13 @@ export class TrapGenerator {
       damage: template.damage,
       save: template.save,
       disarmed: false,
+      // Cairn-style fields
+      trigger: template.trigger,
+      passiveHint: template.passiveHint,
+      activeHint: template.activeHint,
+      disarmMethods: template.disarmMethods,
+      consequence: template.consequence,
+      targetAttribute: template.targetAttribute,
     };
   }
 

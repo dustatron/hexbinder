@@ -687,6 +687,14 @@ export interface Hazard {
   damage?: string;
   save?: string;
   disarmed: boolean;
+
+  // === Cairn-style Fields ===
+  trigger?: string;          // What activates the trap ("Stepping on the third flagstone", "Opening the chest")
+  passiveHint?: string;      // What players notice just walking by ("A faint clicking sound", "Cold draft")
+  activeHint?: string;       // What careful examination reveals ("A thin wire at ankle height")
+  disarmMethods?: string[];  // Creative solutions - first should require NO equipment
+  consequence?: string;      // Beyond damage ("Alerts nearby enemies", "Blocks passage with rubble")
+  targetAttribute?: "STR" | "DEX" | "WIS" | "CON"; // Cairn: traps target attributes, not HP
 }
 
 export interface RoomSecret {
@@ -1016,6 +1024,14 @@ export interface TrapTemplate {
   save: string;
   themes: (DungeonTheme | "*")[]; // "*" means universal
   locations: ("room" | "passage")[];
+
+  // === Cairn-style Fields ===
+  trigger: string;           // What activates the trap ("Stepping on pressure plate", "Opening the lid")
+  passiveHint: string;       // What players notice just walking by (no action needed)
+  activeHint: string;        // What careful examination reveals (automatic if moving carefully)
+  disarmMethods: string[];   // Creative solutions - FIRST should require NO equipment
+  consequence: string;       // Beyond damage (alerts enemies, blocks path, etc.) - REQUIRED
+  targetAttribute: "STR" | "DEX" | "WIS" | "CON"; // Which attribute takes damage - REQUIRED
 }
 
 /** Blueprint for guided dungeon generation */
