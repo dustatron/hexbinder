@@ -32,6 +32,7 @@ const THEME_BADGES: Record<DungeonTheme, { label: string; color: string }> = {
   sewer: { label: "Sewer", color: "bg-green-900" },
   crypt: { label: "Crypt", color: "bg-stone-800" },
   lair: { label: "Lair", color: "bg-red-900" },
+  shrine: { label: "Shrine", color: "bg-yellow-800" },
   bandit_hideout: { label: "Bandit Hideout", color: "bg-amber-900" },
   cultist_lair: { label: "Cultist Lair", color: "bg-violet-900" },
   witch_hut: { label: "Witch Hut", color: "bg-emerald-900" },

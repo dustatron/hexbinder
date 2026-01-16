@@ -200,6 +200,7 @@ const WILDERNESS_TERRAIN_PREFS: Record<DungeonTheme, TerrainType[]> = {
   sewer: ["plains"],
   crypt: ["hills"],
   lair: ["forest", "hills"],
+  shrine: ["forest", "hills", "mountains"],
 };
 
 export interface WildernessLairOptions {

@@ -102,9 +102,7 @@ export class DungeonNPCGenerator {
     const npcs: DungeonNPC[] = [];
 
     // First, place prisoners from rescue hooks
-    const rescueHooks = hooks.filter(
-      (h) => h.type === "rescue" || h.type === "missing_person"
-    );
+    const rescueHooks = hooks.filter((h) => h.type === "rescue");
     for (const hook of rescueHooks) {
       const prisoner = this.placePrisoner(rooms, hook);
       if (prisoner) {
