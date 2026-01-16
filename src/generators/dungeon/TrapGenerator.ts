@@ -141,9 +141,11 @@ export class TrapGenerator {
         damage: "2d6 STR",
         save: "DC 13 DEX",
         disarmed: false,
-        warningSign: "Something feels wrong here",
-        tell: "Faint scratches on the floor suggest movement",
-        disarmMethods: ["Probe ahead with a pole", "Move carefully along the walls"],
+        trigger: "Stepping on the trigger mechanism",
+        passiveHint: "Something feels wrong here",
+        activeHint: "Faint scratches on the floor suggest movement",
+        disarmMethods: ["Move slowly and watch your step", "Probe ahead with a pole"],
+        consequence: "The noise alerts nearby creatures",
         targetAttribute: "STR",
       };
     }
@@ -156,8 +158,9 @@ export class TrapGenerator {
       save: template.save,
       disarmed: false,
       // Cairn-style fields
-      warningSign: template.warningSign,
-      tell: template.tell,
+      trigger: template.trigger,
+      passiveHint: template.passiveHint,
+      activeHint: template.activeHint,
       disarmMethods: template.disarmMethods,
       consequence: template.consequence,
       targetAttribute: template.targetAttribute,

@@ -451,7 +451,7 @@ export function DungeonDetail({
                   const toRoom = roomNumberMap.get(passage.toRoomId);
                   const trap = passage.trap!;
                   return (
-                    <div key={passage.id} className="rounded bg-stone-800 p-2 space-y-1">
+                    <div key={passage.id} className="rounded bg-stone-800 p-3 space-y-2">
                       <div className="flex items-center gap-2">
                         <AlertTriangle className="h-3 w-3 text-amber-500" />
                         <span className="text-sm font-medium text-stone-200">{trap.name}</span>
@@ -465,15 +465,43 @@ export function DungeonDetail({
                         </span>
                       </div>
                       <p className="text-xs text-stone-400">{trap.description}</p>
-                      {trap.tell && (
-                        <p className="text-xs text-cyan-400">
-                          <span className="text-stone-500">Obvious:</span> {trap.tell}
+                      {trap.trigger && (
+                        <p className="text-xs">
+                          <span className="text-red-500">⚡ Trigger:</span>{" "}
+                          <span className="text-stone-400">{trap.trigger}</span>
+                        </p>
+                      )}
+                      {trap.passiveHint && (
+                        <p className="text-xs">
+                          <span className="text-yellow-500">👂 Passive:</span>{" "}
+                          <span className="text-stone-400">{trap.passiveHint}</span>
+                        </p>
+                      )}
+                      {trap.activeHint && (
+                        <p className="text-xs">
+                          <span className="text-cyan-500">🔍 Active:</span>{" "}
+                          <span className="text-stone-400">{trap.activeHint}</span>
                         </p>
                       )}
                       <div className="flex gap-3 text-xs">
                         {trap.damage && <span className="text-red-400">Dmg: {trap.damage}</span>}
                         {trap.save && <span className="text-amber-400">Save: {trap.save}</span>}
                       </div>
+                      {trap.disarmMethods && trap.disarmMethods.length > 0 && (
+                        <div className="border-t border-stone-700 pt-2">
+                          <p className="text-xs text-emerald-500 mb-1">✓ Disarm Methods</p>
+                          <ul className="ml-4 space-y-0.5 text-xs text-stone-400">
+                            {trap.disarmMethods.map((method, j) => (
+                              <li key={j} className="list-disc">{method}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {trap.consequence && (
+                        <p className="text-xs text-orange-400">
+                          <span className="text-stone-500">Consequence:</span> {trap.consequence}
+                        </p>
+                      )}
                     </div>
                   );
                 })}

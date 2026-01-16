@@ -288,36 +288,44 @@ export function RoomCard({ room, roomNumber, expanded = false, selected = false,
                       )}
                     </div>
 
-                    {/* Cairn-style: Warning Sign & Tell */}
-                    {(hazard.warningSign || hazard.tell) && (
-                      <div className="mt-3 space-y-1 border-t border-stone-700 pt-2">
-                        {hazard.warningSign && (
+                    {/* Cairn-style: Trigger */}
+                    {hazard.trigger && (
+                      <p className="mt-2 text-xs">
+                        <span className="text-red-500">⚡ Trigger:</span>{" "}
+                        <span className="text-stone-400">{hazard.trigger}</span>
+                      </p>
+                    )}
+
+                    {/* Cairn-style: Hints (passive and active) */}
+                    {(hazard.passiveHint || hazard.activeHint) && (
+                      <div className="mt-2 space-y-1 border-t border-stone-700 pt-2">
+                        {hazard.passiveHint && (
                           <p className="text-xs">
-                            <span className="text-yellow-500">⚠ Warning:</span>{" "}
-                            <span className="text-stone-400">{hazard.warningSign}</span>
+                            <span className="text-yellow-500">👂 Passive:</span>{" "}
+                            <span className="text-stone-400">{hazard.passiveHint}</span>
                           </p>
                         )}
-                        {hazard.tell && (
+                        {hazard.activeHint && (
                           <p className="text-xs">
-                            <span className="text-cyan-500">👁 Obvious:</span>{" "}
-                            <span className="text-stone-400">{hazard.tell}</span>
+                            <span className="text-cyan-500">🔍 Active:</span>{" "}
+                            <span className="text-stone-400">{hazard.activeHint}</span>
                           </p>
                         )}
                       </div>
                     )}
 
-                    {/* Cairn-style: Disarm Methods */}
+                    {/* Cairn-style: Disarm Methods (expanded by default) */}
                     {hazard.disarmMethods && hazard.disarmMethods.length > 0 && (
-                      <details className="mt-2">
-                        <summary className="cursor-pointer text-xs text-emerald-500 hover:text-emerald-400">
-                          Disarm Methods ({hazard.disarmMethods.length})
-                        </summary>
-                        <ul className="mt-1 ml-4 space-y-1 text-xs text-stone-400">
+                      <div className="mt-2 border-t border-stone-700 pt-2">
+                        <p className="text-xs text-emerald-500 mb-1">
+                          ✓ Disarm Methods
+                        </p>
+                        <ul className="ml-4 space-y-1 text-xs text-stone-400">
                           {hazard.disarmMethods.map((method, j) => (
                             <li key={j} className="list-disc">{method}</li>
                           ))}
                         </ul>
-                      </details>
+                      </div>
                     )}
 
                     {/* Cairn-style: Consequence */}

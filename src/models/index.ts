@@ -689,9 +689,10 @@ export interface Hazard {
   disarmed: boolean;
 
   // === Cairn-style Fields ===
-  warningSign?: string;      // How players notice before triggering ("Scratches on floor", "Faint clicking")
-  tell?: string;             // Obvious indication for careful explorers ("Thin wire across passage")
-  disarmMethods?: string[];  // Creative solutions ("Jam mechanism with piton", "Pour water on plate")
+  trigger?: string;          // What activates the trap ("Stepping on the third flagstone", "Opening the chest")
+  passiveHint?: string;      // What players notice just walking by ("A faint clicking sound", "Cold draft")
+  activeHint?: string;       // What careful examination reveals ("A thin wire at ankle height")
+  disarmMethods?: string[];  // Creative solutions - first should require NO equipment
   consequence?: string;      // Beyond damage ("Alerts nearby enemies", "Blocks passage with rubble")
   targetAttribute?: "STR" | "DEX" | "WIS" | "CON"; // Cairn: traps target attributes, not HP
 }
@@ -1025,11 +1026,12 @@ export interface TrapTemplate {
   locations: ("room" | "passage")[];
 
   // === Cairn-style Fields ===
-  warningSign: string;       // How players notice before triggering
-  tell: string;              // Obvious indication for careful explorers
-  disarmMethods: string[];   // Creative solutions (inventory/environment based)
-  consequence?: string;      // Beyond damage (alerts enemies, blocks path, etc.)
-  targetAttribute?: "STR" | "DEX" | "WIS" | "CON"; // Which attribute takes damage
+  trigger: string;           // What activates the trap ("Stepping on pressure plate", "Opening the lid")
+  passiveHint: string;       // What players notice just walking by (no action needed)
+  activeHint: string;        // What careful examination reveals (automatic if moving carefully)
+  disarmMethods: string[];   // Creative solutions - FIRST should require NO equipment
+  consequence: string;       // Beyond damage (alerts enemies, blocks path, etc.) - REQUIRED
+  targetAttribute: "STR" | "DEX" | "WIS" | "CON"; // Which attribute takes damage - REQUIRED
 }
 
 /** Blueprint for guided dungeon generation */
