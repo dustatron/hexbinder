@@ -222,6 +222,35 @@ export function HexMap({
             );
           })}
         </g>
+        {/* Render labels in separate layer on top of everything */}
+        {showLabels && (
+          <g>
+            {honeycombHexes.map((honeycombHex, index) => {
+              const hexData = hexes[index];
+              const coordKey = `${hexData.coord.q},${hexData.coord.r}`;
+              const location = locationByHex.get(coordKey);
+              if (!location) return null;
+
+              return (
+                <text
+                  key={`label-${coordKey}`}
+                  x={honeycombHex.x}
+                  y={honeycombHex.y + 20}
+                  textAnchor="middle"
+                  fontSize={10}
+                  fontWeight="bold"
+                  fill="#1c1917"
+                  stroke="#fafaf9"
+                  strokeWidth={2}
+                  paintOrder="stroke"
+                  style={{ pointerEvents: "none" }}
+                >
+                  {location.name}
+                </text>
+              );
+            })}
+          </g>
+        )}
       </motion.svg>
     </div>
   );
