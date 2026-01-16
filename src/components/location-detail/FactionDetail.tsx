@@ -1,5 +1,4 @@
-import type { Faction, Clock, NPC, Location, Hook } from "~/models";
-import { NPCStatLine } from "~/components/npc/NPCStatLine";
+import type { Faction, Clock, NPC, Location, Hook, SignificantItem } from "~/models";
 
 interface FactionDetailProps {
   faction: Faction;
@@ -7,6 +6,7 @@ interface FactionDetailProps {
   npcs: NPC[];
   locations: Location[];
   hooks?: Hook[];
+  significantItems?: SignificantItem[];
 }
 
 const FACTION_TYPE_COLORS: Record<Faction["factionType"], string> = {
@@ -17,12 +17,31 @@ const FACTION_TYPE_COLORS: Record<Faction["factionType"], string> = {
   tribe: "bg-green-700",
 };
 
+const ADVANTAGE_TYPE_COLORS: Record<string, string> = {
+  wealth: "bg-yellow-700/50 text-yellow-200",
+  military: "bg-red-700/50 text-red-200",
+  influence: "bg-purple-700/50 text-purple-200",
+  knowledge: "bg-blue-700/50 text-blue-200",
+  magic: "bg-violet-700/50 text-violet-200",
+  territory: "bg-green-700/50 text-green-200",
+  alliance: "bg-cyan-700/50 text-cyan-200",
+  artifact: "bg-amber-700/50 text-amber-200",
+};
+
+const GOAL_STATUS_STYLES: Record<string, { bg: string; dot: string }> = {
+  completed: { bg: "bg-green-900/30", dot: "bg-green-500" },
+  in_progress: { bg: "bg-blue-900/30", dot: "bg-blue-500" },
+  pending: { bg: "bg-stone-800", dot: "bg-stone-500" },
+  failed: { bg: "bg-red-900/30", dot: "bg-red-500" },
+};
+
 export function FactionDetail({
   faction,
   clocks,
   npcs,
   locations,
   hooks = [],
+  significantItems = [],
 }: FactionDetailProps) {
   // Filter clocks owned by this faction
   const factionClocks = clocks.filter(
@@ -49,6 +68,19 @@ export function FactionDetail({
   const recruitmentHooks = hooks.filter((h) =>
     faction.recruitmentHookIds?.includes(h.id)
   );
+
+  // Get items this faction possesses or desires
+  const possessedItems = significantItems.filter(
+    (item) => item.currentHolderId === faction.id && item.holderType === "faction"
+  );
+  const desiredItems = significantItems.filter(
+    (item) => item.desiredByFactionIds.includes(faction.id)
+  );
+
+  // Get seneschal NPC if assigned
+  const seneschal = faction.seneschalId
+    ? npcs.find((n) => n.id === faction.seneschalId)
+    : null;
 
   return (
     <div className="space-y-6 bg-stone-900 p-4 text-stone-100">
@@ -82,38 +114,159 @@ export function FactionDetail({
         )}
       </section>
 
-      {/* Goals & Methods */}
-      <section className="space-y-3">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-400">
-          Goals
-        </h3>
-        <ul className="space-y-1">
-          {faction.goals.map((goal, i) => (
-            <li key={i} className="text-sm text-stone-300">
-              {goal.description}
-              {goal.progress > 0 && (
-                <span className="ml-2 text-xs text-stone-500">
-                  ({goal.progress}%)
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
+      {/* Advantages (Cairn-inspired) */}
+      {faction.advantages && faction.advantages.length > 0 && (
+        <section className="space-y-3">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-green-400">
+            Advantages
+          </h3>
+          <ul className="space-y-2">
+            {faction.advantages.map((adv, i) => (
+              <li
+                key={i}
+                className={`rounded px-3 py-2 ${ADVANTAGE_TYPE_COLORS[adv.type] || "bg-stone-800 text-stone-300"}`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">{adv.name}</span>
+                  <span className="text-xs uppercase opacity-70">{adv.type}</span>
+                </div>
+                {adv.description && (
+                  <p className="mt-1 text-xs opacity-80">{adv.description}</p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-400">
-          Methods
-        </h3>
-        <ul className="flex flex-wrap gap-2">
-          {faction.methods.map((method, i) => (
-            <li
-              key={i}
-              className="rounded bg-stone-800 px-2 py-1 text-xs text-stone-300"
-            >
-              {method}
-            </li>
-          ))}
-        </ul>
-      </section>
+      {/* Obstacle (Cairn-inspired) */}
+      {faction.obstacle && (
+        <section className="space-y-3">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-red-400">
+            Obstacle
+          </h3>
+          <div className="rounded border border-red-500/30 bg-red-900/20 px-3 py-2">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-red-200">{faction.obstacle.description}</span>
+              <span className="text-xs uppercase text-red-400/70">
+                {faction.obstacle.type.replace("_", " ")}
+              </span>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Agenda (Cairn-inspired progressive goals) */}
+      {faction.agenda && faction.agenda.length > 0 && (
+        <section className="space-y-3">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-400">
+            Agenda
+          </h3>
+          <p className="text-xs text-stone-500">Progressive goals building toward their objective</p>
+          <ol className="space-y-2">
+            {faction.agenda
+              .sort((a, b) => a.order - b.order)
+              .map((goal) => {
+                const styles = GOAL_STATUS_STYLES[goal.status] || GOAL_STATUS_STYLES.pending;
+                return (
+                  <li
+                    key={goal.id}
+                    className={`rounded px-3 py-2 ${styles.bg}`}
+                  >
+                    <div className="flex items-start gap-2">
+                      <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${styles.dot}`} />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-stone-200">
+                            {goal.order}. {goal.description}
+                          </span>
+                          <span className="text-xs capitalize text-stone-400">
+                            {goal.status.replace("_", " ")}
+                          </span>
+                        </div>
+                        {goal.addressesObstacle && (
+                          <span className="mt-1 inline-block rounded bg-red-500/20 px-1.5 py-0.5 text-xs text-red-300">
+                            Addresses Obstacle
+                          </span>
+                        )}
+                        {goal.targetType === "item" && (
+                          <span className="mt-1 inline-block rounded bg-amber-500/20 px-1.5 py-0.5 text-xs text-amber-300">
+                            Artifact Goal
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+          </ol>
+        </section>
+      )}
+
+      {/* Item Possessions & Desires */}
+      {(possessedItems.length > 0 || desiredItems.length > 0) && (
+        <section className="space-y-3">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-amber-400">
+            Significant Items
+          </h3>
+
+          {possessedItems.length > 0 && (
+            <div className="space-y-2">
+              <span className="text-xs text-stone-500">Possessed</span>
+              <ul className="space-y-2">
+                {possessedItems.map((item) => (
+                  <li
+                    key={item.id}
+                    className="rounded border border-purple-500/30 bg-purple-900/20 px-3 py-2"
+                  >
+                    <div className="font-medium text-purple-200">{item.name}</div>
+                    <p className="mt-1 text-xs text-stone-400">{item.effect}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {desiredItems.length > 0 && (
+            <div className="space-y-2">
+              <span className="text-xs text-stone-500">Desires</span>
+              <ul className="space-y-2">
+                {desiredItems.map((item) => (
+                  <li
+                    key={item.id}
+                    className="rounded border border-amber-500/30 bg-amber-900/20 px-3 py-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-amber-200">{item.name}</span>
+                      <span className="text-xs capitalize text-amber-400/70">{item.status}</span>
+                    </div>
+                    <p className="mt-1 text-xs text-stone-400">{item.effect}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Methods */}
+      {faction.methods.length > 0 && (
+        <section className="space-y-3">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-400">
+            Methods
+          </h3>
+          <ul className="flex flex-wrap gap-2">
+            {faction.methods.map((method, i) => (
+              <li
+                key={i}
+                className="rounded bg-stone-800 px-2 py-1 text-xs text-stone-300"
+              >
+                {method}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* Clocks */}
       {factionClocks.length > 0 && (

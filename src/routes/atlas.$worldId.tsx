@@ -13,6 +13,14 @@ import {
   Skull,
   Users,
   Calendar,
+  Gem,
+  Target,
+  Shield,
+  AlertTriangle,
+  Crown,
+  Sword,
+  BookOpen,
+  Key,
 } from "lucide-react";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { advanceDay, goBackDay, extendForecast, needsForecastExtension } from "~/generators/WorldGenerator";
@@ -22,6 +30,8 @@ import type {
   Dungeon,
   WeatherCondition,
   MoonPhase,
+  SignificantItem,
+  Faction,
 } from "~/models";
 
 export const Route = createFileRoute("/atlas/$worldId")({
@@ -57,7 +67,48 @@ const MOON_LABELS: Record<MoonPhase, string> = {
 
 type TabId = "factions" | "events" | "settlements" | "dungeons";
 
-import type { Faction, Location } from "~/models";
+import type { Location } from "~/models";
+
+// Setting Seeds item icons and colors
+const ITEM_TYPE_ICONS: Record<string, typeof Gem> = {
+  crown: Crown,
+  weapon: Sword,
+  tome: BookOpen,
+  key: Key,
+  relic: Gem,
+  vessel: Gem,
+  regalia: Crown,
+  focus: Gem,
+};
+
+const ITEM_STATUS_COLORS: Record<string, { bg: string; text: string }> = {
+  possessed: { bg: "bg-purple-700", text: "text-purple-200" },
+  hidden: { bg: "bg-amber-700", text: "text-amber-200" },
+  lost: { bg: "bg-stone-600", text: "text-stone-300" },
+  contested: { bg: "bg-red-700", text: "text-red-200" },
+};
+
+const FACTION_TYPE_COLORS: Record<string, string> = {
+  cult: "bg-purple-700",
+  militia: "bg-red-700",
+  syndicate: "bg-amber-700",
+  guild: "bg-blue-700",
+  tribe: "bg-green-700",
+};
+
+function getItemHolder(item: SignificantItem, factions: Faction[]): string | null {
+  if (item.status === "possessed" && item.currentHolderId) {
+    const faction = factions.find((f) => f.id === item.currentHolderId);
+    return faction?.name ?? "Unknown";
+  }
+  return null;
+}
+
+function getItemSeekers(item: SignificantItem, factions: Faction[]): string[] {
+  return item.desiredByFactionIds
+    .map((id) => factions.find((f) => f.id === id)?.name)
+    .filter((name): name is string => !!name);
+}
 
 // Parse description and replace faction/location names with linked badges
 function linkifyDescription(
@@ -497,6 +548,82 @@ function AtlasPage() {
         </section>
         )}
 
+        {/* Significant Items (Setting Seeds) */}
+        {world.significantItems && world.significantItems.length > 0 && (
+          <section className="rounded-lg border border-amber-700/50 bg-stone-800 p-4">
+            <h2 className="mb-3 flex items-center gap-2 font-semibold text-amber-400">
+              <Gem size={18} />
+              Significant Items ({world.significantItems.length})
+            </h2>
+            <p className="mb-4 text-xs text-stone-400">
+              Narrative artifacts that drive faction conflict and dungeon purpose
+            </p>
+            <ul className="space-y-4">
+              {world.significantItems.map((item) => {
+                const ItemIcon = ITEM_TYPE_ICONS[item.type] || Gem;
+                const statusColors = ITEM_STATUS_COLORS[item.status] || ITEM_STATUS_COLORS.lost;
+                const holder = getItemHolder(item, world.factions);
+                const seekers = getItemSeekers(item, world.factions);
+                const dungeon = item.locationId
+                  ? dungeons.find((d) => d.id === item.locationId)
+                  : null;
+
+                return (
+                  <li key={item.id} className="rounded border border-stone-600 bg-stone-700/50 p-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-2">
+                        <ItemIcon size={16} className="text-amber-400" />
+                        <span className="font-medium text-amber-200">{item.name}</span>
+                      </div>
+                      <span className={`rounded px-2 py-0.5 text-xs capitalize ${statusColors.bg} ${statusColors.text}`}>
+                        {item.status}
+                      </span>
+                    </div>
+
+                    <p className="mt-2 text-sm text-stone-300">{item.effect}</p>
+
+                    {item.significance && (
+                      <p className="mt-1 text-xs italic text-stone-400">{item.significance}</p>
+                    )}
+
+                    <div className="mt-3 space-y-1 text-xs">
+                      {holder && (
+                        <div className="flex items-center gap-2 text-purple-300">
+                          <Shield size={12} />
+                          <span>Held by: {holder}</span>
+                        </div>
+                      )}
+
+                      {dungeon && (
+                        <div className="flex items-center gap-2 text-amber-300">
+                          <Skull size={12} />
+                          <span>
+                            Hidden in:{" "}
+                            <Link
+                              to="/world/$worldId/location/$locationId"
+                              params={{ worldId: world.id, locationId: dungeon.id }}
+                              className="underline hover:text-amber-200"
+                            >
+                              {dungeon.name}
+                            </Link>
+                          </span>
+                        </div>
+                      )}
+
+                      {seekers.length > 0 && (
+                        <div className="flex items-center gap-2 text-red-300">
+                          <Target size={12} />
+                          <span>Sought by: {seekers.join(", ")}</span>
+                        </div>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
+
         {/* Factions */}
         {activeTab === "factions" && (
         <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
@@ -507,42 +634,95 @@ function AtlasPage() {
           {world.factions.length === 0 ? (
             <p className="text-sm text-stone-500">No factions</p>
           ) : (
-            <ul className="space-y-3">
-              {world.factions.map((faction) => (
-                <li key={faction.id} className="rounded bg-stone-700/50 p-3">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <Link
-                        to="/world/$worldId/faction/$factionId"
-                        params={{ worldId: world.id, factionId: faction.id }}
-                        className="font-medium hover:text-amber-400"
-                      >
-                        {faction.name}
-                      </Link>
-                      <p className="text-sm text-stone-400">
-                        {faction.factionType} &middot; {faction.purpose}
-                      </p>
-                    </div>
-                    <span className="rounded bg-stone-600 px-2 py-0.5 text-xs capitalize">
-                      {faction.status}
-                    </span>
-                  </div>
-                  {faction.goals.length > 0 && (
-                    <div className="mt-2">
-                      <div className="flex items-center justify-between text-xs text-stone-400">
-                        <span>Goal Progress</span>
-                        <span>{faction.goals[0].progress}%</span>
+            <ul className="space-y-4">
+              {world.factions.map((faction) => {
+                const currentGoal = faction.agenda?.find((g) => g.status === "in_progress");
+                const completedGoals = faction.agenda?.filter((g) => g.status === "completed").length ?? 0;
+                const totalGoals = faction.agenda?.length ?? 0;
+
+                return (
+                  <li key={faction.id} className="rounded border border-stone-600 bg-stone-700/50 p-3">
+                    {/* Header */}
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <Link
+                            to="/world/$worldId/faction/$factionId"
+                            params={{ worldId: world.id, factionId: faction.id }}
+                            className="font-medium hover:text-amber-400"
+                          >
+                            {faction.name}
+                          </Link>
+                          <span className={`rounded px-1.5 py-0.5 text-xs uppercase ${FACTION_TYPE_COLORS[faction.factionType] || "bg-stone-600"}`}>
+                            {faction.factionType}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-sm text-stone-400">
+                          {faction.archetype} · {faction.scale}
+                        </p>
                       </div>
-                      <div className="mt-1 h-1.5 overflow-hidden rounded bg-stone-600">
-                        <div
-                          className="h-full bg-purple-500"
-                          style={{ width: `${faction.goals[0].progress}%` }}
-                        />
-                      </div>
+                      <span className="rounded bg-stone-600 px-2 py-0.5 text-xs capitalize">
+                        {faction.status}
+                      </span>
                     </div>
-                  )}
-                </li>
-              ))}
+
+                    {/* Advantages */}
+                    {faction.advantages && faction.advantages.length > 0 && (
+                      <div className="mt-3">
+                        <div className="mb-1 flex items-center gap-1 text-xs font-medium text-green-400">
+                          <Shield size={12} />
+                          Advantages
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {faction.advantages.map((adv, i) => (
+                            <span key={i} className="rounded bg-green-900/50 px-2 py-0.5 text-xs text-green-300">
+                              {adv.name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Current Goal */}
+                    {currentGoal && (
+                      <div className="mt-3">
+                        <div className="mb-1 flex items-center gap-1 text-xs font-medium text-blue-400">
+                          <Target size={12} />
+                          Current Goal ({completedGoals}/{totalGoals})
+                        </div>
+                        <p className="text-sm text-stone-300">{currentGoal.description}</p>
+                      </div>
+                    )}
+
+                    {/* Obstacle */}
+                    {faction.obstacle && (
+                      <div className="mt-3">
+                        <div className="mb-1 flex items-center gap-1 text-xs font-medium text-red-400">
+                          <AlertTriangle size={12} />
+                          Obstacle
+                        </div>
+                        <p className="text-sm text-stone-400">{faction.obstacle.description}</p>
+                      </div>
+                    )}
+
+                    {/* Agenda Progress */}
+                    {totalGoals > 0 && (
+                      <div className="mt-3">
+                        <div className="flex items-center justify-between text-xs text-stone-400">
+                          <span>Agenda Progress</span>
+                          <span>{Math.round((completedGoals / totalGoals) * 100)}%</span>
+                        </div>
+                        <div className="mt-1 h-1.5 overflow-hidden rounded bg-stone-600">
+                          <div
+                            className="h-full bg-purple-500"
+                            style={{ width: `${(completedGoals / totalGoals) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </section>
