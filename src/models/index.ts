@@ -439,6 +439,61 @@ export type FactionScale = "local" | "regional" | "major";
 
 export type RelationshipType = "allied" | "friendly" | "neutral" | "rival" | "hostile" | "war";
 
+// === Faction Advantage (Cairn-inspired) ===
+
+export type AdvantageType =
+  | "wealth"        // Gold, treasure, trade income
+  | "military"      // Soldiers, mercenaries, weapons
+  | "influence"     // Political connections, noble favor
+  | "knowledge"     // Secrets, lore, intelligence network
+  | "magic"         // Spells, artifacts, magical allies
+  | "territory"     // Land, fortresses, hidden bases
+  | "alliance"      // Pacts with other factions or creatures
+  | "artifact";     // Possession of a significant magic item
+
+export interface FactionAdvantage {
+  type: AdvantageType;
+  name: string;
+  description: string;
+  magicItemId?: string; // If type is "artifact", links to the item
+}
+
+// === Faction Agenda Goal (Cairn-inspired progressive goals) ===
+
+export type AgendaGoalStatus = "pending" | "in_progress" | "completed" | "failed";
+
+export interface AgendaGoal {
+  id: string;
+  order: number;        // Sequence in the agenda (1-5)
+  description: string;
+  status: AgendaGoalStatus;
+  targetType?: "item" | "location" | "npc" | "faction" | "territory";
+  targetId?: string;    // What this goal targets (item to acquire, location to control, etc.)
+  addressesObstacle?: boolean; // Does this goal address the faction's primary obstacle?
+  agentId?: string;     // NPC assigned to this goal
+  clockId?: string;     // Progress clock for this goal
+}
+
+// === Faction Obstacle (Cairn-inspired) ===
+
+export type ObstacleType =
+  | "rival_faction"     // Another faction blocks them
+  | "missing_item"      // Need an artifact they don't have
+  | "missing_knowledge" // Don't know location/method
+  | "lack_of_resources" // Need money, troops, etc.
+  | "powerful_enemy"    // Individual or creature opposes them
+  | "internal_conflict" // Faction members disagree
+  | "divine_opposition" // Gods or fate work against them
+  | "geographic";       // Physical barrier (mountains, ocean, etc.)
+
+export interface FactionObstacle {
+  type: ObstacleType;
+  description: string;
+  targetId?: string;    // The faction/NPC/item that IS the obstacle
+}
+
+// === Legacy FactionGoal (deprecated, kept for compatibility) ===
+
 export interface FactionGoal {
   description: string;
   progress: number; // 0-100
@@ -467,9 +522,18 @@ export interface Faction {
   purpose: string; // "conducting dark rituals", etc.
   lair?: FactionLair;
   scale: FactionScale;
-  goals: FactionGoal[];
+
+  // === Cairn-inspired Agenda System ===
+  advantages: FactionAdvantage[];      // What resources/power they have
+  agenda: AgendaGoal[];                // 3-5 progressive goals toward objective
+  obstacle: FactionObstacle;           // Primary thing blocking their agenda
+  seneschalId?: string;                // NPC who is the "face" of the faction
+
+  // === Legacy fields (kept for compatibility) ===
+  goals: FactionGoal[];                // @deprecated - use agenda instead
   methods: string[];
-  resources: string[];
+  resources: string[];                 // @deprecated - use advantages instead
+
   relationships: FactionRelationship[];
   headquartersId?: string;
   territoryIds: string[];
@@ -1047,6 +1111,48 @@ export interface TreasureEntry {
 
 export type MagicItemRarity = "common" | "uncommon" | "rare" | "legendary";
 
+// === Significant Item (Setting Seed narrative items) ===
+
+export type SignificantItemStatus =
+  | "possessed"      // A faction/NPC has it
+  | "hidden"         // In a dungeon/location, unknown to most
+  | "lost"           // Location unknown, requires investigation
+  | "contested";     // Multiple parties actively seeking it
+
+export interface SignificantItem {
+  id: string;
+  name: string;
+  type: string;                         // weapon, armor, crown, tome, etc.
+  rarity: MagicItemRarity;
+  description: string;
+  effect: string;
+
+  // === Narrative Fields (Setting Seeds) ===
+  history: string;                      // "Forged by the Flame Kings of old..."
+  significance: string;                 // Why it matters to the setting
+  status: SignificantItemStatus;
+
+  // === Location/Ownership ===
+  currentHolderId?: string;             // Faction or NPC ID if possessed
+  holderType?: "faction" | "npc";
+  locationId?: string;                  // Dungeon/location ID if hidden
+  hexCoord?: HexCoord;                  // Where it is on the map
+
+  // === Desires (who wants it) ===
+  desiredByFactionIds: string[];        // Factions seeking this item
+  desiredByNpcIds: string[];            // Individual NPCs seeking it
+
+  // === Discovery ===
+  knownToExist: boolean;                // Do people know it's real?
+  locationKnown: boolean;               // Do people know where it is?
+  rumorIds: string[];                   // Rumors about this item
+
+  charges?: number;
+  cursed: boolean;
+}
+
+// === Basic Magic Item (for regular treasure) ===
+
 export interface MagicItem {
   id: string;
   name: string;
@@ -1149,9 +1255,10 @@ export interface WorldData {
   hexes: Hex[];
   edges: HexEdge[];
   locations: Location[];
-  dwellings: Dwelling[]; // NEW
+  dwellings: Dwelling[];
   npcs: NPC[];
   factions: Faction[];
+  significantItems: SignificantItem[]; // Setting Seed narrative items
   hooks: Hook[];
   clocks: Clock[];
 }
