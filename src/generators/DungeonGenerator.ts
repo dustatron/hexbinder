@@ -28,6 +28,7 @@ import { generateWanderingMonsters } from "./dungeon/WanderingMonsterGenerator";
 import { generateDungeonNPCs } from "./dungeon/DungeonNPCGenerator";
 import { generateKeyLocks } from "./dungeon/KeyLockGenerator";
 import { generateDungeonHistory } from "./dungeon/DungeonHistoryGenerator";
+import { generateExitPoints } from "./dungeon/ExitPointGenerator";
 
 // === Name Tables ===
 
@@ -182,6 +183,19 @@ export function placeDungeon(options: DungeonPlacementOptions): {
   // Use forceTheme if provided, otherwise fall back to theme
   const finalTheme = forceTheme ?? theme;
   const dungeon = generateSpatialDungeon(seed, hex.coord, finalTheme, size);
+
+  // Generate exit points to neighboring hexes
+  const exitPoints = generateExitPoints(
+    dungeon.theme,
+    dungeon.hexCoord,
+    hexes,
+    dungeon.rooms,
+    dungeon.size,
+    seed
+  );
+  if (exitPoints.length > 0) {
+    dungeon.exitPoints = exitPoints;
+  }
 
   // Update hex with location ID
   hex.locationId = dungeon.id;

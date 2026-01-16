@@ -1,9 +1,9 @@
 import { useState, useMemo, useRef } from "react";
 import {
   CheckCircle2, Skull, Gem, MapPin, User, Map as MapIcon, ScrollText,
-  BookOpen, Users, Ghost, AlertTriangle, Footprints, Key
+  BookOpen, Users, Ghost, AlertTriangle, Footprints, Key, DoorOpen
 } from "lucide-react";
-import type { Dungeon, Hook, DungeonTheme, NPC, SpatialDungeon, DungeonNPC, KeyLockPair, Faction } from "~/models";
+import type { Dungeon, Hook, DungeonTheme, NPC, SpatialDungeon, DungeonNPC, KeyLockPair, Faction, ExitPoint } from "~/models";
 import { isSpatialDungeon } from "~/models";
 import type { RegenerationType, RegenerateOptions } from "~/lib/hex-regenerate";
 import { EncounterTable } from "~/components/encounter-table/EncounterTable";
@@ -442,6 +442,24 @@ export function DungeonDetail({
           </div>
         </div>
       )}
+
+      {/* Exit Points */}
+      {hasSpatialLayout && (dungeon as SpatialDungeon).exitPoints && (dungeon as SpatialDungeon).exitPoints!.length > 0 && (
+        <div className="rounded-lg border border-cyan-900/50 bg-cyan-950/30 p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <DoorOpen className="h-4 w-4 text-cyan-400" />
+            <h3 className="text-sm font-semibold text-cyan-300">Exit Points</h3>
+          </div>
+          <p className="text-xs text-stone-400">
+            Secret exits connecting to neighboring hexes
+          </p>
+          <div className="space-y-2">
+            {(dungeon as SpatialDungeon).exitPoints?.map((exit: ExitPoint) => (
+              <ExitPointCard key={exit.id} exit={exit} roomNumberMap={roomNumberMap} />
+            ))}
+          </div>
+        </div>
+      )}
       </>
       )}
 
@@ -594,6 +612,45 @@ function KeyLockCard({ pair, roomNumberMap, passages }: KeyLockCardProps) {
           Opens door to: <span className="text-stone-300">Room #{toRoomNum ?? "?"}</span>
         </span>
       </div>
+    </div>
+  );
+}
+
+interface ExitPointCardProps {
+  exit: ExitPoint;
+  roomNumberMap: Map<string, number>;
+}
+
+function ExitPointCard({ exit, roomNumberMap }: ExitPointCardProps) {
+  const roomNum = roomNumberMap.get(exit.roomId);
+
+  return (
+    <div className={`rounded border p-2 space-y-1 ${
+      exit.discovered
+        ? "border-cyan-700/50 bg-cyan-950/30"
+        : "border-stone-700 bg-stone-800/50"
+    }`}>
+      <div className="flex items-center gap-2">
+        <DoorOpen className={`h-4 w-4 ${exit.discovered ? "text-cyan-400" : "text-stone-500"}`} />
+        <span className="text-sm font-medium text-stone-200">
+          Exit to Hex ({exit.destinationCoord.q}, {exit.destinationCoord.r})
+        </span>
+        {exit.discovered ? (
+          <span className="ml-auto rounded bg-cyan-900/50 px-1.5 py-0.5 text-xs text-cyan-300">
+            Discovered
+          </span>
+        ) : (
+          <span className="ml-auto rounded bg-stone-700 px-1.5 py-0.5 text-xs text-stone-400">
+            Hidden
+          </span>
+        )}
+      </div>
+      <p className="text-xs text-stone-400 italic">{exit.description}</p>
+      {roomNum && (
+        <p className="text-xs text-stone-500">
+          Located in: <span className="text-stone-400">Room #{roomNum}</span>
+        </p>
+      )}
     </div>
   );
 }
