@@ -1,15 +1,16 @@
 import { RefreshCw, MapPin, Skull, Sparkles, Home } from "lucide-react";
-import type { Dwelling, DwellingType, EncounterOverrides, Hex, TerrainType } from "~/models";
+import type { Dwelling, DwellingType, EncounterOverrides, Hex, TerrainType, Ruleset } from "~/models";
 import type { RegenerationType } from "~/lib/hex-regenerate";
 import { ImprovedEncounterTable } from "~/components/encounter-table/ImprovedEncounterTable";
 import { RegenerateButton } from "./RegenerateButton";
-import { getMonster } from "~/lib/monsters";
+import { getMonsterStats } from "~/lib/monster-stats";
 import { MonsterCard } from "~/components/encounter-table/MonsterCard";
 
 interface WildernessDetailProps {
   hex: Hex;
   dwelling?: Dwelling | null;
   worldId: string;
+  ruleset: Ruleset;
   onRegenerate: (type: RegenerationType) => void;
   onReroll: () => void;
   onOverridesChange?: (overrides: EncounterOverrides) => void;
@@ -52,6 +53,7 @@ export function WildernessDetail({
   hex,
   dwelling,
   worldId,
+  ruleset,
   onRegenerate,
   onReroll,
   onOverridesChange,
@@ -178,11 +180,11 @@ export function WildernessDetail({
               </span>
             )}
           </div>
-          {/* Monster Stats from Shadowdark */}
+          {/* Monster Stats */}
           {(() => {
-            const monster = getMonster(encounter.creature);
-            return monster ? (
-              <MonsterCard monster={monster} expanded />
+            const stats = getMonsterStats(encounter.creature, ruleset);
+            return stats ? (
+              <MonsterCard stats={stats} expanded />
             ) : null;
           })()}
         </section>

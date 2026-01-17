@@ -15,7 +15,11 @@ export function saveWorld(world: WorldData): void {
 export function loadWorld(id: string): WorldData | null {
   if (!isBrowser) return null;
   const data = localStorage.getItem(`${WORLD_PREFIX}${id}`);
-  return data ? JSON.parse(data) : null;
+  if (!data) return null;
+  const world = JSON.parse(data) as WorldData;
+  // Default ruleset for legacy worlds
+  world.ruleset ??= "shadowdark";
+  return world;
 }
 
 export function listWorlds(): WorldSummary[] {
@@ -35,6 +39,7 @@ export function listWorlds(): WorldSummary[] {
             id: world.id,
             name: world.name,
             updatedAt: world.updatedAt,
+            ruleset: world.ruleset ?? "shadowdark",
             mapSize,
             settlementCount: world.locations?.filter(l => l.type === "settlement").length ?? 0,
             dungeonCount: world.locations?.filter(l => l.type === "dungeon").length ?? 0,

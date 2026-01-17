@@ -130,6 +130,7 @@ function HexDetailPage() {
             hex={hex}
             dwelling={dwelling}
             worldId={world.id}
+            ruleset={world.ruleset}
             onRegenerate={handleRegenerate}
             onReroll={handleReroll}
             onOverridesChange={handleOverridesChange}
@@ -161,6 +162,7 @@ function HexDetailPage() {
             npcs={world.npcs}
             factions={world.factions}
             worldId={world.id}
+            ruleset={world.ruleset}
             onRegenerate={handleRegenerate}
             onReroll={handleReroll}
             seed={seed}

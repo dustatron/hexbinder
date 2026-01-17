@@ -3,7 +3,7 @@ import {
   CheckCircle2, Skull, Gem, MapPin, User, Map as MapIcon, ScrollText,
   BookOpen, Users, Ghost, AlertTriangle, Footprints, Key, DoorOpen
 } from "lucide-react";
-import type { Dungeon, Hook, DungeonTheme, NPC, SpatialDungeon, DungeonNPC, KeyLockPair, Faction, ExitPoint } from "~/models";
+import type { Dungeon, Hook, DungeonTheme, NPC, SpatialDungeon, DungeonNPC, KeyLockPair, Faction, ExitPoint, Ruleset } from "~/models";
 import { isSpatialDungeon } from "~/models";
 import type { RegenerationType, RegenerateOptions } from "~/lib/hex-regenerate";
 import { EncounterTable } from "~/components/encounter-table/EncounterTable";
@@ -11,7 +11,7 @@ import { RegenerateButton } from "./RegenerateButton";
 import { RoomCard } from "./RoomCard";
 import { DungeonMap } from "~/components/dungeon-map";
 import { NPCStatLine } from "~/components/npc/NPCStatLine";
-import { getMonster } from "~/lib/monsters";
+import { getMonsterStats } from "~/lib/monster-stats";
 
 interface DungeonDetailProps {
   dungeon: Dungeon | SpatialDungeon;
@@ -20,6 +20,7 @@ interface DungeonDetailProps {
   npcs?: NPC[]; // All NPCs for lookup
   factions?: Faction[]; // All factions for lookup
   worldId: string;
+  ruleset: Ruleset;
   onRegenerate: (type: RegenerationType, options?: RegenerateOptions) => void;
   onReroll?: () => void;
   seed: string;
@@ -50,6 +51,7 @@ export function DungeonDetail({
   npcs = [],
   factions = [],
   worldId,
+  ruleset,
   onRegenerate,
   onReroll,
   seed,
@@ -595,6 +597,7 @@ export function DungeonDetail({
                 <RoomCard
                   room={room}
                   roomNumber={index + 1}
+                  ruleset={ruleset}
                   expanded={expandedRooms.has(index)}
                   onToggle={() => toggleRoom(index)}
                   selected={room.id === selectedRoomId}
@@ -810,7 +813,7 @@ function WanderingMonstersSection({ dungeon }: WanderingMonstersSectionProps) {
           </thead>
           <tbody className="divide-y divide-stone-700/50">
             {entries.map((entry, i) => {
-              const monster = getMonster(entry.creatureType);
+              const stats = getMonsterStats(entry.creatureType, ruleset);
               return (
                 <tr key={i} className="text-stone-300">
                   <td className="px-2 py-1.5 text-stone-500">{i + 1}</td>
@@ -820,10 +823,10 @@ function WanderingMonstersSection({ dungeon }: WanderingMonstersSectionProps) {
                     </div>
                     <div className="text-xs text-stone-500 italic">{entry.activity}</div>
                   </td>
-                  <td className="px-2 py-1.5 text-center text-xs">{monster?.level ?? "?"}</td>
-                  <td className="px-2 py-1.5 text-center text-xs">{monster?.armor_class ?? "?"}</td>
-                  <td className="px-2 py-1.5 text-center text-xs">{monster?.hit_points ?? "?"}</td>
-                  <td className="px-2 py-1.5 text-xs text-stone-400">{monster?.attacks ?? "?"}</td>
+                  <td className="px-2 py-1.5 text-center text-xs">{stats?.shadowdark?.level ?? "—"}</td>
+                  <td className="px-2 py-1.5 text-center text-xs">{stats?.defense ?? "?"}</td>
+                  <td className="px-2 py-1.5 text-center text-xs">{stats?.hp ?? "?"}</td>
+                  <td className="px-2 py-1.5 text-xs text-stone-400">{stats?.attack ?? "?"}</td>
                 </tr>
               );
             })}

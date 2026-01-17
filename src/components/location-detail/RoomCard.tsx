@@ -1,10 +1,12 @@
 import { ChevronDown, ChevronRight, Eye, EyeOff, Skull, AlertTriangle, Gem, Lock, ScrollText, History, BookOpen } from "lucide-react";
-import type { DungeonRoom, SpatialRoom, RoomSize, Discovery } from "~/models";
-import { getMonster, type Monster } from "~/lib/monsters";
+import type { DungeonRoom, SpatialRoom, RoomSize, Discovery, Ruleset } from "~/models";
+import { getMonsterStats } from "~/lib/monster-stats";
+import { MonsterCard } from "~/components/encounter-table/MonsterCard";
 
 interface RoomCardProps {
   room: DungeonRoom | SpatialRoom;
   roomNumber: number;
+  ruleset: Ruleset;
   expanded?: boolean;
   selected?: boolean;
   onToggle?: () => void;
@@ -18,37 +20,7 @@ const SIZE_BADGES: Record<RoomSize, { label: string; color: string }> = {
   vast: { label: "Vast", color: "bg-amber-600" },
 };
 
-function MonsterDisplay({ monster, count }: { monster: Monster; count: number }) {
-  return (
-    <div className="rounded bg-stone-800 p-3 space-y-2">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Skull className="h-4 w-4 text-red-500" />
-          <span className="font-medium text-stone-100">
-            {count > 1 ? `${count}x ` : ""}{monster.name}
-          </span>
-        </div>
-        <span className="text-xs text-stone-500">LV {monster.level}</span>
-      </div>
-      <div className="grid grid-cols-2 gap-2 text-xs text-stone-400">
-        <div>AC {monster.armor_class}</div>
-        <div>HP {monster.hit_points}</div>
-        <div className="col-span-2">{monster.attacks}</div>
-      </div>
-      {monster.traits.length > 0 && (
-        <div className="text-xs text-stone-500 space-y-1">
-          {monster.traits.map((trait, i) => (
-            <div key={i}>
-              <span className="text-stone-400">{trait.name}:</span> {trait.description}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-export function RoomCard({ room, roomNumber, expanded = false, selected = false, onToggle }: RoomCardProps) {
+export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected = false, onToggle }: RoomCardProps) {
   const sizeBadge = SIZE_BADGES[room.size];
   const hasMonsters = room.encounters.some(e => !e.defeated);
   const hasHazards = room.hazards.some(h => !h.disarmed);
@@ -146,8 +118,8 @@ export function RoomCard({ room, roomNumber, expanded = false, selected = false,
               </h4>
               <div className="space-y-2">
                 {room.encounters.map((encounter) => {
-                  const monster = getMonster(encounter.creatureType);
-                  if (!monster) {
+                  const stats = getMonsterStats(encounter.creatureType, ruleset);
+                  if (!stats) {
                     return (
                       <div
                         key={encounter.id}
@@ -165,7 +137,7 @@ export function RoomCard({ room, roomNumber, expanded = false, selected = false,
                       key={encounter.id}
                       className={encounter.defeated ? "opacity-50" : ""}
                     >
-                      <MonsterDisplay monster={monster} count={encounter.count} />
+                      <MonsterCard stats={stats} count={encounter.count} />
                       <div className="mt-1 flex items-center gap-2 text-xs">
                         <span className={`capitalize ${
                           encounter.behavior === "hostile" ? "text-red-500" :
