@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback } from "react";
 import { RefreshCw, Sparkles } from "lucide-react";
-import type { EncounterOverrides, EncounterType, Reaction, TerrainType } from "~/models";
+import type { EncounterOverrides, EncounterType, Reaction, Ruleset, TerrainType } from "~/models";
 import {
   generateImprovedEncounter,
   type ImprovedEncounterResult,
@@ -17,10 +17,13 @@ import { getCreaturesForTerrain } from "~/data/encounters/creatures";
 import { FirstImpressions } from "./FirstImpressions";
 import { QuickNames } from "./QuickNames";
 import { NPCStatLine } from "~/components/npc/NPCStatLine";
+import { getMonsterStats } from "~/lib/monster-stats";
+import { MonsterCard } from "./MonsterCard";
 
 interface ImprovedEncounterTableProps {
   seed: string;
   terrain: TerrainType;
+  ruleset: Ruleset;
   overrides?: EncounterOverrides;
   onOverridesChange?: (overrides: EncounterOverrides) => void;
   onReroll?: () => void;
@@ -30,6 +33,7 @@ interface ImprovedEncounterTableProps {
 export function ImprovedEncounterTable({
   seed,
   terrain,
+  ruleset,
   overrides,
   onOverridesChange,
   onReroll,
@@ -247,7 +251,7 @@ export function ImprovedEncounterTable({
           )}
 
           {/* Result Detail */}
-          <ResultDetail result={result} onRerollSubTable={handleRerollSubTable} />
+          <ResultDetail result={result} ruleset={ruleset} onRerollSubTable={handleRerollSubTable} />
         </div>
 
         {/* Right column: Quick Names */}
@@ -343,10 +347,11 @@ function TableRow({
 
 interface ResultDetailProps {
   result: ImprovedEncounterResult;
+  ruleset: Ruleset;
   onRerollSubTable?: () => void;
 }
 
-function ResultDetail({ result, onRerollSubTable }: ResultDetailProps) {
+function ResultDetail({ result, ruleset, onRerollSubTable }: ResultDetailProps) {
   const { encounterType } = result;
 
   // Sub-table types that can be re-rolled
@@ -370,16 +375,22 @@ function ResultDetail({ result, onRerollSubTable }: ResultDetailProps) {
       </div>
 
       {encounterType === "creature" && result.creature && (
-        <div className="space-y-1 text-sm">
-          <p className="font-medium text-stone-200">
-            {result.creature.count}x {result.creature.entry.name}
-          </p>
-          <p className="text-stone-400">
-            Level {result.creature.entry.level} • Reaction:{" "}
-            <span className={getReactionColor(result.reaction)}>
-              {result.reaction}
-            </span>
-          </p>
+        <div className="space-y-3 text-sm">
+          <div className="space-y-1">
+            <p className="font-medium text-stone-200">
+              {result.creature.count}x {result.creature.entry.name}
+            </p>
+            <p className="text-stone-400">
+              Level {result.creature.entry.level} • Reaction:{" "}
+              <span className={getReactionColor(result.reaction)}>
+                {result.reaction}
+              </span>
+            </p>
+          </div>
+          {(() => {
+            const stats = getMonsterStats(result.creature.entry.name, ruleset);
+            return stats ? <MonsterCard stats={stats} count={result.creature.count} expanded /> : null;
+          })()}
         </div>
       )}
 

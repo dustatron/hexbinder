@@ -98,6 +98,7 @@ export function WildernessDetail({
         <ImprovedEncounterTable
           seed={seed}
           terrain={terrain}
+          ruleset={ruleset}
           overrides={encounterOverrides}
           onOverridesChange={onOverridesChange}
           onReroll={onReroll}
