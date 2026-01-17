@@ -141,21 +141,6 @@ export function MonsterCard({ stats, expanded = false, count }: MonsterCardProps
                 </div>
               )}
 
-              {/* Environments */}
-              {stats.cairn.environments.length > 0 && (
-                <div className="mb-2">
-                  <span className="text-xs font-medium uppercase text-stone-500">
-                    Found In
-                  </span>
-                  <div className="mt-1 flex flex-wrap gap-1 text-xs">
-                    {stats.cairn.environments.map((env) => (
-                      <span key={env} className="rounded bg-green-900/50 px-2 py-0.5 text-green-300">
-                        {env}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
             </>
           )}
 
