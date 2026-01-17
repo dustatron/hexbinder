@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Building2, MapPin, Crown } from "lucide-react";
-import type { Faction, Clock, NPC, Location, Hook, SignificantItem } from "~/models";
+import type { Faction, Clock, NPC, Location, Hook, SignificantItem, Ruleset } from "~/models";
 import { NPCStatLine } from "~/components/npc/NPCStatLine";
 
 interface FactionDetailProps {
@@ -11,6 +11,7 @@ interface FactionDetailProps {
   hooks?: Hook[];
   significantItems?: SignificantItem[];
   worldId: string;
+  ruleset: Ruleset;
 }
 
 const FACTION_TYPE_COLORS: Record<Faction["factionType"], string> = {
@@ -47,6 +48,7 @@ export function FactionDetail({
   hooks = [],
   significantItems = [],
   worldId,
+  ruleset,
 }: FactionDetailProps) {
   // Filter clocks owned by this faction
   const factionClocks = clocks.filter(
@@ -452,7 +454,7 @@ export function FactionDetail({
                   )}
                 </div>
                 <p className="text-xs text-stone-500 capitalize">{npc.race} - {npc.role ? npc.role.replace("_", " ") : npc.archetype}</p>
-                <NPCStatLine archetype={npc.archetype} />
+                <NPCStatLine archetype={npc.archetype} ruleset={ruleset} />
               </li>
             ))}
           </ul>

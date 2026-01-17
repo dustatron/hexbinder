@@ -1,15 +1,14 @@
-import { RefreshCw, MapPin, Skull, Sparkles, Home } from "lucide-react";
-import type { Dwelling, DwellingType, EncounterOverrides, Hex, TerrainType } from "~/models";
+import { RefreshCw, MapPin, Sparkles, Home } from "lucide-react";
+import type { Dwelling, DwellingType, EncounterOverrides, Hex, TerrainType, Ruleset } from "~/models";
 import type { RegenerationType } from "~/lib/hex-regenerate";
 import { ImprovedEncounterTable } from "~/components/encounter-table/ImprovedEncounterTable";
 import { RegenerateButton } from "./RegenerateButton";
-import { getMonster } from "~/lib/monsters";
-import { MonsterCard } from "~/components/encounter-table/MonsterCard";
 
 interface WildernessDetailProps {
   hex: Hex;
   dwelling?: Dwelling | null;
   worldId: string;
+  ruleset: Ruleset;
   onRegenerate: (type: RegenerationType) => void;
   onReroll: () => void;
   onOverridesChange?: (overrides: EncounterOverrides) => void;
@@ -52,12 +51,13 @@ export function WildernessDetail({
   hex,
   dwelling,
   worldId,
+  ruleset,
   onRegenerate,
   onReroll,
   onOverridesChange,
   seed,
 }: WildernessDetailProps) {
-  const { coord, terrain, feature, encounter, questObject, description, encounterOverrides, lastEncounterTimestamp } = hex;
+  const { coord, terrain, feature, questObject, encounterOverrides, lastEncounterTimestamp } = hex;
 
   return (
     <div className="space-y-6 bg-stone-900 p-4 text-stone-100">
@@ -96,6 +96,7 @@ export function WildernessDetail({
         <ImprovedEncounterTable
           seed={seed}
           terrain={terrain}
+          ruleset={ruleset}
           overrides={encounterOverrides}
           onOverridesChange={onOverridesChange}
           onReroll={onReroll}
@@ -137,54 +138,6 @@ export function WildernessDetail({
               </div>
             )}
           </div>
-        </section>
-      )}
-
-      {/* Encounter */}
-      {encounter && (
-        <section className="space-y-3">
-          <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-stone-400">
-            <Skull size={14} />
-            Encounter
-          </h3>
-          <div className="rounded-lg border border-stone-700 bg-stone-800 p-3">
-            <div className="flex items-center justify-between">
-              <span className="font-medium text-stone-200">
-                {encounter.count}x {encounter.creature}
-              </span>
-              <span
-                className={`rounded px-2 py-0.5 text-xs ${
-                  encounter.behavior === "hostile"
-                    ? "bg-red-900 text-red-300"
-                    : encounter.behavior === "neutral"
-                      ? "bg-stone-700 text-stone-300"
-                      : "bg-amber-900 text-amber-300"
-                }`}
-              >
-                {encounter.behavior}
-              </span>
-            </div>
-            <p className="mt-1 text-xs text-stone-500">
-              {encounter.probability}% chance when entering
-            </p>
-            {encounter.rumor && (
-              <p className="mt-2 text-sm italic text-stone-400">
-                "{encounter.rumor}"
-              </p>
-            )}
-            {encounter.defeated && (
-              <span className="mt-2 inline-block rounded bg-stone-700 px-2 py-0.5 text-xs text-stone-400">
-                Defeated
-              </span>
-            )}
-          </div>
-          {/* Monster Stats from Shadowdark */}
-          {(() => {
-            const monster = getMonster(encounter.creature);
-            return monster ? (
-              <MonsterCard monster={monster} expanded />
-            ) : null;
-          })()}
         </section>
       )}
 

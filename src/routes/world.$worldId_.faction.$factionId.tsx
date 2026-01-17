@@ -59,6 +59,7 @@ function FactionPage() {
           hooks={hooks}
           significantItems={world.significantItems}
           worldId={world.id}
+          ruleset={world.ruleset}
         />
       </div>
     </div>

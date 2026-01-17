@@ -16,6 +16,7 @@ import type {
   SettlementSize,
   DayRecord,
   SignificantItem,
+  Ruleset,
 } from "~/models";
 import { SeededRandom } from "./SeededRandom";
 import { generateSpiralTerrain, type MapSize, type StartPosition } from "./SpiralTerrainGenerator";
@@ -49,6 +50,7 @@ import { addTreasureBackstories } from "./dungeon/TreasureBackstoryGenerator";
 export interface WorldGeneratorOptions {
   name: string;
   seed?: string;
+  ruleset?: Ruleset;
   mapSize?: MapSize;
   startPosition?: StartPosition;
   startingSettlementSize?: SettlementSize;
@@ -78,6 +80,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   const {
     name,
     seed = nanoid(8),
+    ruleset = "shadowdark",
     mapSize = "medium",
     startPosition = "center",
     startingSettlementSize = "village",
@@ -630,6 +633,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     id: worldId,
     name,
     seed,
+    ruleset,
     createdAt: Date.now(),
     updatedAt: Date.now(),
     state: {

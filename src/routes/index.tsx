@@ -13,7 +13,7 @@ import {
   saveWorld,
 } from "~/lib/storage";
 import { generateWorld, type MapSize, type StartPosition } from "~/generators";
-import type { WorldSummary, SettlementSize } from "~/models";
+import type { WorldSummary, SettlementSize, Ruleset } from "~/models";
 
 // Fantasy world name generation
 const WORLD_PREFIXES = [
@@ -63,6 +63,10 @@ function HomePage() {
   const [mapSize, setMapSize] = useState<MapSize>("medium");
   const [startPosition, setStartPosition] = useState<StartPosition>("center");
   const [settlementSize, setSettlementSize] = useState<SettlementSize>("village");
+  const [ruleset, setRuleset] = useState<Ruleset>(() => {
+    if (typeof window === "undefined") return "shadowdark";
+    return (localStorage.getItem("hexbinder:ruleset") as Ruleset) ?? "shadowdark";
+  });
   const [settlementCount, setSettlementCount] = useState<number | "">("");
   const [dungeonCount, setDungeonCount] = useState<number | "">("");
   const [lairCount, setLairCount] = useState<number | "">("");
@@ -81,6 +85,7 @@ function HomePage() {
     const { world } = generateWorld({
       name: newWorldName || "The Borderlands",
       seed: newWorldSeed || undefined,
+      ruleset,
       mapSize,
       startPosition,
       startingSettlementSize: settlementSize,
@@ -171,6 +176,26 @@ function HomePage() {
         {showNewForm && (
           <div className="mb-6 rounded-lg border border-stone-700 bg-stone-800 p-4">
             <h2 className="mb-4 text-lg font-semibold">Create New World</h2>
+            <div className="mb-4">
+              <label className="mb-1 block text-sm text-stone-400">
+                Rule System
+              </label>
+              <select
+                value={ruleset}
+                onChange={(e) => {
+                  const value = e.target.value as Ruleset;
+                  setRuleset(value);
+                  localStorage.setItem("hexbinder:ruleset", value);
+                }}
+                className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100"
+              >
+                <option value="shadowdark">Shadowdark</option>
+                <option value="cairn">Cairn</option>
+              </select>
+              <p className="mt-1 text-xs text-stone-500">
+                Determines monster stat block format
+              </p>
+            </div>
             <div className="mb-4">
               <label className="mb-1 block text-sm text-stone-400">
                 World Name
@@ -371,6 +396,9 @@ function HomePage() {
                     </div>
                   </div>
                   <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                    <span className="rounded bg-blue-700/50 px-2 py-0.5 text-blue-300 capitalize">
+                      {world.ruleset ?? "shadowdark"}
+                    </span>
                     <span className="rounded bg-stone-700 px-2 py-0.5 text-stone-300">
                       Day {world.day}
                     </span>

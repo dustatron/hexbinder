@@ -1,30 +1,50 @@
-import type { Monster } from "~/lib/monsters";
+import type { MonsterStats } from "~/lib/monster-stats";
 
 interface MonsterCardProps {
-  monster: Monster;
+  stats: MonsterStats;
   expanded?: boolean;
+  count?: number;
 }
 
-export function MonsterCard({ monster, expanded = false }: MonsterCardProps) {
+export function MonsterCard({ stats, expanded = false, count }: MonsterCardProps) {
   // Parse attacks string to get primary attack for compact view
-  // Format: "1 bite (+5) 1d8" or "2 claws (+3) 1d6, 1 bite (+5) 1d10"
-  const primaryAttack = monster.attacks.split(",")[0]?.trim() ?? monster.attacks;
+  const primaryAttack = stats.attack.split(",")[0]?.trim() ?? stats.attack;
 
   return (
-    <div className="rounded-lg border border-stone-700 bg-stone-800 p-3 text-stone-100">
-      {/* Header: Name + Level */}
+    <div className={`rounded-lg border p-3 text-stone-100 ${
+      stats.isEstimate
+        ? "border-amber-600/50 bg-amber-900/20"
+        : "border-stone-700 bg-stone-800"
+    }`}>
+      {/* Estimate warning */}
+      {stats.isEstimate && (
+        <div className="mb-2 rounded bg-amber-600/30 px-2 py-1 text-xs text-amber-200">
+          ⚠️ Stats not found — using level-based estimates
+        </div>
+      )}
+
+      {/* Header: Name + Level/Count */}
       <div className="flex items-center justify-between gap-2">
-        <span className="font-bold">{monster.name}</span>
-        <span className="rounded bg-stone-700 px-2 py-0.5 text-xs font-medium">
-          LV {monster.level}
+        <span className="font-bold">
+          {count && count > 1 ? `${count}x ` : ""}{stats.name}
         </span>
+        <div className="flex items-center gap-2">
+          {stats.shadowdark && (
+            <span className="rounded bg-stone-700 px-2 py-0.5 text-xs font-medium">
+              LV {stats.shadowdark.level}
+            </span>
+          )}
+          <span className="rounded bg-purple-700/50 px-2 py-0.5 text-xs font-medium capitalize text-purple-200">
+            {stats.ruleset}
+          </span>
+        </div>
       </div>
 
       {/* Compact stats */}
       <div className="mt-1 text-sm text-stone-300">
-        <span>AC {monster.armor_class}</span>
+        <span>{stats.defenseLabel} {stats.defense}</span>
         <span className="mx-2">|</span>
-        <span>HP {monster.hit_points}</span>
+        <span>HP {stats.hp}</span>
       </div>
 
       {/* Primary attack (always shown) */}
@@ -33,49 +53,116 @@ export function MonsterCard({ monster, expanded = false }: MonsterCardProps) {
       {/* Expanded details */}
       {expanded && (
         <div className="mt-3 border-t border-stone-700 pt-3">
-          {/* All attacks */}
+          {/* Full attack line */}
           <div className="mb-2">
             <span className="text-xs font-medium uppercase text-stone-500">
               Attacks
             </span>
-            <div className="text-sm text-stone-300">{monster.attacks}</div>
+            <div className="text-sm text-stone-300">{stats.attack}</div>
           </div>
 
-          {/* Movement */}
-          <div className="mb-2">
-            <span className="text-xs font-medium uppercase text-stone-500">
-              Movement
-            </span>
-            <div className="text-sm text-stone-300">{monster.movement}</div>
-          </div>
-
-          {/* Traits */}
-          {monster.traits.length > 0 && (
-            <div className="mb-2">
-              <span className="text-xs font-medium uppercase text-stone-500">
-                Traits
-              </span>
-              <div className="space-y-1">
-                {monster.traits.map((trait) => (
-                  <div key={trait.name} className="text-sm">
-                    <span className="font-medium text-stone-200">
-                      {trait.name}.
-                    </span>{" "}
-                    <span className="text-stone-400">{trait.description}</span>
-                  </div>
-                ))}
+          {/* Shadowdark-specific fields */}
+          {stats.shadowdark && (
+            <>
+              {/* Movement */}
+              <div className="mb-2">
+                <span className="text-xs font-medium uppercase text-stone-500">
+                  Movement
+                </span>
+                <div className="text-sm text-stone-300">{stats.shadowdark.movement}</div>
               </div>
-            </div>
+
+              {/* Ability Modifiers */}
+              <div className="mb-2">
+                <span className="text-xs font-medium uppercase text-stone-500">
+                  Abilities
+                </span>
+                <div className="mt-1 flex flex-wrap gap-2 text-sm">
+                  {Object.entries(stats.shadowdark.abilities).map(([ability, mod]) => (
+                    <span key={ability} className="rounded bg-stone-700 px-2 py-0.5">
+                      {ability} {mod >= 0 ? `+${mod}` : mod}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Alignment */}
+              <div className="mb-2">
+                <span className="text-xs font-medium uppercase text-stone-500">
+                  Alignment
+                </span>
+                <div className="text-sm text-stone-300">{stats.shadowdark.alignment}</div>
+              </div>
+
+              {/* Traits */}
+              {stats.shadowdark.traits.length > 0 && (
+                <div className="mb-2">
+                  <span className="text-xs font-medium uppercase text-stone-500">
+                    Traits
+                  </span>
+                  <div className="space-y-1">
+                    {stats.shadowdark.traits.map((trait) => (
+                      <div key={trait.name} className="text-sm">
+                        <span className="font-medium text-stone-200">
+                          {trait.name}.
+                        </span>{" "}
+                        <span className="text-stone-400">{trait.description}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
-          {/* Description */}
-          {monster.description && (
+          {/* Cairn-specific fields */}
+          {stats.cairn && (
+            <>
+              {/* Ability Scores (Cairn uses full scores, not modifiers) */}
+              <div className="mb-2">
+                <span className="text-xs font-medium uppercase text-stone-500">
+                  Abilities
+                </span>
+                <div className="mt-1 flex flex-wrap gap-2 text-sm">
+                  <span className="rounded bg-stone-700 px-2 py-0.5">
+                    STR {stats.cairn.abilities.STR}
+                  </span>
+                  <span className="rounded bg-stone-700 px-2 py-0.5">
+                    DEX {stats.cairn.abilities.DEX}
+                  </span>
+                  <span className="rounded bg-stone-700 px-2 py-0.5">
+                    WIL {stats.cairn.abilities.WIL}
+                  </span>
+                </div>
+              </div>
+
+              {/* Details (special abilities, behaviors) */}
+              {stats.cairn.details.length > 1 && (
+                <div className="mb-2">
+                  <span className="text-xs font-medium uppercase text-stone-500">
+                    Special
+                  </span>
+                  <div className="space-y-1">
+                    {stats.cairn.details.slice(1).map((detail, i) => (
+                      <p key={i} className="text-sm text-stone-400">
+                        {detail}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            </>
+          )}
+
+          {/* Description (shown for both systems) */}
+          {stats.description && (
             <div>
               <span className="text-xs font-medium uppercase text-stone-500">
                 Description
               </span>
               <p className="text-sm italic text-stone-400">
-                {monster.description}
+                {stats.description}
               </p>
             </div>
           )}

@@ -1,6 +1,10 @@
 // Hexbinder TypeScript Models
 // Based on hexcrawl-prd.md
 
+// === Ruleset ===
+
+export type Ruleset = "shadowdark" | "cairn";
+
 // === Coordinates ===
 
 export type HexCoord = {
@@ -1367,6 +1371,7 @@ export interface WorldData {
   id: string;
   name: string;
   seed: string;
+  ruleset: Ruleset;
   createdAt: number;
   updatedAt: number;
   state: WorldState;
@@ -1387,6 +1392,7 @@ export interface WorldSummary {
   id: string;
   name: string;
   updatedAt: number;
+  ruleset?: Ruleset;
   mapSize: "small" | "medium" | "large";
   settlementCount: number;
   dungeonCount: number;
