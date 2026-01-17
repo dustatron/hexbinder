@@ -237,18 +237,39 @@ export function generateFallbackStats(
   }
 
   // Cairn fallback
+  // Cap level at 10 for Cairn estimates
+  const cappedLevel = Math.min(level, 10);
+
+  // HP = level + 2
+  const cairnHP = cappedLevel + 2;
+
+  // Armor from equivalent AC conversion
+  // First calculate equivalent AC using Shadowdark formula
+  const equivalentAC = 10 + Math.floor(cappedLevel / 2);
+  // Convert to Cairn armor: <12=0, <15=1, <18=2, >=18=3
+  let cairnArmor: number;
+  if (equivalentAC < 12) {
+    cairnArmor = 0;
+  } else if (equivalentAC < 15) {
+    cairnArmor = 1;
+  } else if (equivalentAC < 18) {
+    cairnArmor = 2;
+  } else {
+    cairnArmor = 3;
+  }
+
   return {
     name,
     ruleset: "cairn",
-    hp: Math.max(3, level * 3), // Cairn HP tends to be lower
-    defense: Math.min(3, Math.floor(level / 2)), // Cairn armor 0-3
+    hp: cairnHP,
+    defense: cairnArmor,
     defenseLabel: "Armor",
     attack: `attack (${damageNotation})`,
     description: "Stats not found in monster database. Using level-based estimates.",
     isEstimate: true,
     cairn: {
       abilities: {
-        STR: 10 + level,
+        STR: 10 + cappedLevel,
         DEX: 10,
         WIL: 10,
       },
