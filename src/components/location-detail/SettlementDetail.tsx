@@ -1,5 +1,5 @@
 import { RefreshCw, Users, Shield, Coins, AlertTriangle, ScrollText, MessageSquare, Building2, User, Flag, Map as MapIcon } from "lucide-react";
-import type { Settlement, NPC, Faction, DayEvent, SettlementSite, WorldData, Hook, Dungeon, Location } from "~/models";
+import type { Settlement, NPC, Faction, DayEvent, SettlementSite, WorldData, Hook, Dungeon, Location, Ruleset } from "~/models";
 import { isSpatialSettlement, isDungeon, isSettlement, type SpatialSettlement } from "~/models";
 import type { RegenerationType } from "~/lib/hex-regenerate";
 import { EncounterTable } from "~/components/encounter-table/EncounterTable";
@@ -169,6 +169,7 @@ interface SettlementDetailProps {
   hooks: Hook[];
   locations: Location[];
   worldId: string;
+  ruleset: Ruleset;
   onRegenerate: (type: RegenerationType) => void;
   onReroll: () => void;
   onUpdateWorld: (updater: (world: WorldData) => WorldData) => void;
@@ -220,6 +221,7 @@ export function SettlementDetail({
   hooks,
   locations,
   worldId,
+  ruleset,
   onRegenerate,
   onReroll,
   onUpdateWorld,
@@ -670,7 +672,7 @@ export function SettlementDetail({
                           </p>
                         ) : null;
                       })()}
-                      <NPCStatLine archetype={npc.archetype} />
+                      <NPCStatLine archetype={npc.archetype} ruleset={ruleset} />
                     </div>
                     {faction && (
                       <span className="rounded bg-purple-500/20 px-1.5 py-0.5 text-xs text-purple-300">

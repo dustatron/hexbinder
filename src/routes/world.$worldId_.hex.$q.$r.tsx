@@ -147,6 +147,7 @@ function HexDetailPage() {
             hooks={world.hooks}
             locations={world.locations}
             worldId={world.id}
+            ruleset={world.ruleset}
             onRegenerate={handleRegenerate}
             onReroll={handleReroll}
             onUpdateWorld={handleUpdateWorld}

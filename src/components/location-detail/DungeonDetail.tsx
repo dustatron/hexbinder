@@ -292,7 +292,7 @@ export function DungeonDetail({
                     {isSource ? "Quest Giver" : "Missing/Captured"}
                   </span>
                 </div>
-                <NPCStatLine archetype={npc.archetype} />
+                <NPCStatLine archetype={npc.archetype} ruleset={ruleset} />
                 {npcHook && (
                   <p className="mt-1 text-xs text-stone-400">
                     {isSource ? npcHook.rumor : `${npc.name} is ${npc.status} here`}

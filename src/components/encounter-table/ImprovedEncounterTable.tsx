@@ -410,7 +410,7 @@ function ResultDetail({ result, ruleset, onRerollSubTable }: ResultDetailProps) 
               <p className="text-xs text-stone-500 capitalize">
                 {result.npc.race} • {result.npc.gender} • {result.npc.archetype.replace("_", " ")}
               </p>
-              <NPCStatLine archetype={result.npc.archetype} />
+              <NPCStatLine archetype={result.npc.archetype} ruleset={ruleset} />
             </div>
             <span className={`rounded px-2 py-0.5 text-xs font-medium ${getReactionColor(result.reaction)} bg-stone-700/50`}>
               {result.reaction}
