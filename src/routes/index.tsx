@@ -178,6 +178,26 @@ function HomePage() {
             <h2 className="mb-4 text-lg font-semibold">Create New World</h2>
             <div className="mb-4">
               <label className="mb-1 block text-sm text-stone-400">
+                Rule System
+              </label>
+              <select
+                value={ruleset}
+                onChange={(e) => {
+                  const value = e.target.value as Ruleset;
+                  setRuleset(value);
+                  localStorage.setItem("hexbinder:ruleset", value);
+                }}
+                className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100"
+              >
+                <option value="shadowdark">Shadowdark</option>
+                <option value="cairn">Cairn</option>
+              </select>
+              <p className="mt-1 text-xs text-stone-500">
+                Determines monster stat block format
+              </p>
+            </div>
+            <div className="mb-4">
+              <label className="mb-1 block text-sm text-stone-400">
                 World Name
               </label>
               <input
@@ -262,26 +282,6 @@ function HomePage() {
                 <option value="town">Town (1000-5000 people)</option>
                 <option value="city">City (5000+ people)</option>
               </select>
-            </div>
-            <div className="mb-4">
-              <label className="mb-1 block text-sm text-stone-400">
-                Rule System
-              </label>
-              <select
-                value={ruleset}
-                onChange={(e) => {
-                  const value = e.target.value as Ruleset;
-                  setRuleset(value);
-                  localStorage.setItem("hexbinder:ruleset", value);
-                }}
-                className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100"
-              >
-                <option value="shadowdark">Shadowdark</option>
-                <option value="cairn">Cairn</option>
-              </select>
-              <p className="mt-1 text-xs text-stone-500">
-                Determines monster stat block format
-              </p>
             </div>
             {/* Content Counts */}
             <div className="mb-4 grid grid-cols-4 gap-3">
@@ -396,6 +396,9 @@ function HomePage() {
                     </div>
                   </div>
                   <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                    <span className="rounded bg-blue-700/50 px-2 py-0.5 text-blue-300 capitalize">
+                      {world.ruleset ?? "shadowdark"}
+                    </span>
                     <span className="rounded bg-stone-700 px-2 py-0.5 text-stone-300">
                       Day {world.day}
                     </span>
