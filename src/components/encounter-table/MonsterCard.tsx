@@ -11,7 +11,18 @@ export function MonsterCard({ stats, expanded = false, count }: MonsterCardProps
   const primaryAttack = stats.attack.split(",")[0]?.trim() ?? stats.attack;
 
   return (
-    <div className="rounded-lg border border-stone-700 bg-stone-800 p-3 text-stone-100">
+    <div className={`rounded-lg border p-3 text-stone-100 ${
+      stats.isEstimate
+        ? "border-amber-600/50 bg-amber-900/20"
+        : "border-stone-700 bg-stone-800"
+    }`}>
+      {/* Estimate warning */}
+      {stats.isEstimate && (
+        <div className="mb-2 rounded bg-amber-600/30 px-2 py-1 text-xs text-amber-200">
+          ⚠️ Stats not found — using level-based estimates
+        </div>
+      )}
+
       {/* Header: Name + Level/Count */}
       <div className="flex items-center justify-between gap-2">
         <span className="font-bold">

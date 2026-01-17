@@ -17,7 +17,7 @@ import { getCreaturesForTerrain } from "~/data/encounters/creatures";
 import { FirstImpressions } from "./FirstImpressions";
 import { QuickNames } from "./QuickNames";
 import { NPCStatLine } from "~/components/npc/NPCStatLine";
-import { getMonsterStatsBySlug } from "~/lib/monster-stats";
+import { getMonsterStatsBySlug, generateFallbackStats } from "~/lib/monster-stats";
 import { MonsterCard } from "./MonsterCard";
 
 interface ImprovedEncounterTableProps {
@@ -388,8 +388,9 @@ function ResultDetail({ result, ruleset, onRerollSubTable }: ResultDetailProps) 
             </p>
           </div>
           {(() => {
-            const stats = getMonsterStatsBySlug(result.creature.entry.slug, ruleset);
-            return stats ? <MonsterCard stats={stats} count={result.creature.count} expanded /> : null;
+            const stats = getMonsterStatsBySlug(result.creature.entry.slug, ruleset)
+              ?? generateFallbackStats(result.creature.entry.name, result.creature.entry.level, ruleset);
+            return <MonsterCard stats={stats} count={result.creature.count} expanded />;
           })()}
         </div>
       )}

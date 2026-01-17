@@ -49,6 +49,9 @@ export interface MonsterStats {
   attack: string;
   description?: string;
 
+  // True if stats are estimated (monster not found in database)
+  isEstimate?: boolean;
+
   // System-specific fields (only one will be present)
   shadowdark?: ShadowdarkStats;
   cairn?: CairnStats;
@@ -188,4 +191,69 @@ export function getMonsterStatsBySlug(
   // If no mapping, try direct lookup
   const monster = getCairnMonster(slug);
   return monster ? mapCairnToStats(monster) : undefined;
+}
+
+/**
+ * Generate fallback stats based on creature level when monster data is unavailable
+ * These are rough approximations to give the GM something to work with
+ */
+export function generateFallbackStats(
+  name: string,
+  level: number,
+  ruleset: Ruleset
+): MonsterStats {
+  // Base stats scale with level
+  const baseHP = level * 4 + 2; // 6 at L1, 10 at L2, 14 at L3, etc.
+  const baseDefense = 10 + Math.floor(level / 2); // 10 at L1, 11 at L2-3, 12 at L4-5
+  const baseDamage = Math.max(1, Math.floor(level / 2)) + 2; // d4 at L1, d6 at L2-3, d8 at L4-5
+
+  const damageNotation = baseDamage <= 2 ? "1d4" : baseDamage <= 4 ? "1d6" : baseDamage <= 6 ? "1d8" : "1d10";
+
+  if (ruleset === "shadowdark") {
+    return {
+      name,
+      ruleset: "shadowdark",
+      hp: baseHP,
+      defense: baseDefense,
+      defenseLabel: "AC",
+      attack: `${damageNotation}`,
+      description: "Stats not found in monster database. Using level-based estimates.",
+      isEstimate: true,
+      shadowdark: {
+        level,
+        alignment: "Neutral",
+        movement: "Near",
+        abilities: {
+          STR: 10 + level,
+          DEX: 10,
+          CON: 10 + Math.floor(level / 2),
+          INT: 8,
+          WIS: 10,
+          CHA: 8,
+        },
+        traits: [],
+      },
+    };
+  }
+
+  // Cairn fallback
+  return {
+    name,
+    ruleset: "cairn",
+    hp: Math.max(3, level * 3), // Cairn HP tends to be lower
+    defense: Math.min(3, Math.floor(level / 2)), // Cairn armor 0-3
+    defenseLabel: "Armor",
+    attack: `attack (${damageNotation})`,
+    description: "Stats not found in monster database. Using level-based estimates.",
+    isEstimate: true,
+    cairn: {
+      abilities: {
+        STR: 10 + level,
+        DEX: 10,
+        WIL: 10,
+      },
+      details: ["Stats not found in monster database."],
+      environments: [],
+    },
+  };
 }
