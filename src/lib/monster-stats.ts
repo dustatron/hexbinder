@@ -254,9 +254,18 @@ export function generateFallbackStats(
     cairnArmor = 2;
   }
 
-  // Cairn damage caps at d8 (most powerful standard weapon)
-  // d6 for levels 1-4, d8 for levels 5+
-  const cairnDamage = cappedLevel >= 5 ? "d8" : "d6";
+  // Cairn damage scales with level
+  // d6 for levels 1-4, d8 for levels 5-7, d10 for levels 8-9, d12 for level 10
+  let cairnDamage: string;
+  if (cappedLevel <= 4) {
+    cairnDamage = "d6";
+  } else if (cappedLevel <= 7) {
+    cairnDamage = "d8";
+  } else if (cappedLevel <= 9) {
+    cairnDamage = "d10";
+  } else {
+    cairnDamage = "d12";
+  }
 
   return {
     name,
