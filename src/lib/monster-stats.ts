@@ -243,20 +243,20 @@ export function generateFallbackStats(
   // HP = level + 2
   const cairnHP = cappedLevel + 2;
 
-  // Armor from equivalent AC conversion
-  // First calculate equivalent AC using Shadowdark formula
-  const equivalentAC = 10 + Math.floor(cappedLevel / 2);
-  // Convert to Cairn armor: <12=0, <15=1, <18=2, >=18=3
+  // Armor is rare in Cairn (63% of monsters have 0 armor)
+  // Level 1-6: 0 armor, Level 7-9: 1 armor, Level 10: 2 armor
   let cairnArmor: number;
-  if (equivalentAC < 12) {
+  if (cappedLevel <= 6) {
     cairnArmor = 0;
-  } else if (equivalentAC < 15) {
+  } else if (cappedLevel <= 9) {
     cairnArmor = 1;
-  } else if (equivalentAC < 18) {
-    cairnArmor = 2;
   } else {
-    cairnArmor = 3;
+    cairnArmor = 2;
   }
+
+  // Cairn damage caps at d8 (most powerful standard weapon)
+  // d6 for levels 1-4, d8 for levels 5+
+  const cairnDamage = cappedLevel >= 5 ? "d8" : "d6";
 
   return {
     name,
@@ -264,7 +264,7 @@ export function generateFallbackStats(
     hp: cairnHP,
     defense: cairnArmor,
     defenseLabel: "Armor",
-    attack: `attack (${damageNotation})`,
+    attack: `attack (${cairnDamage})`,
     description: "Stats not found in monster database. Using level-based estimates.",
     isEstimate: true,
     cairn: {
