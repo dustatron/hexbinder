@@ -8,7 +8,7 @@
 import type { Ruleset } from "~/models";
 import { getMonster, type Monster } from "./monsters";
 import { getCairnMonster, type CairnMonster } from "./cairn-monsters";
-import { toCanonicalName, getCairnTitle } from "./creature-ids";
+import { toCanonicalName, getCairnTitle, slugToShadowdark, slugToCairn } from "./creature-ids";
 
 // Shadowdark-specific stat display
 export interface ShadowdarkStats {
@@ -155,4 +155,37 @@ export function getMonsterStats(
  */
 export function hasMonsterStats(name: string, ruleset: Ruleset): boolean {
   return getMonsterStats(name, ruleset) !== undefined;
+}
+
+/**
+ * Get monster stats by creature slug (from encounter generator)
+ *
+ * This is used by ImprovedEncounterTable which uses creature slugs
+ * like "giant-frog", "dire-wolf" instead of display names.
+ *
+ * @param slug - The creature slug (e.g., "giant-frog")
+ * @param ruleset - The rule system to use
+ * @returns MonsterStats or undefined if not found
+ */
+export function getMonsterStatsBySlug(
+  slug: string,
+  ruleset: Ruleset
+): MonsterStats | undefined {
+  if (ruleset === "shadowdark") {
+    // Map slug to Shadowdark name
+    const shadowdarkName = slugToShadowdark(slug);
+    const monster = getMonster(shadowdarkName);
+    return monster ? mapShadowdarkToStats(monster) : undefined;
+  }
+
+  // For Cairn, map slug to Cairn title
+  const cairnTitle = slugToCairn(slug);
+  if (cairnTitle) {
+    const monster = getCairnMonster(cairnTitle);
+    return monster ? mapCairnToStats(monster) : undefined;
+  }
+
+  // If no mapping, try direct lookup
+  const monster = getCairnMonster(slug);
+  return monster ? mapCairnToStats(monster) : undefined;
 }

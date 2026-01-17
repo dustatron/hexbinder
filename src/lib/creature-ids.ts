@@ -4,9 +4,60 @@
  * Uses Shadowdark monster names as canonical IDs.
  * Maps between:
  * - Shadowdark exact names ("Wolf", "Bear, Brown")
+ * - Encounter creature slugs ("giant-frog", "dire-wolf")
  * - Legacy plural names ("wolves", "bears")
  * - Cairn monster titles
  */
+
+// Encounter creature slugs -> Shadowdark name (lowercase)
+// These map the slugs from src/data/encounters/creatures.ts to monster database names
+export const SLUG_TO_SHADOWDARK: Record<string, string> = {
+  // Plains
+  "wolf": "wolf",
+  "warhorse": "horse, war",
+  "bandit": "bandit",
+  "giant-eagle": "griffon", // closest match
+  "gnoll": "gnoll",
+  "centaur": "centaur",
+
+  // Forest
+  "giant-spider": "spider, giant",
+  "goblin": "goblin",
+  "owlbear": "owlbear",
+  "dryad": "dryad",
+  "dire-wolf": "wolf, dire",
+
+  // Hills
+  "giant-goat": "goat, giant",
+  "orc": "orc",
+  "hippogriff": "hippogriff",
+  "ogre": "ogre",
+  "hobgoblin": "hobgoblin",
+  "peryton": "peryton",
+
+  // Mountains
+  "mountain-lion": "mountain lion",
+  "harpy": "harpy",
+  "stone-giant": "giant, stone",
+  "wyvern": "wyvern",
+  "roc": "roc",
+
+  // Water
+  "giant-crab": "crab, giant",
+  "merfolk": "merfolk",
+  "sea-hag": "hag, sea",
+  "giant-octopus": "octopus, giant",
+  "sahuagin": "sahuagin",
+  "water-elemental": "elemental, water",
+
+  // Swamp
+  "giant-frog": "frog, giant",
+  "lizardfolk": "lizardfolk",
+  "giant-crocodile": "crocodile, giant",
+  "will-o-wisp": "will-o'-wisp",
+  "shambling-mound": "shambling mound",
+  "black-dragon-young": "dragon, black",
+};
 
 // Legacy plural/generic names -> Shadowdark name (lowercase)
 // Already exists in monsters.ts, but we re-export for convenience
@@ -115,12 +166,29 @@ export function toCanonicalName(name: string): string {
 }
 
 /**
+ * Get the Shadowdark name for a creature slug
+ * Returns the slug itself if no mapping exists
+ */
+export function slugToShadowdark(slug: string): string {
+  return SLUG_TO_SHADOWDARK[slug] ?? slug;
+}
+
+/**
  * Get the Cairn title for a given creature name
  * Returns undefined if no mapping exists
  */
 export function getCairnTitle(name: string): string | undefined {
   const canonical = toCanonicalName(name);
   return SHADOWDARK_TO_CAIRN[canonical];
+}
+
+/**
+ * Get the Cairn title for a creature slug
+ * Returns undefined if no mapping exists
+ */
+export function slugToCairn(slug: string): string | undefined {
+  const shadowdarkName = slugToShadowdark(slug);
+  return SHADOWDARK_TO_CAIRN[shadowdarkName];
 }
 
 /**
