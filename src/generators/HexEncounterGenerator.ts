@@ -3,13 +3,14 @@ import type { Hex, HexEncounter, TerrainType } from "~/models";
 import { SeededRandom, createWeightedTable } from "./SeededRandom";
 
 // === Terrain-Specific Creature Pools ===
+// Names must match exactly with shadowdark-reference/monsters.json
 
 const CREATURES_BY_TERRAIN: Record<TerrainType, string[]> = {
-  plains: ["wolves", "bandits", "merchants", "wild horses"],
-  forest: ["wolves", "bears", "goblins", "deer", "wood elves"],
-  hills: ["orcs", "giant eagles", "goats", "miners"],
-  mountains: ["ogres", "griffins", "dwarves", "yetis"],
-  swamp: ["lizardfolk", "crocodiles", "will-o-wisps", "hags"],
+  plains: ["Wolf", "Bandit", "Horse", "Boar", "Centaur"],
+  forest: ["Wolf", "Bear, Brown", "Goblin", "Owlbear", "Elf", "Spider, Giant"],
+  hills: ["Orc", "Giant, Hill", "Ogre", "Hobgoblin", "Gnoll"],
+  mountains: ["Ogre", "Griffon", "Giant, Stone", "Orc, Chieftain", "Harpy"],
+  swamp: ["Lizardfolk", "Crocodile", "Will-o'-wisp", "Hag, Weald", "Frog, Giant"],
   water: [], // no encounters
 };
 
