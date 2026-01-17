@@ -1,12 +1,18 @@
 import { useState, useCallback } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, MapPin, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, MapPin, Eye, EyeOff, MoreHorizontal, Check } from "lucide-react";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/lib/hex-regenerate";
 import { WildernessDetail } from "~/components/location-detail/WildernessDetail";
 import { SettlementDetail } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
 import { Button } from "~/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "~/components/ui/dropdown-menu";
 import type { EncounterOverrides, Settlement, Dungeon, WorldData } from "~/models";
 
 export const Route = createFileRoute("/world/$worldId_/hex/$q/$r")({
@@ -168,27 +174,28 @@ function HexDetailPage() {
               </span>
             )}
           </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleSetCurrent}
-              disabled={isCurrent}
-              className={isCurrent ? "opacity-50" : ""}
-            >
-              <MapPin size={14} className="mr-1" />
-              {isCurrent ? "Current" : "Set Current"}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleToggleVisited}
-              className={isVisited ? "border-purple-600/50 bg-purple-600/20 text-purple-400 hover:bg-purple-600/30" : ""}
-            >
-              {isVisited ? <EyeOff size={14} className="mr-1" /> : <Eye size={14} className="mr-1" />}
-              {isVisited ? "Unmark Visited" : "Mark Visited"}
-            </Button>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <MoreHorizontal size={16} className="mr-1" />
+                Actions
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[180px]">
+              <DropdownMenuItem
+                onClick={handleSetCurrent}
+                disabled={isCurrent}
+                className={isCurrent ? "opacity-50" : ""}
+              >
+                {isCurrent ? <Check size={14} /> : <MapPin size={14} />}
+                {isCurrent ? "Current Location" : "Set as Current"}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleToggleVisited}>
+                {isVisited ? <EyeOff size={14} /> : <Eye size={14} />}
+                {isVisited ? "Unmark Visited" : "Mark as Visited"}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 

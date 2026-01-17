@@ -1,7 +1,14 @@
 import { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import { X, Sparkles, Skull, Home, ChevronRight, MapPin, Eye, EyeOff } from "lucide-react";
+import { X, Sparkles, Skull, Home, ChevronRight, MapPin, Eye, EyeOff, MoreHorizontal, Check } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "~/components/ui/dropdown-menu";
 import type { Hex, Location, TerrainType, Dwelling, DwellingType } from "~/models";
 import { generateImprovedEncounter, type ImprovedEncounterResult } from "~/generators/EncounterGenerator";
 
@@ -119,32 +126,29 @@ export function LocationPanel({
             </button>
           </div>
 
-          {/* Party location controls */}
+          {/* Party location controls - dropdown menu */}
           {hexId && (
-            <div className="mb-4 flex gap-2">
-              <button
-                onClick={() => onSetCurrent(hexId)}
-                disabled={isCurrent}
-                className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                  isCurrent
-                    ? "bg-green-600/20 text-green-400"
-                    : "bg-stone-700 text-stone-300 hover:bg-stone-600"
-                }`}
-              >
-                <MapPin size={14} />
-                {isCurrent ? "Current" : "Set Current"}
-              </button>
-              <button
-                onClick={() => onToggleVisited(hexId)}
-                className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors active:scale-95 ${
-                  isVisited
-                    ? "bg-purple-600/20 text-purple-400 hover:bg-purple-600/30"
-                    : "bg-stone-700 text-stone-300 hover:bg-stone-600"
-                }`}
-              >
-                {isVisited ? <EyeOff size={14} /> : <Eye size={14} />}
-                {isVisited ? "Unmark" : "Mark Visited"}
-              </button>
+            <div className="mb-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-2 rounded-lg bg-stone-700 px-3 py-1.5 text-sm font-medium text-stone-300 transition-colors hover:bg-stone-600">
+                  <MoreHorizontal size={16} />
+                  Actions
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="min-w-[180px]">
+                  <DropdownMenuItem
+                    onClick={() => onSetCurrent(hexId)}
+                    disabled={isCurrent}
+                    className={isCurrent ? "opacity-50" : ""}
+                  >
+                    {isCurrent ? <Check size={14} /> : <MapPin size={14} />}
+                    {isCurrent ? "Current Location" : "Set as Current"}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onToggleVisited(hexId)}>
+                    {isVisited ? <EyeOff size={14} /> : <Eye size={14} />}
+                    {isVisited ? "Unmark Visited" : "Mark as Visited"}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           )}
 
