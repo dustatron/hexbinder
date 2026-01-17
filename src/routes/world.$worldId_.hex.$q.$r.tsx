@@ -183,6 +183,7 @@ function HexDetailPage() {
               variant="outline"
               size="sm"
               onClick={handleToggleVisited}
+              className={isVisited ? "border-purple-600/50 bg-purple-600/20 text-purple-400 hover:bg-purple-600/30" : ""}
             >
               {isVisited ? <EyeOff size={14} className="mr-1" /> : <Eye size={14} className="mr-1" />}
               {isVisited ? "Unmark Visited" : "Mark Visited"}

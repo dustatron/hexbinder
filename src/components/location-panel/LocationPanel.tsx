@@ -136,7 +136,11 @@ export function LocationPanel({
               </button>
               <button
                 onClick={() => onToggleVisited(hexId)}
-                className="flex items-center gap-1 rounded-lg bg-stone-700 px-3 py-1.5 text-sm font-medium text-stone-300 transition-colors hover:bg-stone-600"
+                className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors active:scale-95 ${
+                  isVisited
+                    ? "bg-purple-600/20 text-purple-400 hover:bg-purple-600/30"
+                    : "bg-stone-700 text-stone-300 hover:bg-stone-600"
+                }`}
               >
                 {isVisited ? <EyeOff size={14} /> : <Eye size={14} />}
                 {isVisited ? "Unmark" : "Mark Visited"}
