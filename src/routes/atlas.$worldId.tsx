@@ -21,6 +21,8 @@ import {
   Sword,
   BookOpen,
   Key,
+  MapPin,
+  Footprints,
 } from "lucide-react";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { advanceDay, goBackDay, extendForecast, needsForecastExtension } from "~/generators/WorldGenerator";
@@ -65,7 +67,7 @@ const MOON_LABELS: Record<MoonPhase, string> = {
   waning: "Waning",
 };
 
-type TabId = "factions" | "events" | "settlements" | "dungeons";
+type TabId = "factions" | "events" | "settlements" | "dungeons" | "travel";
 
 import type { Location } from "~/models";
 
@@ -361,6 +363,7 @@ function AtlasPage() {
         <div className="flex gap-1 rounded-lg border border-stone-700 bg-stone-800 p-1">
           {([
             { id: "events", label: "Events", icon: Calendar, count: todayRecord?.events.length ?? 0 },
+            { id: "travel", label: "Travel", icon: Footprints, count: world.state.visitedHexIds.length },
             { id: "factions", label: "Factions", icon: Users, count: world.factions.length },
             { id: "settlements", label: "Settlements", icon: Castle, count: settlements.length },
             { id: "dungeons", label: "Dungeons", icon: Skull, count: dungeons.length },
@@ -546,6 +549,102 @@ function AtlasPage() {
             </button>
           )}
         </section>
+        )}
+
+        {/* Travel Log */}
+        {activeTab === "travel" && (
+          <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
+            {/* Current Location */}
+            <div className="mb-4">
+              <h2 className="mb-2 flex items-center gap-2 font-semibold text-green-400">
+                <MapPin size={18} />
+                Current Location
+              </h2>
+              {world.state.currentHexId ? (
+                (() => {
+                  const [q, r] = world.state.currentHexId.split(",").map(Number);
+                  const hex = world.hexes.find((h) => h.coord.q === q && h.coord.r === r);
+                  const location = hex?.locationId
+                    ? world.locations.find((l) => l.id === hex.locationId)
+                    : null;
+                  return (
+                    <Link
+                      to="/world/$worldId/hex/$q/$r"
+                      params={{ worldId: world.id, q: String(q), r: String(r) }}
+                      className="block rounded bg-green-700/20 p-3 hover:bg-green-700/30"
+                    >
+                      <div className="font-medium text-green-300">
+                        {location?.name ?? `Hex (${q}, ${r})`}
+                      </div>
+                      {location && (
+                        <p className="text-sm capitalize text-stone-400">{location.type}</p>
+                      )}
+                      {!location && hex && (
+                        <p className="text-sm capitalize text-stone-400">{hex.terrain}</p>
+                      )}
+                    </Link>
+                  );
+                })()
+              ) : (
+                <p className="text-sm text-stone-500">No current location set</p>
+              )}
+            </div>
+
+            {/* Visited Locations */}
+            <h2 className="mb-3 flex items-center gap-2 font-semibold text-purple-400">
+              <Footprints size={18} />
+              Visited Hexes ({world.state.visitedHexIds.length})
+            </h2>
+            {world.state.visitedHexIds.length === 0 ? (
+              <p className="text-sm text-stone-500">No locations visited yet</p>
+            ) : (
+              <ul className="space-y-2">
+                {world.state.visitedHexIds.map((hexId) => {
+                  const [q, r] = hexId.split(",").map(Number);
+                  const hex = world.hexes.find((h) => h.coord.q === q && h.coord.r === r);
+                  const location = hex?.locationId
+                    ? world.locations.find((l) => l.id === hex.locationId)
+                    : null;
+                  const isCurrent = hexId === world.state.currentHexId;
+
+                  return (
+                    <li key={hexId}>
+                      <Link
+                        to="/world/$worldId/hex/$q/$r"
+                        params={{ worldId: world.id, q: String(q), r: String(r) }}
+                        className={`flex items-center justify-between rounded px-3 py-2 ${
+                          isCurrent
+                            ? "bg-green-700/20 hover:bg-green-700/30"
+                            : "bg-stone-700/50 hover:bg-stone-700"
+                        }`}
+                      >
+                        <div>
+                          <span className="font-medium">
+                            {location?.name ?? `Hex (${q}, ${r})`}
+                          </span>
+                          {location && (
+                            <span className="ml-2 text-sm capitalize text-stone-400">
+                              {location.type}
+                            </span>
+                          )}
+                          {!location && hex && (
+                            <span className="ml-2 text-sm capitalize text-stone-400">
+                              {hex.terrain}
+                            </span>
+                          )}
+                        </div>
+                        {isCurrent && (
+                          <span className="rounded-full bg-green-600/20 px-2 py-0.5 text-xs text-green-400">
+                            Current
+                          </span>
+                        )}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </section>
         )}
 
         {/* Factions */}
