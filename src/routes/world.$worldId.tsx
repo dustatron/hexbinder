@@ -157,6 +157,8 @@ function WorldPage() {
           edges={world.edges}
           locations={world.locations}
           selectedCoord={selectedCoord}
+          currentHexId={world.state.currentHexId}
+          visitedHexIds={world.state.visitedHexIds}
           onHexClick={setSelectedCoord}
           showLabels={showLabels}
         />

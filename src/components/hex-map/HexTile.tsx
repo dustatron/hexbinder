@@ -30,6 +30,8 @@ interface HexTileProps {
   dungeonTheme?: DungeonTheme;
   isCapital?: boolean;
   isSelected: boolean;
+  isCurrent?: boolean; // Party is currently here
+  isVisited?: boolean; // Party has been here before
   onClick: (coord: HexCoord) => void;
   showIcon?: boolean;
   showLabel?: boolean;
@@ -69,6 +71,8 @@ export function HexTile({
   dungeonTheme,
   isCapital,
   isSelected,
+  isCurrent = false,
+  isVisited = false,
   onClick,
   showIcon = true,
   showLabel = false,
@@ -77,9 +81,15 @@ export function HexTile({
   const points = hexToPolygonPoints(honeycombHex);
   const center = hexToCenter(honeycombHex);
   const fillColor = TERRAIN_COLORS[hexData.terrain];
-  const strokeColor = isSelected
-    ? "#f59e0b" // amber-500 for selection
-    : TERRAIN_BORDER_COLORS[hexData.terrain];
+
+  // Determine stroke color: current > selected > normal
+  let strokeColor = TERRAIN_BORDER_COLORS[hexData.terrain];
+  if (isSelected) {
+    strokeColor = "#f59e0b"; // amber-500 for selection
+  }
+  if (isCurrent) {
+    strokeColor = "#22c55e"; // green-500 for current location
+  }
 
   // Use dungeon-specific icon if available, otherwise fall back to location icon
   // Capitals get Crown icon
@@ -129,8 +139,32 @@ export function HexTile({
         points={points}
         fill={fillColor}
         stroke={strokeColor}
-        strokeWidth={isSelected ? 3 : 1}
+        strokeWidth={isSelected || isCurrent ? 3 : 1}
       />
+      {/* Current location: pulsing green ring */}
+      {isCurrent && (
+        <circle
+          cx={center.x}
+          cy={center.y}
+          r={18}
+          fill="none"
+          stroke="#22c55e"
+          strokeWidth={3}
+          opacity={0.8}
+          className="animate-pulse"
+        />
+      )}
+      {/* Visited indicator: small dot in corner */}
+      {isVisited && !isCurrent && (
+        <circle
+          cx={center.x + 20}
+          cy={center.y - 20}
+          r={5}
+          fill="#a855f7"
+          stroke="#1c1917"
+          strokeWidth={1}
+        />
+      )}
       {showIcon && Icon && (
         <Icon
           x={center.x - 12}

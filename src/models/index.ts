@@ -1353,6 +1353,9 @@ export interface WorldState {
   moonPhase: MoonPhase;
   calendar: DayRecord[]; // Pre-generated days (past + future)
   forecastEndDay: number; // Last day with generated events
+  // Party location tracking
+  currentHexId: string | null; // Format: "q,r" - where the party currently is
+  visitedHexIds: string[]; // Format: "q,r" - hexes the party has been to
 }
 
 // === Edge Types (for roads/rivers) ===
