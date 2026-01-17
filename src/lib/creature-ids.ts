@@ -1,16 +1,17 @@
 /**
  * Creature ID normalization and cross-system mapping
  *
- * Uses Shadowdark monster names as canonical IDs.
+ * Uses app-level slugs as canonical IDs (e.g., "giant-frog", "dire-wolf").
+ * Each rule system has its own direct mapping from slugs.
+ *
  * Maps between:
- * - Shadowdark exact names ("Wolf", "Bear, Brown")
- * - Encounter creature slugs ("giant-frog", "dire-wolf")
- * - Legacy plural names ("wolves", "bears")
- * - Cairn monster titles
+ * - App slugs (canonical): "giant-frog", "dire-wolf"
+ * - Shadowdark names: "Frog, Giant", "Wolf, Dire"
+ * - Cairn titles: "Giant Toad", "Dire Wolf"
+ * - Legacy plural names: "wolves", "bears" (for backwards compat)
  */
 
-// Encounter creature slugs -> Shadowdark name (lowercase)
-// These map the slugs from src/data/encounters/creatures.ts to monster database names
+// App slugs -> Shadowdark monster name (lowercase for lookup)
 export const SLUG_TO_SHADOWDARK: Record<string, string> = {
   // Plains
   "wolf": "wolf",
@@ -57,6 +58,55 @@ export const SLUG_TO_SHADOWDARK: Record<string, string> = {
   "will-o-wisp": "will-o'-wisp",
   "shambling-mound": "shambling mound",
   "black-dragon-young": "dragon, black",
+};
+
+// App slugs -> Cairn monster title (exact case for lookup)
+export const SLUG_TO_CAIRN: Record<string, string> = {
+  // Plains
+  "wolf": "Wolf",
+  "warhorse": "Horse, War",
+  "bandit": "Bandit",
+  "giant-eagle": "Giant Eagle",
+  "gnoll": "Gnoll",
+  "centaur": "Centaur",
+
+  // Forest
+  "giant-spider": "Giant Spider",
+  "goblin": "Goblin",
+  "owlbear": "Owlbear",
+  "dryad": "Dryad",
+  "dire-wolf": "Dire Wolf",
+
+  // Hills
+  "giant-goat": "Goat, Giant",
+  "orc": "Orc",
+  "hippogriff": "Hippogriff",
+  "ogre": "Ogre",
+  "hobgoblin": "Hobgoblin",
+  "peryton": "Peryton",
+
+  // Mountains
+  "mountain-lion": "Mountain Lion",
+  "harpy": "Harpy",
+  "stone-giant": "Stone Giant",
+  "wyvern": "Wyvern",
+  "roc": "Roc",
+
+  // Water
+  "giant-crab": "Giant Crab",
+  "merfolk": "Merman",
+  "sea-hag": "Sea Hag",
+  "giant-octopus": "Giant Octopus",
+  "sahuagin": "Sahuagin",
+  "water-elemental": "Water Elemental",
+
+  // Swamp
+  "giant-frog": "Giant Toad",
+  "lizardfolk": "Lizardfolk",
+  "giant-crocodile": "Crocodile, Giant",
+  "will-o-wisp": "Will-o-the-Wisp",
+  "shambling-mound": "Shambling Mound",
+  "black-dragon-young": "Dragon, Black",
 };
 
 // Legacy plural/generic names -> Shadowdark name (lowercase)
@@ -187,8 +237,7 @@ export function getCairnTitle(name: string): string | undefined {
  * Returns undefined if no mapping exists
  */
 export function slugToCairn(slug: string): string | undefined {
-  const shadowdarkName = slugToShadowdark(slug);
-  return SHADOWDARK_TO_CAIRN[shadowdarkName];
+  return SLUG_TO_CAIRN[slug];
 }
 
 /**
