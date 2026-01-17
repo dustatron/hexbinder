@@ -38,8 +38,39 @@ for (const monster of monsters) {
   monstersByLevel.set(monster.level, list);
 }
 
+// Map legacy/plural encounter names to Shadowdark monster names
+const LEGACY_NAME_MAP: Record<string, string> = {
+  wolves: "wolf",
+  bandits: "bandit",
+  merchants: "the wandering merchant",
+  "wild horses": "horse",
+  bears: "bear, brown",
+  goblins: "goblin",
+  deer: "elk",
+  "wood elves": "elf",
+  orcs: "orc",
+  "giant eagles": "griffon",
+  goats: "giant, goat",
+  miners: "dwarf",
+  ogres: "ogre",
+  griffins: "griffon",
+  dwarves: "dwarf",
+  yetis: "giant, frost",
+  lizardfolk: "lizardfolk",
+  crocodiles: "crocodile",
+  "will-o-wisps": "will-o'-wisp",
+  hags: "hag, weald",
+};
+
 export function getMonster(name: string): Monster | undefined {
-  return monstersByName.get(name.toLowerCase());
+  const normalizedName = name.toLowerCase();
+  // Try direct match first
+  const direct = monstersByName.get(normalizedName);
+  if (direct) return direct;
+  // Try legacy name mapping
+  const mappedName = LEGACY_NAME_MAP[normalizedName];
+  if (mappedName) return monstersByName.get(mappedName);
+  return undefined;
 }
 
 export function getMonstersByLevel(level: number): Monster[] {
