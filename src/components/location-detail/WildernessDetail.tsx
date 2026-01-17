@@ -3,6 +3,8 @@ import type { Dwelling, DwellingType, EncounterOverrides, Hex, TerrainType } fro
 import type { RegenerationType } from "~/lib/hex-regenerate";
 import { ImprovedEncounterTable } from "~/components/encounter-table/ImprovedEncounterTable";
 import { RegenerateButton } from "./RegenerateButton";
+import { getMonster } from "~/lib/monsters";
+import { MonsterCard } from "~/components/encounter-table/MonsterCard";
 
 interface WildernessDetailProps {
   hex: Hex;
@@ -176,6 +178,13 @@ export function WildernessDetail({
               </span>
             )}
           </div>
+          {/* Monster Stats from Shadowdark */}
+          {(() => {
+            const monster = getMonster(encounter.creature);
+            return monster ? (
+              <MonsterCard monster={monster} expanded />
+            ) : null;
+          })()}
         </section>
       )}
 
