@@ -1,11 +1,12 @@
 import { useState, useCallback } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MapPin, Eye, EyeOff } from "lucide-react";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/lib/hex-regenerate";
 import { WildernessDetail } from "~/components/location-detail/WildernessDetail";
 import { SettlementDetail } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
+import { Button } from "~/components/ui/button";
 import type { EncounterOverrides, Settlement, Dungeon, WorldData } from "~/models";
 
 export const Route = createFileRoute("/world/$worldId_/hex/$q/$r")({
@@ -85,6 +86,41 @@ function HexDetailPage() {
     setWorld(updated);
   }, [world, hex.coord]);
 
+  // Party location tracking
+  const hexId = `${hex.coord.q},${hex.coord.r}`;
+  const isCurrent = world.state.currentHexId === hexId;
+  const isVisited = world.state.visitedHexIds.includes(hexId);
+
+  const handleSetCurrent = useCallback(() => {
+    const updated: WorldData = {
+      ...world,
+      state: {
+        ...world.state,
+        currentHexId: hexId,
+        // Also add to visited if not already there
+        visitedHexIds: world.state.visitedHexIds.includes(hexId)
+          ? world.state.visitedHexIds
+          : [...world.state.visitedHexIds, hexId],
+      },
+    };
+    saveWorld(updated);
+    setWorld(updated);
+  }, [world, hexId]);
+
+  const handleToggleVisited = useCallback(() => {
+    const updated: WorldData = {
+      ...world,
+      state: {
+        ...world.state,
+        visitedHexIds: isVisited
+          ? world.state.visitedHexIds.filter((id) => id !== hexId)
+          : [...world.state.visitedHexIds, hexId],
+      },
+    };
+    saveWorld(updated);
+    setWorld(updated);
+  }, [world, hexId, isVisited]);
+
   // Get today's events for settlements
   const todayRecord = world.state.calendar.find((r) => r.day === world.state.day);
   const todayEvents = (todayRecord?.events ?? []).filter(
@@ -111,15 +147,47 @@ function HexDetailPage() {
     <div className="flex h-svh flex-col bg-stone-900 text-stone-100">
       {/* Header */}
       <header className="z-10 border-b border-stone-700 bg-stone-900 px-4 py-3">
-        <div className="flex items-center gap-3">
-          <Link
-            to="/world/$worldId"
-            params={{ worldId: world.id }}
-            className="text-stone-400 hover:text-stone-200"
-          >
-            <ArrowLeft size={20} />
-          </Link>
-          <h1 className="font-semibold">{title}</h1>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link
+              to="/world/$worldId"
+              params={{ worldId: world.id }}
+              className="text-stone-400 hover:text-stone-200"
+            >
+              <ArrowLeft size={20} />
+            </Link>
+            <h1 className="font-semibold">{title}</h1>
+            {isCurrent && (
+              <span className="rounded-full bg-green-600/20 px-2 py-0.5 text-xs text-green-400">
+                Current Location
+              </span>
+            )}
+            {isVisited && !isCurrent && (
+              <span className="rounded-full bg-purple-600/20 px-2 py-0.5 text-xs text-purple-400">
+                Visited
+              </span>
+            )}
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSetCurrent}
+              disabled={isCurrent}
+              className={isCurrent ? "opacity-50" : ""}
+            >
+              <MapPin size={14} className="mr-1" />
+              {isCurrent ? "Current" : "Set Current"}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleToggleVisited}
+            >
+              {isVisited ? <EyeOff size={14} className="mr-1" /> : <Eye size={14} className="mr-1" />}
+              {isVisited ? "Unmark Visited" : "Mark Visited"}
+            </Button>
+          </div>
         </div>
       </header>
 

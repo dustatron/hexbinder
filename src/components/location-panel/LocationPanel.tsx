@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import { X, Sparkles, Skull, Home, ChevronRight } from "lucide-react";
+import { X, Sparkles, Skull, Home, ChevronRight, MapPin, Eye, EyeOff } from "lucide-react";
 import type { Hex, Location, TerrainType, Dwelling, DwellingType } from "~/models";
 import { generateImprovedEncounter, type ImprovedEncounterResult } from "~/generators/EncounterGenerator";
 
@@ -11,7 +11,11 @@ interface LocationPanelProps {
   dwelling: Dwelling | null;
   worldId: string;
   worldSeed: string;
+  currentHexId: string | null;
+  visitedHexIds: string[];
   onClose: () => void;
+  onSetCurrent: (hexId: string) => void;
+  onToggleVisited: (hexId: string) => void;
 }
 
 const TERRAIN_LABELS: Record<TerrainType, string> = {
@@ -31,8 +35,24 @@ const DWELLING_LABELS: Record<DwellingType, string> = {
   roadside_inn: "Roadside Inn",
 };
 
-export function LocationPanel({ location, hex, dwelling, worldId, worldSeed, onClose }: LocationPanelProps) {
+export function LocationPanel({
+  location,
+  hex,
+  dwelling,
+  worldId,
+  worldSeed,
+  currentHexId,
+  visitedHexIds,
+  onClose,
+  onSetCurrent,
+  onToggleVisited,
+}: LocationPanelProps) {
   const isOpen = hex !== null;
+
+  // Party location state
+  const hexId = hex ? `${hex.coord.q},${hex.coord.r}` : null;
+  const isCurrent = hexId === currentHexId;
+  const isVisited = hexId ? visitedHexIds.includes(hexId) : false;
 
   // Generate encounter result for wilderness hexes
   const encounterResult = useMemo(() => {
@@ -77,6 +97,19 @@ export function LocationPanel({ location, hex, dwelling, worldId, worldSeed, onC
                   </p>
                 </>
               )}
+              {/* Status badges */}
+              <div className="mt-1 flex gap-2">
+                {isCurrent && (
+                  <span className="rounded-full bg-green-600/20 px-2 py-0.5 text-xs text-green-400">
+                    Current Location
+                  </span>
+                )}
+                {isVisited && !isCurrent && (
+                  <span className="rounded-full bg-purple-600/20 px-2 py-0.5 text-xs text-purple-400">
+                    Visited
+                  </span>
+                )}
+              </div>
             </div>
             <button
               onClick={onClose}
@@ -85,6 +118,31 @@ export function LocationPanel({ location, hex, dwelling, worldId, worldSeed, onC
               <X size={20} />
             </button>
           </div>
+
+          {/* Party location controls */}
+          {hexId && (
+            <div className="mb-4 flex gap-2">
+              <button
+                onClick={() => onSetCurrent(hexId)}
+                disabled={isCurrent}
+                className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                  isCurrent
+                    ? "bg-green-600/20 text-green-400"
+                    : "bg-stone-700 text-stone-300 hover:bg-stone-600"
+                }`}
+              >
+                <MapPin size={14} />
+                {isCurrent ? "Current" : "Set Current"}
+              </button>
+              <button
+                onClick={() => onToggleVisited(hexId)}
+                className="flex items-center gap-1 rounded-lg bg-stone-700 px-3 py-1.5 text-sm font-medium text-stone-300 transition-colors hover:bg-stone-600"
+              >
+                {isVisited ? <EyeOff size={14} /> : <Eye size={14} />}
+                {isVisited ? "Unmark" : "Mark Visited"}
+              </button>
+            </div>
+          )}
 
           {location && (
             <div className="space-y-4">

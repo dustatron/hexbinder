@@ -46,6 +46,36 @@ function WorldPage() {
     }
   };
 
+  const handleSetCurrent = (hexId: string) => {
+    const updated: WorldData = {
+      ...world,
+      state: {
+        ...world.state,
+        currentHexId: hexId,
+        visitedHexIds: world.state.visitedHexIds.includes(hexId)
+          ? world.state.visitedHexIds
+          : [...world.state.visitedHexIds, hexId],
+      },
+    };
+    saveWorld(updated);
+    setWorld(updated);
+  };
+
+  const handleToggleVisited = (hexId: string) => {
+    const isCurrentlyVisited = world.state.visitedHexIds.includes(hexId);
+    const updated: WorldData = {
+      ...world,
+      state: {
+        ...world.state,
+        visitedHexIds: isCurrentlyVisited
+          ? world.state.visitedHexIds.filter((id) => id !== hexId)
+          : [...world.state.visitedHexIds, hexId],
+      },
+    };
+    saveWorld(updated);
+    setWorld(updated);
+  };
+
   const selectedLocation = selectedCoord
     ? world.locations.find(
         (loc) =>
@@ -170,7 +200,11 @@ function WorldPage() {
           dwelling={selectedDwelling || null}
           worldId={world.id}
           worldSeed={world.seed}
+          currentHexId={world.state.currentHexId}
+          visitedHexIds={world.state.visitedHexIds}
           onClose={() => setSelectedCoord(null)}
+          onSetCurrent={handleSetCurrent}
+          onToggleVisited={handleToggleVisited}
         />
       </div>
     </div>
