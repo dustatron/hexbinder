@@ -11,7 +11,7 @@ import { RegenerateButton } from "./RegenerateButton";
 import { RoomCard } from "./RoomCard";
 import { DungeonMap } from "~/components/dungeon-map";
 import { NPCStatLine } from "~/components/npc/NPCStatLine";
-import { getMonsterStats } from "~/lib/monster-stats";
+import { getMonsterStats, generateFallbackStats } from "~/lib/monster-stats";
 
 interface DungeonDetailProps {
   dungeon: Dungeon | SpatialDungeon;
@@ -785,6 +785,9 @@ function WanderingMonstersSection({ dungeon, ruleset }: WanderingMonstersSection
 
   const entries = dungeon.wanderingMonsters.entries;
   const dieSize = entries.length;
+  // Use dungeon depth as a proxy for monster level (depth 1 = level 2, depth 2 = level 3, etc.)
+  const fallbackLevel = Math.max(1, dungeon.depth + 1);
+  const defenseLabel = ruleset === "cairn" ? "Arm" : "AC";
 
   return (
     <div className="rounded-lg border border-red-900/50 bg-red-950/30 p-4 space-y-3">
@@ -807,33 +810,42 @@ function WanderingMonstersSection({ dungeon, ruleset }: WanderingMonstersSection
               <th className="px-2 py-1 text-left w-8">#</th>
               <th className="px-2 py-1 text-left">Creature</th>
               <th className="px-2 py-1 text-center w-10">Lv</th>
-              <th className="px-2 py-1 text-center w-10">AC</th>
+              <th className="px-2 py-1 text-center w-10">{defenseLabel}</th>
               <th className="px-2 py-1 text-center w-10">HP</th>
               <th className="px-2 py-1 text-left">Atk</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-stone-700/50">
             {entries.map((entry, i) => {
-              const stats = getMonsterStats(entry.creatureType, ruleset);
+              const stats = getMonsterStats(entry.creatureType, ruleset)
+                ?? generateFallbackStats(entry.creatureType, fallbackLevel, ruleset);
+              const level = ruleset === "shadowdark" ? stats.shadowdark?.level : fallbackLevel;
               return (
-                <tr key={i} className="text-stone-300">
+                <tr key={i} className={`text-stone-300 ${stats.isEstimate ? "opacity-75" : ""}`}>
                   <td className="px-2 py-1.5 text-stone-500">{i + 1}</td>
                   <td className="px-2 py-1.5">
                     <div className="font-medium text-stone-200">
                       {entry.count} {entry.creatureType}
+                      {stats.isEstimate && <span className="ml-1 text-xs text-amber-500" title="Estimated stats">*</span>}
                     </div>
                     <div className="text-xs text-stone-500 italic">{entry.activity}</div>
                   </td>
-                  <td className="px-2 py-1.5 text-center text-xs">{stats?.shadowdark?.level ?? "—"}</td>
-                  <td className="px-2 py-1.5 text-center text-xs">{stats?.defense ?? "?"}</td>
-                  <td className="px-2 py-1.5 text-center text-xs">{stats?.hp ?? "?"}</td>
-                  <td className="px-2 py-1.5 text-xs text-stone-400">{stats?.attack ?? "?"}</td>
+                  <td className="px-2 py-1.5 text-center text-xs">{level ?? "—"}</td>
+                  <td className="px-2 py-1.5 text-center text-xs">{stats.defense}</td>
+                  <td className="px-2 py-1.5 text-center text-xs">{stats.hp}</td>
+                  <td className="px-2 py-1.5 text-xs text-stone-400">{stats.attack}</td>
                 </tr>
               );
             })}
           </tbody>
         </table>
       </div>
+      {entries.some(e => {
+        const s = getMonsterStats(e.creatureType, ruleset);
+        return !s;
+      }) && (
+        <p className="text-xs text-amber-500/70">* Estimated stats - monster not in database</p>
+      )}
     </div>
   );
 }
