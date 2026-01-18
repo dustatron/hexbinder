@@ -161,10 +161,15 @@ function LinkedText({
   return <span className={className}>{parts}</span>;
 }
 
+// Event with day number for display
+export type LocationEvent = DayEvent & { day: number };
+
 interface SettlementDetailProps {
   settlement: Settlement;
   npcs: NPC[];
   todayEvents: DayEvent[];
+  locationEvents: LocationEvent[]; // All events at this location across all days
+  currentDay: number;
   factions: Faction[];
   hooks: Hook[];
   locations: Location[];
@@ -217,6 +222,8 @@ export function SettlementDetail({
   settlement,
   npcs,
   todayEvents,
+  locationEvents,
+  currentDay,
   factions,
   hooks,
   locations,
@@ -957,7 +964,78 @@ export function SettlementDetail({
       )}
 
       {activeTab === "encounters" && (
-        <section>
+        <section className="space-y-6">
+          {/* Location Events */}
+          {locationEvents.length > 0 && (
+            <div>
+              <div className="mb-3 flex items-center justify-between rounded bg-stone-700 px-3 py-2">
+                <h3 className="text-sm font-semibold text-stone-200">
+                  Location Events ({locationEvents.length})
+                </h3>
+              </div>
+              <ul className="space-y-2">
+                {locationEvents
+                  .sort((a, b) => a.day - b.day)
+                  .map((event) => {
+                    const isToday = event.day === currentDay;
+                    const isPast = event.day < currentDay;
+                    const isFuture = event.day > currentDay;
+                    return (
+                      <li
+                        key={event.id}
+                        className={`rounded-lg border p-3 ${
+                          isToday
+                            ? "border-amber-500/50 bg-amber-500/10"
+                            : isPast
+                            ? "border-stone-700 bg-stone-800/30 opacity-60"
+                            : "border-stone-700 bg-stone-800/50"
+                        }`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded text-xs font-bold ${
+                            isToday
+                              ? "bg-amber-500 text-stone-900"
+                              : isPast
+                              ? "bg-stone-600 text-stone-400"
+                              : "bg-stone-600 text-stone-200"
+                          }`}>
+                            D{event.day}
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className={`rounded px-1.5 py-0.5 text-xs font-medium ${
+                                event.type === "encounter" ? "bg-red-500/20 text-red-300" :
+                                event.type === "arrival" ? "bg-blue-500/20 text-blue-300" :
+                                event.type === "clock_tick" ? "bg-purple-500/20 text-purple-300" :
+                                event.type === "rumor" ? "bg-amber-500/20 text-amber-300" :
+                                "bg-stone-600 text-stone-300"
+                              }`}>
+                                {event.type.replace("_", " ")}
+                              </span>
+                              {isToday && (
+                                <span className="rounded bg-amber-500/30 px-1.5 py-0.5 text-xs font-medium text-amber-300">
+                                  Today
+                                </span>
+                              )}
+                              {isFuture && (
+                                <span className="text-xs text-stone-500">
+                                  in {event.day - currentDay} day{event.day - currentDay !== 1 ? "s" : ""}
+                                </span>
+                              )}
+                            </div>
+                            <p className={`mt-1 text-sm ${isToday ? "text-stone-200" : "text-stone-400"}`}>
+                              {event.description}
+                            </p>
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+              </ul>
+            </div>
+          )}
+
+          {/* Encounter Table */}
           <EncounterTable seed={`${seed}-settlement`} onReroll={onReroll} />
         </section>
       )}
