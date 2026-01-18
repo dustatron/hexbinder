@@ -46,6 +46,8 @@ import { generateDwellings } from "./DwellingGenerator";
 import { generateQuestObjects } from "./QuestObjectGenerator";
 import { generateSignificantItems, placeItemInLocation } from "./SignificantItemGenerator";
 import { addTreasureBackstories } from "./dungeon/TreasureBackstoryGenerator";
+import { generateSettlementHistory } from "./settlement/SettlementHistoryGenerator";
+import { generateSettlementSecrets } from "./settlement/SettlementSecretsGenerator";
 
 export interface WorldGeneratorOptions {
   name: string;
@@ -418,6 +420,8 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
 
   // Step 15: Generate NPCs
   const npcs: NPC[] = [];
+  // Track used secrets across all settlements to avoid world-wide duplicates
+  const usedSecretTexts: string[] = [];
 
   // Settlement NPCs
   for (const settlement of settlements) {
@@ -466,6 +470,34 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
         settlementNPCs
       );
     }
+
+    // Generate settlement lore (history and secrets)
+    const settlementFactionIds = factions
+      .filter((f) => f.headquartersId === settlement.id)
+      .map((f) => f.id);
+
+    const history = generateSettlementHistory({
+      seed: `${seed}-${settlement.id}`,
+      size: settlement.size,
+      name: settlement.name,
+    });
+
+    const secrets = generateSettlementSecrets({
+      seed: `${seed}-${settlement.id}`,
+      size: settlement.size,
+      npcIds: settlement.npcIds,
+      factionIds: settlementFactionIds,
+      sites: settlement.sites,
+      mayorNpcId: settlement.mayorNpcId,
+      existingSecretTexts: usedSecretTexts,
+    });
+
+    // Track used secrets for future settlements
+    for (const secret of secrets) {
+      usedSecretTexts.push(secret.text);
+    }
+
+    settlement.lore = { history, secrets };
   }
 
   // Faction NPCs (use pre-generated NPCs from dungeon population step)

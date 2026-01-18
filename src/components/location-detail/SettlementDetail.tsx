@@ -1,4 +1,4 @@
-import { RefreshCw, Users, Shield, Coins, AlertTriangle, ScrollText, MessageSquare, Building2, User, Flag, Map as MapIcon, ClipboardList, Calendar } from "lucide-react";
+import { RefreshCw, Users, Shield, Coins, AlertTriangle, ScrollText, MessageSquare, Building2, User, Flag, Map as MapIcon, ClipboardList, Calendar, BookOpen, Lock, ChevronDown, ChevronRight } from "lucide-react";
 import type { Settlement, NPC, Faction, DayEvent, SettlementSite, WorldData, Hook, Dungeon, Location, Ruleset } from "~/models";
 import { isSpatialSettlement, isDungeon, isSettlement, type SpatialSettlement } from "~/models";
 import type { RegenerationType } from "~/lib/hex-regenerate";
@@ -490,6 +490,64 @@ export function SettlementDetail({
         )}
       </div>
 
+      {/* Settlement Lore Section */}
+      {settlement.lore && (
+        <details className="group rounded-lg border border-stone-700 bg-stone-800/50">
+          <summary className="flex cursor-pointer items-center gap-2 p-3 text-sm font-semibold text-stone-200 hover:bg-stone-700/50">
+            <BookOpen size={16} className="text-amber-400" />
+            <span>Settlement Lore</span>
+            <ChevronRight size={16} className="ml-auto text-stone-400 transition-transform group-open:rotate-90" />
+          </summary>
+          <div className="border-t border-stone-700 p-3 space-y-3">
+            {/* Founding Story */}
+            <p className="text-sm italic text-stone-300">
+              "{settlement.lore.history.founding}"
+            </p>
+
+            {/* Age and Founder Type */}
+            <div className="flex flex-wrap gap-2 text-xs">
+              <span className="rounded bg-stone-700 px-2 py-1 text-stone-300">
+                <span className="text-stone-500">Founded by:</span>{" "}
+                {settlement.lore.history.founderType.replace("_", " ")}
+              </span>
+              <span className="rounded bg-stone-700 px-2 py-1 text-stone-300">
+                <span className="text-stone-500">Age:</span>{" "}
+                {settlement.lore.history.age}
+              </span>
+              {settlement.lore.history.formerName && (
+                <span className="rounded bg-stone-700 px-2 py-1 text-stone-300">
+                  <span className="text-stone-500">Formerly:</span>{" "}
+                  {settlement.lore.history.formerName}
+                </span>
+              )}
+            </div>
+
+            {/* Major Events */}
+            {settlement.lore.history.majorEvents.length > 0 && (
+              <div>
+                <h4 className="mb-1 text-xs font-medium uppercase text-stone-500">Major Events</h4>
+                <ul className="space-y-1">
+                  {settlement.lore.history.majorEvents.map((event, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-stone-400">
+                      <span className="text-stone-600">•</span>
+                      {event}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Cultural Note */}
+            {settlement.lore.history.culturalNote && (
+              <p className="text-sm text-stone-400">
+                <span className="font-medium text-stone-300">Cultural note:</span>{" "}
+                {settlement.lore.history.culturalNote}
+              </p>
+            )}
+          </div>
+        </details>
+      )}
+
       {/* Today's Events - Priority section */}
       {todayEvents.length > 0 && (
         <section className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3">
@@ -621,6 +679,11 @@ export function SettlementDetail({
                             <span className="rounded bg-stone-700 px-1.5 py-0.5 text-xs text-stone-400">
                               {site.type.replace("_", " ")}
                             </span>
+                            {site.secret && (
+                              <span title="Has secret">
+                                <Lock size={12} className="text-amber-500" />
+                              </span>
+                            )}
                           </div>
                           {(owner || staff.length > 0) && (
                             <p className="mt-1 text-xs text-stone-400">
@@ -658,6 +721,20 @@ export function SettlementDetail({
                                 </span>
                               ))}
                             </div>
+                          )}
+                          {site.secret && (
+                            <details
+                              className="mt-2"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <summary className="cursor-pointer text-xs text-amber-500 hover:text-amber-400">
+                                <Lock size={10} className="mr-1 inline" />
+                                Secret (GM only)
+                              </summary>
+                              <p className="mt-1 rounded bg-amber-500/10 p-2 text-xs text-amber-300">
+                                {site.secret}
+                              </p>
+                            </details>
                           )}
                         </div>
                       </div>
@@ -1033,6 +1110,127 @@ export function SettlementDetail({
                   })}
               </ul>
             </div>
+          )}
+
+          {/* Town Secrets */}
+          {settlement.lore && settlement.lore.secrets.length > 0 && (
+            <details className="group rounded-lg border border-stone-700 bg-stone-800/50">
+              <summary className="flex cursor-pointer items-center gap-2 p-3 text-sm font-semibold text-stone-200 hover:bg-stone-700/50">
+                <Lock size={16} className="text-amber-500" />
+                <span>Town Secrets ({settlement.lore.secrets.length})</span>
+                <ChevronRight size={16} className="ml-auto text-stone-400 transition-transform group-open:rotate-90" />
+              </summary>
+              <div className="border-t border-stone-700 p-3 space-y-3">
+                {settlement.lore.secrets.map((secret) => {
+                  const severityColors = {
+                    minor: "bg-blue-500/20 text-blue-300 border-blue-500/30",
+                    major: "bg-amber-500/20 text-amber-300 border-amber-500/30",
+                    catastrophic: "bg-red-500/20 text-red-300 border-red-500/30",
+                  };
+                  const involvedNpcs = secret.involvedNpcIds
+                    ?.map((id) => npcs.find((n) => n.id === id))
+                    .filter(Boolean) ?? [];
+                  const involvedFactions = secret.involvedFactionIds
+                    ?.map((id) => factions.find((f) => f.id === id))
+                    .filter(Boolean) ?? [];
+                  const involvedSites = secret.involvedSiteIds
+                    ?.map((id) => settlement.sites.find((s) => s.id === id))
+                    .filter(Boolean) ?? [];
+
+                  return (
+                    <div
+                      key={secret.id}
+                      className={`rounded-lg border p-3 ${severityColors[secret.severity]}`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <button
+                          onClick={() => {
+                            onUpdateWorld((world) => {
+                              const updatedLocations = world.locations.map((loc) => {
+                                if (loc.id === settlement.id && loc.type === "settlement") {
+                                  const s = loc as Settlement;
+                                  if (!s.lore) return loc;
+                                  return {
+                                    ...s,
+                                    lore: {
+                                      ...s.lore,
+                                      secrets: s.lore.secrets.map((sec) =>
+                                        sec.id === secret.id
+                                          ? { ...sec, discovered: !sec.discovered }
+                                          : sec
+                                      ),
+                                    },
+                                  };
+                                }
+                                return loc;
+                              });
+                              return { ...world, locations: updatedLocations };
+                            });
+                          }}
+                          className={`mt-0.5 h-4 w-4 shrink-0 rounded border ${
+                            secret.discovered
+                              ? "border-green-500 bg-green-500"
+                              : "border-stone-500 bg-transparent"
+                          }`}
+                          title={secret.discovered ? "Mark as undiscovered" : "Mark as discovered"}
+                        >
+                          {secret.discovered && (
+                            <svg className="h-4 w-4 text-stone-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+                              <path d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </button>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className={`rounded px-1.5 py-0.5 text-xs font-bold uppercase ${severityColors[secret.severity]}`}>
+                              {secret.severity}
+                            </span>
+                          </div>
+                          <p className={`mt-1 text-sm ${secret.discovered ? "line-through opacity-60" : ""}`}>
+                            {secret.text}
+                          </p>
+                          {(involvedNpcs.length > 0 || involvedFactions.length > 0 || involvedSites.length > 0) && (
+                            <div className="mt-2 flex flex-wrap gap-1">
+                              {involvedNpcs.map((npc) => (
+                                <Link
+                                  key={npc!.id}
+                                  to="/world/$worldId/location/$locationId"
+                                  params={{ worldId, locationId: settlement.id }}
+                                  hash={`npc-${npc!.id}`}
+                                  className="rounded bg-stone-700 px-1.5 py-0.5 text-xs text-stone-300 hover:bg-stone-600"
+                                >
+                                  {npc!.name}
+                                </Link>
+                              ))}
+                              {involvedFactions.map((faction) => (
+                                <Link
+                                  key={faction!.id}
+                                  to="/world/$worldId/faction/$factionId"
+                                  params={{ worldId, factionId: faction!.id }}
+                                  className="rounded bg-purple-500/30 px-1.5 py-0.5 text-xs text-purple-300 hover:bg-purple-500/50"
+                                >
+                                  {faction!.name}
+                                </Link>
+                              ))}
+                              {involvedSites.map((site) => (
+                                <a
+                                  key={site!.id}
+                                  href={`#site-${site!.id}`}
+                                  className="rounded bg-amber-500/30 px-1.5 py-0.5 text-xs text-amber-300 hover:bg-amber-500/50"
+                                  onClick={() => setActiveTab("locations")}
+                                >
+                                  {site!.name}
+                                </a>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </details>
           )}
 
           {/* Encounter Table */}

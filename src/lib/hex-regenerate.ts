@@ -5,6 +5,8 @@ import { placeSettlement } from "~/generators/SettlementGenerator";
 import { generateSites } from "~/generators/SiteGenerator";
 import { generateSettlementNPCs } from "~/generators/NPCGenerator";
 import { generateRumors, generateNotices } from "~/generators/RumorGenerator";
+import { generateSettlementHistory } from "~/generators/settlement/SettlementHistoryGenerator";
+import { generateSettlementSecrets } from "~/generators/settlement/SettlementSecretsGenerator";
 import { assignNPCsToBuildings, linkSitesToBuildings } from "~/generators/TownLayoutEngine";
 import { SeededRandom } from "~/generators/SeededRandom";
 import { nanoid } from "nanoid";
@@ -371,6 +373,34 @@ function generateSettlementAtHex(
     count: Math.max(1, Math.floor(settlementNPCs.length / 3)),
     settlementSize: settlement.size,
   });
+
+  // Generate settlement lore (history and secrets)
+  // Collect existing secrets from other settlements to avoid duplicates
+  const existingSecretTexts = existingSettlements
+    .filter((s) => s.lore?.secrets)
+    .flatMap((s) => s.lore!.secrets.map((sec) => sec.text));
+
+  const settlementFactionIds = world.factions
+    .filter((f) => f.headquartersId === settlement.id)
+    .map((f) => f.id);
+
+  const history = generateSettlementHistory({
+    seed: `${seed}-${settlement.id}`,
+    size: settlement.size,
+    name: settlement.name,
+  });
+
+  const secrets = generateSettlementSecrets({
+    seed: `${seed}-${settlement.id}`,
+    size: settlement.size,
+    npcIds: settlement.npcIds,
+    factionIds: settlementFactionIds,
+    sites: settlement.sites,
+    mayorNpcId: settlement.mayorNpcId,
+    existingSecretTexts,
+  });
+
+  settlement.lore = { history, secrets };
 
   // placeSettlement mutates the hex in the array, but we want immutable updates
   const hexes = world.hexes.map(h => {

@@ -178,6 +178,45 @@ export type SettlementMood = "prosperous" | "struggling" | "fearful" | "hostile"
 export type DefenseLevel = "none" | "militia" | "guards" | "walls" | "fortified";
 export type SettlementType = "human" | "dwarven" | "elven" | "goblin";
 
+// === Settlement Lore ===
+
+export type FounderType =
+  | "noble_exile"
+  | "merchant_guild"
+  | "religious_order"
+  | "refugees"
+  | "adventurers"
+  | "military_outpost";
+
+export type SettlementAge = "ancient" | "old" | "established" | "young" | "new";
+
+export type SecretSeverity = "minor" | "major" | "catastrophic";
+
+export interface SettlementHistory {
+  founding: string;
+  founderType: FounderType;
+  age: SettlementAge;
+  majorEvents: string[];
+  formerName?: string;
+  culturalNote?: string;
+}
+
+export interface SettlementSecret {
+  id: string;
+  text: string;
+  severity: SecretSeverity;
+  discovered: boolean;
+  involvedNpcIds?: string[];
+  involvedFactionIds?: string[];
+  involvedSiteIds?: string[];
+  linkedHookId?: string;
+}
+
+export interface SettlementLore {
+  history: SettlementHistory;
+  secrets: SettlementSecret[];
+}
+
 export interface Settlement extends Location {
   type: "settlement";
   settlementType: SettlementType;
@@ -197,6 +236,7 @@ export interface Settlement extends Location {
   rumors: Rumor[];
   notices: Notice[];
   defenses: DefenseLevel;
+  lore?: SettlementLore;
 }
 
 // === Spatial Town Types ===
