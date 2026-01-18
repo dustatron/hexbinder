@@ -1,4 +1,4 @@
-import { RefreshCw, Users, Shield, Coins, AlertTriangle, ScrollText, MessageSquare, Building2, User, Flag, Map as MapIcon, ClipboardList } from "lucide-react";
+import { RefreshCw, Users, Shield, Coins, AlertTriangle, ScrollText, MessageSquare, Building2, User, Flag, Map as MapIcon, ClipboardList, Dices } from "lucide-react";
 import type { Settlement, NPC, Faction, DayEvent, SettlementSite, WorldData, Hook, Dungeon, Location, Ruleset } from "~/models";
 import { isSpatialSettlement, isDungeon, isSettlement, type SpatialSettlement } from "~/models";
 import type { RegenerationType } from "~/lib/hex-regenerate";
@@ -228,7 +228,7 @@ export function SettlementDetail({
   seed,
 }: SettlementDetailProps) {
   // Tab state
-  const [activeTab, setActiveTab] = useState<"locations" | "rumors" | "notices">("locations");
+  const [activeTab, setActiveTab] = useState<"locations" | "rumors" | "notices" | "encounters">("locations");
 
   // State for ward, building, site, and NPC selection
   const [selectedWardId, setSelectedWardId] = useState<string | null>(null);
@@ -425,20 +425,11 @@ export function SettlementDetail({
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={onReroll}
-              className="rounded p-1.5 text-stone-400 hover:bg-stone-700 hover:text-stone-200"
-              title="Re-roll settlement"
-            >
-              <RefreshCw size={16} />
-            </button>
-            <RegenerateButton
-              onRegenerate={onRegenerate}
-              currentLocationType="settlement"
-              defaultType={settlement.size}
-            />
-          </div>
+          <RegenerateButton
+            onRegenerate={onRegenerate}
+            currentLocationType="settlement"
+            defaultType={settlement.size}
+          />
         </div>
 
         <p className="text-sm text-stone-300">{settlement.description}</p>
@@ -516,39 +507,50 @@ export function SettlementDetail({
       <div className="flex gap-1 rounded-lg border border-stone-700 bg-stone-800 p-1">
         <button
           onClick={() => setActiveTab("locations")}
-          className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm transition-colors ${
+          title="Locations & NPCs"
+          className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 transition-colors ${
             activeTab === "locations"
               ? "bg-stone-700 text-stone-100"
               : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
           }`}
         >
-          <Building2 size={16} />
-          Locations
+          <Building2 size={18} />
           <span className="rounded-full bg-stone-600 px-1.5 text-xs">{settlement.sites.length + npcs.length}</span>
         </button>
         <button
           onClick={() => setActiveTab("rumors")}
-          className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm transition-colors ${
+          title="Rumors"
+          className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 transition-colors ${
             activeTab === "rumors"
               ? "bg-stone-700 text-stone-100"
               : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
           }`}
         >
-          <MessageSquare size={16} />
-          Rumors
+          <MessageSquare size={18} />
           <span className="rounded-full bg-stone-600 px-1.5 text-xs">{settlement.rumors.length}</span>
         </button>
         <button
           onClick={() => setActiveTab("notices")}
-          className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm transition-colors ${
+          title="Notice Board"
+          className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 transition-colors ${
             activeTab === "notices"
               ? "bg-stone-700 text-stone-100"
               : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
           }`}
         >
-          <ClipboardList size={16} />
-          Notices
+          <ClipboardList size={18} />
           <span className="rounded-full bg-stone-600 px-1.5 text-xs">{settlement.notices.length}</span>
+        </button>
+        <button
+          onClick={() => setActiveTab("encounters")}
+          title="Encounters"
+          className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 transition-colors ${
+            activeTab === "encounters"
+              ? "bg-stone-700 text-stone-100"
+              : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
+          }`}
+        >
+          <Dices size={18} />
         </button>
       </div>
 
@@ -803,10 +805,6 @@ export function SettlementDetail({
             </section>
           )}
 
-          {/* Encounter Table (bottom) */}
-          <section>
-            <EncounterTable seed={`${seed}-settlement`} onReroll={onReroll} />
-          </section>
         </>
       )}
 
@@ -955,6 +953,12 @@ export function SettlementDetail({
               <p className="text-sm text-stone-400">No notices posted</p>
             </div>
           )}
+        </section>
+      )}
+
+      {activeTab === "encounters" && (
+        <section>
+          <EncounterTable seed={`${seed}-settlement`} onReroll={onReroll} />
         </section>
       )}
     </div>
