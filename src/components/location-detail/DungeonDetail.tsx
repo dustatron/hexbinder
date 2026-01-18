@@ -339,7 +339,7 @@ export function DungeonDetail({
       )}
 
       {/* Encounter Table */}
-      <EncounterTable seed={`${seed}-encounter`} onReroll={onReroll} />
+      <EncounterTable seed={`${seed}-encounter`} ruleset={ruleset} onReroll={onReroll} />
 
       {/* Summary Stats */}
       <div className="rounded-lg border border-stone-700 bg-stone-800/50 p-4">

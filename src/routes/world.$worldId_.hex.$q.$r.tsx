@@ -4,7 +4,7 @@ import { ArrowLeft, MapPin, Eye, EyeOff, Menu, Check } from "lucide-react";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/lib/hex-regenerate";
 import { WildernessDetail } from "~/components/location-detail/WildernessDetail";
-import { SettlementDetail } from "~/components/location-detail/SettlementDetail";
+import { SettlementDetail, type LocationEvent } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
 import { Button } from "~/components/ui/button";
 import {
@@ -133,6 +133,13 @@ function HexDetailPage() {
     (e) => e.type !== "weather_change" && e.linkedLocationId === location?.id
   );
 
+  // Get all events for this location across all days
+  const locationEvents: LocationEvent[] = world.state.calendar.flatMap((record) =>
+    record.events
+      .filter((e) => e.linkedLocationId === location?.id)
+      .map((e) => ({ ...e, day: record.day }))
+  );
+
   // Filter NPCs at this location
   const npcs = location ? world.npcs.filter((n) => n.locationId === location.id) : [];
 
@@ -218,6 +225,8 @@ function HexDetailPage() {
             settlement={location as Settlement}
             npcs={npcs}
             todayEvents={todayEvents}
+            locationEvents={locationEvents}
+            currentDay={world.state.day}
             factions={world.factions}
             hooks={world.hooks}
             locations={world.locations}

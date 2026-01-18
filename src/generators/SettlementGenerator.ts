@@ -127,6 +127,7 @@ export interface SettlementPlacementOptions {
   hexes: Hex[];
   forceCoord?: HexCoord;    // Place at specific coordinate
   forceSize?: SettlementSize; // Force specific settlement size
+  forceSettlementType?: SettlementType; // Force specific settlement type (human, dwarven, elven, goblin)
   existingSettlementCoords?: HexCoord[]; // For distance-weighted placement
   riverAdjacentCoords?: HexCoord[]; // Hexes adjacent to rivers (bonus weight)
   settlementIndex?: number; // Which settlement this is (0-based)
@@ -197,6 +198,7 @@ export function placeSettlement(options: SettlementPlacementOptions): {
     hexes,
     forceCoord,
     forceSize,
+    forceSettlementType,
     existingSettlementCoords = [],
     riverAdjacentCoords = [],
     settlementIndex = 0,
@@ -268,7 +270,7 @@ export function placeSettlement(options: SettlementPlacementOptions): {
 
   if (!hex) return null;
 
-  const settlement = generateSettlement(rng, hex.coord, hex.terrain, forceSize);
+  const settlement = generateSettlement(rng, hex.coord, hex.terrain, forceSize, forceSettlementType);
 
   // Generate spatial layout
   const layout = generateTownLayout(
@@ -287,9 +289,15 @@ export function placeSettlement(options: SettlementPlacementOptions): {
   return { settlement: spatialSettlement, hex };
 }
 
-function generateSettlement(rng: SeededRandom, coord: HexCoord, terrain: TerrainType, forceSize?: SettlementSize): Settlement {
+function generateSettlement(
+  rng: SeededRandom,
+  coord: HexCoord,
+  terrain: TerrainType,
+  forceSize?: SettlementSize,
+  forceSettlementType?: SettlementType
+): Settlement {
   const id = `settlement-${nanoid(8)}`;
-  const settlementType = generateSettlementType(rng, terrain);
+  const settlementType = forceSettlementType ?? generateSettlementType(rng, terrain);
   const name = generateSettlementName(rng);
   const size = forceSize ?? rng.pickWeighted(SIZE_WEIGHTS);
   const [minPop, maxPop] = POPULATION_RANGES[size];

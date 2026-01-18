@@ -14,6 +14,7 @@ import type {
   Hook,
   Dwelling,
   SettlementSize,
+  SettlementType,
   DayRecord,
   SignificantItem,
   Ruleset,
@@ -46,6 +47,8 @@ import { generateDwellings } from "./DwellingGenerator";
 import { generateQuestObjects } from "./QuestObjectGenerator";
 import { generateSignificantItems, placeItemInLocation } from "./SignificantItemGenerator";
 import { addTreasureBackstories } from "./dungeon/TreasureBackstoryGenerator";
+import { generateSettlementHistory, generateSensoryImpressions } from "./settlement/SettlementHistoryGenerator";
+import { generateSettlementSecrets } from "./settlement/SettlementSecretsGenerator";
 
 export interface WorldGeneratorOptions {
   name: string;
@@ -148,9 +151,18 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     return { q, r };
   });
 
+  // Guarantee at least one non-human settlement
+  // Pick which settlement index gets forced to be non-human (somewhere in the middle)
+  const nonHumanTypes: SettlementType[] = ["dwarven", "elven", "goblin"];
+  const forcedNonHumanIndex = rng.between(0, Math.min(2, extraSettlementCount - 1));
+  const forcedNonHumanType = rng.pick(nonHumanTypes);
+
   for (let i = 0; i < extraSettlementCount; i++) {
     // Collect coordinates of all existing settlements for distance weighting
     const existingCoords = settlementHexes.map(h => h.coord);
+
+    // Force non-human type for one settlement
+    const forceSettlementType = i === forcedNonHumanIndex ? forcedNonHumanType : undefined;
 
     const result = placeSettlement({
       seed: `${seed}-settlement-${i + 1}`,
@@ -159,6 +171,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       riverAdjacentCoords,
       settlementIndex: i + 1, // +1 because starting settlement is index 0
       totalSettlements: settlementCount,
+      forceSettlementType,
     });
     if (result) {
       const sites = generateSites({ seed, settlement: result.settlement });
@@ -197,7 +210,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       settlementSize: settlement.size,
       factions,
       significantItems,
-    });
+    }).slice(0, 12); // Cap at 12 notices
   }
 
   // Step 7: Designate capital - largest settlement becomes regional seat of power
@@ -418,6 +431,8 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
 
   // Step 15: Generate NPCs
   const npcs: NPC[] = [];
+  // Track used secrets across all settlements to avoid world-wide duplicates
+  const usedSecretTexts: string[] = [];
 
   // Settlement NPCs
   for (const settlement of settlements) {
@@ -466,6 +481,37 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
         settlementNPCs
       );
     }
+
+    // Generate settlement lore (history and secrets)
+    const settlementFactionIds = factions
+      .filter((f) => f.headquartersId === settlement.id)
+      .map((f) => f.id);
+
+    const history = generateSettlementHistory({
+      seed: `${seed}-${settlement.id}`,
+      size: settlement.size,
+      name: settlement.name,
+    });
+
+    const secrets = generateSettlementSecrets({
+      seed: `${seed}-${settlement.id}`,
+      size: settlement.size,
+      npcIds: settlement.npcIds,
+      factionIds: settlementFactionIds,
+      sites: settlement.sites,
+      mayorNpcId: settlement.mayorNpcId,
+      existingSecretTexts: usedSecretTexts,
+    });
+
+    // Track used secrets for future settlements
+    for (const secret of secrets) {
+      usedSecretTexts.push(secret.text);
+    }
+
+    settlement.lore = { history, secrets };
+
+    // Generate sensory impressions for scene-setting
+    settlement.sensoryImpressions = generateSensoryImpressions(`${seed}-${settlement.id}`);
   }
 
   // Faction NPCs (use pre-generated NPCs from dungeon population step)

@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { SettlementDetail } from "~/components/location-detail/SettlementDetail";
+import { SettlementDetail, type LocationEvent } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/lib/hex-regenerate";
@@ -42,6 +42,13 @@ function LocationPage() {
   const todayRecord = world.state.calendar.find((r) => r.day === world.state.day);
   const todayEvents: DayEvent[] = (todayRecord?.events ?? []).filter(
     (e) => e.linkedLocationId === location?.id
+  );
+
+  // Get all events for this location across all days
+  const locationEvents = world.state.calendar.flatMap((record) =>
+    record.events
+      .filter((e) => e.linkedLocationId === location?.id)
+      .map((e) => ({ ...e, day: record.day }))
   );
 
   // Get hooks for this location
@@ -131,6 +138,8 @@ function LocationPage() {
             settlement={location as Settlement}
             npcs={npcs}
             todayEvents={todayEvents}
+            locationEvents={locationEvents}
+            currentDay={world.state.day}
             factions={world.factions}
             hooks={hooks}
             locations={world.locations}
