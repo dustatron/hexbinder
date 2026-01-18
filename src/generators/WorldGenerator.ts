@@ -199,7 +199,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       settlementSize: settlement.size,
       factions,
       significantItems,
-    });
+    }).slice(0, 12); // Cap at 12 notices
   }
 
   // Step 7: Designate capital - largest settlement becomes regional seat of power

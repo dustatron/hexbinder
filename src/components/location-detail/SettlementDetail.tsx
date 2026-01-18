@@ -7,7 +7,7 @@ import { RegenerateButton } from "./RegenerateButton";
 import { TownMap } from "~/components/town-map";
 import { NPCStatLine } from "~/components/npc/NPCStatLine";
 import { useState, useMemo, type ReactNode } from "react";
-import { generateRumors } from "~/generators/RumorGenerator";
+import { generateRumors, generateNotices } from "~/generators/RumorGenerator";
 import { nanoid } from "nanoid";
 import { Link } from "@tanstack/react-router";
 
@@ -972,6 +972,32 @@ export function SettlementDetail({
             <h3 className="text-sm font-semibold text-stone-200">
               Notice Board ({settlement.notices.length})
             </h3>
+            <button
+              onClick={() => {
+                onUpdateWorld((world) => {
+                  const newNotices = generateNotices({
+                    seed: `${seed}-notices-${nanoid(4)}`,
+                    count: 8,
+                    settlementSize: settlement.size,
+                    factions,
+                    npcs,
+                  });
+                  // Cap at 12
+                  const cappedNotices = newNotices.slice(0, 12);
+                  const updatedLocations = world.locations.map((loc) => {
+                    if (loc.id === settlement.id && loc.type === "settlement") {
+                      return { ...loc, notices: cappedNotices };
+                    }
+                    return loc;
+                  });
+                  return { ...world, locations: updatedLocations };
+                });
+              }}
+              className="flex items-center gap-1 rounded px-2 py-1 text-xs text-stone-400 hover:bg-stone-600 hover:text-stone-200"
+            >
+              <RefreshCw size={12} />
+              Regenerate
+            </button>
           </div>
 
           {settlement.notices.length > 0 ? (

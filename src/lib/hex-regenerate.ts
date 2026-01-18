@@ -372,7 +372,7 @@ function generateSettlementAtHex(
     seed: `${seed}-notices`,
     count: Math.max(1, Math.floor(settlementNPCs.length / 3)),
     settlementSize: settlement.size,
-  });
+  }).slice(0, 12); // Cap at 12 notices
 
   // Generate settlement lore (history and secrets)
   // Collect existing secrets from other settlements to avoid duplicates
