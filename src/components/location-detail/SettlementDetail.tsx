@@ -1,4 +1,4 @@
-import { RefreshCw, Users, Shield, Coins, AlertTriangle, ScrollText, MessageSquare, Building2, User, Flag, Map as MapIcon } from "lucide-react";
+import { RefreshCw, Users, Shield, Coins, AlertTriangle, ScrollText, MessageSquare, Building2, User, Flag, Map as MapIcon, ClipboardList } from "lucide-react";
 import type { Settlement, NPC, Faction, DayEvent, SettlementSite, WorldData, Hook, Dungeon, Location, Ruleset } from "~/models";
 import { isSpatialSettlement, isDungeon, isSettlement, type SpatialSettlement } from "~/models";
 import type { RegenerationType } from "~/lib/hex-regenerate";
@@ -227,6 +227,9 @@ export function SettlementDetail({
   onUpdateWorld,
   seed,
 }: SettlementDetailProps) {
+  // Tab state
+  const [activeTab, setActiveTab] = useState<"locations" | "rumors" | "notices">("locations");
+
   // State for ward, building, site, and NPC selection
   const [selectedWardId, setSelectedWardId] = useState<string | null>(null);
   const [selectedBuildingId, setSelectedBuildingId] = useState<string | null>(null);
@@ -509,391 +512,451 @@ export function SettlementDetail({
         </section>
       )}
 
-      {/* Two-column layout: Map (left) + Locations (right) on desktop */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Left column: Town Map */}
-        {isSpatialSettlement(settlement) && (
-          <section className="space-y-3 lg:sticky lg:top-4 lg:self-start">
-            <div className="flex items-center gap-2">
-              <MapIcon className="h-4 w-4 text-stone-400" />
-              <h3 className="text-sm font-semibold text-stone-200">Town Map</h3>
-            </div>
-            <TownMap
-              settlement={settlement as SpatialSettlement}
-              selectedBuildingId={selectedBuildingId ?? undefined}
-              selectedWardId={selectedWardId ?? undefined}
-              onBuildingClick={handleBuildingClick}
-              onWardClick={(wardId: string) => setSelectedWardId(wardId)}
-            />
-            <p className="text-xs text-stone-500">
-              Click a ward to see details. Pan and zoom with gestures or +/- buttons.
-            </p>
-          </section>
-        )}
+      {/* Tab Bar */}
+      <div className="flex gap-1 rounded-lg border border-stone-700 bg-stone-800 p-1">
+        <button
+          onClick={() => setActiveTab("locations")}
+          className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm transition-colors ${
+            activeTab === "locations"
+              ? "bg-stone-700 text-stone-100"
+              : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
+          }`}
+        >
+          <Building2 size={16} />
+          Locations
+          <span className="rounded-full bg-stone-600 px-1.5 text-xs">{settlement.sites.length + npcs.length}</span>
+        </button>
+        <button
+          onClick={() => setActiveTab("rumors")}
+          className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm transition-colors ${
+            activeTab === "rumors"
+              ? "bg-stone-700 text-stone-100"
+              : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
+          }`}
+        >
+          <MessageSquare size={16} />
+          Rumors
+          <span className="rounded-full bg-stone-600 px-1.5 text-xs">{settlement.rumors.length}</span>
+        </button>
+        <button
+          onClick={() => setActiveTab("notices")}
+          className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm transition-colors ${
+            activeTab === "notices"
+              ? "bg-stone-700 text-stone-100"
+              : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
+          }`}
+        >
+          <ClipboardList size={16} />
+          Notices
+          <span className="rounded-full bg-stone-600 px-1.5 text-xs">{settlement.notices.length}</span>
+        </button>
+      </div>
 
-        {/* Right column: Key Locations */}
-        <div className="space-y-6">
-          {/* Key Locations (Sites) */}
-          {settlement.sites.length > 0 && (
-            <section>
-              <SectionHeader icon={Building2} title="Key Locations" />
-              <div className="grid gap-2">
-                {settlement.sites.map((site) => {
-                  const owner = site.ownerId ? npcs.find((n) => n.id === site.ownerId) : undefined;
-                  const staff = site.staffIds?.map((id) => npcs.find((n) => n.id === id)).filter(Boolean) || [];
-                  // Check if this site's building is selected on the map
-                  const isLinkedBuildingSelected = isSpatialSettlement(settlement) && selectedBuildingId &&
-                    (settlement as SpatialSettlement).wards
-                      .flatMap((w) => w.buildings)
-                      .some((b) => b.siteId === site.id && b.id === selectedBuildingId);
-                  const isHighlighted = isLinkedBuildingSelected;
-              return (
-                <div
-                  id={`site-${site.id}`}
-                  key={site.id}
-                  onClick={() => handleSiteClick(site.id)}
-                  className={`cursor-pointer scroll-mt-4 rounded-lg border p-3 transition-all duration-300 hover:border-stone-500 ${
-                    isHighlighted
-                      ? "border-amber-500 bg-amber-500/20 ring-2 ring-amber-500/50 shadow-lg shadow-amber-500/20"
-                      : "border-stone-700 bg-stone-800/50"
-                  }`}
-                >
-                  <div className="flex items-start gap-2">
-                    <span className="text-lg">{SITE_ICONS[site.type] || "🏠"}</span>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-medium text-stone-200">{site.name}</h4>
-                        <span className="rounded bg-stone-700 px-1.5 py-0.5 text-xs text-stone-400">
-                          {site.type.replace("_", " ")}
-                        </span>
-                      </div>
-                      {(owner || staff.length > 0) && (
-                        <p className="mt-1 text-xs text-stone-400">
-                          {owner && (
-                            <a href={`#npc-${owner.id}`} className="text-amber-400 hover:underline">{owner.name}</a>
+      {/* Tab Content */}
+      {activeTab === "locations" && (
+        <>
+          {/* Two-column layout: Map (left) + Locations (right) on desktop */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {/* Left column: Town Map */}
+            {isSpatialSettlement(settlement) && (
+              <section className="space-y-3 lg:sticky lg:top-4 lg:self-start">
+                <div className="flex items-center gap-2">
+                  <MapIcon className="h-4 w-4 text-stone-400" />
+                  <h3 className="text-sm font-semibold text-stone-200">Town Map</h3>
+                </div>
+                <TownMap
+                  settlement={settlement as SpatialSettlement}
+                  selectedBuildingId={selectedBuildingId ?? undefined}
+                  selectedWardId={selectedWardId ?? undefined}
+                  onBuildingClick={handleBuildingClick}
+                  onWardClick={(wardId: string) => setSelectedWardId(wardId)}
+                />
+                <p className="text-xs text-stone-500">
+                  Click a ward to see details. Pan and zoom with gestures or +/- buttons.
+                </p>
+              </section>
+            )}
+
+            {/* Right column: Key Locations */}
+            <div className="space-y-6">
+              {/* Key Locations (Sites) */}
+              {settlement.sites.length > 0 && (
+                <section>
+                  <SectionHeader icon={Building2} title="Key Locations" />
+                  <div className="grid gap-2">
+                    {settlement.sites.map((site) => {
+                      const owner = site.ownerId ? npcs.find((n) => n.id === site.ownerId) : undefined;
+                      const staff = site.staffIds?.map((id) => npcs.find((n) => n.id === id)).filter(Boolean) || [];
+                      // Check if this site's building is selected on the map
+                      const isLinkedBuildingSelected = isSpatialSettlement(settlement) && selectedBuildingId &&
+                        (settlement as SpatialSettlement).wards
+                          .flatMap((w) => w.buildings)
+                          .some((b) => b.siteId === site.id && b.id === selectedBuildingId);
+                      const isHighlighted = isLinkedBuildingSelected;
+                  return (
+                    <div
+                      id={`site-${site.id}`}
+                      key={site.id}
+                      onClick={() => handleSiteClick(site.id)}
+                      className={`cursor-pointer scroll-mt-4 rounded-lg border p-3 transition-all duration-300 hover:border-stone-500 ${
+                        isHighlighted
+                          ? "border-amber-500 bg-amber-500/20 ring-2 ring-amber-500/50 shadow-lg shadow-amber-500/20"
+                          : "border-stone-700 bg-stone-800/50"
+                      }`}
+                    >
+                      <div className="flex items-start gap-2">
+                        <span className="text-lg">{SITE_ICONS[site.type] || "🏠"}</span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-medium text-stone-200">{site.name}</h4>
+                            <span className="rounded bg-stone-700 px-1.5 py-0.5 text-xs text-stone-400">
+                              {site.type.replace("_", " ")}
+                            </span>
+                          </div>
+                          {(owner || staff.length > 0) && (
+                            <p className="mt-1 text-xs text-stone-400">
+                              {owner && (
+                                <a href={`#npc-${owner.id}`} className="text-amber-400 hover:underline">{owner.name}</a>
+                              )}
+                              {owner && staff.length > 0 && " · "}
+                              {staff.length > 0 && (
+                                <span className="text-stone-500">
+                                  Staff: {staff.map((s, i) => (
+                                    <span key={s!.id}>
+                                      {i > 0 && ", "}
+                                      <a href={`#npc-${s!.id}`} className="hover:underline">{s!.name}</a>
+                                    </span>
+                                  ))}
+                                </span>
+                              )}
+                            </p>
                           )}
-                          {owner && staff.length > 0 && " · "}
-                          {staff.length > 0 && (
-                            <span className="text-stone-500">
-                              Staff: {staff.map((s, i) => (
-                                <span key={s!.id}>
-                                  {i > 0 && ", "}
-                                  <a href={`#npc-${s!.id}`} className="hover:underline">{s!.name}</a>
+                          <p className="mt-1 text-sm text-stone-400">{site.description}</p>
+                          {site.quirk && (
+                            <p className="mt-1 text-xs italic text-stone-500">
+                              {site.quirk}
+                            </p>
+                          )}
+                          {site.services.length > 0 && (
+                            <div className="mt-2 flex flex-wrap gap-1">
+                              {site.services.map((svc, i) => (
+                                <span
+                                  key={i}
+                                  className="rounded bg-stone-700/50 px-1.5 py-0.5 text-xs text-stone-400"
+                                  title={svc.description}
+                                >
+                                  {svc.name} ({svc.cost})
                                 </span>
                               ))}
-                            </span>
+                            </div>
                           )}
-                        </p>
-                      )}
-                      <p className="mt-1 text-sm text-stone-400">{site.description}</p>
-                      {site.quirk && (
-                        <p className="mt-1 text-xs italic text-stone-500">
-                          {site.quirk}
-                        </p>
-                      )}
-                      {site.services.length > 0 && (
-                        <div className="mt-2 flex flex-wrap gap-1">
-                          {site.services.map((svc, i) => (
-                            <span
-                              key={i}
-                              className="rounded bg-stone-700/50 px-1.5 py-0.5 text-xs text-stone-400"
-                              title={svc.description}
-                            >
-                              {svc.name} ({svc.cost})
-                            </span>
-                          ))}
                         </div>
-                      )}
+                      </div>
                     </div>
+                  );
+                })}
                   </div>
-                </div>
-              );
-            })}
+                </section>
+              )}
+            </div>
+          </div>
+
+          {/* NPCs */}
+          {npcs.length > 0 && (
+            <section>
+              <SectionHeader icon={User} title="NPCs" />
+              <div className="columns-1 md:columns-2 lg:columns-3 gap-3 space-y-3">
+                {[...npcs].sort((a, b) => a.name.localeCompare(b.name)).map((npc) => {
+                  const faction = npcFactionMap.get(npc.id);
+                  const relationships = npc.relationships || [];
+                  const familyRels = relationships.filter((r) =>
+                    ["parent", "child", "sibling", "spouse"].includes(r.type)
+                  );
+                  const isNpcHighlighted = highlightedNpcIds.has(npc.id);
+                  const isNpcSelected = selectedNpcId === npc.id;
+                  const hasSite = Boolean(npc.siteId);
+
+                  // Determine highlight style:
+                  // - Selected with site: amber
+                  // - Selected without site: cyan (wanderer)
+                  // - Highlighted via site selection: amber
+                  // - Default: stone
+                  let cardClass = "border-stone-700 bg-stone-800/50 hover:border-stone-500";
+                  if (isNpcSelected && hasSite) {
+                    cardClass = "border-amber-500 bg-amber-500/20 ring-2 ring-amber-500/50 shadow-lg shadow-amber-500/20";
+                  } else if (isNpcSelected && !hasSite) {
+                    cardClass = "border-cyan-500 bg-cyan-500/20 ring-2 ring-cyan-500/50 shadow-lg shadow-cyan-500/20";
+                  } else if (isNpcHighlighted) {
+                    cardClass = "border-amber-500 bg-amber-500/20 ring-2 ring-amber-500/50 shadow-lg shadow-amber-500/20";
+                  }
+
+                  return (
+                    <div
+                      key={npc.id}
+                      id={`npc-${npc.id}`}
+                      onClick={() => handleNpcClick(npc)}
+                      className={`cursor-pointer break-inside-avoid scroll-mt-4 rounded-lg border p-3 transition-all duration-300 ${cardClass}`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h4 className="font-medium text-stone-200">
+                            {npc.name}
+                            {npc.age && (
+                              <span className="ml-1 text-xs text-stone-500">
+                                ({npc.age} yrs)
+                              </span>
+                            )}
+                          </h4>
+                          <p className="text-xs text-stone-500 capitalize">
+                            {npc.race} - {npc.role ? npc.role.replace("_", " ") : npc.archetype}
+                          </p>
+                          {npc.siteId && (() => {
+                            const site = settlement.sites.find((s) => s.id === npc.siteId);
+                            return site ? (
+                              <p className="text-xs text-amber-500/70">
+                                📍 {site.name}
+                              </p>
+                            ) : null;
+                          })()}
+                          <NPCStatLine archetype={npc.archetype} ruleset={ruleset} />
+                        </div>
+                        {faction && (
+                          <span className="rounded bg-purple-500/20 px-1.5 py-0.5 text-xs text-purple-300">
+                            {faction.name}
+                            {npc.factionRole && ` - ${npc.factionRole}`}
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-1 text-sm text-stone-400">{npc.description}</p>
+                      {familyRels.length > 0 && (
+                        <p className="mt-1 text-xs text-blue-400/80">
+                          <span className="font-medium">Family:</span>{" "}
+                          {familyRels.map((r) => {
+                            const relNpc = npcs.find((n) => n.id === r.targetNpcId);
+                            return relNpc ? `${r.type}: ${relNpc.name}` : null;
+                          }).filter(Boolean).join(", ")}
+                        </p>
+                      )}
+                      <p className="mt-1 text-xs text-amber-400/80">
+                        <span className="font-medium">Wants:</span>{" "}
+                        {npc.wants.length > 0 ? (
+                          <span className="text-amber-300">
+                            {npc.wants.map((w) => w.personalStakes).join(", ")}
+                          </span>
+                        ) : (
+                          npc.flavorWant
+                        )}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
             </section>
           )}
-        </div>
-      </div>
 
-      {/* NPCs */}
-      {npcs.length > 0 && (
-        <section>
-          <SectionHeader icon={User} title="NPCs" />
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-3 space-y-3">
-            {[...npcs].sort((a, b) => a.name.localeCompare(b.name)).map((npc) => {
-              const faction = npcFactionMap.get(npc.id);
-              const relationships = npc.relationships || [];
-              const familyRels = relationships.filter((r) =>
-                ["parent", "child", "sibling", "spouse"].includes(r.type)
-              );
-              const isNpcHighlighted = highlightedNpcIds.has(npc.id);
-              const isNpcSelected = selectedNpcId === npc.id;
-              const hasSite = Boolean(npc.siteId);
-
-              // Determine highlight style:
-              // - Selected with site: amber
-              // - Selected without site: cyan (wanderer)
-              // - Highlighted via site selection: amber
-              // - Default: stone
-              let cardClass = "border-stone-700 bg-stone-800/50 hover:border-stone-500";
-              if (isNpcSelected && hasSite) {
-                cardClass = "border-amber-500 bg-amber-500/20 ring-2 ring-amber-500/50 shadow-lg shadow-amber-500/20";
-              } else if (isNpcSelected && !hasSite) {
-                cardClass = "border-cyan-500 bg-cyan-500/20 ring-2 ring-cyan-500/50 shadow-lg shadow-cyan-500/20";
-              } else if (isNpcHighlighted) {
-                cardClass = "border-amber-500 bg-amber-500/20 ring-2 ring-amber-500/50 shadow-lg shadow-amber-500/20";
-              }
-
-              return (
-                <div
-                  key={npc.id}
-                  id={`npc-${npc.id}`}
-                  onClick={() => handleNpcClick(npc)}
-                  className={`cursor-pointer break-inside-avoid scroll-mt-4 rounded-lg border p-3 transition-all duration-300 ${cardClass}`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h4 className="font-medium text-stone-200">
-                        {npc.name}
-                        {npc.age && (
-                          <span className="ml-1 text-xs text-stone-500">
-                            ({npc.age} yrs)
-                          </span>
-                        )}
-                      </h4>
-                      <p className="text-xs text-stone-500 capitalize">
-                        {npc.race} - {npc.role ? npc.role.replace("_", " ") : npc.archetype}
-                      </p>
-                      {npc.siteId && (() => {
-                        const site = settlement.sites.find((s) => s.id === npc.siteId);
-                        return site ? (
-                          <p className="text-xs text-amber-500/70">
-                            📍 {site.name}
+          {/* Faction Presence */}
+          {presentFactions.length > 0 && (
+            <section>
+              <SectionHeader icon={Flag} title="Faction Presence" />
+              <div className="grid gap-2">
+                {presentFactions.map((faction) => {
+                  const isHQ = faction.headquartersId === settlement.id;
+                  const isTerritory = faction.territoryIds.includes(settlement.id);
+                  return (
+                    <div
+                      key={faction.id}
+                      className="rounded-lg border border-stone-700 bg-stone-800/50 p-3"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h4 className="font-medium text-stone-200">{faction.name}</h4>
+                          <p className="text-xs text-stone-500">
+                            {faction.archetype} - {faction.factionType}
                           </p>
-                        ) : null;
-                      })()}
-                      <NPCStatLine archetype={npc.archetype} ruleset={ruleset} />
+                        </div>
+                        <div className="flex gap-1">
+                          {isHQ && (
+                            <span className="rounded bg-red-500/20 px-1.5 py-0.5 text-xs text-red-300">
+                              HQ
+                            </span>
+                          )}
+                          {isTerritory && (
+                            <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-xs text-amber-300">
+                              Territory
+                            </span>
+                          )}
+                          {!isHQ && !isTerritory && (
+                            <span className="rounded bg-stone-600 px-1.5 py-0.5 text-xs text-stone-300">
+                              Influence
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <p className="mt-1 text-sm text-stone-400">{faction.purpose}</p>
+                      <p className="mt-1 text-xs text-stone-500">
+                        Status: {faction.status}
+                      </p>
                     </div>
-                    {faction && (
-                      <span className="rounded bg-purple-500/20 px-1.5 py-0.5 text-xs text-purple-300">
-                        {faction.name}
-                        {npc.factionRole && ` - ${npc.factionRole}`}
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-1 text-sm text-stone-400">{npc.description}</p>
-                  {familyRels.length > 0 && (
-                    <p className="mt-1 text-xs text-blue-400/80">
-                      <span className="font-medium">Family:</span>{" "}
-                      {familyRels.map((r) => {
-                        const relNpc = npcs.find((n) => n.id === r.targetNpcId);
-                        return relNpc ? `${r.type}: ${relNpc.name}` : null;
-                      }).filter(Boolean).join(", ")}
-                    </p>
-                  )}
-                  <p className="mt-1 text-xs text-amber-400/80">
-                    <span className="font-medium">Wants:</span>{" "}
-                    {npc.wants.length > 0 ? (
-                      <span className="text-amber-300">
-                        {npc.wants.map((w) => w.personalStakes).join(", ")}
-                      </span>
-                    ) : (
-                      npc.flavorWant
-                    )}
-                  </p>
-                </div>
-              );
-            })}
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
+          {/* Encounter Table (bottom) */}
+          <section>
+            <EncounterTable seed={`${seed}-settlement`} onReroll={onReroll} />
+          </section>
+        </>
+      )}
+
+      {activeTab === "rumors" && (
+        <section>
+          {/* Header bar */}
+          <div className="mb-3 flex items-center justify-between rounded bg-stone-700 px-3 py-2">
+            <h3 className="text-sm font-semibold text-stone-200">
+              Rumors ({settlement.rumors.length})
+            </h3>
+            <button
+              onClick={handleRegenerateRumors}
+              className="flex items-center gap-1 rounded px-2 py-1 text-sm text-stone-400 hover:bg-stone-600 hover:text-stone-200"
+              title="Generate new rumors"
+            >
+              <RefreshCw size={14} />
+              Regenerate
+            </button>
           </div>
+
+          {settlement.rumors.length > 0 ? (
+            <ul className="space-y-2">
+              {settlement.rumors.map((rumor, index) => (
+                <li
+                  key={rumor.id}
+                  className="flex items-start gap-3 rounded-lg border border-stone-700 bg-stone-800/50 p-3"
+                >
+                  {/* Checkbox */}
+                  <input
+                    type="checkbox"
+                    checked={rumor.used ?? false}
+                    onChange={() => handleToggleRumor(rumor.id)}
+                    className="mt-1 h-4 w-4 shrink-0 cursor-pointer rounded border-stone-600 bg-stone-700 text-amber-500 focus:ring-2 focus:ring-amber-500 focus:ring-offset-0"
+                  />
+                  {/* Row number */}
+                  <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded bg-stone-600 text-xs font-medium text-stone-200 ${rumor.used ? "opacity-50" : ""}`}>
+                    {index + 1}
+                  </div>
+                  {/* Rumor content */}
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className={`text-stone-300 ${rumor.used ? "opacity-50 line-through" : ""}`}>
+                        "<LinkedText
+                          text={rumor.text}
+                          factions={factions}
+                          locations={locations}
+                          npcs={npcs}
+                          worldId={worldId}
+                        />"
+                      </p>
+                      {rumor.linkedHookId && (
+                        <span className={`shrink-0 rounded bg-amber-500/20 px-1.5 py-0.5 text-xs text-amber-300 ${rumor.used ? "opacity-50" : ""}`}>
+                          Quest
+                        </span>
+                      )}
+                    </div>
+                    <p className={`mt-1 text-xs text-stone-500 ${rumor.used ? "opacity-50" : ""}`}>
+                      Source: {rumor.source}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="rounded-lg border border-stone-700 bg-stone-800/50 p-6 text-center">
+              <p className="text-sm text-stone-400">No rumors available</p>
+              <button
+                onClick={handleRegenerateRumors}
+                className="mt-2 rounded bg-amber-600 px-3 py-1.5 text-sm font-medium text-stone-100 hover:bg-amber-500"
+              >
+                Generate Rumors
+              </button>
+            </div>
+          )}
         </section>
       )}
 
-      {/* Rumors & Notices */}
-      {(settlement.rumors.length > 0 || settlement.notices.length > 0) && (
+      {activeTab === "notices" && (
         <section>
-          <SectionHeader icon={MessageSquare} title="Rumors & Notices" />
+          <div className="mb-3 flex items-center justify-between rounded bg-stone-700 px-3 py-2">
+            <h3 className="text-sm font-semibold text-stone-200">
+              Notice Board ({settlement.notices.length})
+            </h3>
+          </div>
 
-          {settlement.rumors.length > 0 && (
-            <div className="mb-3">
-              {/* Header bar */}
-              <div className="mb-2 flex items-center justify-between rounded-t bg-stone-700 px-3 py-1.5">
-                <h4 className="text-xs font-medium uppercase tracking-wide text-stone-200">
-                  Rumors
-                </h4>
-                <button
-                  onClick={handleRegenerateRumors}
-                  className="rounded p-1 text-stone-400 hover:bg-stone-600 hover:text-stone-200"
-                  title="Generate new rumors"
-                >
-                  <RefreshCw size={14} />
-                </button>
-              </div>
-              {/* Rumors list with numbers */}
-              <ul className="space-y-1">
-                {settlement.rumors.map((rumor, index) => (
+          {settlement.notices.length > 0 ? (
+            <ul className="space-y-3">
+              {settlement.notices.map((notice) => {
+                const posterNpc = notice.posterId
+                  ? npcs.find((n) => n.id === notice.posterId)
+                  : undefined;
+                return (
                   <li
-                    key={rumor.id}
-                    className="flex items-start gap-2 rounded bg-stone-800/50 p-2 text-sm"
+                    key={notice.id}
+                    className="rounded-lg border border-stone-700 bg-stone-800/50 p-3"
                   >
-                    {/* Checkbox */}
-                    <input
-                      type="checkbox"
-                      checked={rumor.used ?? false}
-                      onChange={() => handleToggleRumor(rumor.id)}
-                      className="mt-1 h-4 w-4 shrink-0 cursor-pointer rounded border-stone-600 bg-stone-700 text-amber-500 focus:ring-2 focus:ring-amber-500 focus:ring-offset-0"
-                    />
-                    {/* Row number */}
-                    <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded bg-stone-600 text-xs font-medium text-stone-200 ${rumor.used ? "opacity-50" : ""}`}>
-                      {index + 1}
-                    </div>
-                    {/* Rumor content */}
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between">
-                        <p className={`text-stone-300 ${rumor.used ? "opacity-50 line-through" : ""}`}>
-                          "<LinkedText
-                            text={rumor.text}
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="checkbox"
+                        checked={notice.used ?? false}
+                        onChange={() => handleNoticeToggle(notice.id)}
+                        className="mt-1 h-4 w-4 cursor-pointer rounded border-stone-600 bg-stone-700 text-amber-600 focus:ring-2 focus:ring-amber-500 focus:ring-offset-0"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="rounded bg-amber-600/80 px-1.5 py-0.5 text-xs font-medium text-stone-100">
+                            {notice.noticeType.toUpperCase()}
+                          </span>
+                          <h4 className={`font-medium text-stone-200 ${notice.used ? "line-through opacity-50" : ""}`}>
+                            {notice.title}
+                          </h4>
+                        </div>
+                        <p className={`mt-2 text-sm text-stone-300 ${notice.used ? "line-through opacity-50" : ""}`}>
+                          <LinkedText
+                            text={notice.description}
                             factions={factions}
                             locations={locations}
                             npcs={npcs}
                             worldId={worldId}
-                          />"
+                          />
                         </p>
-                        {rumor.linkedHookId && (
-                          <span className={`ml-2 shrink-0 rounded bg-amber-500/20 px-1.5 py-0.5 text-xs text-amber-300 ${rumor.used ? "opacity-50" : ""}`}>
-                            Quest
-                          </span>
-                        )}
-                      </div>
-                      <p className={`text-xs text-stone-500 ${rumor.used ? "opacity-50 line-through" : ""}`}>
-                        Source: {rumor.source}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {settlement.notices.length > 0 && (
-            <div>
-              <h4 className="mb-2 text-xs font-medium uppercase tracking-wide text-stone-500">
-                Notice Board
-              </h4>
-              <ul className="space-y-2">
-                {settlement.notices.map((notice) => {
-                  const posterNpc = notice.posterId
-                    ? npcs.find((n) => n.id === notice.posterId)
-                    : undefined;
-                  return (
-                    <li
-                      key={notice.id}
-                      className="rounded border border-stone-700 bg-stone-800/50 p-2"
-                    >
-                      <div className="flex items-start gap-2">
-                        <input
-                          type="checkbox"
-                          checked={notice.used ?? false}
-                          onChange={() => handleNoticeToggle(notice.id)}
-                          className="mt-1 h-4 w-4 cursor-pointer rounded border-stone-600 bg-stone-700 text-amber-600 focus:ring-2 focus:ring-amber-500 focus:ring-offset-0"
-                        />
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="rounded bg-amber-600/80 px-1.5 py-0.5 text-xs font-medium text-stone-100">
-                              {notice.noticeType.toUpperCase()}
+                        <div className="mt-3 flex items-center gap-4 text-xs">
+                          {posterNpc && (
+                            <span className="text-stone-400">
+                              <span className="font-medium text-stone-300">Contact:</span>{" "}
+                              <a href={`#npc-${posterNpc.id}`} className="text-amber-400 hover:underline">
+                                {posterNpc.name}
+                              </a>
+                              {posterNpc.role && ` (${posterNpc.role.replace("_", " ")})`}
                             </span>
-                            <h5 className={`font-medium text-stone-200 ${notice.used ? "line-through opacity-50" : ""}`}>
-                              {notice.title}
-                            </h5>
-                          </div>
-                          <p className={`mt-1 text-sm text-stone-300 ${notice.used ? "line-through opacity-50" : ""}`}>
-                            <LinkedText
-                              text={notice.description}
-                              factions={factions}
-                              locations={locations}
-                              npcs={npcs}
-                              worldId={worldId}
-                            />
-                          </p>
-                          <div className="mt-2 flex items-center gap-3 text-xs">
-                            {posterNpc && (
-                              <span className="text-stone-400">
-                                <span className="font-medium text-stone-300">Contact:</span>{" "}
-                                <a href={`#npc-${posterNpc.id}`} className="text-amber-400 hover:underline">
-                                  {posterNpc.name}
-                                </a>
-                                {posterNpc.role && ` (${posterNpc.role.replace("_", " ")})`}
-                              </span>
-                            )}
-                            {notice.reward && (
-                              <span className="text-amber-400 font-medium">
-                                Pays: {notice.reward}
-                              </span>
-                            )}
-                          </div>
+                          )}
+                          {notice.reward && (
+                            <span className="text-amber-400 font-medium">
+                              Reward: {notice.reward}
+                            </span>
+                          )}
                         </div>
                       </div>
-                    </li>
-                  );
-                })}
-              </ul>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <div className="rounded-lg border border-stone-700 bg-stone-800/50 p-6 text-center">
+              <p className="text-sm text-stone-400">No notices posted</p>
             </div>
           )}
         </section>
       )}
-
-      {/* Faction Presence */}
-      {presentFactions.length > 0 && (
-        <section>
-          <SectionHeader icon={Flag} title="Faction Presence" />
-          <div className="grid gap-2">
-            {presentFactions.map((faction) => {
-              const isHQ = faction.headquartersId === settlement.id;
-              const isTerritory = faction.territoryIds.includes(settlement.id);
-              return (
-                <div
-                  key={faction.id}
-                  className="rounded-lg border border-stone-700 bg-stone-800/50 p-3"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h4 className="font-medium text-stone-200">{faction.name}</h4>
-                      <p className="text-xs text-stone-500">
-                        {faction.archetype} - {faction.factionType}
-                      </p>
-                    </div>
-                    <div className="flex gap-1">
-                      {isHQ && (
-                        <span className="rounded bg-red-500/20 px-1.5 py-0.5 text-xs text-red-300">
-                          HQ
-                        </span>
-                      )}
-                      {isTerritory && (
-                        <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-xs text-amber-300">
-                          Territory
-                        </span>
-                      )}
-                      {!isHQ && !isTerritory && (
-                        <span className="rounded bg-stone-600 px-1.5 py-0.5 text-xs text-stone-300">
-                          Influence
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <p className="mt-1 text-sm text-stone-400">{faction.purpose}</p>
-                  <p className="mt-1 text-xs text-stone-500">
-                    Status: {faction.status}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {/* Encounter Table (bottom) */}
-      <section>
-        <EncounterTable seed={`${seed}-settlement`} onReroll={onReroll} />
-      </section>
     </div>
   );
 }
