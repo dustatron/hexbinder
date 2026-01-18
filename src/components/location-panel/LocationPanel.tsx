@@ -7,7 +7,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
 } from "~/components/ui/dropdown-menu";
 import type { Hex, Location, TerrainType, Dwelling, DwellingType } from "~/models";
 import { generateImprovedEncounter, type ImprovedEncounterResult } from "~/generators/EncounterGenerator";
@@ -81,42 +80,49 @@ export function LocationPanel({
           animate={{ y: 0 }}
           exit={{ y: "100%" }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="absolute bottom-0 left-0 right-0 max-h-[60%] overflow-y-auto rounded-t-xl border-t border-stone-700 bg-stone-800 p-4 shadow-xl"
+          className="absolute bottom-0 left-0 right-0 rounded-t-xl border-t border-stone-700 bg-stone-800 p-3 shadow-xl"
         >
-          <div className="mb-4 flex items-start justify-between">
-            <div className="flex-1">
+          <div className="mb-2 flex items-start justify-between">
+            <div className="flex-1 min-w-0">
               {location ? (
-                <>
-                  <h2 className="text-xl font-bold text-stone-100">
+                <div className="flex items-baseline gap-2">
+                  <h2 className="text-lg font-bold text-stone-100 truncate">
                     {location.name}
                   </h2>
-                  <p className="text-sm font-medium capitalize text-amber-400">
+                  <span className="text-sm font-medium capitalize text-amber-400 shrink-0">
                     {location.type}
-                  </p>
-                </>
+                  </span>
+                  {isCurrent && (
+                    <span className="rounded-full bg-green-600/20 px-1.5 py-0.5 text-xs text-green-400 shrink-0">
+                      Here
+                    </span>
+                  )}
+                  {isVisited && !isCurrent && (
+                    <span className="rounded-full bg-purple-600/20 px-1.5 py-0.5 text-xs text-purple-400 shrink-0">
+                      Visited
+                    </span>
+                  )}
+                </div>
               ) : (
-                <>
-                  <h2 className="text-xl font-bold capitalize text-stone-100">
+                <div className="flex items-baseline gap-2">
+                  <h2 className="text-lg font-bold capitalize text-stone-100">
                     {hex ? TERRAIN_LABELS[hex.terrain] : "Unknown"}
                   </h2>
-                  <p className="text-sm text-stone-400">
-                    Hex ({hex?.coord.q}, {hex?.coord.r})
-                  </p>
-                </>
+                  <span className="text-sm text-stone-400">
+                    ({hex?.coord.q}, {hex?.coord.r})
+                  </span>
+                  {isCurrent && (
+                    <span className="rounded-full bg-green-600/20 px-1.5 py-0.5 text-xs text-green-400 shrink-0">
+                      Here
+                    </span>
+                  )}
+                  {isVisited && !isCurrent && (
+                    <span className="rounded-full bg-purple-600/20 px-1.5 py-0.5 text-xs text-purple-400 shrink-0">
+                      Visited
+                    </span>
+                  )}
+                </div>
               )}
-              {/* Status badges */}
-              <div className="mt-1 flex gap-2">
-                {isCurrent && (
-                  <span className="rounded-full bg-green-600/20 px-2 py-0.5 text-xs text-green-400">
-                    Current Location
-                  </span>
-                )}
-                {isVisited && !isCurrent && (
-                  <span className="rounded-full bg-purple-600/20 px-2 py-0.5 text-xs text-purple-400">
-                    Visited
-                  </span>
-                )}
-              </div>
             </div>
             <button
               onClick={onClose}
@@ -126,38 +132,14 @@ export function LocationPanel({
             </button>
           </div>
 
-          {/* Party location controls - dropdown menu */}
-          {hexId && (
-            <div className="mb-4">
-              <DropdownMenu>
-                <DropdownMenuTrigger className="rounded-lg bg-stone-700 p-2 text-stone-300 transition-colors hover:bg-stone-600">
-                  <Menu size={18} />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="min-w-[180px]">
-                  <DropdownMenuItem
-                    onClick={() => onSetCurrent(hexId)}
-                    disabled={isCurrent}
-                    className={isCurrent ? "opacity-50" : ""}
-                  >
-                    {isCurrent ? <Check size={14} /> : <MapPin size={14} />}
-                    {isCurrent ? "Current Location" : "Set as Current"}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onToggleVisited(hexId)}>
-                    {isVisited ? <EyeOff size={14} /> : <Eye size={14} />}
-                    {isVisited ? "Unmark Visited" : "Mark as Visited"}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          )}
 
           {location && (
-            <div className="space-y-4">
-              <p className="text-stone-300">{location.description}</p>
+            <div className="space-y-2">
+              <p className="text-sm text-stone-300 line-clamp-2">{location.description}</p>
 
               {location.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {location.tags.map((tag) => (
+                <div className="flex flex-wrap gap-1">
+                  {location.tags.slice(0, 4).map((tag) => (
                     <span
                       key={tag}
                       className="rounded-full bg-stone-700 px-2 py-0.5 text-xs text-stone-300"
@@ -165,111 +147,108 @@ export function LocationPanel({
                       {tag}
                     </span>
                   ))}
+                  {location.tags.length > 4 && (
+                    <span className="text-xs text-stone-400">+{location.tags.length - 4}</span>
+                  )}
                 </div>
               )}
             </div>
           )}
 
           {!location && hex && (
-            <div className="space-y-3">
-              {/* Terrain description */}
-              <p className="text-stone-300">
-                {hex.description ||
-                  `The ${hex.terrain.replace("_", " ")} stretches before you.`}
-              </p>
-
+            <div className="space-y-2">
               {/* Improved Encounter Result */}
               {encounterResult && (
-                <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3">
+                <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-2">
                   <div className="flex items-start gap-2">
                     <Sparkles size={14} className="mt-0.5 shrink-0 text-amber-400" />
-                    <span className="whitespace-pre-line font-medium text-amber-200">
+                    <span className="whitespace-pre-line text-sm font-medium text-amber-200 line-clamp-2">
                       {buildEncounterSummary(encounterResult)}
                     </span>
                   </div>
-                  {hex.lastEncounterTimestamp && (
-                    <p className="mt-1 text-xs text-stone-500">
-                      Last rolled: {formatTimestamp(hex.lastEncounterTimestamp)}
-                    </p>
-                  )}
                 </div>
               )}
 
               {/* Feature */}
               {hex.feature && (
-                <div className="rounded-lg border border-stone-600 bg-stone-700/50 p-3">
-                  <h3 className="font-medium text-stone-100">
-                    {hex.feature.name}
-                  </h3>
-                  <p className="mt-1 text-sm text-stone-300">
-                    {hex.feature.description}
-                  </p>
-                  {hex.feature.cleared && (
-                    <span className="mt-2 inline-block rounded bg-stone-600 px-2 py-0.5 text-xs text-stone-400">
-                      Cleared
-                    </span>
-                  )}
+                <div className="rounded-lg border border-stone-600 bg-stone-700/50 p-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-stone-100">{hex.feature.name}</span>
+                    {hex.feature.cleared && (
+                      <span className="rounded bg-stone-600 px-1.5 py-0.5 text-xs text-stone-400">Cleared</span>
+                    )}
+                  </div>
                 </div>
               )}
 
               {/* Encounter */}
               {hex.encounter && !hex.encounter.defeated && (
-                <div className="flex items-start gap-2 rounded-lg border border-red-900/50 bg-red-950/30 p-3">
-                  <Skull size={16} className="mt-0.5 shrink-0 text-red-400" />
-                  <p className="text-sm text-red-200">
-                    Potential encounter: {hex.encounter.creature} (x
-                    {hex.encounter.count})
-                  </p>
+                <div className="flex items-center gap-2 rounded-lg border border-red-900/50 bg-red-950/30 p-2">
+                  <Skull size={14} className="shrink-0 text-red-400" />
+                  <span className="text-sm text-red-200">
+                    {hex.encounter.creature} (x{hex.encounter.count})
+                  </span>
                 </div>
               )}
 
               {/* Quest Object */}
               {hex.questObject && !hex.questObject.found && (
-                <div className="flex items-start gap-2 rounded-lg border border-amber-900/50 bg-amber-950/30 p-3">
-                  <Sparkles
-                    size={16}
-                    className="mt-0.5 shrink-0 text-amber-400"
-                  />
-                  <p className="text-sm text-amber-200">
-                    Something glints in the area: {hex.questObject.name}
-                  </p>
+                <div className="flex items-center gap-2 rounded-lg border border-amber-900/50 bg-amber-950/30 p-2">
+                  <Sparkles size={14} className="shrink-0 text-amber-400" />
+                  <span className="text-sm text-amber-200">{hex.questObject.name}</span>
                 </div>
               )}
 
               {/* Dwelling */}
               {dwelling && (
-                <div className="flex items-start gap-2 rounded-lg border border-stone-600 bg-stone-700/50 p-3">
-                  <Home size={16} className="mt-0.5 shrink-0 text-stone-300" />
-                  <div>
-                    <p className="text-sm text-stone-200">
-                      A {DWELLING_LABELS[dwelling.type].toLowerCase()} sits
-                      here: <span className="font-medium">{dwelling.name}</span>
-                    </p>
-                    {dwelling.description && (
-                      <p className="mt-1 text-xs text-stone-400">
-                        {dwelling.description}
-                      </p>
-                    )}
-                  </div>
+                <div className="flex items-center gap-2 rounded-lg border border-stone-600 bg-stone-700/50 p-2">
+                  <Home size={14} className="shrink-0 text-stone-300" />
+                  <span className="text-sm text-stone-200">
+                    {DWELLING_LABELS[dwelling.type]}: <span className="font-medium">{dwelling.name}</span>
+                  </span>
                 </div>
               )}
             </div>
           )}
 
-          {/* View Details Button */}
+          {/* Action Bar */}
           {hex && (
-            <Link
-              to="/world/$worldId/hex/$q/$r"
-              params={{
-                worldId,
-                q: String(hex.coord.q),
-                r: String(hex.coord.r),
-              }}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-amber-600 px-4 py-3 font-medium text-stone-900 hover:bg-amber-500"
-            >
-              View Details
-              <ChevronRight size={18} />
-            </Link>
+            <div className="mt-3 flex gap-2">
+              {/* Party location dropdown */}
+              {hexId && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="rounded-lg bg-stone-700 px-3 py-2 text-stone-300 transition-colors hover:bg-stone-600">
+                    <Menu size={16} />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="min-w-[160px]">
+                    <DropdownMenuItem
+                      onClick={() => onSetCurrent(hexId)}
+                      disabled={isCurrent}
+                      className={isCurrent ? "opacity-50" : ""}
+                    >
+                      {isCurrent ? <Check size={14} /> : <MapPin size={14} />}
+                      {isCurrent ? "Current" : "Set Current"}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onToggleVisited(hexId)}>
+                      {isVisited ? <EyeOff size={14} /> : <Eye size={14} />}
+                      {isVisited ? "Unmark" : "Mark Visited"}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+              <Link
+                to="/world/$worldId/hex/$q/$r"
+                params={{
+                  worldId,
+                  q: String(hex.coord.q),
+                  r: String(hex.coord.r),
+                }}
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-amber-600 px-4 py-2 font-medium text-stone-900 hover:bg-amber-500"
+              >
+                View Details
+                <ChevronRight size={16} />
+              </Link>
+            </div>
           )}
         </motion.div>
       )}
