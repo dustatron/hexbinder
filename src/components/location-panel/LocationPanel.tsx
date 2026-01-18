@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import { X, Sparkles, Skull, Home, ChevronRight, MapPin, Eye, EyeOff, MoreHorizontal, Check } from "lucide-react";
+import { X, Sparkles, Skull, Home, ChevronRight, MapPin, Eye, EyeOff, Menu, Check } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -130,9 +130,8 @@ export function LocationPanel({
           {hexId && (
             <div className="mb-4">
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-2 rounded-lg bg-stone-700 px-3 py-1.5 text-sm font-medium text-stone-300 transition-colors hover:bg-stone-600">
-                  <MoreHorizontal size={16} />
-                  Actions
+                <DropdownMenuTrigger className="rounded-lg bg-stone-700 p-2 text-stone-300 transition-colors hover:bg-stone-600">
+                  <Menu size={18} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="min-w-[180px]">
                   <DropdownMenuItem

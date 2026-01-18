@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, MapPin, Eye, EyeOff, MoreHorizontal, Check } from "lucide-react";
+import { ArrowLeft, MapPin, Eye, EyeOff, Menu, Check } from "lucide-react";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/lib/hex-regenerate";
 import { WildernessDetail } from "~/components/location-detail/WildernessDetail";
@@ -176,9 +176,8 @@ function HexDetailPage() {
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <MoreHorizontal size={16} className="mr-1" />
-                Actions
+              <Button variant="outline" size="icon" className="h-8 w-8">
+                <Menu size={18} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="min-w-[180px]">
