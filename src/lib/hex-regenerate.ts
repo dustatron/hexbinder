@@ -5,7 +5,7 @@ import { placeSettlement } from "~/generators/SettlementGenerator";
 import { generateSites } from "~/generators/SiteGenerator";
 import { generateSettlementNPCs } from "~/generators/NPCGenerator";
 import { generateRumors, generateNotices } from "~/generators/RumorGenerator";
-import { generateSettlementHistory } from "~/generators/settlement/SettlementHistoryGenerator";
+import { generateSettlementHistory, generateSensoryImpressions } from "~/generators/settlement/SettlementHistoryGenerator";
 import { generateSettlementSecrets } from "~/generators/settlement/SettlementSecretsGenerator";
 import { assignNPCsToBuildings, linkSitesToBuildings } from "~/generators/TownLayoutEngine";
 import { SeededRandom } from "~/generators/SeededRandom";
@@ -401,6 +401,9 @@ function generateSettlementAtHex(
   });
 
   settlement.lore = { history, secrets };
+
+  // Generate sensory impressions for scene-setting
+  settlement.sensoryImpressions = generateSensoryImpressions(`${seed}-${settlement.id}`);
 
   // placeSettlement mutates the hex in the array, but we want immutable updates
   const hexes = world.hexes.map(h => {

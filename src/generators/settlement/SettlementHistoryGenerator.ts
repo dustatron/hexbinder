@@ -12,6 +12,9 @@ import {
   CULTURAL_NOTES,
   FORMER_NAME_PREFIXES,
   FORMER_NAME_SUFFIXES,
+  SENSORY_SIGHTS,
+  SENSORY_SOUNDS,
+  SENSORY_SMELLS,
   type FounderEntry,
 } from "~/data/settlements/history-tables";
 
@@ -139,4 +142,18 @@ export function generateSettlementHistory(options: SettlementHistoryOptions): Se
     formerName,
     culturalNote,
   };
+}
+
+/**
+ * Generate 3 sensory impressions for a settlement (sight, sound, smell).
+ * Brief, evocative phrases for quick scene-setting.
+ */
+export function generateSensoryImpressions(seed: string): string[] {
+  const rng = new SeededRandom(`${seed}-sensory`);
+
+  return [
+    rng.pick(SENSORY_SIGHTS),
+    rng.pick(SENSORY_SOUNDS),
+    rng.pick(SENSORY_SMELLS),
+  ];
 }

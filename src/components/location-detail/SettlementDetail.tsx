@@ -3,6 +3,7 @@ import type { Settlement, NPC, Faction, DayEvent, SettlementSite, WorldData, Hoo
 import { isSpatialSettlement, isDungeon, isSettlement, type SpatialSettlement } from "~/models";
 import type { RegenerationType } from "~/lib/hex-regenerate";
 import { EncounterTable } from "~/components/encounter-table/EncounterTable";
+import { QuickNames } from "~/components/encounter-table/QuickNames";
 import { RegenerateButton } from "./RegenerateButton";
 import { TownMap } from "~/components/town-map";
 import { NPCStatLine } from "~/components/npc/NPCStatLine";
@@ -441,6 +442,18 @@ export function SettlementDetail({
 
         <p className="text-sm text-stone-300">{settlement.description}</p>
 
+        {/* Sensory Impressions - Quick scene-setting bullets */}
+        {settlement.sensoryImpressions && settlement.sensoryImpressions.length > 0 && (
+          <ul className="mt-2 space-y-0.5 text-sm italic text-stone-400">
+            {settlement.sensoryImpressions.map((impression, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <span className="text-amber-500/60">•</span>
+                {impression}
+              </li>
+            ))}
+          </ul>
+        )}
+
         {/* Quick stats */}
         <div className="flex flex-wrap gap-3 text-xs text-stone-400">
           <span>Govt: {settlement.governmentType}</span>
@@ -473,25 +486,10 @@ export function SettlementDetail({
           </span>
         </div>
 
-        {/* Trouble & Quirk */}
-        {(settlement.trouble || settlement.quirk) && (
-          <div className="mt-2 space-y-1 rounded bg-stone-800 p-2 text-xs">
-            {settlement.trouble && (
-              <p className="text-amber-400">
-                <span className="font-medium">Trouble:</span> {settlement.trouble}
-              </p>
-            )}
-            {settlement.quirk && (
-              <p className="text-stone-400">
-                <span className="font-medium">Quirk:</span> {settlement.quirk}
-              </p>
-            )}
-          </div>
-        )}
       </div>
 
       {/* Settlement Lore Section */}
-      {settlement.lore && (
+      {(settlement.lore || settlement.trouble || settlement.quirk) && (
         <details className="group rounded-lg border border-stone-700 bg-stone-800/50">
           <summary className="flex cursor-pointer items-center gap-2 p-3 text-sm font-semibold text-stone-200 hover:bg-stone-700/50">
             <BookOpen size={16} className="text-amber-400" />
@@ -499,50 +497,70 @@ export function SettlementDetail({
             <ChevronRight size={16} className="ml-auto text-stone-400 transition-transform group-open:rotate-90" />
           </summary>
           <div className="border-t border-stone-700 p-3 space-y-3">
-            {/* Founding Story */}
-            <p className="text-sm italic text-stone-300">
-              "{settlement.lore.history.founding}"
-            </p>
-
-            {/* Age and Founder Type */}
-            <div className="flex flex-wrap gap-2 text-xs">
-              <span className="rounded bg-stone-700 px-2 py-1 text-stone-300">
-                <span className="text-stone-500">Founded by:</span>{" "}
-                {settlement.lore.history.founderType.replace("_", " ")}
-              </span>
-              <span className="rounded bg-stone-700 px-2 py-1 text-stone-300">
-                <span className="text-stone-500">Age:</span>{" "}
-                {settlement.lore.history.age}
-              </span>
-              {settlement.lore.history.formerName && (
-                <span className="rounded bg-stone-700 px-2 py-1 text-stone-300">
-                  <span className="text-stone-500">Formerly:</span>{" "}
-                  {settlement.lore.history.formerName}
-                </span>
-              )}
-            </div>
-
-            {/* Major Events */}
-            {settlement.lore.history.majorEvents.length > 0 && (
-              <div>
-                <h4 className="mb-1 text-xs font-medium uppercase text-stone-500">Major Events</h4>
-                <ul className="space-y-1">
-                  {settlement.lore.history.majorEvents.map((event, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-stone-400">
-                      <span className="text-stone-600">•</span>
-                      {event}
-                    </li>
-                  ))}
-                </ul>
+            {/* Trouble & Quirk - now inside lore */}
+            {(settlement.trouble || settlement.quirk) && (
+              <div className="space-y-1 rounded bg-stone-900/50 p-2 text-sm">
+                {settlement.trouble && (
+                  <p className="text-amber-400">
+                    <span className="font-medium">Trouble:</span> {settlement.trouble}
+                  </p>
+                )}
+                {settlement.quirk && (
+                  <p className="text-stone-400">
+                    <span className="font-medium">Quirk:</span> {settlement.quirk}
+                  </p>
+                )}
               </div>
             )}
 
-            {/* Cultural Note */}
-            {settlement.lore.history.culturalNote && (
-              <p className="text-sm text-stone-400">
-                <span className="font-medium text-stone-300">Cultural note:</span>{" "}
-                {settlement.lore.history.culturalNote}
-              </p>
+            {settlement.lore && (
+              <>
+                {/* Founding Story */}
+                <p className="text-sm italic text-stone-300">
+                  "{settlement.lore.history.founding}"
+                </p>
+
+                {/* Age and Founder Type */}
+                <div className="flex flex-wrap gap-2 text-xs">
+                  <span className="rounded bg-stone-700 px-2 py-1 text-stone-300">
+                    <span className="text-stone-500">Founded by:</span>{" "}
+                    {settlement.lore.history.founderType.replace("_", " ")}
+                  </span>
+                  <span className="rounded bg-stone-700 px-2 py-1 text-stone-300">
+                    <span className="text-stone-500">Age:</span>{" "}
+                    {settlement.lore.history.age}
+                  </span>
+                  {settlement.lore.history.formerName && (
+                    <span className="rounded bg-stone-700 px-2 py-1 text-stone-300">
+                      <span className="text-stone-500">Formerly:</span>{" "}
+                      {settlement.lore.history.formerName}
+                    </span>
+                  )}
+                </div>
+
+                {/* Major Events */}
+                {settlement.lore.history.majorEvents.length > 0 && (
+                  <div>
+                    <h4 className="mb-1 text-xs font-medium uppercase text-stone-500">Major Events</h4>
+                    <ul className="space-y-1">
+                      {settlement.lore.history.majorEvents.map((event, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-stone-400">
+                          <span className="text-stone-600">•</span>
+                          {event}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Cultural Note */}
+                {settlement.lore.history.culturalNote && (
+                  <p className="text-sm text-stone-400">
+                    <span className="font-medium text-stone-300">Cultural note:</span>{" "}
+                    {settlement.lore.history.culturalNote}
+                  </p>
+                )}
+              </>
             )}
           </div>
         </details>
@@ -646,6 +664,43 @@ export function SettlementDetail({
 
             {/* Right column: Key Locations */}
             <div className="space-y-6">
+              {/* Consolidated Services - What can I buy here? */}
+              {(() => {
+                const allServices = settlement.sites.flatMap((site) =>
+                  site.services.map((svc) => ({
+                    ...svc,
+                    siteName: site.name,
+                    siteId: site.id,
+                  }))
+                );
+                if (allServices.length === 0) return null;
+                return (
+                  <details className="group rounded-lg border border-stone-700 bg-stone-800/50">
+                    <summary className="flex cursor-pointer items-center gap-2 p-3 text-sm font-semibold text-stone-200 hover:bg-stone-700/50">
+                      <Coins size={16} className="text-amber-400" />
+                      <span>Available Services ({allServices.length})</span>
+                      <ChevronRight size={16} className="ml-auto text-stone-400 transition-transform group-open:rotate-90" />
+                    </summary>
+                    <div className="border-t border-stone-700 p-3">
+                      <div className="grid gap-1.5">
+                        {allServices.map((svc, i) => (
+                          <div
+                            key={`${svc.siteId}-${i}`}
+                            className="flex items-center justify-between rounded bg-stone-900/50 px-2 py-1.5 text-sm"
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="text-stone-200">{svc.name}</span>
+                              <span className="text-xs text-stone-500">@ {svc.siteName}</span>
+                            </div>
+                            <span className="font-medium text-amber-400">{svc.cost}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </details>
+                );
+              })()}
+
               {/* Key Locations (Sites) */}
               {settlement.sites.length > 0 && (
                 <section>
@@ -813,6 +868,11 @@ export function SettlementDetail({
                           </span>
                         )}
                       </div>
+                      {npc.distinguishingFeature && (
+                        <p className="mt-1 text-sm font-medium text-amber-400/90">
+                          ✦ {npc.distinguishingFeature}
+                        </p>
+                      )}
                       <p className="mt-1 text-sm text-stone-400">{npc.description}</p>
                       {familyRels.length > 0 && (
                         <p className="mt-1 text-xs text-blue-400/80">
@@ -1261,6 +1321,9 @@ export function SettlementDetail({
 
           {/* Encounter Table */}
           <EncounterTable seed={`${seed}-settlement`} ruleset={ruleset} onReroll={onReroll} />
+
+          {/* Quick Names */}
+          <QuickNames seed={`${seed}-names`} onReroll={onReroll} />
         </section>
       )}
     </div>

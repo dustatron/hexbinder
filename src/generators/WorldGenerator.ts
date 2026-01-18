@@ -46,7 +46,7 @@ import { generateDwellings } from "./DwellingGenerator";
 import { generateQuestObjects } from "./QuestObjectGenerator";
 import { generateSignificantItems, placeItemInLocation } from "./SignificantItemGenerator";
 import { addTreasureBackstories } from "./dungeon/TreasureBackstoryGenerator";
-import { generateSettlementHistory } from "./settlement/SettlementHistoryGenerator";
+import { generateSettlementHistory, generateSensoryImpressions } from "./settlement/SettlementHistoryGenerator";
 import { generateSettlementSecrets } from "./settlement/SettlementSecretsGenerator";
 
 export interface WorldGeneratorOptions {
@@ -498,6 +498,9 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     }
 
     settlement.lore = { history, secrets };
+
+    // Generate sensory impressions for scene-setting
+    settlement.sensoryImpressions = generateSensoryImpressions(`${seed}-${settlement.id}`);
   }
 
   // Faction NPCs (use pre-generated NPCs from dungeon population step)

@@ -190,3 +190,58 @@ export const CULTURAL_NOTES: CulturalNote[] = [
   { text: "Known for its gardens and orchards", weight: 2 },
   { text: "Famous for a unique musical instrument", weight: 1 },
 ];
+
+// Sensory impressions for quick scene-setting (3 bullets: sight, sound, smell)
+export const SENSORY_SIGHTS: string[] = [
+  "Crooked timber buildings lean against each other",
+  "Smoke rises from a dozen chimneys",
+  "Washing lines crisscross between windows",
+  "A weathered statue stands in the square",
+  "Muddy streets wind between stone foundations",
+  "Thatched roofs cluster around a central well",
+  "Colorful market stalls line the main road",
+  "A crumbling wall rings the settlement",
+  "Moss grows on ancient cobblestones",
+  "Children chase geese through narrow alleys",
+  "Carts loaded with goods crowd the gate",
+  "Candles flicker in grimy windows",
+  "A temple spire rises above the rooftops",
+  "Fishing nets hang drying in the breeze",
+  "Iron-bound doors mark the wealthier homes",
+];
+
+export const SENSORY_SOUNDS: string[] = [
+  "A blacksmith's hammer rings out steadily",
+  "Dogs bark at passing strangers",
+  "The murmur of haggling fills the air",
+  "Church bells toll the hour",
+  "Chickens cluck from nearby coops",
+  "A bard's tune drifts from the tavern",
+  "Cart wheels rattle on cobblestones",
+  "The town crier announces the news",
+  "Children's laughter echoes between buildings",
+  "Pigs squeal from the butcher's yard",
+  "The creak of a windmill turning",
+  "Distant prayers chant from the temple",
+  "Merchants call out their wares",
+  "A baby wails from an upper window",
+  "The splash of a fountain in the square",
+];
+
+export const SENSORY_SMELLS: string[] = [
+  "Fresh bread wafts from the baker's",
+  "Woodsmoke hangs in the air",
+  "The tang of the tannery lingers",
+  "Spices drift from an open window",
+  "Horse manure and wet straw",
+  "Roasting meat from the inn",
+  "Incense from the temple",
+  "Fish drying in the sun",
+  "The earthy smell of turned soil",
+  "Ale and sweat from the tavern",
+  "Flowers from the market stalls",
+  "The acrid bite of the smithy",
+  "Damp stone and old moss",
+  "Herbs drying on windowsills",
+  "The copper smell of the butcher's",
+];

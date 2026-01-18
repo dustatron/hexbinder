@@ -237,6 +237,7 @@ export interface Settlement extends Location {
   notices: Notice[];
   defenses: DefenseLevel;
   lore?: SettlementLore;
+  sensoryImpressions?: string[]; // 3 brief sensory descriptions (sight, sound, smell)
 }
 
 // === Spatial Town Types ===
@@ -451,6 +452,7 @@ export interface NPC {
   race: NPCRace;
   gender: NPCGender;
   description: string;
+  distinguishingFeature?: string; // Quick visual identifier (red hair, scar, tall, etc.)
   archetype: CreatureArchetype;
   threatLevel: ThreatLevel;
   variants?: string[];

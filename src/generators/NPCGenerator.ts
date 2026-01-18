@@ -170,6 +170,47 @@ const SECRETS: string[] = [
   "Has the key to an ancient secret",
 ];
 
+// Quick visual identifiers for NPCs
+const DISTINGUISHING_FEATURES: string[] = [
+  // Hair
+  "bright red hair",
+  "silver-streaked hair",
+  "completely bald",
+  "wild unkempt hair",
+  "braided beard",
+  "distinctive widow's peak",
+  // Face
+  "prominent scar on cheek",
+  "missing an eye",
+  "crooked nose",
+  "bushy eyebrows",
+  "beauty mark",
+  "burn scars",
+  "freckled face",
+  "gold tooth",
+  // Build
+  "unusually tall",
+  "quite short",
+  "heavily muscled",
+  "rail thin",
+  "broad shoulders",
+  "stooped posture",
+  // Distinctive items/clothing
+  "always wears a hood",
+  "distinctive tattoo",
+  "ornate earrings",
+  "prominent holy symbol",
+  "eye patch",
+  "walks with a limp",
+  "missing fingers",
+  "calloused hands",
+  // Mannerisms
+  "nervous twitch",
+  "booming voice",
+  "whispers constantly",
+  "never makes eye contact",
+];
+
 const ARCHETYPE_DESCRIPTIONS: Record<CreatureArchetype, string[]> = {
   commoner: [
     "A weathered farmer with calloused hands",
@@ -295,6 +336,7 @@ export function generateNPC(options: NPCGeneratorOptions): NPC {
     : generateFallbackName(rng);
 
   const description = rng.pick(ARCHETYPE_DESCRIPTIONS[finalArchetype]);
+  const distinguishingFeature = rng.pick(DISTINGUISHING_FEATURES);
   const flavorWant = rng.pick(WANTS_BY_ARCHETYPE[finalArchetype]);
   const threatLevel = ARCHETYPE_THREAT[finalArchetype];
   const npcAge = age ?? generateAge(rng);
@@ -305,6 +347,7 @@ export function generateNPC(options: NPCGeneratorOptions): NPC {
     race,
     gender,
     description,
+    distinguishingFeature,
     archetype: finalArchetype,
     threatLevel,
     age: npcAge,
