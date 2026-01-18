@@ -1036,7 +1036,7 @@ export function SettlementDetail({
           )}
 
           {/* Encounter Table */}
-          <EncounterTable seed={`${seed}-settlement`} onReroll={onReroll} />
+          <EncounterTable seed={`${seed}-settlement`} ruleset={ruleset} onReroll={onReroll} />
         </section>
       )}
     </div>

@@ -3,7 +3,7 @@ import { RefreshCw } from "lucide-react";
 import { SeededRandom } from "~/generators/SeededRandom";
 import { getRandomMonster } from "~/lib/monsters";
 import { getMonsterStats, type MonsterStats } from "~/lib/monster-stats";
-import type { TerrainType } from "~/models";
+import type { Ruleset, TerrainType } from "~/models";
 import {
   ENCOUNTER_TABLE,
   NPC_TABLE,
@@ -19,6 +19,7 @@ import { MonsterCard } from "./MonsterCard";
 interface EncounterTableProps {
   seed: string;
   terrain?: TerrainType;
+  ruleset?: Ruleset;
   onReroll?: () => void;
 }
 
@@ -31,13 +32,14 @@ interface SubTableResult {
 function rollSubTable(
   rng: SeededRandom,
   type: EncounterResultType,
-  terrain?: TerrainType
+  terrain?: TerrainType,
+  ruleset: Ruleset = "shadowdark"
 ): SubTableResult {
   switch (type) {
     case "monster": {
       const monster = getRandomMonster(rng);
       // Convert Monster to MonsterStats for display
-      const monsterStats = getMonsterStats(monster.name, "shadowdark");
+      const monsterStats = getMonsterStats(monster.name, ruleset);
       return { type, monsterStats };
     }
     case "npc": {
@@ -77,7 +79,7 @@ function pickWeightedEntry(rng: SeededRandom, table: TableEntry[]): TableEntry {
   return table[table.length - 1];
 }
 
-export function EncounterTable({ seed, terrain, onReroll }: EncounterTableProps) {
+export function EncounterTable({ seed, terrain, ruleset = "shadowdark", onReroll }: EncounterTableProps) {
   // Initial seeded roll
   const initialRoll = useMemo(() => {
     const rng = new SeededRandom(seed);
@@ -92,8 +94,8 @@ export function EncounterTable({ seed, terrain, onReroll }: EncounterTableProps)
     if (!entry) return { type: "nothing" as EncounterResultType };
 
     const rng = new SeededRandom(`${seed}-subtable-${selectedRoll}`);
-    return rollSubTable(rng, entry.type, terrain);
-  }, [seed, selectedRoll, terrain]);
+    return rollSubTable(rng, entry.type, terrain, ruleset);
+  }, [seed, selectedRoll, terrain, ruleset]);
 
   const selectedEntry = ENCOUNTER_TABLE.find((e) => e.roll === selectedRoll);
 
