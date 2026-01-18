@@ -14,6 +14,7 @@ import type {
   Hook,
   Dwelling,
   SettlementSize,
+  SettlementType,
   DayRecord,
   SignificantItem,
   Ruleset,
@@ -150,9 +151,18 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
     return { q, r };
   });
 
+  // Guarantee at least one non-human settlement
+  // Pick which settlement index gets forced to be non-human (somewhere in the middle)
+  const nonHumanTypes: SettlementType[] = ["dwarven", "elven", "goblin"];
+  const forcedNonHumanIndex = rng.between(0, Math.min(2, extraSettlementCount - 1));
+  const forcedNonHumanType = rng.pick(nonHumanTypes);
+
   for (let i = 0; i < extraSettlementCount; i++) {
     // Collect coordinates of all existing settlements for distance weighting
     const existingCoords = settlementHexes.map(h => h.coord);
+
+    // Force non-human type for one settlement
+    const forceSettlementType = i === forcedNonHumanIndex ? forcedNonHumanType : undefined;
 
     const result = placeSettlement({
       seed: `${seed}-settlement-${i + 1}`,
@@ -161,6 +171,7 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       riverAdjacentCoords,
       settlementIndex: i + 1, // +1 because starting settlement is index 0
       totalSettlements: settlementCount,
+      forceSettlementType,
     });
     if (result) {
       const sites = generateSites({ seed, settlement: result.settlement });
