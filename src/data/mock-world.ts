@@ -95,6 +95,7 @@ export function createMockWorld(name?: string, seed?: string): WorldData {
     id: nanoid(),
     name: name || "The Borderlands",
     seed: seed || nanoid(8),
+    ruleset: "shadowdark",
     createdAt: Date.now(),
     updatedAt: Date.now(),
     state: {
@@ -111,6 +112,8 @@ export function createMockWorld(name?: string, seed?: string): WorldData {
       moonPhase: "waxing",
       calendar: [],
       forecastEndDay: 1,
+      currentHexId: null,
+      visitedHexIds: [],
     },
     hexes,
     edges: [],

@@ -37,6 +37,8 @@ interface HexMapProps {
   edges: HexEdge[];
   locations: Location[];
   selectedCoord: HexCoord | null;
+  currentHexId: string | null; // Party's current location (format: "q,r")
+  visitedHexIds: string[]; // Hexes party has visited (format: "q,r")
   onHexClick: (coord: HexCoord) => void;
   showLabels?: boolean;
 }
@@ -46,6 +48,8 @@ export function HexMap({
   edges,
   locations,
   selectedCoord,
+  currentHexId,
+  visitedHexIds,
   onHexClick,
   showLabels = false,
 }: HexMapProps) {
@@ -101,6 +105,9 @@ export function HexMap({
     });
     return map;
   }, [locations]);
+
+  // Create visited set for O(1) lookup
+  const visitedSet = useMemo(() => new Set(visitedHexIds), [visitedHexIds]);
 
   // Gesture bindings
   const bind = useGesture(
@@ -210,6 +217,9 @@ export function HexMap({
                 ? (location as Settlement).isCapital
                 : false;
 
+            const isCurrent = currentHexId === coordKey;
+            const isVisited = visitedSet.has(coordKey);
+
             return (
               <HexTile
                 key={coordKey}
@@ -219,6 +229,8 @@ export function HexMap({
                 dungeonTheme={dungeonTheme}
                 isCapital={isCapital}
                 isSelected={isSelected}
+                isCurrent={isCurrent}
+                isVisited={isVisited}
                 onClick={onHexClick}
               />
             );

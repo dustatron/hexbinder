@@ -19,6 +19,9 @@ export function loadWorld(id: string): WorldData | null {
   const world = JSON.parse(data) as WorldData;
   // Default ruleset for legacy worlds
   world.ruleset ??= "shadowdark";
+  // Default party tracking for legacy worlds
+  world.state.currentHexId ??= null;
+  world.state.visitedHexIds ??= [];
   return world;
 }
 

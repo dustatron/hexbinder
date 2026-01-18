@@ -644,6 +644,9 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
       moonPhase,
       calendar: [],
       forecastEndDay: FORECAST_DAYS,
+      // Start at the starting settlement hex
+      currentHexId: `${startCoord.q},${startCoord.r}`,
+      visitedHexIds: [`${startCoord.q},${startCoord.r}`],
     },
     hexes: updatedHexes,
     edges,

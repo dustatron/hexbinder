@@ -576,7 +576,7 @@ export function DungeonDetail({
             {/* Wandering Monsters - Desktop only (under map) */}
             {(dungeon as SpatialDungeon).wanderingMonsters && (
               <div className="hidden lg:block">
-                <WanderingMonstersSection dungeon={dungeon as SpatialDungeon} />
+                <WanderingMonstersSection dungeon={dungeon as SpatialDungeon} ruleset={ruleset} />
               </div>
             )}
           </section>
@@ -609,7 +609,7 @@ export function DungeonDetail({
           {/* Wandering Monsters - Mobile only (under rooms) */}
           {hasSpatialLayout && (dungeon as SpatialDungeon).wanderingMonsters && (
             <div className="lg:hidden">
-              <WanderingMonstersSection dungeon={dungeon as SpatialDungeon} />
+              <WanderingMonstersSection dungeon={dungeon as SpatialDungeon} ruleset={ruleset} />
             </div>
           )}
         </div>
@@ -777,9 +777,10 @@ function ExitPointCard({ exit, roomNumberMap }: ExitPointCardProps) {
 
 interface WanderingMonstersSectionProps {
   dungeon: SpatialDungeon;
+  ruleset: Ruleset;
 }
 
-function WanderingMonstersSection({ dungeon }: WanderingMonstersSectionProps) {
+function WanderingMonstersSection({ dungeon, ruleset }: WanderingMonstersSectionProps) {
   if (!dungeon.wanderingMonsters) return null;
 
   const entries = dungeon.wanderingMonsters.entries;
