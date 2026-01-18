@@ -1,13 +1,16 @@
 import { useMemo, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { SeededRandom } from "~/generators/SeededRandom";
-import { getRandomMonster, type Monster } from "~/lib/monsters";
+import { getRandomMonster } from "~/lib/monsters";
+import { getMonsterStats, type MonsterStats } from "~/lib/monster-stats";
 import type { TerrainType } from "~/models";
 import {
   ENCOUNTER_TABLE,
   NPC_TABLE,
   TREASURE_TABLE,
   OMEN_TABLE,
+  COMPLICATION_TABLE,
+  LOCAL_COLOR_TABLE,
   type EncounterResultType,
   type TableEntry,
 } from "./tables";
@@ -22,7 +25,7 @@ interface EncounterTableProps {
 interface SubTableResult {
   type: EncounterResultType;
   entry?: TableEntry;
-  monster?: Monster;
+  monsterStats?: MonsterStats;
 }
 
 function rollSubTable(
@@ -33,7 +36,9 @@ function rollSubTable(
   switch (type) {
     case "monster": {
       const monster = getRandomMonster(rng);
-      return { type, monster };
+      // Convert Monster to MonsterStats for display
+      const monsterStats = getMonsterStats(monster.name, "shadowdark");
+      return { type, monsterStats };
     }
     case "npc": {
       const entry = pickWeightedEntry(rng, NPC_TABLE);
@@ -47,7 +52,14 @@ function rollSubTable(
       const entry = pickWeightedEntry(rng, OMEN_TABLE);
       return { type, entry };
     }
-    case "nothing":
+    case "complication": {
+      const entry = pickWeightedEntry(rng, COMPLICATION_TABLE);
+      return { type, entry };
+    }
+    case "local_color": {
+      const entry = pickWeightedEntry(rng, LOCAL_COLOR_TABLE);
+      return { type, entry };
+    }
     default:
       return { type };
   }
@@ -155,12 +167,6 @@ export function EncounterTable({ seed, terrain, onReroll }: EncounterTableProps)
             )}
           </div>
 
-          {subTableResult.type === "nothing" && (
-            <p className="text-sm text-stone-400 italic">
-              The party travels without incident.
-            </p>
-          )}
-
           {subTableResult.entry && (
             <div className="space-y-2">
               <p className="text-sm font-medium text-stone-200">
@@ -187,8 +193,8 @@ export function EncounterTable({ seed, terrain, onReroll }: EncounterTableProps)
             </div>
           )}
 
-          {subTableResult.monster && (
-            <MonsterCard monster={subTableResult.monster} />
+          {subTableResult.monsterStats && (
+            <MonsterCard stats={subTableResult.monsterStats} />
           )}
         </div>
       )}

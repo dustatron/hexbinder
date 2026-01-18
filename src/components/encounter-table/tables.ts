@@ -2,7 +2,7 @@
  * Encounter sub-tables for 1d6 encounter system
  */
 
-export type EncounterResultType = 'monster' | 'npc' | 'treasure' | 'omen' | 'nothing';
+export type EncounterResultType = 'monster' | 'npc' | 'treasure' | 'omen' | 'complication' | 'local_color';
 
 export interface EncounterTableEntry {
   roll: number;
@@ -23,8 +23,8 @@ export const ENCOUNTER_TABLE: EncounterTableEntry[] = [
   { roll: 2, type: 'npc', label: 'NPC' },
   { roll: 3, type: 'treasure', label: 'Treasure' },
   { roll: 4, type: 'omen', label: 'Omen' },
-  { roll: 5, type: 'nothing', label: 'Nothing' },
-  { roll: 6, type: 'nothing', label: 'Nothing' },
+  { roll: 5, type: 'complication', label: 'Complication' },
+  { roll: 6, type: 'local_color', label: 'Local Color' },
 ];
 
 export const NPC_TABLE: TableEntry[] = [
@@ -125,4 +125,121 @@ export const OMEN_TABLE: TableEntry[] = [
   { description: 'Distant screams, then silence', weight: 1 },
   { description: 'Circling vultures ahead', weight: 2 },
   { description: 'Burnt patch of ground, acrid smell', weight: 1 },
+];
+
+export const COMPLICATION_TABLE: TableEntry[] = [
+  {
+    description: 'Shop closed unexpectedly',
+    weight: 3,
+    activity: 'The shopkeeper is dealing with a personal emergency',
+  },
+  {
+    description: 'Prices have doubled',
+    weight: 2,
+    activity: 'Supply shortage or merchant cartel',
+    rumor: 'Someone is buying up all the goods',
+  },
+  {
+    description: 'Guard patrol stops you',
+    weight: 2,
+    activity: 'Routine inspection, but suspicious',
+    rumor: 'Looking for someone matching your description',
+  },
+  {
+    description: 'Pickpocket attempt',
+    weight: 2,
+    activity: 'Street urchin tries to lift a pouch',
+  },
+  {
+    description: 'Mistaken identity',
+    weight: 2,
+    activity: 'Someone thinks you owe them money or a favor',
+  },
+  {
+    description: 'Bar fight breaks out nearby',
+    weight: 2,
+    activity: 'Chairs and bottles flying, guards arriving',
+  },
+  {
+    description: 'Road blocked by accident',
+    weight: 2,
+    activity: 'Overturned cart, spilled goods, angry merchants',
+  },
+  {
+    description: 'Unwanted attention',
+    weight: 1,
+    activity: 'A local tough or gang takes interest',
+    rumor: 'They run this part of town',
+  },
+  {
+    description: 'Bad food or drink',
+    weight: 1,
+    activity: 'Something served was spoiled or poisoned',
+  },
+  {
+    description: 'Accused of something',
+    weight: 1,
+    activity: 'A local claims you damaged their property or stole',
+  },
+];
+
+export const LOCAL_COLOR_TABLE: TableEntry[] = [
+  {
+    description: 'Street performer draws a crowd',
+    weight: 3,
+    activity: 'Juggler, musician, or fire-breather entertaining',
+  },
+  {
+    description: 'Two merchants arguing loudly',
+    weight: 3,
+    activity: 'Dispute over territory or a customer',
+  },
+  {
+    description: 'Children playing in the street',
+    weight: 2,
+    activity: 'Tag, mock sword fights, or ball games',
+  },
+  {
+    description: 'Town crier announcing news',
+    weight: 2,
+    activity: 'Local decrees, wanted notices, or market prices',
+    rumor: 'Listen for useful information',
+  },
+  {
+    description: 'Religious procession passing through',
+    weight: 1,
+    activity: 'Priests and followers heading to a service',
+  },
+  {
+    description: 'Weather shift',
+    weight: 2,
+    activity: 'Sudden rain, fog rolling in, or temperature drop',
+  },
+  {
+    description: 'Festival preparations underway',
+    weight: 1,
+    activity: 'Decorations going up, vendors setting up stalls',
+    rumor: 'Big celebration coming soon',
+  },
+  {
+    description: 'Stray animals causing chaos',
+    weight: 2,
+    activity: 'Dog pack, loose chickens, or escaped pig',
+  },
+  {
+    description: 'Construction noise',
+    weight: 2,
+    activity: 'Building going up, repairs, or demolition',
+  },
+  {
+    description: 'Unusual smell from nearby',
+    weight: 2,
+    activity: 'Bakery, tannery, or something burning',
+  },
+  {
+    description: 'Notable person spotted',
+    weight: 1,
+    activity: 'Noble, famous adventurer, or wanted criminal in disguise',
+    rumor: 'Might be worth following',
+  },
 ];
