@@ -1,4 +1,4 @@
-import { RefreshCw, Users, Shield, Coins, AlertTriangle, ScrollText, MessageSquare, Building2, User, Flag, Map as MapIcon, ClipboardList, Dices } from "lucide-react";
+import { RefreshCw, Users, Shield, Coins, AlertTriangle, ScrollText, MessageSquare, Building2, User, Flag, Map as MapIcon, ClipboardList, Calendar } from "lucide-react";
 import type { Settlement, NPC, Faction, DayEvent, SettlementSite, WorldData, Hook, Dungeon, Location, Ruleset } from "~/models";
 import { isSpatialSettlement, isDungeon, isSettlement, type SpatialSettlement } from "~/models";
 import type { RegenerationType } from "~/lib/hex-regenerate";
@@ -550,14 +550,14 @@ export function SettlementDetail({
         </button>
         <button
           onClick={() => setActiveTab("encounters")}
-          title="Encounters"
+          title="Events & Encounters"
           className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 transition-colors ${
             activeTab === "encounters"
               ? "bg-stone-700 text-stone-100"
               : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
           }`}
         >
-          <Dices size={18} />
+          <Calendar size={18} />
         </button>
       </div>
 
@@ -992,14 +992,14 @@ export function SettlementDetail({
                         }`}
                       >
                         <div className="flex items-start gap-3">
-                          <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded text-xs font-bold ${
+                          <div className={`flex h-8 shrink-0 items-center justify-center rounded px-2 text-xs font-bold ${
                             isToday
                               ? "bg-amber-500 text-stone-900"
                               : isPast
                               ? "bg-stone-600 text-stone-400"
                               : "bg-stone-600 text-stone-200"
                           }`}>
-                            D{event.day}
+                            Day {event.day}
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
