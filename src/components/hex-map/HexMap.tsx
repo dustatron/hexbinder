@@ -40,6 +40,7 @@ interface HexMapProps {
   currentHexId: string | null; // Party's current location (format: "q,r")
   visitedHexIds: string[]; // Hexes party has visited (format: "q,r")
   onHexClick: (coord: HexCoord) => void;
+  onHexDoubleClick?: (coord: HexCoord) => void;
   showLabels?: boolean;
 }
 
@@ -51,6 +52,7 @@ export function HexMap({
   currentHexId,
   visitedHexIds,
   onHexClick,
+  onHexDoubleClick,
   showLabels = false,
 }: HexMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -164,21 +166,21 @@ export function HexMap({
       <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
         <button
           onClick={handleZoomIn}
-          className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
+          className="p-1.5 rounded bg-card/90 hover:bg-muted border border-border text-muted-foreground hover:text-foreground transition-colors"
           title="Zoom In"
         >
           <Plus size={16} />
         </button>
         <button
           onClick={handleZoomOut}
-          className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
+          className="p-1.5 rounded bg-card/90 hover:bg-muted border border-border text-muted-foreground hover:text-foreground transition-colors"
           title="Zoom Out"
         >
           <Minus size={16} />
         </button>
         <button
           onClick={handleReset}
-          className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
+          className="p-1.5 rounded bg-card/90 hover:bg-muted border border-border text-muted-foreground hover:text-foreground transition-colors"
           title="Reset View"
         >
           <RotateCcw size={16} />
@@ -232,6 +234,7 @@ export function HexMap({
                 isCurrent={isCurrent}
                 isVisited={isVisited}
                 onClick={onHexClick}
+                onDoubleClick={onHexDoubleClick}
               />
             );
           })}
@@ -321,8 +324,7 @@ export function HexMap({
                   textAnchor="middle"
                   fontSize={9}
                   fontWeight="bold"
-                  fill="#1c1917"
-                  stroke="#fafaf9"
+                  className="fill-foreground stroke-background"
                   strokeWidth={2}
                   paintOrder="stroke"
                   style={{ pointerEvents: "none" }}

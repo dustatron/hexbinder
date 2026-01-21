@@ -128,7 +128,7 @@ export function RegenerateButton({
         variant="outline"
         size="sm"
         onClick={handleOpenModal}
-        className="border-stone-600 bg-stone-800 text-stone-200 hover:bg-stone-700 hover:text-stone-100"
+        className="border-border bg-card text-foreground hover:bg-muted"
       >
         <RefreshCw size={14} className="mr-1.5" />
         Regenerate
@@ -136,10 +136,10 @@ export function RegenerateButton({
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="w-full max-w-md rounded-lg border border-stone-700 bg-stone-900 p-4 shadow-xl max-h-[90vh] overflow-y-auto">
+          <div className="w-full max-w-md rounded-lg border border-border bg-card p-4 shadow-xl max-h-[90vh] overflow-y-auto">
             <div className="mb-4 flex items-center gap-2">
-              <RefreshCw size={18} className="text-stone-400" />
-              <h3 className="text-lg font-semibold text-stone-100">Regenerate Location</h3>
+              <RefreshCw size={18} className="text-muted-foreground" />
+              <h3 className="text-lg font-semibold text-foreground">Regenerate Location</h3>
             </div>
 
             {currentLocationType && (
@@ -150,11 +150,11 @@ export function RegenerateButton({
 
             {/* Type selector */}
             <div className="mb-4 space-y-2">
-              <label className="text-sm font-medium text-stone-300">Location Type</label>
+              <label className="text-sm font-medium text-foreground">Location Type</label>
               <select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value as RegenerationType)}
-                className="w-full rounded-md border border-stone-700 bg-stone-800 px-3 py-2 text-sm text-stone-200 focus:border-amber-600 focus:outline-none"
+                className="w-full rounded-md border border-border bg-input px-3 py-2 text-sm text-foreground focus:border-amber-600 focus:outline-none"
               >
                 {REGENERATE_OPTIONS.map((group) => (
                   <optgroup key={group.group} label={group.group}>
@@ -171,7 +171,7 @@ export function RegenerateButton({
             {/* Size selector (only for dungeon types) */}
             {isDungeonType && (
               <div className="mb-4 space-y-2">
-                <label className="text-sm font-medium text-stone-300">Dungeon Size</label>
+                <label className="text-sm font-medium text-foreground">Dungeon Size</label>
                 <div className="grid grid-cols-5 gap-1">
                   {SIZE_OPTIONS.map((option) => (
                     <button
@@ -179,8 +179,8 @@ export function RegenerateButton({
                       onClick={() => setSelectedSize(option.value)}
                       className={`rounded-md border px-2 py-1.5 text-xs transition-colors ${
                         selectedSize === option.value
-                          ? "border-amber-600 bg-amber-900/30 text-amber-200"
-                          : "border-stone-700 bg-stone-800 text-stone-400 hover:border-stone-600 hover:text-stone-200"
+                          ? "border-amber-600 bg-amber-900/30 text-amber-700 dark:text-amber-200"
+                          : "border-border bg-card text-muted-foreground hover:border-accent hover:text-foreground"
                       }`}
                       title={option.description}
                     >
@@ -188,7 +188,7 @@ export function RegenerateButton({
                     </button>
                   ))}
                 </div>
-                <p className="text-xs text-stone-500">
+                <p className="text-xs text-muted-foreground">
                   {SIZE_OPTIONS.find(o => o.value === selectedSize)?.description}
                 </p>
               </div>
@@ -196,24 +196,24 @@ export function RegenerateButton({
 
             {/* Seed input */}
             <div className="mb-4 space-y-2">
-              <label className="text-sm font-medium text-stone-300">Generation Seed</label>
+              <label className="text-sm font-medium text-foreground">Generation Seed</label>
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={customSeed}
                   onChange={(e) => setCustomSeed(e.target.value)}
-                  className="flex-1 rounded-md border border-stone-700 bg-stone-800 px-3 py-1.5 text-sm text-stone-200 focus:border-amber-600 focus:outline-none"
+                  className="flex-1 rounded-md border border-border bg-input px-3 py-1.5 text-sm text-foreground focus:border-amber-600 focus:outline-none"
                   placeholder="Enter custom seed..."
                 />
                 <button
                   onClick={handleRandomizeSeed}
-                  className="rounded-md border border-stone-700 bg-stone-800 px-2 py-1.5 text-stone-400 hover:border-stone-600 hover:text-stone-200 transition-colors"
+                  className="rounded-md border border-border bg-card px-2 py-1.5 text-muted-foreground hover:border-accent hover:text-foreground transition-colors"
                   title="Randomize seed"
                 >
                   <Shuffle size={16} />
                 </button>
               </div>
-              <p className="text-xs text-stone-500">
+              <p className="text-xs text-muted-foreground">
                 Same seed + type = same result
               </p>
             </div>

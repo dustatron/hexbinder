@@ -1,4 +1,4 @@
-import { RefreshCw, MapPin, Sparkles, Home } from "lucide-react";
+import { MapPin, Sparkles, Home } from "lucide-react";
 import type { Dwelling, DwellingType, EncounterOverrides, Hex, TerrainType, Ruleset } from "~/models";
 import type { RegenerationType } from "~/lib/hex-regenerate";
 import { ImprovedEncounterTable } from "~/components/encounter-table/ImprovedEncounterTable";
@@ -60,7 +60,7 @@ export function WildernessDetail({
   const { coord, terrain, feature, questObject, encounterOverrides, lastEncounterTimestamp } = hex;
 
   return (
-    <div className="space-y-6 bg-stone-900 p-4 text-stone-100">
+    <div className="space-y-6 bg-background p-4 text-foreground">
       {/* Header */}
       <header className="space-y-2">
         <div className="flex items-center justify-between">
@@ -75,13 +75,6 @@ export function WildernessDetail({
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={onReroll}
-              className="flex items-center gap-1 rounded px-2 py-1 text-xs text-stone-400 hover:bg-stone-700 hover:text-stone-200"
-              title="Re-roll hex content"
-            >
-              <RefreshCw size={14} />
-            </button>
             <RegenerateButton
               onRegenerate={onRegenerate}
               currentLocationType="wilderness"
@@ -107,28 +100,28 @@ export function WildernessDetail({
       {/* Feature */}
       {feature && (
         <section className="space-y-3">
-          <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-stone-400">
+          <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             <MapPin size={14} />
             Feature
           </h3>
-          <div className="rounded-lg border border-stone-700 bg-stone-800 p-3">
+          <div className="rounded-lg border border-border bg-card p-3">
             <div className="flex items-center justify-between">
-              <span className="font-medium text-stone-200">{feature.name}</span>
+              <span className="font-medium text-foreground">{feature.name}</span>
               {feature.cleared && (
-                <span className="rounded bg-stone-700 px-2 py-0.5 text-xs text-stone-400">
+                <span className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground">
                   Cleared
                 </span>
               )}
             </div>
-            <p className="mt-1 text-sm text-stone-400">{feature.description}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{feature.description}</p>
             {feature.treasure && feature.treasure.length > 0 && (
-              <div className="mt-2 border-t border-stone-700 pt-2">
-                <span className="text-xs text-stone-500">Treasure:</span>
+              <div className="mt-2 border-t border-border pt-2">
+                <span className="text-xs text-muted-foreground">Treasure:</span>
                 <ul className="mt-1 space-y-1">
                   {feature.treasure.map((t) => (
                     <li
                       key={t.id}
-                      className={`text-sm ${t.looted ? "text-stone-500 line-through" : "text-amber-400"}`}
+                      className={`text-sm ${t.looted ? "text-muted-foreground line-through" : "text-amber-600 dark:text-amber-400"}`}
                     >
                       {t.name}
                       {t.value && ` (${t.value})`}
@@ -144,24 +137,24 @@ export function WildernessDetail({
       {/* Quest Object */}
       {questObject && (
         <section className="space-y-3">
-          <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-stone-400">
+          <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             <Sparkles size={14} />
             Quest Object
           </h3>
-          <div className="rounded-lg border border-stone-700 bg-stone-800 p-3">
+          <div className="rounded-lg border border-border bg-card p-3">
             <div className="flex items-center justify-between">
-              <span className="font-medium text-stone-200">
+              <span className="font-medium text-foreground">
                 {questObject.name}
               </span>
-              <span className="rounded bg-stone-700 px-2 py-0.5 text-xs capitalize text-stone-400">
+              <span className="rounded bg-muted px-2 py-0.5 text-xs capitalize text-muted-foreground">
                 {questObject.type}
               </span>
             </div>
-            <p className="mt-1 text-sm text-stone-400">
+            <p className="mt-1 text-sm text-muted-foreground">
               {questObject.description}
             </p>
             {questObject.found && (
-              <span className="mt-2 inline-block rounded bg-green-900 px-2 py-0.5 text-xs text-green-300">
+              <span className="mt-2 inline-block rounded bg-green-100 dark:bg-green-900 px-2 py-0.5 text-xs text-green-700 dark:text-green-300">
                 Found
               </span>
             )}
@@ -172,26 +165,26 @@ export function WildernessDetail({
       {/* Dwelling */}
       {dwelling && (
         <section className="space-y-3">
-          <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-stone-400">
+          <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             <Home size={14} />
             Dwelling
           </h3>
-          <div className="rounded-lg border border-stone-700 bg-stone-800 p-3">
+          <div className="rounded-lg border border-border bg-card p-3">
             <div className="flex items-center justify-between">
-              <span className="font-medium text-stone-200">
+              <span className="font-medium text-foreground">
                 {dwelling.name}
               </span>
-              <span className="rounded bg-stone-700 px-2 py-0.5 text-xs text-stone-400">
+              <span className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground">
                 {DWELLING_LABELS[dwelling.type]}
               </span>
             </div>
             {dwelling.description && (
-              <p className="mt-1 text-sm text-stone-400">
+              <p className="mt-1 text-sm text-muted-foreground">
                 {dwelling.description}
               </p>
             )}
             {dwelling.hasQuest && (
-              <span className="mt-2 inline-block rounded bg-amber-900 px-2 py-0.5 text-xs text-amber-300">
+              <span className="mt-2 inline-block rounded bg-amber-100 dark:bg-amber-900 px-2 py-0.5 text-xs text-amber-700 dark:text-amber-300">
                 Has Quest
               </span>
             )}

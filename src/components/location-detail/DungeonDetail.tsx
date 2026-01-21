@@ -28,12 +28,12 @@ interface DungeonDetailProps {
 
 const THEME_BADGES: Record<DungeonTheme, { label: string; color: string }> = {
   tomb: { label: "Tomb", color: "bg-stone-600" },
-  cave: { label: "Cave", color: "bg-stone-700" },
+  cave: { label: "Cave", color: "bg-muted" },
   temple: { label: "Temple", color: "bg-purple-700" },
   mine: { label: "Mine", color: "bg-amber-800" },
   fortress: { label: "Fortress", color: "bg-slate-700" },
   sewer: { label: "Sewer", color: "bg-green-900" },
-  crypt: { label: "Crypt", color: "bg-stone-800" },
+  crypt: { label: "Crypt", color: "bg-card" },
   lair: { label: "Lair", color: "bg-red-900" },
   shrine: { label: "Shrine", color: "bg-yellow-800" },
   bandit_hideout: { label: "Bandit Hideout", color: "bg-amber-900" },
@@ -160,17 +160,17 @@ export function DungeonDetail({
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 space-y-2">
-            <h2 className="text-xl font-bold text-stone-100">{dungeon.name}</h2>
+            <h2 className="text-xl font-bold text-foreground">{dungeon.name}</h2>
 
             {/* Badges */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className={`rounded px-2 py-0.5 text-xs font-medium ${themeBadge.color} text-stone-200`}>
+              <span className={`rounded px-2 py-0.5 text-xs font-medium ${themeBadge.color} text-white`}>
                 {themeBadge.label}
               </span>
-              <span className="rounded bg-stone-700 px-2 py-0.5 text-xs font-medium text-stone-300">
+              <span className="rounded bg-muted px-2 py-0.5 text-xs font-medium text-foreground">
                 Depth {dungeon.depth}
               </span>
-              <span className="rounded bg-stone-700 px-2 py-0.5 text-xs font-medium text-stone-300 capitalize">
+              <span className="rounded bg-muted px-2 py-0.5 text-xs font-medium text-foreground capitalize">
                 {dungeon.size}
               </span>
               {dungeon.cleared && (
@@ -195,45 +195,45 @@ export function DungeonDetail({
         </div>
 
         {/* Description */}
-        <p className="text-sm text-stone-400">{dungeon.description}</p>
+        <p className="text-sm text-muted-foreground">{dungeon.description}</p>
       </div>
 
       {/* Dungeon Lore - Above tabs */}
       {hasSpatialLayout && (dungeon as SpatialDungeon).ecology && (
-        <div className="rounded-lg border border-stone-700 bg-stone-800/50 p-4 space-y-3">
+        <div className="rounded-lg border border-border bg-card/50 p-4 space-y-3">
           <div className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-stone-400" />
-            <h3 className="text-sm font-semibold text-stone-200">Dungeon Lore</h3>
+            <BookOpen className="h-4 w-4 text-muted-foreground" />
+            <h3 className="text-sm font-semibold text-foreground">Dungeon Lore</h3>
           </div>
-          <p className="text-sm text-stone-300 italic">
+          <p className="text-sm text-foreground italic">
             {(dungeon as SpatialDungeon).ecology?.history}
           </p>
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div>
-              <span className="text-stone-500">Built by:</span>
-              <span className="ml-2 text-stone-300 capitalize">
+              <span className="text-muted-foreground">Built by:</span>
+              <span className="ml-2 text-foreground capitalize">
                 {(dungeon as SpatialDungeon).ecology?.builderCulture}
               </span>
             </div>
             <div>
-              <span className="text-stone-500">Inhabitants:</span>
-              <span className="ml-2 text-stone-300 capitalize">
+              <span className="text-muted-foreground">Inhabitants:</span>
+              <span className="ml-2 text-foreground capitalize">
                 {(dungeon as SpatialDungeon).ecology?.currentInhabitants}
               </span>
             </div>
           </div>
           {/* History Layers */}
           {(dungeon as SpatialDungeon).ecology?.historyLayers && (dungeon as SpatialDungeon).ecology!.historyLayers!.length > 0 && (
-            <div className="mt-3 border-t border-stone-700 pt-3">
-              <h4 className="text-xs font-semibold text-stone-400 mb-2">History Layers</h4>
+            <div className="mt-3 border-t border-border pt-3">
+              <h4 className="text-xs font-semibold text-muted-foreground mb-2">History Layers</h4>
               <div className="space-y-2">
                 {(dungeon as SpatialDungeon).ecology!.historyLayers!.map((layer, i) => (
                   <div key={i} className="text-xs">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-stone-300 capitalize">{layer.builders}</span>
-                      <span className="text-stone-500">({layer.era})</span>
+                      <span className="font-medium text-foreground capitalize">{layer.builders}</span>
+                      <span className="text-muted-foreground">({layer.era})</span>
                     </div>
-                    <p className="text-stone-400 italic pl-2">{layer.fate}</p>
+                    <p className="text-muted-foreground italic pl-2">{layer.fate}</p>
                   </div>
                 ))}
               </div>
@@ -243,13 +243,13 @@ export function DungeonDetail({
       )}
 
       {/* Tab Bar */}
-      <div className="flex gap-1 rounded-lg border border-stone-700 bg-stone-800 p-1">
+      <div className="flex gap-1 rounded-lg border border-border bg-card p-1">
         <button
           onClick={() => setActiveTab("map")}
           className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm transition-colors ${
             activeTab === "map"
-              ? "bg-stone-700 text-stone-100"
-              : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
+              ? "bg-muted text-foreground"
+              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
           }`}
         >
           <MapIcon size={16} />
@@ -260,8 +260,8 @@ export function DungeonDetail({
           onClick={() => setActiveTab("overview")}
           className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm transition-colors ${
             activeTab === "overview"
-              ? "bg-stone-700 text-stone-100"
-              : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
+              ? "bg-muted text-foreground"
+              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
           }`}
         >
           <ScrollText size={16} />
@@ -283,7 +283,7 @@ export function DungeonDetail({
             {linkedNPCs.map(({ npc, hook: npcHook, isSource }) => (
               <li key={npc.id} className="text-sm">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-stone-200">{npc.name}</span>
+                  <span className="font-medium text-foreground">{npc.name}</span>
                   <span className={`rounded px-1.5 py-0.5 text-xs ${
                     isSource
                       ? "bg-amber-500/20 text-amber-300"
@@ -294,7 +294,7 @@ export function DungeonDetail({
                 </div>
                 <NPCStatLine archetype={npc.archetype} ruleset={ruleset} />
                 {npcHook && (
-                  <p className="mt-1 text-xs text-stone-400">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     {isSource ? npcHook.rumor : `${npc.name} is ${npc.status} here`}
                   </p>
                 )}
@@ -317,17 +317,17 @@ export function DungeonDetail({
               hook.status === "active" ? "bg-amber-700 text-amber-100" :
               hook.status === "completed" ? "bg-green-800 text-green-200" :
               hook.status === "failed" ? "bg-red-800 text-red-200" :
-              "bg-stone-700 text-stone-300"
+              "bg-muted text-foreground"
             }`}>
               {hook.status}
             </span>
           </div>
-          <p className="text-sm text-stone-300 italic">"{hook.rumor}"</p>
+          <p className="text-sm text-foreground italic">"{hook.rumor}"</p>
           <details className="text-xs">
-            <summary className="cursor-pointer text-stone-500 hover:text-stone-400">
+            <summary className="cursor-pointer text-muted-foreground hover:text-muted-foreground">
               Truth (GM only)
             </summary>
-            <p className="mt-1 text-stone-400">{hook.truth}</p>
+            <p className="mt-1 text-muted-foreground">{hook.truth}</p>
           </details>
           {hook.reward && (
             <p className="text-xs text-emerald-500">Reward: {hook.reward}</p>
@@ -342,30 +342,30 @@ export function DungeonDetail({
       <EncounterTable seed={`${seed}-encounter`} ruleset={ruleset} onReroll={onReroll} />
 
       {/* Summary Stats */}
-      <div className="rounded-lg border border-stone-700 bg-stone-800/50 p-4">
-        <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-stone-500">
+      <div className="rounded-lg border border-border bg-card/50 p-4">
+        <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           Summary
         </h3>
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
-            <div className="text-2xl font-bold text-stone-200">
+            <div className="text-2xl font-bold text-foreground">
               {stats.totalRooms}
             </div>
-            <div className="text-xs text-stone-500">Total Rooms</div>
+            <div className="text-xs text-muted-foreground">Total Rooms</div>
           </div>
           <div>
             <div className="flex items-center justify-center gap-1 text-2xl font-bold text-red-400">
               <Skull className="h-5 w-5" />
               {stats.monstersRemaining}
             </div>
-            <div className="text-xs text-stone-500">Monsters Left</div>
+            <div className="text-xs text-muted-foreground">Monsters Left</div>
           </div>
           <div>
             <div className="flex items-center justify-center gap-1 text-2xl font-bold text-emerald-400">
               <Gem className="h-5 w-5" />
               {stats.treasureRemaining}
             </div>
-            <div className="text-xs text-stone-500">Treasure Left</div>
+            <div className="text-xs text-muted-foreground">Treasure Left</div>
           </div>
         </div>
       </div>
@@ -388,7 +388,7 @@ export function DungeonDetail({
               {controllingFaction.factionType}
             </span>
           </div>
-          <p className="text-xs text-stone-400 italic">
+          <p className="text-xs text-muted-foreground italic">
             {controllingFaction.purpose}
           </p>
         </div>
@@ -447,42 +447,42 @@ export function DungeonDetail({
             {/* Passage Traps */}
             {passageTraps.length > 0 && (
               <div className="space-y-2">
-                <h4 className="text-xs font-semibold text-stone-400">Passage Traps</h4>
+                <h4 className="text-xs font-semibold text-muted-foreground">Passage Traps</h4>
                 {passageTraps.map(passage => {
                   const fromRoom = roomNumberMap.get(passage.fromRoomId);
                   const toRoom = roomNumberMap.get(passage.toRoomId);
                   const trap = passage.trap!;
                   return (
-                    <div key={passage.id} className="rounded bg-stone-800 p-3 space-y-2">
+                    <div key={passage.id} className="rounded bg-card p-3 space-y-2">
                       <div className="flex items-center gap-2">
                         <AlertTriangle className="h-3 w-3 text-amber-500" />
-                        <span className="text-sm font-medium text-stone-200">{trap.name}</span>
+                        <span className="text-sm font-medium text-foreground">{trap.name}</span>
                         {trap.targetAttribute && (
                           <span className="text-xs px-1 py-0.5 rounded bg-red-900/50 text-red-300">
                             {trap.targetAttribute}
                           </span>
                         )}
-                        <span className="text-xs text-stone-500 ml-auto">
+                        <span className="text-xs text-muted-foreground ml-auto">
                           Room {fromRoom} → {toRoom}
                         </span>
                       </div>
-                      <p className="text-xs text-stone-400">{trap.description}</p>
+                      <p className="text-xs text-muted-foreground">{trap.description}</p>
                       {trap.trigger && (
                         <p className="text-xs">
                           <span className="text-red-500">⚡ Trigger:</span>{" "}
-                          <span className="text-stone-400">{trap.trigger}</span>
+                          <span className="text-muted-foreground">{trap.trigger}</span>
                         </p>
                       )}
                       {trap.passiveHint && (
                         <p className="text-xs">
                           <span className="text-yellow-500">👂 Passive:</span>{" "}
-                          <span className="text-stone-400">{trap.passiveHint}</span>
+                          <span className="text-muted-foreground">{trap.passiveHint}</span>
                         </p>
                       )}
                       {trap.activeHint && (
                         <p className="text-xs">
                           <span className="text-cyan-500">🔍 Active:</span>{" "}
-                          <span className="text-stone-400">{trap.activeHint}</span>
+                          <span className="text-muted-foreground">{trap.activeHint}</span>
                         </p>
                       )}
                       <div className="flex gap-3 text-xs">
@@ -490,9 +490,9 @@ export function DungeonDetail({
                         {trap.save && <span className="text-amber-400">Save: {trap.save}</span>}
                       </div>
                       {trap.disarmMethods && trap.disarmMethods.length > 0 && (
-                        <div className="border-t border-stone-700 pt-2">
+                        <div className="border-t border-border pt-2">
                           <p className="text-xs text-emerald-500 mb-1">✓ Disarm Methods</p>
-                          <ul className="ml-4 space-y-0.5 text-xs text-stone-400">
+                          <ul className="ml-4 space-y-0.5 text-xs text-muted-foreground">
                             {trap.disarmMethods.map((method, j) => (
                               <li key={j} className="list-disc">{method}</li>
                             ))}
@@ -501,7 +501,7 @@ export function DungeonDetail({
                       )}
                       {trap.consequence && (
                         <p className="text-xs text-orange-400">
-                          <span className="text-stone-500">Consequence:</span> {trap.consequence}
+                          <span className="text-muted-foreground">Consequence:</span> {trap.consequence}
                         </p>
                       )}
                     </div>
@@ -513,12 +513,12 @@ export function DungeonDetail({
             {/* Room Traps Summary */}
             {roomTraps.length > 0 && (
               <div className="space-y-2">
-                <h4 className="text-xs font-semibold text-stone-400">Room Traps</h4>
-                <div className="text-xs text-stone-400">
+                <h4 className="text-xs font-semibold text-muted-foreground">Room Traps</h4>
+                <div className="text-xs text-muted-foreground">
                   {roomTraps.map((trap, i) => (
-                    <div key={i} className="flex items-center gap-2 py-1 border-b border-stone-700/50 last:border-0">
+                    <div key={i} className="flex items-center gap-2 py-1 border-b border-border/50 last:border-0">
                       <span className="text-amber-400">{trap.name}</span>
-                      <span className="text-stone-500">in Room {roomNumberMap.get(trap.roomId)}</span>
+                      <span className="text-muted-foreground">in Room {roomNumberMap.get(trap.roomId)}</span>
                       {trap.targetAttribute && (
                         <span className="text-red-300 text-xs">({trap.targetAttribute})</span>
                       )}
@@ -538,7 +538,7 @@ export function DungeonDetail({
             <DoorOpen className="h-4 w-4 text-cyan-400" />
             <h3 className="text-sm font-semibold text-cyan-300">Exit Points</h3>
           </div>
-          <p className="text-xs text-stone-400">
+          <p className="text-xs text-muted-foreground">
             Secret exits connecting to neighboring hexes
           </p>
           <div className="space-y-2">
@@ -559,8 +559,8 @@ export function DungeonDetail({
           <section className="space-y-4 lg:sticky lg:top-4 lg:self-start">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <MapIcon className="h-4 w-4 text-stone-400" />
-                <h3 className="text-sm font-semibold text-stone-200">Dungeon Map</h3>
+                <MapIcon className="h-4 w-4 text-muted-foreground" />
+                <h3 className="text-sm font-semibold text-foreground">Dungeon Map</h3>
               </div>
               <DungeonMap
                 dungeon={dungeon as SpatialDungeon}
@@ -568,7 +568,7 @@ export function DungeonDetail({
                 onRoomClick={handleRoomClick}
                 roomNumberMap={roomNumberMap}
               />
-              <p className="text-xs text-stone-500">
+              <p className="text-xs text-muted-foreground">
                 Click a room to see details. Pan and zoom with gestures.
               </p>
             </div>
@@ -584,7 +584,7 @@ export function DungeonDetail({
 
         {/* Right column: Room Layout */}
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-stone-200">Room Layout</h3>
+          <h3 className="text-sm font-semibold text-foreground">Room Layout</h3>
           <div className="space-y-2">
             {sortedRooms.map((room, index) => (
               <div
@@ -638,13 +638,13 @@ interface DungeonNPCCardProps {
 }
 
 function DungeonNPCCard({ npc, roomNumberMap }: DungeonNPCCardProps) {
-  const config = NPC_CATEGORY_CONFIG[npc.category] ?? { icon: User, color: "text-stone-400", label: npc.category };
+  const config = NPC_CATEGORY_CONFIG[npc.category] ?? { icon: User, color: "text-muted-foreground", label: npc.category };
   const Icon = config.icon;
   const roomNum = roomNumberMap.get(npc.roomId);
 
   const dispositionColors: Record<string, string> = {
     friendly: "bg-green-900/50 text-green-300",
-    neutral: "bg-stone-700 text-stone-300",
+    neutral: "bg-muted text-foreground",
     wary: "bg-yellow-900/50 text-yellow-300",
     hostile: "bg-red-900/50 text-red-300",
   };
@@ -653,25 +653,25 @@ function DungeonNPCCard({ npc, roomNumberMap }: DungeonNPCCardProps) {
     <div className={`rounded border p-2 space-y-1 ${
       npc.isBoss
         ? "border-red-600 bg-red-950/30"
-        : "border-stone-700 bg-stone-800/50"
+        : "border-border bg-card/50"
     }`}>
       <div className="flex items-center gap-2">
         <Icon className={`h-4 w-4 ${config.color}`} />
-        <span className="text-sm font-medium text-stone-200">{config.label}</span>
+        <span className="text-sm font-medium text-foreground">{config.label}</span>
         {npc.isBoss && (
           <span className="rounded bg-red-900 px-1.5 py-0.5 text-xs font-bold text-red-200">
             BOSS
           </span>
         )}
         {roomNum && (
-          <span className="text-xs text-stone-500">Room #{roomNum}</span>
+          <span className="text-xs text-muted-foreground">Room #{roomNum}</span>
         )}
         <span className={`ml-auto rounded px-1.5 py-0.5 text-xs capitalize ${dispositionColors[npc.disposition]}`}>
           {npc.disposition}
         </span>
       </div>
       {npc.hasInfo && (
-        <p className="text-xs text-stone-400">{npc.hasInfo}</p>
+        <p className="text-xs text-muted-foreground">{npc.hasInfo}</p>
       )}
       {npc.wantsRescue && (
         <span className="inline-flex items-center gap-1 rounded bg-blue-900/50 px-1.5 py-0.5 text-xs text-blue-300">
@@ -687,12 +687,12 @@ function DungeonNPCCard({ npc, roomNumberMap }: DungeonNPCCardProps) {
       )}
       {npc.wants && npc.wants.length > 0 && (
         <div className="flex items-center gap-1.5 pt-1">
-          <span className="text-xs text-stone-500">Wants:</span>
+          <span className="text-xs text-muted-foreground">Wants:</span>
           <div className="flex flex-wrap gap-1">
             {npc.wants.map((want) => (
               <span
                 key={want}
-                className="rounded bg-stone-700/50 px-1.5 py-0.5 text-xs text-stone-300 capitalize"
+                className="rounded bg-muted/50 px-1.5 py-0.5 text-xs text-foreground capitalize"
               >
                 {want}
               </span>
@@ -718,18 +718,18 @@ function KeyLockCard({ pair, roomNumberMap, passages }: KeyLockCardProps) {
   const toRoomNum = lockedPassage ? roomNumberMap.get(lockedPassage.toRoomId) : null;
 
   return (
-    <div className="rounded border border-amber-800/50 bg-stone-800/50 p-2 space-y-1">
+    <div className="rounded border border-amber-800/50 bg-card/50 p-2 space-y-1">
       <div className="flex items-center gap-2">
         <Key className="h-4 w-4 text-amber-400" />
         <span className="text-sm font-medium text-amber-200">{pair.keyName}</span>
       </div>
       <div className="flex items-center gap-3 text-xs">
-        <span className="text-stone-400">
-          Found in: <span className="text-stone-300">Room #{keyRoomNum ?? "?"}</span>
+        <span className="text-muted-foreground">
+          Found in: <span className="text-foreground">Room #{keyRoomNum ?? "?"}</span>
         </span>
-        <span className="text-stone-500">→</span>
-        <span className="text-stone-400">
-          Opens door to: <span className="text-stone-300">Room #{toRoomNum ?? "?"}</span>
+        <span className="text-muted-foreground">→</span>
+        <span className="text-muted-foreground">
+          Opens door to: <span className="text-foreground">Room #{toRoomNum ?? "?"}</span>
         </span>
       </div>
     </div>
@@ -748,11 +748,11 @@ function ExitPointCard({ exit, roomNumberMap }: ExitPointCardProps) {
     <div className={`rounded border p-2 space-y-1 ${
       exit.discovered
         ? "border-cyan-700/50 bg-cyan-950/30"
-        : "border-stone-700 bg-stone-800/50"
+        : "border-border bg-card/50"
     }`}>
       <div className="flex items-center gap-2">
-        <DoorOpen className={`h-4 w-4 ${exit.discovered ? "text-cyan-400" : "text-stone-500"}`} />
-        <span className="text-sm font-medium text-stone-200">
+        <DoorOpen className={`h-4 w-4 ${exit.discovered ? "text-cyan-400" : "text-muted-foreground"}`} />
+        <span className="text-sm font-medium text-foreground">
           Exit to Hex ({exit.destinationCoord.q}, {exit.destinationCoord.r})
         </span>
         {exit.discovered ? (
@@ -760,15 +760,15 @@ function ExitPointCard({ exit, roomNumberMap }: ExitPointCardProps) {
             Discovered
           </span>
         ) : (
-          <span className="ml-auto rounded bg-stone-700 px-1.5 py-0.5 text-xs text-stone-400">
+          <span className="ml-auto rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
             Hidden
           </span>
         )}
       </div>
-      <p className="text-xs text-stone-400 italic">{exit.description}</p>
+      <p className="text-xs text-muted-foreground italic">{exit.description}</p>
       {roomNum && (
-        <p className="text-xs text-stone-500">
-          Located in: <span className="text-stone-400">Room #{roomNum}</span>
+        <p className="text-xs text-muted-foreground">
+          Located in: <span className="text-muted-foreground">Room #{roomNum}</span>
         </p>
       )}
     </div>
@@ -787,23 +787,23 @@ function WanderingMonstersSection({ dungeon, ruleset }: WanderingMonstersSection
   const dieSize = entries.length;
 
   return (
-    <div className="rounded-lg border border-red-900/50 bg-red-950/30 p-4 space-y-3">
+    <div className="rounded-lg border border-red-300 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 p-4 space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Footprints className="h-4 w-4 text-red-400" />
-          <h3 className="text-sm font-semibold text-red-300">Wandering Monsters</h3>
+          <Footprints className="h-4 w-4 text-red-600 dark:text-red-400" />
+          <h3 className="text-sm font-semibold text-red-700 dark:text-red-300">Wandering Monsters</h3>
         </div>
-        <span className="rounded bg-red-900/50 px-2 py-0.5 text-xs font-medium text-red-300">
+        <span className="rounded bg-red-200 dark:bg-red-900/50 px-2 py-0.5 text-xs font-medium text-red-700 dark:text-red-300">
           1d{dieSize}
         </span>
       </div>
-      <p className="text-xs text-stone-400">
+      <p className="text-xs text-muted-foreground">
         Check: {dungeon.wanderingMonsters.checkFrequency}
       </p>
-      <div className="overflow-hidden rounded border border-stone-700">
+      <div className="overflow-hidden rounded border border-border">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-stone-700 bg-stone-800/50 text-xs text-stone-400">
+            <tr className="border-b border-border bg-card/50 text-xs text-muted-foreground">
               <th className="px-2 py-1 text-left w-8">#</th>
               <th className="px-2 py-1 text-left">Creature</th>
               <th className="px-2 py-1 text-center w-10">Lv</th>
@@ -812,22 +812,22 @@ function WanderingMonstersSection({ dungeon, ruleset }: WanderingMonstersSection
               <th className="px-2 py-1 text-left">Atk</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-stone-700/50">
+          <tbody className="divide-y divide-border">
             {entries.map((entry, i) => {
               const stats = getMonsterStats(entry.creatureType, ruleset);
               return (
-                <tr key={i} className="text-stone-300">
-                  <td className="px-2 py-1.5 text-stone-500">{i + 1}</td>
+                <tr key={i} className="text-foreground">
+                  <td className="px-2 py-1.5 text-muted-foreground">{i + 1}</td>
                   <td className="px-2 py-1.5">
-                    <div className="font-medium text-stone-200">
+                    <div className="font-medium text-foreground">
                       {entry.count} {entry.creatureType}
                     </div>
-                    <div className="text-xs text-stone-500 italic">{entry.activity}</div>
+                    <div className="text-xs text-muted-foreground italic">{entry.activity}</div>
                   </td>
                   <td className="px-2 py-1.5 text-center text-xs">{stats?.shadowdark?.level ?? "—"}</td>
                   <td className="px-2 py-1.5 text-center text-xs">{stats?.defense ?? "?"}</td>
                   <td className="px-2 py-1.5 text-center text-xs">{stats?.hp ?? "?"}</td>
-                  <td className="px-2 py-1.5 text-xs text-stone-400">{stats?.attack ?? "?"}</td>
+                  <td className="px-2 py-1.5 text-xs text-muted-foreground">{stats?.attack ?? "?"}</td>
                 </tr>
               );
             })}

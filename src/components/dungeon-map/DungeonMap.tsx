@@ -114,28 +114,28 @@ export function DungeonMap({
   return (
     <div
       ref={containerRef}
-      className="relative h-[20rem] lg:h-[32rem] w-full overflow-hidden touch-none rounded-lg bg-stone-900 border border-stone-700"
+      className="relative h-[20rem] lg:h-[32rem] w-full overflow-hidden touch-none rounded-lg bg-neutral-900 dark:bg-stone-900 border border-border"
       {...bind()}
     >
       {/* Zoom controls */}
       <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
         <button
           onClick={handleZoomIn}
-          className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
+          className="p-1.5 rounded bg-card/90 hover:bg-muted border border-border text-muted-foreground hover:text-foreground transition-colors"
           title="Zoom In"
         >
           <ZoomIn size={16} />
         </button>
         <button
           onClick={handleZoomOut}
-          className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
+          className="p-1.5 rounded bg-card/90 hover:bg-muted border border-border text-muted-foreground hover:text-foreground transition-colors"
           title="Zoom Out"
         >
           <ZoomOut size={16} />
         </button>
         <button
           onClick={handleReset}
-          className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
+          className="p-1.5 rounded bg-card/90 hover:bg-muted border border-border text-muted-foreground hover:text-foreground transition-colors"
           title="Reset View"
         >
           <RotateCcw size={16} />
@@ -162,7 +162,7 @@ export function DungeonMap({
             <path
               d={`M ${CELL_SIZE} 0 L 0 0 0 ${CELL_SIZE}`}
               fill="none"
-              stroke="rgba(255,255,255,0.05)"
+              stroke="rgba(255,255,255,0.08)"
               strokeWidth={0.5}
             />
           </pattern>

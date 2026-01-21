@@ -12,12 +12,12 @@ interface RoomCardProps {
   onToggle?: () => void;
 }
 
-const SIZE_BADGES: Record<RoomSize, { label: string; color: string }> = {
-  cramped: { label: "Cramped", color: "bg-stone-700" },
-  small: { label: "Small", color: "bg-stone-600" },
-  medium: { label: "Medium", color: "bg-stone-500" },
-  large: { label: "Large", color: "bg-amber-700" },
-  vast: { label: "Vast", color: "bg-amber-600" },
+const SIZE_BADGES: Record<RoomSize, { label: string; color: string; textColor: string }> = {
+  cramped: { label: "Cramped", color: "bg-muted", textColor: "text-foreground" },
+  small: { label: "Small", color: "bg-stone-600", textColor: "text-white" },
+  medium: { label: "Medium", color: "bg-stone-500", textColor: "text-white" },
+  large: { label: "Large", color: "bg-amber-700", textColor: "text-white" },
+  vast: { label: "Vast", color: "bg-amber-600", textColor: "text-white" },
 };
 
 export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected = false, onToggle }: RoomCardProps) {
@@ -30,27 +30,27 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
   const hasHistoricalClues = (room.historicalClues ?? []).length > 0;
 
   return (
-    <div className={`rounded-lg border bg-stone-900 overflow-hidden ${
-      selected ? "border-amber-500 ring-1 ring-amber-500/30" : "border-stone-700"
+    <div className={`rounded-lg border bg-card overflow-hidden ${
+      selected ? "border-amber-500 ring-1 ring-amber-500/30" : "border-border"
     }`}>
       {/* Header - always visible */}
       <button
         onClick={onToggle}
-        className="w-full flex items-center gap-3 p-3 hover:bg-stone-800 transition-colors text-left"
+        className="w-full flex items-center gap-3 p-3 hover:bg-muted transition-colors text-left"
       >
         {expanded ? (
-          <ChevronDown className="h-4 w-4 text-stone-500 flex-shrink-0" />
+          <ChevronDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />
         ) : (
-          <ChevronRight className="h-4 w-4 text-stone-500 flex-shrink-0" />
+          <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
         )}
 
         {/* Room number */}
-        <span className="flex items-center justify-center h-6 w-6 rounded bg-stone-700 text-xs font-bold text-stone-200">
+        <span className="flex items-center justify-center h-6 w-6 rounded bg-muted text-xs font-bold text-foreground">
           {roomNumber}
         </span>
 
         {/* Room type */}
-        <span className="font-medium text-stone-100 capitalize flex-1">
+        <span className="font-medium text-foreground capitalize flex-1">
           {room.type.replace("_", " ")}
         </span>
 
@@ -61,45 +61,45 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
           {hasTreasure && <Gem className="h-4 w-4 text-emerald-500" />}
           {hasSecrets && <Lock className="h-4 w-4 text-purple-500" />}
           {hasDiscoveries && <ScrollText className="h-4 w-4 text-blue-500" />}
-          {hasHistoricalClues && <History className="h-4 w-4 text-stone-400" />}
+          {hasHistoricalClues && <History className="h-4 w-4 text-muted-foreground" />}
         </div>
 
         {/* Size badge */}
-        <span className={`rounded px-2 py-0.5 text-xs font-medium ${sizeBadge.color} text-stone-200`}>
+        <span className={`rounded px-2 py-0.5 text-xs font-medium ${sizeBadge.color} ${sizeBadge.textColor}`}>
           {sizeBadge.label}
         </span>
 
         {/* Explored checkbox */}
         <div
           onClick={(e) => e.stopPropagation()}
-          className="flex items-center gap-1 text-xs text-stone-500"
+          className="flex items-center gap-1 text-xs text-muted-foreground"
         >
           {room.explored ? (
             <Eye className="h-4 w-4 text-green-500" />
           ) : (
-            <EyeOff className="h-4 w-4 text-stone-600" />
+            <EyeOff className="h-4 w-4 text-muted-foreground" />
           )}
         </div>
       </button>
 
       {/* Expanded content */}
       {expanded && (
-        <div className="border-t border-stone-700 p-4 pl-12 space-y-4">
+        <div className="border-t border-border p-4 pl-12 space-y-4">
           {/* Description */}
-          <p className="text-stone-300 text-sm">{room.description}</p>
+          <p className="text-foreground text-sm">{room.description}</p>
 
           {/* Features */}
           {room.features.length > 0 && (
             <section className="space-y-2">
-              <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-500">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Features
               </h4>
               <ul className="space-y-1">
                 {room.features.map((feature, i) => (
                   <li key={i} className="text-sm">
-                    <span className="text-stone-200">{feature.name}</span>
+                    <span className="text-foreground">{feature.name}</span>
                     {feature.description && (
-                      <span className="text-stone-500"> — {feature.description}</span>
+                      <span className="text-muted-foreground"> — {feature.description}</span>
                     )}
                     {feature.interactive && (
                       <span className="ml-1 text-xs text-amber-500">(interactive)</span>
@@ -113,7 +113,7 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
           {/* Monsters */}
           {room.encounters.length > 0 && (
             <section className="space-y-2">
-              <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-500">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Monsters
               </h4>
               <div className="space-y-2">
@@ -123,10 +123,10 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
                     return (
                       <div
                         key={encounter.id}
-                        className={`rounded bg-stone-800 p-2 text-sm ${encounter.defeated ? "opacity-50 line-through" : ""}`}
+                        className={`rounded bg-card p-2 text-sm ${encounter.defeated ? "opacity-50 line-through" : ""}`}
                       >
                         {encounter.count}x {encounter.creatureType}
-                        <span className="ml-2 text-xs text-stone-500 capitalize">
+                        <span className="ml-2 text-xs text-muted-foreground capitalize">
                           ({encounter.behavior})
                         </span>
                       </div>
@@ -142,15 +142,15 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
                         <span className={`capitalize ${
                           encounter.behavior === "hostile" ? "text-red-500" :
                           encounter.behavior === "fleeing" ? "text-amber-500" :
-                          "text-stone-500"
+                          "text-muted-foreground"
                         }`}>
                           {encounter.behavior}
                         </span>
                         {encounter.defeated && (
-                          <span className="text-stone-600">(defeated)</span>
+                          <span className="text-muted-foreground">(defeated)</span>
                         )}
                         {encounter.notes && (
-                          <span className="text-stone-500">— {encounter.notes}</span>
+                          <span className="text-muted-foreground">— {encounter.notes}</span>
                         )}
                       </div>
                     </div>
@@ -163,14 +163,14 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
           {/* Treasure */}
           {room.treasure.length > 0 && (
             <section className="space-y-2">
-              <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-500">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Treasure
               </h4>
               <ul className="space-y-2">
                 {room.treasure.map((item) => (
                   <li
                     key={item.id}
-                    className={`rounded bg-stone-800 p-2 text-sm ${item.looted ? "opacity-50" : ""}`}
+                    className={`rounded bg-card p-2 text-sm ${item.looted ? "opacity-50" : ""}`}
                   >
                     <div className={`flex items-center gap-2 ${item.looted ? "line-through" : ""}`}>
                       <Gem className={`h-4 w-4 flex-shrink-0 ${
@@ -179,26 +179,26 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
                         item.type === "art" ? "text-pink-500" :
                         "text-amber-500"
                       }`} />
-                      <span className="text-stone-200">{item.name}</span>
+                      <span className="text-foreground">{item.name}</span>
                       {item.value && (
-                        <span className="text-xs text-stone-500">{item.value}</span>
+                        <span className="text-xs text-muted-foreground">{item.value}</span>
                       )}
                       {item.looted && (
-                        <span className="text-xs text-stone-600">(looted)</span>
+                        <span className="text-xs text-muted-foreground">(looted)</span>
                       )}
                     </div>
                     {item.description && !item.backstory && (
-                      <p className="mt-1 text-xs text-stone-500">{item.description}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">{item.description}</p>
                     )}
                     {item.backstory && (
                       <div className="mt-2 flex items-start gap-2">
                         <BookOpen className="h-3 w-3 text-amber-600 flex-shrink-0 mt-0.5" />
-                        <p className="text-xs text-stone-400 italic">{item.backstory}</p>
+                        <p className="text-xs text-muted-foreground italic">{item.backstory}</p>
                       </div>
                     )}
                     {item.originalOwner && !item.backstory && (
-                      <p className="mt-1 text-xs text-stone-500">
-                        <span className="text-stone-600">Originally owned by:</span> {item.originalOwner}
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        <span className="text-muted-foreground">Originally owned by:</span> {item.originalOwner}
                       </p>
                     )}
                     {item.complication && (
@@ -206,7 +206,7 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
                         <summary className="cursor-pointer text-xs text-red-400 hover:text-red-300">
                           Complication (GM)
                         </summary>
-                        <p className="mt-1 p-2 rounded bg-stone-900 text-xs text-red-300">
+                        <p className="mt-1 p-2 rounded bg-background text-xs text-red-300">
                           {item.complication}
                         </p>
                       </details>
@@ -220,42 +220,42 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
           {/* Hazards/Traps (Cairn-style) */}
           {room.hazards.length > 0 && (
             <section className="space-y-2">
-              <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-500">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Traps & Hazards
               </h4>
               <ul className="space-y-3">
                 {room.hazards.map((hazard, i) => (
                   <li
                     key={i}
-                    className={`rounded bg-stone-800 p-3 text-sm ${hazard.disarmed ? "opacity-50" : ""}`}
+                    className={`rounded bg-card p-3 text-sm ${hazard.disarmed ? "opacity-50" : ""}`}
                   >
                     {/* Header */}
                     <div className="flex items-center gap-2">
-                      <AlertTriangle className={`h-4 w-4 flex-shrink-0 ${hazard.disarmed ? "text-stone-600" : "text-amber-500"}`} />
-                      <span className="font-medium text-stone-200">{hazard.name}</span>
+                      <AlertTriangle className={`h-4 w-4 flex-shrink-0 ${hazard.disarmed ? "text-muted-foreground" : "text-amber-500"}`} />
+                      <span className="font-medium text-foreground">{hazard.name}</span>
                       {hazard.targetAttribute && (
                         <span className="text-xs px-1.5 py-0.5 rounded bg-red-900/50 text-red-300">
                           {hazard.targetAttribute}
                         </span>
                       )}
                       {hazard.disarmed && (
-                        <span className="text-xs text-stone-600">(disarmed)</span>
+                        <span className="text-xs text-muted-foreground">(disarmed)</span>
                       )}
                     </div>
 
                     {/* Description */}
-                    <p className="mt-2 text-stone-400">{hazard.description}</p>
+                    <p className="mt-2 text-muted-foreground">{hazard.description}</p>
 
                     {/* Mechanics */}
                     <div className="mt-2 flex flex-wrap gap-3 text-xs">
                       {hazard.damage && (
                         <span className="text-red-400">
-                          <span className="text-stone-500">Damage:</span> {hazard.damage}
+                          <span className="text-muted-foreground">Damage:</span> {hazard.damage}
                         </span>
                       )}
                       {hazard.save && (
                         <span className="text-amber-400">
-                          <span className="text-stone-500">Save:</span> {hazard.save}
+                          <span className="text-muted-foreground">Save:</span> {hazard.save}
                         </span>
                       )}
                     </div>
@@ -264,23 +264,23 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
                     {hazard.trigger && (
                       <p className="mt-2 text-xs">
                         <span className="text-red-500">⚡ Trigger:</span>{" "}
-                        <span className="text-stone-400">{hazard.trigger}</span>
+                        <span className="text-muted-foreground">{hazard.trigger}</span>
                       </p>
                     )}
 
                     {/* Cairn-style: Hints (passive and active) */}
                     {(hazard.passiveHint || hazard.activeHint) && (
-                      <div className="mt-2 space-y-1 border-t border-stone-700 pt-2">
+                      <div className="mt-2 space-y-1 border-t border-border pt-2">
                         {hazard.passiveHint && (
                           <p className="text-xs">
                             <span className="text-yellow-500">👂 Passive:</span>{" "}
-                            <span className="text-stone-400">{hazard.passiveHint}</span>
+                            <span className="text-muted-foreground">{hazard.passiveHint}</span>
                           </p>
                         )}
                         {hazard.activeHint && (
                           <p className="text-xs">
                             <span className="text-cyan-500">🔍 Active:</span>{" "}
-                            <span className="text-stone-400">{hazard.activeHint}</span>
+                            <span className="text-muted-foreground">{hazard.activeHint}</span>
                           </p>
                         )}
                       </div>
@@ -288,11 +288,11 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
 
                     {/* Cairn-style: Disarm Methods (expanded by default) */}
                     {hazard.disarmMethods && hazard.disarmMethods.length > 0 && (
-                      <div className="mt-2 border-t border-stone-700 pt-2">
+                      <div className="mt-2 border-t border-border pt-2">
                         <p className="text-xs text-emerald-500 mb-1">
                           ✓ Disarm Methods
                         </p>
-                        <ul className="ml-4 space-y-1 text-xs text-stone-400">
+                        <ul className="ml-4 space-y-1 text-xs text-muted-foreground">
                           {hazard.disarmMethods.map((method, j) => (
                             <li key={j} className="list-disc">{method}</li>
                           ))}
@@ -303,7 +303,7 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
                     {/* Cairn-style: Consequence */}
                     {hazard.consequence && (
                       <p className="mt-2 text-xs text-orange-400">
-                        <span className="text-stone-500">Consequence:</span> {hazard.consequence}
+                        <span className="text-muted-foreground">Consequence:</span> {hazard.consequence}
                       </p>
                     )}
                   </li>
@@ -315,28 +315,28 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
           {/* Secrets */}
           {room.secrets.length > 0 && (
             <section className="space-y-2">
-              <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-500">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Secrets
               </h4>
               <ul className="space-y-2">
                 {room.secrets.map((secret, i) => (
                   <li
                     key={i}
-                    className={`rounded bg-stone-800 p-2 text-sm ${secret.discovered ? "opacity-50" : ""}`}
+                    className={`rounded bg-card p-2 text-sm ${secret.discovered ? "opacity-50" : ""}`}
                   >
                     <div className="flex items-center gap-2">
-                      <Lock className={`h-4 w-4 ${secret.discovered ? "text-stone-600" : "text-purple-500"}`} />
-                      <span className="text-stone-200">{secret.description}</span>
+                      <Lock className={`h-4 w-4 ${secret.discovered ? "text-muted-foreground" : "text-purple-500"}`} />
+                      <span className="text-foreground">{secret.description}</span>
                       {secret.discovered && (
-                        <span className="text-xs text-stone-600">(found)</span>
+                        <span className="text-xs text-muted-foreground">(found)</span>
                       )}
                     </div>
-                    <p className="mt-1 text-xs text-stone-500">
-                      <span className="text-stone-400">Trigger:</span> {secret.trigger}
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      <span className="text-muted-foreground">Trigger:</span> {secret.trigger}
                     </p>
                     {secret.reward && (
                       <p className="text-xs text-emerald-600">
-                        <span className="text-stone-400">Reward:</span> {secret.reward}
+                        <span className="text-muted-foreground">Reward:</span> {secret.reward}
                       </p>
                     )}
                   </li>
@@ -348,14 +348,14 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
           {/* Discoveries */}
           {(room.discoveries ?? []).length > 0 && (
             <section className="space-y-2">
-              <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-500">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Discoveries
               </h4>
               <ul className="space-y-2">
                 {(room.discoveries ?? []).map((discovery) => (
                   <li
                     key={discovery.id}
-                    className={`rounded bg-stone-800 p-2 text-sm ${discovery.found ? "opacity-50" : ""}`}
+                    className={`rounded bg-card p-2 text-sm ${discovery.found ? "opacity-50" : ""}`}
                   >
                     <div className="flex items-center gap-2">
                       <ScrollText className={`h-4 w-4 ${
@@ -364,18 +364,18 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
                         discovery.type === "clue" ? "text-amber-500" :
                         "text-purple-400"
                       }`} />
-                      <span className="text-stone-300 capitalize">{discovery.type}</span>
+                      <span className="text-foreground capitalize">{discovery.type}</span>
                       {discovery.found && (
-                        <span className="text-xs text-stone-600">(found)</span>
+                        <span className="text-xs text-muted-foreground">(found)</span>
                       )}
                     </div>
-                    <p className="mt-1 text-stone-200">{discovery.description}</p>
+                    <p className="mt-1 text-foreground">{discovery.description}</p>
                     {discovery.content && (
                       <details className="mt-2">
-                        <summary className="cursor-pointer text-xs text-stone-500 hover:text-stone-400">
+                        <summary className="cursor-pointer text-xs text-muted-foreground hover:text-muted-foreground">
                           Read content (GM)
                         </summary>
-                        <p className="mt-1 p-2 rounded bg-stone-900 text-xs text-stone-400 whitespace-pre-wrap">
+                        <p className="mt-1 p-2 rounded bg-background text-xs text-muted-foreground whitespace-pre-wrap">
                           {discovery.content}
                         </p>
                       </details>
@@ -389,14 +389,14 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
           {/* Historical Clues */}
           {(room.historicalClues ?? []).length > 0 && (
             <section className="space-y-2">
-              <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-500">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Historical Clues
               </h4>
               <ul className="space-y-1">
                 {(room.historicalClues ?? []).map((clue, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm">
-                    <History className="h-4 w-4 text-stone-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-stone-400 italic">{clue}</span>
+                    <History className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+                    <span className="text-muted-foreground italic">{clue}</span>
                   </li>
                 ))}
               </ul>

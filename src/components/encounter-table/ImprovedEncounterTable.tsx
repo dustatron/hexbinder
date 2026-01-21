@@ -156,12 +156,12 @@ export function ImprovedEncounterTable({
                 <Sparkles size={16} className="text-amber-400" />
                 <span className="font-medium text-amber-200">{summaryText}</span>
                 {result.hasOverrides && (
-                  <span className="text-xs text-stone-500">(GM override)</span>
+                  <span className="text-xs text-muted-foreground">(GM override)</span>
                 )}
               </div>
               <button
                 onClick={handleRerollAll}
-                className="flex items-center gap-1 rounded px-2 py-1 text-xs text-stone-400 hover:bg-stone-700 hover:text-stone-200"
+                className="flex items-center gap-1 rounded px-2 py-1 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
                 title="Re-roll everything"
               >
                 <RefreshCw size={12} />
@@ -169,7 +169,7 @@ export function ImprovedEncounterTable({
               </button>
             </div>
             {lastEncounterTimestamp && (
-              <p className="mt-1 text-xs text-stone-500">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Last rolled: {formatTimestamp(lastEncounterTimestamp)}
               </p>
             )}
@@ -284,23 +284,23 @@ function TableSection({
   children,
 }: TableSectionProps) {
   return (
-    <div className="overflow-hidden rounded-lg border border-stone-700">
-      <div className="flex items-center justify-between border-b border-stone-700 bg-stone-800 px-3 py-2">
+    <div className="overflow-hidden rounded-lg border border-border">
+      <div className="flex items-center justify-between border-b border-border bg-card px-3 py-2">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-stone-200">{title}</span>
-          <span className="rounded bg-stone-700 px-1.5 py-0.5 text-xs text-stone-400">
+          <span className="text-sm font-medium text-foreground">{title}</span>
+          <span className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
             {diceLabel}
           </span>
         </div>
         <button
           onClick={onReroll}
-          className="rounded p-1 text-stone-400 hover:bg-stone-700 hover:text-stone-200"
+          className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
           title="Re-roll this table"
         >
           <RefreshCw size={12} />
         </button>
       </div>
-      <div className="divide-y divide-stone-700/50">{children}</div>
+      <div className="divide-y divide-border/50">{children}</div>
     </div>
   );
 }
@@ -325,21 +325,21 @@ function TableRow({
       onClick={onClick}
       className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm transition-colors ${
         isSelected
-          ? "bg-amber-500/20 text-amber-200"
-          : "text-stone-300 hover:bg-stone-700/50"
+          ? "bg-amber-500/20 text-amber-700 dark:text-amber-200"
+          : "text-foreground hover:bg-muted/50"
       }`}
     >
       <span className="flex items-center gap-2">
         {label}
         {isRolled && !isSelected && (
-          <span className="text-xs text-stone-500">(rolled)</span>
+          <span className="text-xs text-muted-foreground">(rolled)</span>
         )}
       </span>
       {sublabel && (
-        <span className="text-xs text-stone-500">{sublabel}</span>
+        <span className="text-xs text-muted-foreground">{sublabel}</span>
       )}
       {isSelected && (
-        <span className="text-xs text-amber-400">←</span>
+        <span className="text-xs text-amber-500 dark:text-amber-400">←</span>
       )}
     </button>
   );
@@ -358,15 +358,15 @@ function ResultDetail({ result, ruleset, onRerollSubTable }: ResultDetailProps) 
   const canReroll = ["sign", "environment", "loss", "area-effect"].includes(encounterType);
 
   return (
-    <div className="rounded-lg border border-stone-600 bg-stone-700/50 p-3">
+    <div className="rounded-lg border border-border bg-muted/50 p-3">
       <div className="mb-2 flex items-center justify-between">
-        <span className="rounded bg-amber-500/30 px-2 py-0.5 text-xs font-medium uppercase text-amber-300">
+        <span className="rounded bg-amber-500/30 px-2 py-0.5 text-xs font-medium uppercase text-amber-700 dark:text-amber-300">
           {encounterType.replace("-", " ")}
         </span>
         {canReroll && onRerollSubTable && (
           <button
             onClick={onRerollSubTable}
-            className="rounded p-1 text-stone-400 hover:bg-stone-600 hover:text-stone-200"
+            className="rounded p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
             title="Re-roll this result"
           >
             <RefreshCw size={12} />
@@ -377,10 +377,10 @@ function ResultDetail({ result, ruleset, onRerollSubTable }: ResultDetailProps) 
       {encounterType === "creature" && result.creature && (
         <div className="space-y-3 text-sm">
           <div className="space-y-1">
-            <p className="font-medium text-stone-200">
+            <p className="font-medium text-foreground">
               {result.creature.count}x {result.creature.entry.name}
             </p>
-            <p className="text-stone-400">
+            <p className="text-muted-foreground">
               Level {result.creature.entry.level} • Reaction:{" "}
               <span className={getReactionColor(result.reaction)}>
                 {result.reaction}
@@ -399,26 +399,26 @@ function ResultDetail({ result, ruleset, onRerollSubTable }: ResultDetailProps) 
         <div className="space-y-2 text-sm">
           <div className="flex items-start justify-between">
             <div>
-              <h4 className="font-medium text-stone-200">
+              <h4 className="font-medium text-foreground">
                 {result.npc.name}
                 {result.npc.age && (
-                  <span className="ml-1 text-xs text-stone-500">
+                  <span className="ml-1 text-xs text-muted-foreground">
                     ({result.npc.age} yrs)
                   </span>
                 )}
               </h4>
-              <p className="text-xs text-stone-500 capitalize">
+              <p className="text-xs text-muted-foreground capitalize">
                 {result.npc.race} • {result.npc.gender} • {result.npc.archetype.replace("_", " ")}
               </p>
               <NPCStatLine archetype={result.npc.archetype} ruleset={ruleset} />
             </div>
-            <span className={`rounded px-2 py-0.5 text-xs font-medium ${getReactionColor(result.reaction)} bg-stone-700/50`}>
+            <span className={`rounded px-2 py-0.5 text-xs font-medium ${getReactionColor(result.reaction)} bg-muted/50`}>
               {result.reaction}
             </span>
           </div>
-          <p className="text-stone-400">{result.npc.description}</p>
+          <p className="text-muted-foreground">{result.npc.description}</p>
           {result.npc.flavorWant && (
-            <p className="text-xs text-amber-400/80">
+            <p className="text-xs text-amber-600 dark:text-amber-400/80">
               <span className="font-medium">Wants:</span> {result.npc.flavorWant}
             </p>
           )}
@@ -427,39 +427,39 @@ function ResultDetail({ result, ruleset, onRerollSubTable }: ResultDetailProps) 
 
       {encounterType === "sign" && result.sign && (
         <div className="space-y-1 text-sm">
-          <p className="font-medium text-stone-200">{result.sign.text}</p>
-          <p className="text-stone-400 italic">{result.sign.detail}</p>
+          <p className="font-medium text-foreground">{result.sign.text}</p>
+          <p className="text-muted-foreground italic">{result.sign.detail}</p>
         </div>
       )}
 
       {encounterType === "environment" && result.environment && (
         <div className="space-y-1 text-sm">
-          <p className="font-medium text-stone-200">
+          <p className="font-medium text-foreground">
             {result.environment.text}
             {result.environment.magical && (
-              <span className="ml-2 text-purple-400">✨ Magical</span>
+              <span className="ml-2 text-purple-600 dark:text-purple-400">✨ Magical</span>
             )}
           </p>
-          <p className="text-stone-400 italic">{result.environment.effect}</p>
+          <p className="text-muted-foreground italic">{result.environment.effect}</p>
         </div>
       )}
 
       {encounterType === "loss" && result.loss && (
         <div className="space-y-1 text-sm">
-          <p className="font-medium text-stone-200">{result.loss.text}</p>
-          <p className="text-stone-400 italic">{result.loss.effect}</p>
+          <p className="font-medium text-foreground">{result.loss.text}</p>
+          <p className="text-muted-foreground italic">{result.loss.effect}</p>
         </div>
       )}
 
       {encounterType === "area-effect" && result.areaEffect && (
         <div className="space-y-1 text-sm">
-          <p className="font-medium text-stone-200">
+          <p className="font-medium text-foreground">
             {result.areaEffect.text}
             {result.areaEffect.magical && (
-              <span className="ml-2 text-purple-400">✨ Magic Item</span>
+              <span className="ml-2 text-purple-600 dark:text-purple-400">✨ Magic Item</span>
             )}
           </p>
-          <p className="text-stone-400 italic">{result.areaEffect.effect}</p>
+          <p className="text-muted-foreground italic">{result.areaEffect.effect}</p>
         </div>
       )}
     </div>
@@ -514,7 +514,7 @@ function getReactionColor(reaction?: Reaction): string {
     case "helpful":
       return "text-emerald-400";
     default:
-      return "text-stone-400";
+      return "text-muted-foreground";
   }
 }
 

@@ -38,7 +38,8 @@
       "Skill(playwright-local)",
       "Bash(bd stats)",
       "Bash(bd sync:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git checkout:*)"
     ]
   }
 }

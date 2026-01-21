@@ -103,11 +103,11 @@ export function EncounterTable({ seed, terrain, ruleset = "shadowdark", onReroll
     <div className="space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-stone-200">Encounter Table</h3>
+        <h3 className="text-sm font-semibold text-foreground">Encounter Table</h3>
         {onReroll && (
           <button
             onClick={onReroll}
-            className="flex items-center gap-1 rounded px-2 py-1 text-xs text-stone-400 hover:bg-stone-700 hover:text-stone-200"
+            className="flex items-center gap-1 rounded px-2 py-1 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
           >
             <RefreshCw size={12} />
             Re-roll
@@ -116,14 +116,14 @@ export function EncounterTable({ seed, terrain, ruleset = "shadowdark", onReroll
       </div>
 
       {/* 1d6 Table */}
-      <div className="overflow-hidden rounded-lg border border-stone-700">
+      <div className="overflow-hidden rounded-lg border border-border">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-stone-700 bg-stone-800">
-              <th className="px-3 py-2 text-left text-xs font-medium text-stone-400">
+            <tr className="border-b border-border bg-card">
+              <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground">
                 d6
               </th>
-              <th className="px-3 py-2 text-left text-xs font-medium text-stone-400">
+              <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground">
                 Result
               </th>
             </tr>
@@ -137,19 +137,19 @@ export function EncounterTable({ seed, terrain, ruleset = "shadowdark", onReroll
                 <tr
                   key={entry.roll}
                   onClick={() => setSelectedRoll(entry.roll)}
-                  className={`cursor-pointer border-b border-stone-700/50 last:border-0 transition-colors ${
+                  className={`cursor-pointer border-b border-border/50 last:border-0 transition-colors ${
                     isSelected
                       ? "bg-amber-500/20"
-                      : "hover:bg-stone-700/50"
+                      : "hover:bg-muted/50"
                   }`}
                 >
-                  <td className="px-3 py-2 font-mono text-stone-300">
+                  <td className="px-3 py-2 font-mono text-foreground">
                     {entry.roll}
                     {isRolled && (
-                      <span className="ml-1 text-amber-400">*</span>
+                      <span className="ml-1 text-amber-500 dark:text-amber-400">*</span>
                     )}
                   </td>
-                  <td className="px-3 py-2 text-stone-200">{entry.label}</td>
+                  <td className="px-3 py-2 text-foreground">{entry.label}</td>
                 </tr>
               );
             })}
@@ -159,36 +159,36 @@ export function EncounterTable({ seed, terrain, ruleset = "shadowdark", onReroll
 
       {/* Rolled Result Display */}
       {selectedEntry && (
-        <div className="rounded-lg border border-stone-600 bg-stone-700/50 p-3">
+        <div className="rounded-lg border border-border bg-muted/50 p-3">
           <div className="mb-2 flex items-center gap-2">
-            <span className="rounded bg-amber-500/30 px-2 py-0.5 text-xs font-medium text-amber-300">
+            <span className="rounded bg-amber-500/30 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">
               {selectedEntry.label}
             </span>
             {selectedRoll !== initialRoll && (
-              <span className="text-xs text-stone-500">(GM override)</span>
+              <span className="text-xs text-muted-foreground">(GM override)</span>
             )}
           </div>
 
           {subTableResult.entry && (
             <div className="space-y-2">
-              <p className="text-sm font-medium text-stone-200">
+              <p className="text-sm font-medium text-foreground">
                 {subTableResult.entry.description}
               </p>
               {subTableResult.entry.activity && (
-                <p className="text-sm text-stone-400">
-                  <span className="font-medium text-stone-300">Activity:</span>{" "}
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Activity:</span>{" "}
                   {subTableResult.entry.activity}
                 </p>
               )}
               {subTableResult.entry.rumor && (
-                <p className="text-sm text-blue-400/80">
-                  <span className="font-medium text-blue-300">Rumor:</span>{" "}
+                <p className="text-sm text-blue-600 dark:text-blue-400/80">
+                  <span className="font-medium text-blue-700 dark:text-blue-300">Rumor:</span>{" "}
                   {subTableResult.entry.rumor}
                 </p>
               )}
               {subTableResult.entry.reward && (
-                <p className="text-sm text-amber-400">
-                  <span className="font-medium text-amber-300">Reward:</span>{" "}
+                <p className="text-sm text-amber-600 dark:text-amber-400">
+                  <span className="font-medium text-amber-700 dark:text-amber-300">Reward:</span>{" "}
                   {subTableResult.entry.reward}
                 </p>
               )}

@@ -33,6 +33,7 @@ interface HexTileProps {
   isCurrent?: boolean; // Party is currently here
   isVisited?: boolean; // Party has been here before
   onClick: (coord: HexCoord) => void;
+  onDoubleClick?: (coord: HexCoord) => void;
   showIcon?: boolean;
   showLabel?: boolean;
   iconOnly?: boolean;
@@ -74,6 +75,7 @@ export function HexTile({
   isCurrent = false,
   isVisited = false,
   onClick,
+  onDoubleClick,
   showIcon = true,
   showLabel = false,
   iconOnly = false,
@@ -119,6 +121,7 @@ export function HexTile({
         fill={iconFill}
         style={{ cursor: "pointer" }}
         onClick={() => onClick(hexData.coord)}
+        onDoubleClick={() => onDoubleClick?.(hexData.coord)}
       />
     );
   }
@@ -126,7 +129,8 @@ export function HexTile({
   return (
     <g
       onClick={() => onClick(hexData.coord)}
-      style={{ cursor: "pointer" }}
+      onDoubleClick={() => onDoubleClick?.(hexData.coord)}
+      style={{ cursor: "pointer", outline: "none" }}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {

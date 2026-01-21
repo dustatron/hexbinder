@@ -99,8 +99,8 @@ function LocationPage() {
   // Location not found (shouldn't happen in normal flow)
   if (!location) {
     return (
-      <div className="flex h-svh flex-col items-center justify-center bg-stone-900 text-stone-100">
-        <p className="text-stone-400">Location not found</p>
+      <div className="flex h-svh flex-col items-center justify-center bg-background text-foreground">
+        <p className="text-muted-foreground">Location not found</p>
         <Link
           to="/world/$worldId"
           params={{ worldId: world.id }}
@@ -113,19 +113,19 @@ function LocationPage() {
   }
 
   return (
-    <div className="flex h-svh flex-col bg-stone-900 text-stone-100">
+    <div className="flex h-svh flex-col bg-background text-foreground">
       {/* Header */}
-      <header className="z-10 border-b border-stone-700 bg-stone-900 px-4 py-3">
+      <header className="z-10 border-b border-border bg-background px-4 py-3">
         <div className="flex items-center gap-3">
           <Link
             to="/world/$worldId"
             params={{ worldId: world.id }}
-            className="text-stone-400 hover:text-stone-200"
+            className="text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft size={20} />
           </Link>
           <h1 className="font-semibold">{location.name}</h1>
-          <span className="rounded bg-stone-700 px-2 py-0.5 text-xs capitalize text-stone-400">
+          <span className="rounded bg-stone-700 px-2 py-0.5 text-xs capitalize text-muted-foreground">
             {location.type}
           </span>
         </div>
@@ -171,7 +171,7 @@ function LocationPage() {
         {!isSettlement(location) && !isDungeon(location) && (
           <div className="p-4">
             <h2 className="text-xl font-bold">{location.name}</h2>
-            <p className="mt-2 text-stone-400">{location.description}</p>
+            <p className="mt-2 text-muted-foreground">{location.description}</p>
             {location.tags.length > 0 && (
               <div className="mt-4 flex flex-wrap gap-2">
                 {location.tags.map((tag) => (

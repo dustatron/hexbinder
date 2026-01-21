@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useState, useEffect, useCallback } from "react";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Cloud, Sun, CloudRain, Settings, ChevronRight, Tag } from "lucide-react";
 import { HexMap } from "~/components/hex-map";
 import { LocationPanel } from "~/components/location-panel";
@@ -29,9 +29,17 @@ const WEATHER_ICONS: Partial<Record<WeatherCondition, typeof Sun>> = {
 
 function WorldPage() {
   const initialWorld = Route.useLoaderData();
+  const navigate = useNavigate();
   const [world, setWorld] = useState<WorldData>(initialWorld);
   const [selectedCoord, setSelectedCoord] = useState<HexCoord | null>(null);
   const [showLabels, setShowLabels] = useState(false);
+
+  const handleHexDoubleClick = useCallback((coord: HexCoord) => {
+    navigate({
+      to: "/world/$worldId/hex/$q/$r",
+      params: { worldId: world.id, q: String(coord.q), r: String(coord.r) },
+    });
+  }, [navigate, world.id]);
 
   // Sync state when navigating back (loader runs again with fresh localStorage data)
   useEffect(() => {
@@ -103,13 +111,13 @@ function WorldPage() {
   const todayEvents = (todayRecord?.events ?? []).filter(e => e.type !== "weather_change");
 
   return (
-    <div className="relative flex h-svh flex-col bg-stone-900 text-stone-100">
+    <div className="relative flex h-svh flex-col bg-background text-foreground">
       {/* Header */}
-      <header className="z-10 border-b border-stone-700 bg-stone-900 px-4 py-3">
+      <header className="z-10 border-b border-border bg-background px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Left: Back + World Name */}
           <div className="flex items-center gap-3">
-            <Link to="/" className="text-stone-400 hover:text-stone-200">
+            <Link to="/" className="text-muted-foreground hover:text-foreground">
               <ArrowLeft size={20} />
             </Link>
             <h1 className="font-semibold">{world.name}</h1>
@@ -126,7 +134,7 @@ function WorldPage() {
               </span>
             ))}
             {todayEvents.length > 3 && (
-              <span className="whitespace-nowrap rounded bg-stone-700/50 px-2 py-1 text-stone-400">
+              <span className="whitespace-nowrap rounded bg-stone-700/50 px-2 py-1 text-muted-foreground">
                 +{todayEvents.length - 3} more
               </span>
             )}
@@ -134,9 +142,9 @@ function WorldPage() {
 
           {/* Right: Season + Day + Weather + Settings */}
           <div className="flex items-center gap-2 md:gap-3">
-            <span className="hidden md:inline text-sm text-stone-400 capitalize">{world.state.season}</span>
+            <span className="hidden md:inline text-sm text-muted-foreground capitalize">{world.state.season}</span>
             <div className="flex items-center gap-1 text-sm">
-              <span className="text-stone-400">Day {world.state.day}</span>
+              <span className="text-muted-foreground">Day {world.state.day}</span>
               <button
                 onClick={handleAdvanceDay}
                 className="rounded bg-stone-700 p-1 hover:bg-stone-600"
@@ -145,7 +153,7 @@ function WorldPage() {
                 <ChevronRight size={16} />
               </button>
             </div>
-            <div className="flex items-center gap-1 md:gap-2 text-sm text-stone-400">
+            <div className="flex items-center gap-1 md:gap-2 text-sm text-muted-foreground">
               <WeatherIcon size={18} />
               <span className="hidden md:inline capitalize">
                 {world.state.weather.condition.replace("_", " ")}
@@ -157,7 +165,7 @@ function WorldPage() {
             <Link
               to="/atlas/$worldId"
               params={{ worldId: world.id }}
-              className="text-stone-400 hover:text-stone-200"
+              className="text-muted-foreground hover:text-foreground"
             >
               <Settings size={20} />
             </Link>
@@ -190,6 +198,7 @@ function WorldPage() {
           currentHexId={world.state.currentHexId}
           visitedHexIds={world.state.visitedHexIds}
           onHexClick={setSelectedCoord}
+          onHexDoubleClick={handleHexDoubleClick}
           showLabels={showLabels}
         />
 

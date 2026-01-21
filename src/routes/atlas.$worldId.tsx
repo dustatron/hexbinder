@@ -289,20 +289,20 @@ function AtlasPage() {
   const WeatherIcon = WEATHER_ICONS[world.state.weather.condition] || Sun;
 
   return (
-    <div className="flex min-h-svh flex-col bg-stone-900 text-stone-100">
+    <div className="flex min-h-svh flex-col bg-background text-foreground">
       {/* Header */}
-      <header className="sticky top-0 z-10 border-b border-stone-700 bg-stone-900 px-4 py-3">
+      <header className="sticky top-0 z-10 border-b border-border bg-background px-4 py-3">
         <div className="flex items-center gap-3">
           <Link
             to="/world/$worldId"
             params={{ worldId: world.id }}
-            className="text-stone-400 hover:text-stone-200"
+            className="text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft size={20} />
           </Link>
           <div className="flex-1">
             <h1 className="font-semibold">{world.name}</h1>
-            <p className="text-xs text-stone-400">Seed: {world.seed}</p>
+            <p className="text-xs text-muted-foreground">Seed: {world.seed}</p>
           </div>
         </div>
       </header>
@@ -310,20 +310,20 @@ function AtlasPage() {
       {/* Main Content */}
       <main className="flex-1 space-y-4 p-4">
         {/* Date & Weather Section - Always Visible */}
-        <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
+        <section className="rounded-lg border border-border bg-stone-800 p-4">
           <div className="mb-4 flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 text-xl font-semibold">
-                <Calendar size={20} className="text-stone-400" />
+                <Calendar size={20} className="text-muted-foreground" />
                 Day {world.state.day}, Year {world.state.year}
               </div>
-              <p className="mt-1 text-stone-400 capitalize">
+              <p className="mt-1 text-muted-foreground capitalize">
                 {world.state.season}
               </p>
             </div>
             <div className="text-right">
               <div className="flex items-center justify-end gap-2">
-                <WeatherIcon size={20} className="text-stone-400" />
+                <WeatherIcon size={20} className="text-muted-foreground" />
                 <span className="capitalize">
                   {world.state.weather.condition.replace("_", " ")}
                 </span>
@@ -331,7 +331,7 @@ function AtlasPage() {
               <p className="mt-1 text-sm text-stone-300">
                 {world.state.weather.tempLow}° / {world.state.weather.tempHigh}°F
               </p>
-              <p className="mt-1 flex items-center justify-end gap-2 text-sm text-stone-400">
+              <p className="mt-1 flex items-center justify-end gap-2 text-sm text-muted-foreground">
                 <Moon size={14} />
                 {MOON_LABELS[world.state.moonPhase]}
               </p>
@@ -360,7 +360,7 @@ function AtlasPage() {
         </section>
 
         {/* Tab Bar */}
-        <div className="flex gap-1 rounded-lg border border-stone-700 bg-stone-800 p-1">
+        <div className="flex gap-1 rounded-lg border border-border bg-stone-800 p-1">
           {([
             { id: "events", label: "Events", icon: Calendar, count: todayRecord?.events.length ?? 0 },
             { id: "travel", label: "Travel", icon: Footprints, count: world.state.visitedHexIds.length },
@@ -373,8 +373,8 @@ function AtlasPage() {
               onClick={() => setActiveTab(id)}
               className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-2 text-sm transition-colors ${
                 activeTab === id
-                  ? "bg-stone-700 text-stone-100"
-                  : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
+                  ? "bg-stone-700 text-foreground"
+                  : "text-muted-foreground hover:bg-stone-700/50 hover:text-foreground"
               }`}
             >
               <Icon size={16} />
@@ -387,7 +387,7 @@ function AtlasPage() {
         {/* Tab Content */}
         {activeTab === "events" && (
         /* Events Timeline */
-        <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
+        <section className="rounded-lg border border-border bg-stone-800 p-4">
           {/* Week Pagination Header */}
           <div className="mb-4 flex items-center justify-between">
             <button
@@ -431,7 +431,7 @@ function AtlasPage() {
                 <div
                   key={dayRecord.day}
                   className={`border-l-2 pl-3 ${
-                    isToday ? "border-amber-500" : isPast ? "border-stone-700" : "border-blue-700"
+                    isToday ? "border-amber-500" : isPast ? "border-border" : "border-blue-700"
                   }`}
                 >
                   <div className={`mb-1 flex items-center gap-2 text-sm ${
@@ -441,7 +441,7 @@ function AtlasPage() {
                     {isToday && (
                       <span className="rounded bg-amber-700 px-1.5 py-0.5 text-xs">Today</span>
                     )}
-                    <span className="text-stone-400">
+                    <span className="text-muted-foreground">
                       {dayRecord.weather.tempLow}°/{dayRecord.weather.tempHigh}°
                     </span>
                   </div>
@@ -455,9 +455,9 @@ function AtlasPage() {
                           const DayWeatherIcon = getWeatherIcon(condition);
                           return (
                             <li key={event.id} className={`flex items-center gap-2 rounded px-3 py-2 text-sm ${
-                              isToday ? "bg-stone-700/70" : isPast ? "bg-stone-700/20 text-stone-500" : "bg-stone-700/30 text-stone-400"
+                              isToday ? "bg-stone-700/70" : isPast ? "bg-stone-700/20 text-stone-500" : "bg-stone-700/30 text-muted-foreground"
                             }`}>
-                              <DayWeatherIcon size={16} className={isPast ? "text-stone-600" : "text-stone-400"} />
+                              <DayWeatherIcon size={16} className={isPast ? "text-stone-600" : "text-muted-foreground"} />
                               <span className="capitalize">{condition}</span>
                             </li>
                           );
@@ -467,13 +467,13 @@ function AtlasPage() {
                           if (clock) {
                             return (
                               <li key={event.id} className={`rounded px-3 py-2 text-sm ${
-                                isToday ? "bg-stone-700/70" : isPast ? "bg-stone-700/20 text-stone-500" : "bg-stone-700/30 text-stone-400"
+                                isToday ? "bg-stone-700/70" : isPast ? "bg-stone-700/20 text-stone-500" : "bg-stone-700/30 text-muted-foreground"
                               }`}>
                                 <div className="flex items-center justify-between gap-2">
                                   <span>{linkifyDescription(event.description, world.id, world.factions, world.locations)}</span>
                                 </div>
                                 <div className="mt-2 flex items-center gap-2">
-                                  <span className="text-xs text-stone-400">{clock.name}</span>
+                                  <span className="text-xs text-muted-foreground">{clock.name}</span>
                                   <div className="flex gap-0.5">
                                     {Array.from({ length: clock.segments }).map((_, i) => (
                                       <div
@@ -496,10 +496,10 @@ function AtlasPage() {
                         }
                         return (
                           <li key={event.id} className={`rounded px-3 py-2 text-sm ${
-                            isToday ? "bg-stone-700/70" : isPast ? "bg-stone-700/20 text-stone-500" : "bg-stone-700/30 text-stone-400"
+                            isToday ? "bg-stone-700/70" : isPast ? "bg-stone-700/20 text-stone-500" : "bg-stone-700/30 text-muted-foreground"
                           }`}>
                             <span className={`mr-2 rounded px-1.5 py-0.5 text-xs uppercase ${
-                              isPast ? "bg-stone-700 text-stone-400" : "bg-stone-600 text-stone-300"
+                              isPast ? "bg-stone-700 text-muted-foreground" : "bg-stone-600 text-stone-300"
                             }`}>
                               {event.type.replace("_", " ")}
                             </span>
@@ -553,7 +553,7 @@ function AtlasPage() {
 
         {/* Travel Log */}
         {activeTab === "travel" && (
-          <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
+          <section className="rounded-lg border border-border bg-stone-800 p-4">
             {/* Current Location */}
             <div className="mb-4">
               <h2 className="mb-2 flex items-center gap-2 font-semibold text-green-400">
@@ -577,10 +577,10 @@ function AtlasPage() {
                         {location?.name ?? `Hex (${q}, ${r})`}
                       </div>
                       {location && (
-                        <p className="text-sm capitalize text-stone-400">{location.type}</p>
+                        <p className="text-sm capitalize text-muted-foreground">{location.type}</p>
                       )}
                       {!location && hex && (
-                        <p className="text-sm capitalize text-stone-400">{hex.terrain}</p>
+                        <p className="text-sm capitalize text-muted-foreground">{hex.terrain}</p>
                       )}
                     </Link>
                   );
@@ -623,12 +623,12 @@ function AtlasPage() {
                             {location?.name ?? `Hex (${q}, ${r})`}
                           </span>
                           {location && (
-                            <span className="ml-2 text-sm capitalize text-stone-400">
+                            <span className="ml-2 text-sm capitalize text-muted-foreground">
                               {location.type}
                             </span>
                           )}
                           {!location && hex && (
-                            <span className="ml-2 text-sm capitalize text-stone-400">
+                            <span className="ml-2 text-sm capitalize text-muted-foreground">
                               {hex.terrain}
                             </span>
                           )}
@@ -657,7 +657,7 @@ function AtlasPage() {
                 <Gem size={18} />
                 Significant Items ({world.significantItems.length})
               </h2>
-              <p className="mb-4 text-xs text-stone-400">
+              <p className="mb-4 text-xs text-muted-foreground">
                 Narrative artifacts that drive faction conflict and dungeon purpose
               </p>
               <ul className="space-y-4">
@@ -685,7 +685,7 @@ function AtlasPage() {
                       <p className="mt-2 text-sm text-stone-300">{item.effect}</p>
 
                       {item.significance && (
-                        <p className="mt-1 text-xs italic text-stone-400">{item.significance}</p>
+                        <p className="mt-1 text-xs italic text-muted-foreground">{item.significance}</p>
                       )}
 
                       <div className="mt-3 space-y-1 text-xs">
@@ -725,7 +725,7 @@ function AtlasPage() {
               </ul>
             </section>
           )}
-        <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
+        <section className="rounded-lg border border-border bg-stone-800 p-4">
           <h2 className="mb-3 flex items-center gap-2 font-semibold">
             <Users size={18} className="text-purple-400" />
             Factions ({world.factions.length})
@@ -756,7 +756,7 @@ function AtlasPage() {
                             {faction.factionType}
                           </span>
                         </div>
-                        <p className="mt-1 text-sm text-stone-400">
+                        <p className="mt-1 text-sm text-muted-foreground">
                           {faction.archetype} · {faction.scale}
                         </p>
                       </div>
@@ -800,14 +800,14 @@ function AtlasPage() {
                           <AlertTriangle size={12} />
                           Obstacle
                         </div>
-                        <p className="text-sm text-stone-400">{faction.obstacle.description}</p>
+                        <p className="text-sm text-muted-foreground">{faction.obstacle.description}</p>
                       </div>
                     )}
 
                     {/* Agenda Progress */}
                     {totalGoals > 0 && (
                       <div className="mt-3">
-                        <div className="flex items-center justify-between text-xs text-stone-400">
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
                           <span>Agenda Progress</span>
                           <span>{Math.round((completedGoals / totalGoals) * 100)}%</span>
                         </div>
@@ -830,7 +830,7 @@ function AtlasPage() {
 
         {/* Settlements */}
         {activeTab === "settlements" && (
-        <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
+        <section className="rounded-lg border border-border bg-stone-800 p-4">
           <h2 className="mb-3 flex items-center gap-2 font-semibold">
             <Castle size={18} className="text-amber-400" />
             Settlements ({settlements.length})
@@ -852,11 +852,11 @@ function AtlasPage() {
                     >
                       {settlement.name}
                     </Link>
-                    <p className="text-sm capitalize text-stone-400">
+                    <p className="text-sm capitalize text-muted-foreground">
                       {settlement.settlementType} {settlement.size}
                     </p>
                   </div>
-                  <span className="text-sm text-stone-400">
+                  <span className="text-sm text-muted-foreground">
                     Pop. {settlement.population.toLocaleString()}
                   </span>
                 </li>
@@ -868,7 +868,7 @@ function AtlasPage() {
 
         {/* Dungeons */}
         {activeTab === "dungeons" && (
-        <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
+        <section className="rounded-lg border border-border bg-stone-800 p-4">
           <h2 className="mb-3 flex items-center gap-2 font-semibold">
             <Skull size={18} className="text-red-400" />
             Dungeons ({dungeons.length})
@@ -890,7 +890,7 @@ function AtlasPage() {
                     >
                       {dungeon.name}
                     </Link>
-                    <p className="text-sm capitalize text-stone-400">
+                    <p className="text-sm capitalize text-muted-foreground">
                       {dungeon.theme} &middot; {dungeon.size}
                     </p>
                   </div>

@@ -117,7 +117,7 @@ function LinkedText({
             key={`${match.type}-${match.id}-${match.start}`}
             to="/world/$worldId/faction/$factionId"
             params={{ worldId: worldId, factionId: match.id }}
-            className="mx-0.5 inline-flex items-center rounded bg-purple-500/30 px-1.5 py-0.5 text-xs font-medium text-purple-300 hover:bg-purple-500/50"
+            className="mx-0.5 inline-flex items-center rounded bg-purple-100 dark:bg-purple-500/30 px-1.5 py-0.5 text-xs font-medium text-purple-700 dark:text-purple-300 hover:bg-purple-200 dark:hover:bg-purple-500/50"
             onClick={(e) => e.stopPropagation()}
           >
             {match.name}
@@ -128,7 +128,7 @@ function LinkedText({
           <a
             key={`${match.type}-${match.id}-${match.start}`}
             href={`#npc-${match.id}`}
-            className="mx-0.5 inline-flex items-center rounded bg-cyan-500/30 px-1.5 py-0.5 text-xs font-medium text-cyan-300 hover:bg-cyan-500/50"
+            className="mx-0.5 inline-flex items-center rounded bg-orange-100 dark:bg-orange-500/30 px-1.5 py-0.5 text-xs font-medium text-orange-700 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-500/50"
             onClick={(e) => e.stopPropagation()}
           >
             {match.name}
@@ -140,7 +140,7 @@ function LinkedText({
             key={`${match.type}-${match.id}-${match.start}`}
             to="/world/$worldId/location/$locationId"
             params={{ worldId: worldId, locationId: match.id }}
-            className="mx-0.5 inline-flex items-center rounded bg-amber-500/30 px-1.5 py-0.5 text-xs font-medium text-amber-300 hover:bg-amber-500/50"
+            className="mx-0.5 inline-flex items-center rounded bg-teal-100 dark:bg-teal-500/30 px-1.5 py-0.5 text-xs font-medium text-teal-700 dark:text-teal-300 hover:bg-teal-200 dark:hover:bg-teal-500/50"
             onClick={(e) => e.stopPropagation()}
           >
             {match.name}
@@ -190,12 +190,12 @@ const SIZE_LABELS: Record<Settlement["size"], string> = {
   city: "City",
 };
 
-const SIZE_COLORS: Record<Settlement["size"], string> = {
-  thorpe: "bg-stone-600",
-  hamlet: "bg-stone-500",
-  village: "bg-amber-600",
-  town: "bg-amber-500",
-  city: "bg-amber-400",
+const SIZE_COLORS: Record<Settlement["size"], { bg: string; text: string }> = {
+  thorpe: { bg: "bg-muted", text: "text-foreground" },
+  hamlet: { bg: "bg-stone-500", text: "text-white" },
+  village: { bg: "bg-amber-600", text: "text-white" },
+  town: { bg: "bg-amber-500", text: "text-white" },
+  city: { bg: "bg-amber-400", text: "text-amber-950" },
 };
 
 // Icons match those used in StreetFirstTownGenerator landmarks
@@ -212,9 +212,9 @@ const SITE_ICONS: Record<SettlementSite["type"], string> = {
 
 function SectionHeader({ icon: Icon, title }: { icon: React.ElementType; title: string }) {
   return (
-    <div className="mb-3 flex items-center gap-2 border-b border-stone-700 pb-2">
-      <Icon size={16} className="text-stone-400" />
-      <h3 className="text-sm font-semibold text-stone-200">{title}</h3>
+    <div className="mb-3 flex items-center gap-2 border-b border-border pb-2">
+      <Icon size={16} className="text-muted-foreground" />
+      <h3 className="text-sm font-semibold text-foreground">{title}</h3>
     </div>
   );
 }
@@ -411,7 +411,7 @@ export function SettlementDetail({
       <div className="space-y-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-stone-100">{settlement.name}</h2>
+            <h2 className="text-xl font-bold text-foreground">{settlement.name}</h2>
             <div className="mt-1 flex flex-wrap items-center gap-2">
               {settlement.isCapital && (
                 <span className="rounded bg-yellow-500 px-2 py-0.5 text-xs font-bold text-yellow-950">
@@ -419,15 +419,15 @@ export function SettlementDetail({
                 </span>
               )}
               <span
-                className={`rounded px-2 py-0.5 text-xs font-medium text-stone-100 ${SIZE_COLORS[settlement.size]}`}
+                className={`rounded px-2 py-0.5 text-xs font-medium ${SIZE_COLORS[settlement.size].bg} ${SIZE_COLORS[settlement.size].text}`}
               >
                 {SIZE_LABELS[settlement.size]}
               </span>
-              <span className="flex items-center gap-1 text-xs text-stone-400">
+              <span className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Users size={12} />
                 Pop. {settlement.population.toLocaleString()}
               </span>
-              <span className="flex items-center gap-1 text-xs text-stone-400">
+              <span className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Shield size={12} />
                 {settlement.defenses}
               </span>
@@ -440,11 +440,11 @@ export function SettlementDetail({
           />
         </div>
 
-        <p className="text-sm text-stone-300">{settlement.description}</p>
+        <p className="text-sm text-foreground">{settlement.description}</p>
 
         {/* Sensory Impressions - Quick scene-setting bullets */}
         {settlement.sensoryImpressions && settlement.sensoryImpressions.length > 0 && (
-          <ul className="mt-2 space-y-0.5 text-sm italic text-stone-400">
+          <ul className="mt-2 space-y-0.5 text-sm italic text-muted-foreground">
             {settlement.sensoryImpressions.map((impression, i) => (
               <li key={i} className="flex items-start gap-2">
                 <span className="text-amber-500/60">•</span>
@@ -455,7 +455,7 @@ export function SettlementDetail({
         )}
 
         {/* Quick stats */}
-        <div className="flex flex-wrap gap-3 text-xs text-stone-400">
+        <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
           <span>Govt: {settlement.governmentType}</span>
           {settlement.rulerNpcId && settlement.rulerTitle && (() => {
             const ruler = npcs.find((n) => n.id === settlement.rulerNpcId);
@@ -474,7 +474,7 @@ export function SettlementDetail({
           {!settlement.rulerNpcId && settlement.mayorNpcId && (() => {
             const mayor = npcs.find((n) => n.id === settlement.mayorNpcId);
             return mayor ? (
-              <span className="text-stone-300">
+              <span className="text-foreground">
                 {settlement.governmentType === "elder" ? "Elder" : "Mayor"}: {mayor.name}
               </span>
             ) : null;
@@ -490,23 +490,23 @@ export function SettlementDetail({
 
       {/* Settlement Lore Section */}
       {(settlement.lore || settlement.trouble || settlement.quirk) && (
-        <details className="group rounded-lg border border-stone-700 bg-stone-800/50">
-          <summary className="flex cursor-pointer items-center gap-2 p-3 text-sm font-semibold text-stone-200 hover:bg-stone-700/50">
+        <details className="group rounded-lg border border-border bg-card/50">
+          <summary className="flex cursor-pointer items-center gap-2 p-3 text-sm font-semibold text-foreground hover:bg-muted/50">
             <BookOpen size={16} className="text-amber-400" />
             <span>Settlement Lore</span>
-            <ChevronRight size={16} className="ml-auto text-stone-400 transition-transform group-open:rotate-90" />
+            <ChevronRight size={16} className="ml-auto text-muted-foreground transition-transform group-open:rotate-90" />
           </summary>
-          <div className="border-t border-stone-700 p-3 space-y-3">
+          <div className="border-t border-border p-3 space-y-3">
             {/* Trouble & Quirk - now inside lore */}
             {(settlement.trouble || settlement.quirk) && (
-              <div className="space-y-1 rounded bg-stone-900/50 p-2 text-sm">
+              <div className="space-y-1 rounded bg-background/50 p-2 text-sm">
                 {settlement.trouble && (
                   <p className="text-amber-400">
                     <span className="font-medium">Trouble:</span> {settlement.trouble}
                   </p>
                 )}
                 {settlement.quirk && (
-                  <p className="text-stone-400">
+                  <p className="text-muted-foreground">
                     <span className="font-medium">Quirk:</span> {settlement.quirk}
                   </p>
                 )}
@@ -516,23 +516,23 @@ export function SettlementDetail({
             {settlement.lore && (
               <>
                 {/* Founding Story */}
-                <p className="text-sm italic text-stone-300">
+                <p className="text-sm italic text-foreground">
                   "{settlement.lore.history.founding}"
                 </p>
 
                 {/* Age and Founder Type */}
                 <div className="flex flex-wrap gap-2 text-xs">
-                  <span className="rounded bg-stone-700 px-2 py-1 text-stone-300">
-                    <span className="text-stone-500">Founded by:</span>{" "}
+                  <span className="rounded bg-muted px-2 py-1 text-foreground">
+                    <span className="text-muted-foreground">Founded by:</span>{" "}
                     {settlement.lore.history.founderType.replace("_", " ")}
                   </span>
-                  <span className="rounded bg-stone-700 px-2 py-1 text-stone-300">
-                    <span className="text-stone-500">Age:</span>{" "}
+                  <span className="rounded bg-muted px-2 py-1 text-foreground">
+                    <span className="text-muted-foreground">Age:</span>{" "}
                     {settlement.lore.history.age}
                   </span>
                   {settlement.lore.history.formerName && (
-                    <span className="rounded bg-stone-700 px-2 py-1 text-stone-300">
-                      <span className="text-stone-500">Formerly:</span>{" "}
+                    <span className="rounded bg-muted px-2 py-1 text-foreground">
+                      <span className="text-muted-foreground">Formerly:</span>{" "}
                       {settlement.lore.history.formerName}
                     </span>
                   )}
@@ -541,11 +541,11 @@ export function SettlementDetail({
                 {/* Major Events */}
                 {settlement.lore.history.majorEvents.length > 0 && (
                   <div>
-                    <h4 className="mb-1 text-xs font-medium uppercase text-stone-500">Major Events</h4>
+                    <h4 className="mb-1 text-xs font-medium uppercase text-muted-foreground">Major Events</h4>
                     <ul className="space-y-1">
                       {settlement.lore.history.majorEvents.map((event, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-stone-400">
-                          <span className="text-stone-600">•</span>
+                        <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <span className="text-muted-foreground">•</span>
                           {event}
                         </li>
                       ))}
@@ -555,8 +555,8 @@ export function SettlementDetail({
 
                 {/* Cultural Note */}
                 {settlement.lore.history.culturalNote && (
-                  <p className="text-sm text-stone-400">
-                    <span className="font-medium text-stone-300">Cultural note:</span>{" "}
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">Cultural note:</span>{" "}
                     {settlement.lore.history.culturalNote}
                   </p>
                 )}
@@ -574,7 +574,7 @@ export function SettlementDetail({
             {todayEvents.map((event) => (
               <li
                 key={event.id}
-                className="rounded bg-stone-800/50 p-2 text-sm text-stone-200"
+                className="rounded bg-card/50 p-2 text-sm text-foreground"
               >
                 <span className="mr-2 rounded bg-amber-500/30 px-1.5 py-0.5 text-xs text-amber-300">
                   {event.type.replace("_", " ")}
@@ -587,50 +587,50 @@ export function SettlementDetail({
       )}
 
       {/* Tab Bar */}
-      <div className="flex gap-1 rounded-lg border border-stone-700 bg-stone-800 p-1">
+      <div className="flex gap-1 rounded-lg border border-border bg-card p-1">
         <button
           onClick={() => setActiveTab("locations")}
           title="Locations & NPCs"
           className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 transition-colors ${
             activeTab === "locations"
-              ? "bg-stone-700 text-stone-100"
-              : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
+              ? "bg-muted text-foreground"
+              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
           }`}
         >
           <Building2 size={18} />
-          <span className="rounded-full bg-stone-600 px-1.5 text-xs">{settlement.sites.length + npcs.length}</span>
+          <span className="rounded-full bg-muted px-1.5 text-xs">{settlement.sites.length + npcs.length}</span>
         </button>
         <button
           onClick={() => setActiveTab("rumors")}
           title="Rumors"
           className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 transition-colors ${
             activeTab === "rumors"
-              ? "bg-stone-700 text-stone-100"
-              : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
+              ? "bg-muted text-foreground"
+              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
           }`}
         >
           <MessageSquare size={18} />
-          <span className="rounded-full bg-stone-600 px-1.5 text-xs">{settlement.rumors.length}</span>
+          <span className="rounded-full bg-muted px-1.5 text-xs">{settlement.rumors.length}</span>
         </button>
         <button
           onClick={() => setActiveTab("notices")}
           title="Notice Board"
           className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 transition-colors ${
             activeTab === "notices"
-              ? "bg-stone-700 text-stone-100"
-              : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
+              ? "bg-muted text-foreground"
+              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
           }`}
         >
           <ClipboardList size={18} />
-          <span className="rounded-full bg-stone-600 px-1.5 text-xs">{settlement.notices.length}</span>
+          <span className="rounded-full bg-muted px-1.5 text-xs">{settlement.notices.length}</span>
         </button>
         <button
           onClick={() => setActiveTab("encounters")}
           title="Events & Encounters"
           className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 transition-colors ${
             activeTab === "encounters"
-              ? "bg-stone-700 text-stone-100"
-              : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
+              ? "bg-muted text-foreground"
+              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
           }`}
         >
           <Calendar size={18} />
@@ -646,8 +646,8 @@ export function SettlementDetail({
             {isSpatialSettlement(settlement) && (
               <section className="space-y-3 lg:sticky lg:top-4 lg:self-start">
                 <div className="flex items-center gap-2">
-                  <MapIcon className="h-4 w-4 text-stone-400" />
-                  <h3 className="text-sm font-semibold text-stone-200">Town Map</h3>
+                  <MapIcon className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="text-sm font-semibold text-foreground">Town Map</h3>
                 </div>
                 <TownMap
                   settlement={settlement as SpatialSettlement}
@@ -656,7 +656,7 @@ export function SettlementDetail({
                   onBuildingClick={handleBuildingClick}
                   onWardClick={(wardId: string) => setSelectedWardId(wardId)}
                 />
-                <p className="text-xs text-stone-500">
+                <p className="text-xs text-muted-foreground">
                   Click a ward to see details. Pan and zoom with gestures or +/- buttons.
                 </p>
               </section>
@@ -675,22 +675,22 @@ export function SettlementDetail({
                 );
                 if (allServices.length === 0) return null;
                 return (
-                  <details className="group rounded-lg border border-stone-700 bg-stone-800/50">
-                    <summary className="flex cursor-pointer items-center gap-2 p-3 text-sm font-semibold text-stone-200 hover:bg-stone-700/50">
+                  <details className="group rounded-lg border border-border bg-card/50">
+                    <summary className="flex cursor-pointer items-center gap-2 p-3 text-sm font-semibold text-foreground hover:bg-muted/50">
                       <Coins size={16} className="text-amber-400" />
                       <span>Available Services ({allServices.length})</span>
-                      <ChevronRight size={16} className="ml-auto text-stone-400 transition-transform group-open:rotate-90" />
+                      <ChevronRight size={16} className="ml-auto text-muted-foreground transition-transform group-open:rotate-90" />
                     </summary>
-                    <div className="border-t border-stone-700 p-3">
+                    <div className="border-t border-border p-3">
                       <div className="grid gap-1.5">
                         {allServices.map((svc, i) => (
                           <div
                             key={`${svc.siteId}-${i}`}
-                            className="flex items-center justify-between rounded bg-stone-900/50 px-2 py-1.5 text-sm"
+                            className="flex items-center justify-between rounded bg-background/50 px-2 py-1.5 text-sm"
                           >
                             <div className="flex items-center gap-2">
-                              <span className="text-stone-200">{svc.name}</span>
-                              <span className="text-xs text-stone-500">@ {svc.siteName}</span>
+                              <span className="text-foreground">{svc.name}</span>
+                              <span className="text-xs text-muted-foreground">@ {svc.siteName}</span>
                             </div>
                             <span className="font-medium text-amber-400">{svc.cost}</span>
                           </div>
@@ -720,18 +720,18 @@ export function SettlementDetail({
                       id={`site-${site.id}`}
                       key={site.id}
                       onClick={() => handleSiteClick(site.id)}
-                      className={`cursor-pointer scroll-mt-4 rounded-lg border p-3 transition-all duration-300 hover:border-stone-500 ${
+                      className={`cursor-pointer scroll-mt-4 rounded-lg border p-3 transition-all duration-300 hover:border-border ${
                         isHighlighted
                           ? "border-amber-500 bg-amber-500/20 ring-2 ring-amber-500/50 shadow-lg shadow-amber-500/20"
-                          : "border-stone-700 bg-stone-800/50"
+                          : "border-border bg-card/50"
                       }`}
                     >
                       <div className="flex items-start gap-2">
                         <span className="text-lg">{SITE_ICONS[site.type] || "🏠"}</span>
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <h4 className="font-medium text-stone-200">{site.name}</h4>
-                            <span className="rounded bg-stone-700 px-1.5 py-0.5 text-xs text-stone-400">
+                            <h4 className="font-medium text-foreground">{site.name}</h4>
+                            <span className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
                               {site.type.replace("_", " ")}
                             </span>
                             {site.secret && (
@@ -741,13 +741,13 @@ export function SettlementDetail({
                             )}
                           </div>
                           {(owner || staff.length > 0) && (
-                            <p className="mt-1 text-xs text-stone-400">
+                            <p className="mt-1 text-xs text-muted-foreground">
                               {owner && (
                                 <a href={`#npc-${owner.id}`} className="text-amber-400 hover:underline">{owner.name}</a>
                               )}
                               {owner && staff.length > 0 && " · "}
                               {staff.length > 0 && (
-                                <span className="text-stone-500">
+                                <span className="text-muted-foreground">
                                   Staff: {staff.map((s, i) => (
                                     <span key={s!.id}>
                                       {i > 0 && ", "}
@@ -758,9 +758,9 @@ export function SettlementDetail({
                               )}
                             </p>
                           )}
-                          <p className="mt-1 text-sm text-stone-400">{site.description}</p>
+                          <p className="mt-1 text-sm text-muted-foreground">{site.description}</p>
                           {site.quirk && (
-                            <p className="mt-1 text-xs italic text-stone-500">
+                            <p className="mt-1 text-xs italic text-muted-foreground">
                               {site.quirk}
                             </p>
                           )}
@@ -769,7 +769,7 @@ export function SettlementDetail({
                               {site.services.map((svc, i) => (
                                 <span
                                   key={i}
-                                  className="rounded bg-stone-700/50 px-1.5 py-0.5 text-xs text-stone-400"
+                                  className="rounded bg-muted/50 px-1.5 py-0.5 text-xs text-muted-foreground"
                                   title={svc.description}
                                 >
                                   {svc.name} ({svc.cost})
@@ -822,7 +822,7 @@ export function SettlementDetail({
                   // - Selected without site: cyan (wanderer)
                   // - Highlighted via site selection: amber
                   // - Default: stone
-                  let cardClass = "border-stone-700 bg-stone-800/50 hover:border-stone-500";
+                  let cardClass = "border-border bg-card/50 hover:border-border";
                   if (isNpcSelected && hasSite) {
                     cardClass = "border-amber-500 bg-amber-500/20 ring-2 ring-amber-500/50 shadow-lg shadow-amber-500/20";
                   } else if (isNpcSelected && !hasSite) {
@@ -840,15 +840,15 @@ export function SettlementDetail({
                     >
                       <div className="flex items-start justify-between">
                         <div>
-                          <h4 className="font-medium text-stone-200">
+                          <h4 className="font-medium text-foreground">
                             {npc.name}
                             {npc.age && (
-                              <span className="ml-1 text-xs text-stone-500">
+                              <span className="ml-1 text-xs text-muted-foreground">
                                 ({npc.age} yrs)
                               </span>
                             )}
                           </h4>
-                          <p className="text-xs text-stone-500 capitalize">
+                          <p className="text-xs text-muted-foreground capitalize">
                             {npc.race} - {npc.role ? npc.role.replace("_", " ") : npc.archetype}
                           </p>
                           {npc.siteId && (() => {
@@ -873,7 +873,7 @@ export function SettlementDetail({
                           ✦ {npc.distinguishingFeature}
                         </p>
                       )}
-                      <p className="mt-1 text-sm text-stone-400">{npc.description}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">{npc.description}</p>
                       {familyRels.length > 0 && (
                         <p className="mt-1 text-xs text-blue-400/80">
                           <span className="font-medium">Family:</span>{" "}
@@ -911,12 +911,12 @@ export function SettlementDetail({
                   return (
                     <div
                       key={faction.id}
-                      className="rounded-lg border border-stone-700 bg-stone-800/50 p-3"
+                      className="rounded-lg border border-border bg-card/50 p-3"
                     >
                       <div className="flex items-start justify-between">
                         <div>
-                          <h4 className="font-medium text-stone-200">{faction.name}</h4>
-                          <p className="text-xs text-stone-500">
+                          <h4 className="font-medium text-foreground">{faction.name}</h4>
+                          <p className="text-xs text-muted-foreground">
                             {faction.archetype} - {faction.factionType}
                           </p>
                         </div>
@@ -932,14 +932,14 @@ export function SettlementDetail({
                             </span>
                           )}
                           {!isHQ && !isTerritory && (
-                            <span className="rounded bg-stone-600 px-1.5 py-0.5 text-xs text-stone-300">
+                            <span className="rounded bg-muted px-1.5 py-0.5 text-xs text-foreground">
                               Influence
                             </span>
                           )}
                         </div>
                       </div>
-                      <p className="mt-1 text-sm text-stone-400">{faction.purpose}</p>
-                      <p className="mt-1 text-xs text-stone-500">
+                      <p className="mt-1 text-sm text-muted-foreground">{faction.purpose}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">
                         Status: {faction.status}
                       </p>
                     </div>
@@ -955,13 +955,13 @@ export function SettlementDetail({
       {activeTab === "rumors" && (
         <section>
           {/* Header bar */}
-          <div className="mb-3 flex items-center justify-between rounded bg-stone-700 px-3 py-2">
-            <h3 className="text-sm font-semibold text-stone-200">
+          <div className="mb-3 flex items-center justify-between rounded bg-muted px-3 py-2">
+            <h3 className="text-sm font-semibold text-foreground">
               Rumors ({settlement.rumors.length})
             </h3>
             <button
               onClick={handleRegenerateRumors}
-              className="flex items-center gap-1 rounded px-2 py-1 text-sm text-stone-400 hover:bg-stone-600 hover:text-stone-200"
+              className="flex items-center gap-1 rounded px-2 py-1 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
               title="Generate new rumors"
             >
               <RefreshCw size={14} />
@@ -974,23 +974,23 @@ export function SettlementDetail({
               {settlement.rumors.map((rumor, index) => (
                 <li
                   key={rumor.id}
-                  className="flex items-start gap-3 rounded-lg border border-stone-700 bg-stone-800/50 p-3"
+                  className="flex items-start gap-3 rounded-lg border border-border bg-card/50 p-3"
                 >
                   {/* Checkbox */}
                   <input
                     type="checkbox"
                     checked={rumor.used ?? false}
                     onChange={() => handleToggleRumor(rumor.id)}
-                    className="mt-1 h-4 w-4 shrink-0 cursor-pointer rounded border-stone-600 bg-stone-700 text-amber-500 focus:ring-2 focus:ring-amber-500 focus:ring-offset-0"
+                    className="mt-1 h-4 w-4 shrink-0 cursor-pointer rounded border-border bg-muted text-amber-500 focus:ring-2 focus:ring-amber-500 focus:ring-offset-0"
                   />
                   {/* Row number */}
-                  <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded bg-stone-600 text-xs font-medium text-stone-200 ${rumor.used ? "opacity-50" : ""}`}>
+                  <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded bg-muted text-xs font-medium text-foreground ${rumor.used ? "opacity-50" : ""}`}>
                     {index + 1}
                   </div>
                   {/* Rumor content */}
                   <div className="flex-1">
                     <div className="flex items-start justify-between gap-2">
-                      <p className={`text-stone-300 ${rumor.used ? "opacity-50 line-through" : ""}`}>
+                      <p className={`text-foreground ${rumor.used ? "opacity-50 line-through" : ""}`}>
                         "<LinkedText
                           text={rumor.text}
                           factions={factions}
@@ -1000,12 +1000,12 @@ export function SettlementDetail({
                         />"
                       </p>
                       {rumor.linkedHookId && (
-                        <span className={`shrink-0 rounded bg-amber-500/20 px-1.5 py-0.5 text-xs text-amber-300 ${rumor.used ? "opacity-50" : ""}`}>
+                        <span className={`shrink-0 rounded bg-amber-100 dark:bg-amber-500/20 px-1.5 py-0.5 text-xs text-amber-700 dark:text-amber-300 ${rumor.used ? "opacity-50" : ""}`}>
                           Quest
                         </span>
                       )}
                     </div>
-                    <p className={`mt-1 text-xs text-stone-500 ${rumor.used ? "opacity-50" : ""}`}>
+                    <p className={`mt-1 text-xs text-muted-foreground ${rumor.used ? "opacity-50" : ""}`}>
                       Source: {rumor.source}
                     </p>
                   </div>
@@ -1013,11 +1013,11 @@ export function SettlementDetail({
               ))}
             </ul>
           ) : (
-            <div className="rounded-lg border border-stone-700 bg-stone-800/50 p-6 text-center">
-              <p className="text-sm text-stone-400">No rumors available</p>
+            <div className="rounded-lg border border-border bg-card/50 p-6 text-center">
+              <p className="text-sm text-muted-foreground">No rumors available</p>
               <button
                 onClick={handleRegenerateRumors}
-                className="mt-2 rounded bg-amber-600 px-3 py-1.5 text-sm font-medium text-stone-100 hover:bg-amber-500"
+                className="mt-2 rounded bg-amber-600 px-3 py-1.5 text-sm font-medium text-foreground hover:bg-amber-500"
               >
                 Generate Rumors
               </button>
@@ -1028,8 +1028,8 @@ export function SettlementDetail({
 
       {activeTab === "notices" && (
         <section>
-          <div className="mb-3 flex items-center justify-between rounded bg-stone-700 px-3 py-2">
-            <h3 className="text-sm font-semibold text-stone-200">
+          <div className="mb-3 flex items-center justify-between rounded bg-muted px-3 py-2">
+            <h3 className="text-sm font-semibold text-foreground">
               Notice Board ({settlement.notices.length})
             </h3>
             <button
@@ -1053,7 +1053,7 @@ export function SettlementDetail({
                   return { ...world, locations: updatedLocations };
                 });
               }}
-              className="flex items-center gap-1 rounded px-2 py-1 text-xs text-stone-400 hover:bg-stone-600 hover:text-stone-200"
+              className="flex items-center gap-1 rounded px-2 py-1 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
             >
               <RefreshCw size={12} />
               Regenerate
@@ -1069,25 +1069,25 @@ export function SettlementDetail({
                 return (
                   <li
                     key={notice.id}
-                    className="rounded-lg border border-stone-700 bg-stone-800/50 p-3"
+                    className="rounded-lg border border-border bg-card/50 p-3"
                   >
                     <div className="flex items-start gap-3">
                       <input
                         type="checkbox"
                         checked={notice.used ?? false}
                         onChange={() => handleNoticeToggle(notice.id)}
-                        className="mt-1 h-4 w-4 cursor-pointer rounded border-stone-600 bg-stone-700 text-amber-600 focus:ring-2 focus:ring-amber-500 focus:ring-offset-0"
+                        className="mt-1 h-4 w-4 cursor-pointer rounded border-border bg-muted text-amber-600 focus:ring-2 focus:ring-amber-500 focus:ring-offset-0"
                       />
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <span className="rounded bg-amber-600/80 px-1.5 py-0.5 text-xs font-medium text-stone-100">
+                          <span className="rounded bg-amber-600/80 px-1.5 py-0.5 text-xs font-medium text-foreground">
                             {notice.noticeType.toUpperCase()}
                           </span>
-                          <h4 className={`font-medium text-stone-200 ${notice.used ? "line-through opacity-50" : ""}`}>
+                          <h4 className={`font-medium text-foreground ${notice.used ? "line-through opacity-50" : ""}`}>
                             {notice.title}
                           </h4>
                         </div>
-                        <p className={`mt-2 text-sm text-stone-300 ${notice.used ? "line-through opacity-50" : ""}`}>
+                        <p className={`mt-2 text-sm text-foreground ${notice.used ? "line-through opacity-50" : ""}`}>
                           <LinkedText
                             text={notice.description}
                             factions={factions}
@@ -1098,8 +1098,8 @@ export function SettlementDetail({
                         </p>
                         <div className="mt-3 flex items-center gap-4 text-xs">
                           {posterNpc && (
-                            <span className="text-stone-400">
-                              <span className="font-medium text-stone-300">Contact:</span>{" "}
+                            <span className="text-muted-foreground">
+                              <span className="font-medium text-foreground">Contact:</span>{" "}
                               <a href={`#npc-${posterNpc.id}`} className="text-amber-400 hover:underline">
                                 {posterNpc.name}
                               </a>
@@ -1119,8 +1119,8 @@ export function SettlementDetail({
               })}
             </ul>
           ) : (
-            <div className="rounded-lg border border-stone-700 bg-stone-800/50 p-6 text-center">
-              <p className="text-sm text-stone-400">No notices posted</p>
+            <div className="rounded-lg border border-border bg-card/50 p-6 text-center">
+              <p className="text-sm text-muted-foreground">No notices posted</p>
             </div>
           )}
         </section>
@@ -1131,8 +1131,8 @@ export function SettlementDetail({
           {/* Location Events */}
           {locationEvents.length > 0 && (
             <div>
-              <div className="mb-3 flex items-center justify-between rounded bg-stone-700 px-3 py-2">
-                <h3 className="text-sm font-semibold text-stone-200">
+              <div className="mb-3 flex items-center justify-between rounded bg-muted px-3 py-2">
+                <h3 className="text-sm font-semibold text-foreground">
                   Location Events ({locationEvents.length})
                 </h3>
               </div>
@@ -1150,8 +1150,8 @@ export function SettlementDetail({
                           isToday
                             ? "border-amber-500/50 bg-amber-500/10"
                             : isPast
-                            ? "border-stone-700 bg-stone-800/30 opacity-60"
-                            : "border-stone-700 bg-stone-800/50"
+                            ? "border-border bg-card/30 opacity-60"
+                            : "border-border bg-card/50"
                         }`}
                       >
                         <div className="flex items-start gap-3">
@@ -1159,8 +1159,8 @@ export function SettlementDetail({
                             isToday
                               ? "bg-amber-500 text-stone-900"
                               : isPast
-                              ? "bg-stone-600 text-stone-400"
-                              : "bg-stone-600 text-stone-200"
+                              ? "bg-muted text-muted-foreground"
+                              : "bg-muted text-foreground"
                           }`}>
                             Day {event.day}
                           </div>
@@ -1171,7 +1171,7 @@ export function SettlementDetail({
                                 event.type === "arrival" ? "bg-blue-500/20 text-blue-300" :
                                 event.type === "clock_tick" ? "bg-purple-500/20 text-purple-300" :
                                 event.type === "rumor" ? "bg-amber-500/20 text-amber-300" :
-                                "bg-stone-600 text-stone-300"
+                                "bg-muted text-foreground"
                               }`}>
                                 {event.type.replace("_", " ")}
                               </span>
@@ -1181,12 +1181,12 @@ export function SettlementDetail({
                                 </span>
                               )}
                               {isFuture && (
-                                <span className="text-xs text-stone-500">
+                                <span className="text-xs text-muted-foreground">
                                   in {event.day - currentDay} day{event.day - currentDay !== 1 ? "s" : ""}
                                 </span>
                               )}
                             </div>
-                            <p className={`mt-1 text-sm ${isToday ? "text-stone-200" : "text-stone-400"}`}>
+                            <p className={`mt-1 text-sm ${isToday ? "text-foreground" : "text-muted-foreground"}`}>
                               {event.description}
                             </p>
                           </div>
@@ -1200,13 +1200,13 @@ export function SettlementDetail({
 
           {/* Town Secrets */}
           {settlement.lore && settlement.lore.secrets.length > 0 && (
-            <details className="group rounded-lg border border-stone-700 bg-stone-800/50">
-              <summary className="flex cursor-pointer items-center gap-2 p-3 text-sm font-semibold text-stone-200 hover:bg-stone-700/50">
+            <details className="group rounded-lg border border-border bg-card/50">
+              <summary className="flex cursor-pointer items-center gap-2 p-3 text-sm font-semibold text-foreground hover:bg-muted/50">
                 <Lock size={16} className="text-amber-500" />
                 <span>Town Secrets ({settlement.lore.secrets.length})</span>
-                <ChevronRight size={16} className="ml-auto text-stone-400 transition-transform group-open:rotate-90" />
+                <ChevronRight size={16} className="ml-auto text-muted-foreground transition-transform group-open:rotate-90" />
               </summary>
-              <div className="border-t border-stone-700 p-3 space-y-3">
+              <div className="border-t border-border p-3 space-y-3">
                 {settlement.lore.secrets.map((secret) => {
                   const severityColors = {
                     minor: "bg-blue-500/20 text-blue-300 border-blue-500/30",
@@ -1256,7 +1256,7 @@ export function SettlementDetail({
                           className={`mt-0.5 h-4 w-4 shrink-0 rounded border ${
                             secret.discovered
                               ? "border-green-500 bg-green-500"
-                              : "border-stone-500 bg-transparent"
+                              : "border-border bg-transparent"
                           }`}
                           title={secret.discovered ? "Mark as undiscovered" : "Mark as discovered"}
                         >
@@ -1283,7 +1283,7 @@ export function SettlementDetail({
                                   to="/world/$worldId/location/$locationId"
                                   params={{ worldId, locationId: settlement.id }}
                                   hash={`npc-${npc!.id}`}
-                                  className="rounded bg-stone-700 px-1.5 py-0.5 text-xs text-stone-300 hover:bg-stone-600"
+                                  className="rounded bg-muted px-1.5 py-0.5 text-xs text-foreground hover:bg-muted"
                                 >
                                   {npc!.name}
                                 </Link>

@@ -36,7 +36,7 @@ const ADVANTAGE_TYPE_COLORS: Record<string, string> = {
 const GOAL_STATUS_STYLES: Record<string, { bg: string; dot: string }> = {
   completed: { bg: "bg-green-900/30", dot: "bg-green-500" },
   in_progress: { bg: "bg-blue-900/30", dot: "bg-blue-500" },
-  pending: { bg: "bg-stone-800", dot: "bg-stone-500" },
+  pending: { bg: "bg-card", dot: "bg-stone-500" },
   failed: { bg: "bg-red-900/30", dot: "bg-red-500" },
 };
 
@@ -100,7 +100,7 @@ export function FactionDetail({
     : null;
 
   return (
-    <div className="space-y-6 bg-stone-900 p-4 text-stone-100">
+    <div className="space-y-6 bg-background p-4 text-foreground">
       {/* Header */}
       <header className="space-y-2">
         <div className="flex items-center gap-3">
@@ -111,7 +111,7 @@ export function FactionDetail({
             {faction.factionType}
           </span>
         </div>
-        <div className="flex items-center gap-2 text-sm text-stone-400">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <span className="capitalize">{faction.archetype}</span>
           <span>·</span>
           <span className="capitalize">{faction.scale}</span>
@@ -122,10 +122,10 @@ export function FactionDetail({
 
       {/* Description */}
       <section className="space-y-2">
-        <p className="text-stone-300">{faction.description}</p>
+        <p className="text-foreground">{faction.description}</p>
         {faction.purpose && (
-          <p className="text-sm text-stone-400">
-            <span className="font-medium text-stone-300">Purpose:</span>{" "}
+          <p className="text-sm text-muted-foreground">
+            <span className="font-medium text-foreground">Purpose:</span>{" "}
             {faction.purpose}
           </p>
         )}
@@ -146,7 +146,7 @@ export function FactionDetail({
             >
               {seneschal.name}
             </Link>
-            <p className="text-xs text-stone-400 capitalize">
+            <p className="text-xs text-muted-foreground capitalize">
               {seneschal.race} {seneschal.archetype} · The public face of {faction.name}
             </p>
           </div>
@@ -162,43 +162,43 @@ export function FactionDetail({
           </h3>
           <div className="space-y-2">
             {headquarters && (
-              <div className="flex items-start gap-2 rounded bg-stone-800 px-3 py-2">
+              <div className="flex items-start gap-2 rounded bg-card px-3 py-2">
                 <Building2 size={16} className="mt-0.5 shrink-0 text-cyan-400" />
                 <div>
                   <div className="flex items-center gap-2">
                     <Link
                       to="/world/$worldId_/location/$locationId"
                       params={{ worldId: worldId, locationId: headquarters.id }}
-                      className="font-medium text-stone-200 hover:underline"
+                      className="font-medium text-foreground hover:underline"
                     >
                       {headquarters.name}
                     </Link>
                     <span className="text-xs text-cyan-400">Headquarters</span>
                   </div>
-                  <p className="text-xs text-stone-400 capitalize">{headquarters.type}</p>
+                  <p className="text-xs text-muted-foreground capitalize">{headquarters.type}</p>
                 </div>
               </div>
             )}
             {lairDungeon && (
-              <div className="flex items-start gap-2 rounded bg-stone-800 px-3 py-2">
+              <div className="flex items-start gap-2 rounded bg-card px-3 py-2">
                 <MapPin size={16} className="mt-0.5 shrink-0 text-red-400" />
                 <div>
                   <div className="flex items-center gap-2">
                     <Link
                       to="/world/$worldId_/location/$locationId"
                       params={{ worldId: worldId, locationId: lairDungeon.id }}
-                      className="font-medium text-stone-200 hover:underline"
+                      className="font-medium text-foreground hover:underline"
                     >
                       {lairDungeon.name}
                     </Link>
                     <span className="text-xs text-red-400">Lair</span>
                   </div>
-                  <p className="text-xs text-stone-400 capitalize">{lairDungeon.type}</p>
+                  <p className="text-xs text-muted-foreground capitalize">{lairDungeon.type}</p>
                 </div>
               </div>
             )}
             {faction.lair?.hexCoord && !lairDungeon && (
-              <div className="flex items-center gap-2 rounded bg-stone-800 px-3 py-2 text-sm text-stone-300">
+              <div className="flex items-center gap-2 rounded bg-card px-3 py-2 text-sm text-foreground">
                 <MapPin size={16} className="shrink-0 text-red-400" />
                 <span>
                   Lair at hex ({faction.lair.hexCoord.q}, {faction.lair.hexCoord.r})
@@ -219,7 +219,7 @@ export function FactionDetail({
             {faction.advantages.map((adv, i) => (
               <li
                 key={i}
-                className={`rounded px-3 py-2 ${ADVANTAGE_TYPE_COLORS[adv.type] || "bg-stone-800 text-stone-300"}`}
+                className={`rounded px-3 py-2 ${ADVANTAGE_TYPE_COLORS[adv.type] || "bg-card text-foreground"}`}
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium">{adv.name}</span>
@@ -257,7 +257,7 @@ export function FactionDetail({
           <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-400">
             Agenda
           </h3>
-          <p className="text-xs text-stone-500">Progressive goals building toward their objective</p>
+          <p className="text-xs text-muted-foreground">Progressive goals building toward their objective</p>
           <ol className="space-y-2">
             {faction.agenda
               .sort((a, b) => a.order - b.order)
@@ -272,10 +272,10 @@ export function FactionDetail({
                       <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${styles.dot}`} />
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-stone-200">
+                          <span className="text-sm text-foreground">
                             {goal.order}. {goal.description}
                           </span>
-                          <span className="text-xs capitalize text-stone-400">
+                          <span className="text-xs capitalize text-muted-foreground">
                             {goal.status.replace("_", " ")}
                           </span>
                         </div>
@@ -307,7 +307,7 @@ export function FactionDetail({
 
           {possessedItems.length > 0 && (
             <div className="space-y-2">
-              <span className="text-xs text-stone-500">Possessed</span>
+              <span className="text-xs text-muted-foreground">Possessed</span>
               <ul className="space-y-2">
                 {possessedItems.map((item) => (
                   <li
@@ -315,7 +315,7 @@ export function FactionDetail({
                     className="rounded border border-purple-500/30 bg-purple-900/20 px-3 py-2"
                   >
                     <div className="font-medium text-purple-200">{item.name}</div>
-                    <p className="mt-1 text-xs text-stone-400">{item.effect}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{item.effect}</p>
                   </li>
                 ))}
               </ul>
@@ -324,7 +324,7 @@ export function FactionDetail({
 
           {desiredItems.length > 0 && (
             <div className="space-y-2">
-              <span className="text-xs text-stone-500">Desires</span>
+              <span className="text-xs text-muted-foreground">Desires</span>
               <ul className="space-y-2">
                 {desiredItems.map((item) => (
                   <li
@@ -335,7 +335,7 @@ export function FactionDetail({
                       <span className="font-medium text-amber-200">{item.name}</span>
                       <span className="text-xs capitalize text-amber-400/70">{item.status}</span>
                     </div>
-                    <p className="mt-1 text-xs text-stone-400">{item.effect}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{item.effect}</p>
                   </li>
                 ))}
               </ul>
@@ -347,14 +347,14 @@ export function FactionDetail({
       {/* Methods */}
       {faction.methods.length > 0 && (
         <section className="space-y-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-400">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             Methods
           </h3>
           <ul className="flex flex-wrap gap-2">
             {faction.methods.map((method, i) => (
               <li
                 key={i}
-                className="rounded bg-stone-800 px-2 py-1 text-xs text-stone-300"
+                className="rounded bg-card px-2 py-1 text-xs text-foreground"
               >
                 {method}
               </li>
@@ -366,19 +366,19 @@ export function FactionDetail({
       {/* Clocks */}
       {factionClocks.length > 0 && (
         <section className="space-y-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-400">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             Clocks
           </h3>
           <div className="space-y-2">
             {factionClocks.map((clock) => (
               <div key={clock.id} className="space-y-1">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-stone-200">{clock.name}</span>
-                  <span className="text-xs text-stone-500">
+                  <span className="text-foreground">{clock.name}</span>
+                  <span className="text-xs text-muted-foreground">
                     {clock.filled}/{clock.segments}
                   </span>
                 </div>
-                <div className="h-2 overflow-hidden rounded bg-stone-800">
+                <div className="h-2 overflow-hidden rounded bg-card">
                   <div
                     className="h-full bg-amber-600 transition-all"
                     style={{
@@ -387,7 +387,7 @@ export function FactionDetail({
                   />
                 </div>
                 {clock.description && (
-                  <p className="text-xs text-stone-500">{clock.description}</p>
+                  <p className="text-xs text-muted-foreground">{clock.description}</p>
                 )}
               </div>
             ))}
@@ -398,17 +398,17 @@ export function FactionDetail({
       {/* Territory */}
       {(controlledLocations.length > 0 || influencedLocations.length > 0) && (
         <section className="space-y-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-400">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             Territory
           </h3>
           {controlledLocations.length > 0 && (
             <div className="space-y-1">
-              <span className="text-xs text-stone-500">Controlled</span>
+              <span className="text-xs text-muted-foreground">Controlled</span>
               <ul className="space-y-1">
                 {controlledLocations.map((loc) => (
                   <li
                     key={loc.id}
-                    className="flex items-center gap-2 text-sm text-stone-300"
+                    className="flex items-center gap-2 text-sm text-foreground"
                   >
                     <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
                     {loc.name}
@@ -419,12 +419,12 @@ export function FactionDetail({
           )}
           {influencedLocations.length > 0 && (
             <div className="space-y-1">
-              <span className="text-xs text-stone-500">Influenced</span>
+              <span className="text-xs text-muted-foreground">Influenced</span>
               <ul className="space-y-1">
                 {influencedLocations.map((loc) => (
                   <li
                     key={loc.id}
-                    className="flex items-center gap-2 text-sm text-stone-300"
+                    className="flex items-center gap-2 text-sm text-foreground"
                   >
                     <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
                     {loc.name}
@@ -439,21 +439,21 @@ export function FactionDetail({
       {/* Members */}
       {factionNpcs.length > 0 && (
         <section className="space-y-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-400">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             Members
           </h3>
           <ul className="space-y-2">
             {factionNpcs.map((npc) => (
               <li key={npc.id} className="text-sm">
                 <div className="flex items-center gap-2">
-                  <span className="text-stone-200">{npc.name}</span>
+                  <span className="text-foreground">{npc.name}</span>
                   {npc.factionRole && (
-                    <span className="rounded bg-stone-800 px-1.5 py-0.5 text-xs capitalize text-stone-400">
+                    <span className="rounded bg-card px-1.5 py-0.5 text-xs capitalize text-muted-foreground">
                       {npc.factionRole}
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-stone-500 capitalize">{npc.race} - {npc.role ? npc.role.replace("_", " ") : npc.archetype}</p>
+                <p className="text-xs text-muted-foreground capitalize">{npc.race} - {npc.role ? npc.role.replace("_", " ") : npc.archetype}</p>
                 <NPCStatLine archetype={npc.archetype} ruleset={ruleset} />
               </li>
             ))}
@@ -464,19 +464,19 @@ export function FactionDetail({
       {/* Recruitment Hooks */}
       {recruitmentHooks.length > 0 && (
         <section className="space-y-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-400">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             Join {faction.name}
           </h3>
           <ul className="space-y-2">
             {recruitmentHooks.map((hook) => (
               <li key={hook.id} className="rounded border border-purple-500/30 bg-purple-500/10 p-2">
-                <p className="text-sm text-stone-300">{hook.rumor}</p>
+                <p className="text-sm text-foreground">{hook.rumor}</p>
                 <div className="mt-1 flex items-center gap-2 text-xs">
                   <span className="rounded bg-purple-500/20 px-1.5 py-0.5 capitalize text-purple-300">
                     {hook.type.replace("_", " ")}
                   </span>
                   {hook.reward && (
-                    <span className="text-stone-500">Reward: {hook.reward}</span>
+                    <span className="text-muted-foreground">Reward: {hook.reward}</span>
                   )}
                 </div>
               </li>
@@ -488,15 +488,15 @@ export function FactionDetail({
       {/* Other Hooks */}
       {factionHooks.length > 0 && (
         <section className="space-y-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-400">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             Related Hooks
           </h3>
           <ul className="space-y-2">
             {factionHooks.filter((h) => !faction.recruitmentHookIds?.includes(h.id)).map((hook) => (
               <li key={hook.id} className="space-y-1">
-                <p className="text-sm text-stone-300">{hook.rumor}</p>
+                <p className="text-sm text-foreground">{hook.rumor}</p>
                 <div className="flex items-center gap-2">
-                  <span className="rounded bg-stone-800 px-1.5 py-0.5 text-xs capitalize text-stone-400">
+                  <span className="rounded bg-card px-1.5 py-0.5 text-xs capitalize text-muted-foreground">
                     {hook.type.replace("_", " ")}
                   </span>
                   <span
@@ -504,7 +504,7 @@ export function FactionDetail({
                       hook.status === "active"
                         ? "text-green-500"
                         : hook.status === "completed"
-                          ? "text-stone-500"
+                          ? "text-muted-foreground"
                           : "text-amber-500"
                     }`}
                   >

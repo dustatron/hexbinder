@@ -16,7 +16,7 @@ export function NPCStatLine({ archetype, ruleset }: NPCStatLineProps) {
 
   if (ruleset === "cairn") {
     return (
-      <p className="text-xs text-stone-500">
+      <p className="text-xs text-muted-foreground">
         {stats.defenseLabel} {stats.defense} | HP {stats.hp} |{" "}
         STR {stats.abilities?.STR} DEX {stats.abilities?.DEX} WIL {stats.abilities?.WIL} |{" "}
         {stats.attack}
@@ -25,7 +25,7 @@ export function NPCStatLine({ archetype, ruleset }: NPCStatLineProps) {
   }
 
   return (
-    <p className="text-xs text-stone-500">
+    <p className="text-xs text-muted-foreground">
       {stats.defenseLabel} {stats.defense} | HP {stats.hp} | LV {stats.level} |{" "}
       {stats.attack}
     </p>

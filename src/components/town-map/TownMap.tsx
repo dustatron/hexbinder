@@ -91,7 +91,7 @@ export function TownMap({
     <div className="relative">
       <div
         ref={containerRef}
-        className="h-[20rem] w-full overflow-hidden touch-none rounded-lg border border-stone-400 lg:h-[48rem]"
+        className="h-[20rem] w-full overflow-hidden touch-none rounded-lg border border-border lg:h-[48rem]"
         style={{ backgroundColor: PARCHMENT_BG }}
         {...bind()}
       >
@@ -188,21 +188,21 @@ export function TownMap({
       <div className="absolute right-2 top-2 flex flex-col gap-1">
         <button
           onClick={zoomIn}
-          className="rounded bg-stone-800/80 p-1.5 text-stone-300 hover:bg-stone-700 hover:text-stone-100"
+          className="rounded bg-card/80 p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
           title="Zoom in"
         >
           <Plus size={16} />
         </button>
         <button
           onClick={zoomOut}
-          className="rounded bg-stone-800/80 p-1.5 text-stone-300 hover:bg-stone-700 hover:text-stone-100"
+          className="rounded bg-card/80 p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
           title="Zoom out"
         >
           <Minus size={16} />
         </button>
         <button
           onClick={resetView}
-          className="rounded bg-stone-800/80 p-1.5 text-stone-300 hover:bg-stone-700 hover:text-stone-100"
+          className="rounded bg-card/80 p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
           title="Reset view"
         >
           <RotateCcw size={14} />

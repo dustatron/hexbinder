@@ -67,10 +67,10 @@ function MapTest() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-900 p-4">
+    <div className="min-h-screen bg-background p-4">
       <div className="mx-auto max-w-5xl space-y-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-stone-100">🗺️ Town Map</h1>
+          <h1 className="text-2xl font-bold text-foreground">🗺️ Town Map</h1>
           <div className="flex gap-2">
             {(["thorpe", "hamlet", "village", "town", "city"] as const).map(
               (s) => (
@@ -214,13 +214,13 @@ function MapTest() {
 
           {/* Detail Panel */}
           <div className="w-64 rounded-lg bg-stone-800 p-4">
-            <h2 className="text-lg font-bold text-stone-100 mb-4">Location Details</h2>
+            <h2 className="text-lg font-bold text-foreground mb-4">Location Details</h2>
 
             {selectedBuilding ? (
               <div className="space-y-3">
                 <div className="text-3xl text-center">{selectedBuilding.icon || "🏠"}</div>
                 <div className="text-center">
-                  <div className="text-lg font-semibold text-stone-100">
+                  <div className="text-lg font-semibold text-foreground">
                     {selectedBuilding.name || "House"}
                   </div>
                   <div className="text-sm text-stone-400">

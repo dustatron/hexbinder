@@ -135,12 +135,12 @@ function HomePage() {
   };
 
   return (
-    <div className="min-h-svh bg-stone-900 p-4 text-stone-100">
+    <div className="min-h-svh bg-background p-4 text-foreground">
       <div className="mx-auto max-w-2xl">
         <header className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Hexbinder</h1>
-            <p className="text-sm text-stone-400">
+            <p className="text-sm text-muted-foreground">
               Procedural sandbox generator
             </p>
           </div>
@@ -160,7 +160,7 @@ function HomePage() {
             New World
           </Button>
           <label className="cursor-pointer">
-            <span className="inline-flex h-9 items-center gap-2 rounded-md border border-stone-600 bg-stone-800 px-3 text-sm font-medium hover:bg-stone-700">
+            <span className="inline-flex h-9 items-center gap-2 rounded-md border border-border bg-card px-3 text-sm font-medium text-foreground hover:bg-muted">
               <Upload size={18} />
               Import
             </span>
@@ -174,10 +174,10 @@ function HomePage() {
         </div>
 
         {showNewForm && (
-          <div className="mb-6 rounded-lg border border-stone-700 bg-stone-800 p-4">
+          <div className="mb-6 rounded-lg border border-border bg-card p-4">
             <h2 className="mb-4 text-lg font-semibold">Create New World</h2>
             <div className="mb-4">
-              <label className="mb-1 block text-sm text-stone-400">
+              <label className="mb-1 block text-sm text-muted-foreground">
                 Rule System
               </label>
               <select
@@ -187,17 +187,17 @@ function HomePage() {
                   setRuleset(value);
                   localStorage.setItem("hexbinder:ruleset", value);
                 }}
-                className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100"
+                className="w-full rounded border border-border bg-muted px-3 py-2 text-foreground"
               >
                 <option value="shadowdark">Shadowdark</option>
                 <option value="cairn">Cairn</option>
               </select>
-              <p className="mt-1 text-xs text-stone-500">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Determines monster stat block format
               </p>
             </div>
             <div className="mb-4">
-              <label className="mb-1 block text-sm text-stone-400">
+              <label className="mb-1 block text-sm text-muted-foreground">
                 World Name
               </label>
               <input
@@ -205,11 +205,11 @@ function HomePage() {
                 value={newWorldName}
                 onChange={(e) => setNewWorldName(e.target.value)}
                 placeholder="The Borderlands"
-                className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100 placeholder:text-stone-500"
+                className="w-full rounded border border-border bg-muted px-3 py-2 text-foreground placeholder:text-muted-foreground"
               />
             </div>
             <div className="mb-4">
-              <label className="mb-1 block text-sm text-stone-400">
+              <label className="mb-1 block text-sm text-muted-foreground">
                 Seed (optional)
               </label>
               <input
@@ -217,11 +217,11 @@ function HomePage() {
                 value={newWorldSeed}
                 onChange={(e) => setNewWorldSeed(e.target.value)}
                 placeholder="Auto-generated if blank"
-                className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100 placeholder:text-stone-500"
+                className="w-full rounded border border-border bg-muted px-3 py-2 text-foreground placeholder:text-muted-foreground"
               />
             </div>
             <div className="mb-4">
-              <label className="mb-1 block text-sm text-stone-400">
+              <label className="mb-1 block text-sm text-muted-foreground">
                 Map Size
               </label>
               <div className="flex gap-2">
@@ -233,21 +233,21 @@ function HomePage() {
                     className={`flex-1 rounded border px-3 py-2 text-sm capitalize ${
                       mapSize === size
                         ? "border-amber-500 bg-amber-500/20 text-amber-400"
-                        : "border-stone-600 bg-stone-700 text-stone-300 hover:bg-stone-600"
+                        : "border-border bg-muted text-foreground hover:bg-muted/80"
                     }`}
                   >
                     {size}
                   </button>
                 ))}
               </div>
-              <p className="mt-1 text-xs text-stone-500">
+              <p className="mt-1 text-xs text-muted-foreground">
                 {mapSize === "small" && "~37 hexes"}
                 {mapSize === "medium" && "~91 hexes"}
                 {mapSize === "large" && "~217 hexes"}
               </p>
             </div>
             <div className="mb-4">
-              <label className="mb-1 block text-sm text-stone-400">
+              <label className="mb-1 block text-sm text-muted-foreground">
                 Starting Position
               </label>
               <div className="flex gap-2">
@@ -259,7 +259,7 @@ function HomePage() {
                     className={`flex-1 rounded border px-3 py-2 text-sm capitalize ${
                       startPosition === pos
                         ? "border-amber-500 bg-amber-500/20 text-amber-400"
-                        : "border-stone-600 bg-stone-700 text-stone-300 hover:bg-stone-600"
+                        : "border-border bg-muted text-foreground hover:bg-muted/80"
                     }`}
                   >
                     {pos}
@@ -268,13 +268,13 @@ function HomePage() {
               </div>
             </div>
             <div className="mb-4">
-              <label className="mb-1 block text-sm text-stone-400">
+              <label className="mb-1 block text-sm text-muted-foreground">
                 Starting Settlement
               </label>
               <select
                 value={settlementSize}
                 onChange={(e) => setSettlementSize(e.target.value as SettlementSize)}
-                className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100"
+                className="w-full rounded border border-border bg-muted px-3 py-2 text-foreground"
               >
                 <option value="thorpe">Thorpe (10-50 people)</option>
                 <option value="hamlet">Hamlet (50-200 people)</option>
@@ -286,7 +286,7 @@ function HomePage() {
             {/* Content Counts */}
             <div className="mb-4 grid grid-cols-4 gap-3">
               <div>
-                <label className="mb-1 block text-sm text-stone-400">
+                <label className="mb-1 block text-sm text-muted-foreground">
                   Settlements
                 </label>
                 <input
@@ -295,11 +295,11 @@ function HomePage() {
                   max="30"
                   value={settlementCount === "" ? defaultCounts[mapSize].settlements : settlementCount}
                   onChange={(e) => setSettlementCount(e.target.value ? parseInt(e.target.value) : "")}
-                  className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100"
+                  className="w-full rounded border border-border bg-muted px-3 py-2 text-foreground"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm text-stone-400">
+                <label className="mb-1 block text-sm text-muted-foreground">
                   Dungeons
                 </label>
                 <input
@@ -308,11 +308,11 @@ function HomePage() {
                   max="20"
                   value={dungeonCount === "" ? defaultCounts[mapSize].dungeons : dungeonCount}
                   onChange={(e) => setDungeonCount(e.target.value ? parseInt(e.target.value) : "")}
-                  className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100"
+                  className="w-full rounded border border-border bg-muted px-3 py-2 text-foreground"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm text-stone-400">
+                <label className="mb-1 block text-sm text-muted-foreground">
                   Wild Lairs
                 </label>
                 <input
@@ -321,11 +321,11 @@ function HomePage() {
                   max="20"
                   value={lairCount === "" ? defaultCounts[mapSize].lairs : lairCount}
                   onChange={(e) => setLairCount(e.target.value ? parseInt(e.target.value) : "")}
-                  className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100"
+                  className="w-full rounded border border-border bg-muted px-3 py-2 text-foreground"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm text-stone-400">
+                <label className="mb-1 block text-sm text-muted-foreground">
                   Factions
                 </label>
                 <input
@@ -334,7 +334,7 @@ function HomePage() {
                   max="10"
                   value={factionCount === "" ? defaultCounts[mapSize].factions : factionCount}
                   onChange={(e) => setFactionCount(e.target.value ? parseInt(e.target.value) : "")}
-                  className="w-full rounded border border-stone-600 bg-stone-700 px-3 py-2 text-stone-100"
+                  className="w-full rounded border border-border bg-muted px-3 py-2 text-foreground"
                 />
               </div>
             </div>
@@ -367,7 +367,7 @@ function HomePage() {
         )}
 
         {worlds.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-stone-700 p-8 text-center text-stone-500">
+          <div className="rounded-lg border border-dashed border-border p-8 text-center text-muted-foreground">
             No worlds yet. Create one to get started!
           </div>
         ) : (
@@ -375,7 +375,7 @@ function HomePage() {
             {worlds.map((world) => (
               <div
                 key={world.id}
-                className="flex items-center justify-between rounded-lg border border-stone-700 bg-stone-800 p-4"
+                className="flex items-center justify-between rounded-lg border border-border bg-card p-4"
               >
                 <div
                   className="flex-1 cursor-pointer"
@@ -390,28 +390,28 @@ function HomePage() {
                     <Map className="text-amber-500" size={24} />
                     <div>
                       <h3 className="font-semibold">{world.name}</h3>
-                      <p className="text-sm text-stone-400">
+                      <p className="text-sm text-muted-foreground">
                         {formatDistanceToNow(world.updatedAt, { addSuffix: true })}
                       </p>
                     </div>
                   </div>
                   <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                    <span className="rounded bg-blue-700/50 px-2 py-0.5 text-blue-300 capitalize">
+                    <span className="rounded bg-blue-100 dark:bg-blue-700/50 px-2 py-0.5 text-blue-700 dark:text-blue-300 capitalize">
                       {world.ruleset ?? "shadowdark"}
                     </span>
-                    <span className="rounded bg-stone-700 px-2 py-0.5 text-stone-300">
+                    <span className="rounded bg-muted px-2 py-0.5 text-muted-foreground">
                       Day {world.day}
                     </span>
-                    <span className="rounded bg-stone-700 px-2 py-0.5 text-stone-300 capitalize">
+                    <span className="rounded bg-muted px-2 py-0.5 text-muted-foreground capitalize">
                       {world.mapSize}
                     </span>
-                    <span className="rounded bg-amber-700/50 px-2 py-0.5 text-amber-300">
+                    <span className="rounded bg-amber-100 dark:bg-amber-700/50 px-2 py-0.5 text-amber-700 dark:text-amber-300">
                       {world.settlementCount} settlements
                     </span>
-                    <span className="rounded bg-red-700/50 px-2 py-0.5 text-red-300">
+                    <span className="rounded bg-red-100 dark:bg-red-700/50 px-2 py-0.5 text-red-700 dark:text-red-300">
                       {world.dungeonCount} dungeons
                     </span>
-                    <span className="rounded bg-purple-700/50 px-2 py-0.5 text-purple-300">
+                    <span className="rounded bg-purple-100 dark:bg-purple-700/50 px-2 py-0.5 text-purple-700 dark:text-purple-300">
                       {world.factionCount} factions
                     </span>
                   </div>

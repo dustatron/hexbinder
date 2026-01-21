@@ -34,14 +34,14 @@ function FactionPage() {
   );
 
   return (
-    <div className="flex h-svh flex-col bg-stone-900 text-stone-100">
+    <div className="flex h-svh flex-col bg-background text-foreground">
       {/* Header */}
-      <header className="z-10 border-b border-stone-700 bg-stone-900 px-4 py-3">
+      <header className="z-10 border-b border-border bg-background px-4 py-3">
         <div className="flex items-center gap-3">
           <Link
             to="/world/$worldId"
             params={{ worldId: world.id }}
-            className="text-stone-400 hover:text-stone-200"
+            className="text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft size={20} />
           </Link>

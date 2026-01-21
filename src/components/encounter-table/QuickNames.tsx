@@ -35,14 +35,14 @@ export function QuickNames({ seed, onReroll }: QuickNamesProps) {
   const rightColumn = names.slice(8, 16);
 
   return (
-    <div className="rounded-lg border border-stone-700 bg-stone-800/50 p-3">
+    <div className="rounded-lg border border-border bg-card/50 p-3">
       <div className="mb-2 flex items-center justify-between">
-        <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-400">
+        <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           Quick Names
         </h4>
         <button
           onClick={handleReroll}
-          className="rounded p-1 text-stone-400 hover:bg-stone-700 hover:text-stone-200"
+          className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
           title="Re-roll names"
         >
           <RefreshCw size={12} />
@@ -68,7 +68,7 @@ export function QuickNames({ seed, onReroll }: QuickNamesProps) {
         ))}
       </div>
 
-      <p className="mt-2 text-xs text-stone-500 italic">
+      <p className="mt-2 text-xs text-muted-foreground italic">
         Click to copy
       </p>
     </div>
@@ -87,8 +87,8 @@ function NameButton({ name, isCopied, onClick }: NameButtonProps) {
       onClick={onClick}
       className={`flex items-center justify-between rounded px-1.5 py-0.5 text-left transition-colors ${
         isCopied
-          ? "bg-green-500/20 text-green-300"
-          : "text-stone-300 hover:bg-stone-700 hover:text-stone-100"
+          ? "bg-green-500/20 text-green-600 dark:text-green-300"
+          : "text-foreground hover:bg-muted"
       }`}
     >
       <span className="truncate">{name}</span>

@@ -68,12 +68,12 @@ export function LocationPanel({
           animate={{ y: 0 }}
           exit={{ y: "100%" }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="absolute bottom-0 left-0 right-0 rounded-t-xl border-t border-stone-700 bg-stone-800 px-3 pb-3 pt-2 shadow-xl"
+          className="absolute bottom-0 left-0 right-0 rounded-t-xl border-t border-border bg-card px-3 pb-3 pt-2 shadow-xl"
         >
           {/* Header row */}
           <div className="flex items-center gap-2">
             <div className="flex-1 min-w-0 flex items-center gap-2">
-              <h2 className="font-bold text-stone-100 truncate">
+              <h2 className="font-bold text-foreground truncate">
                 {location ? location.name : (hex ? TERRAIN_LABELS[hex.terrain] : "Unknown")}
               </h2>
               {location && (
@@ -82,7 +82,7 @@ export function LocationPanel({
                 </span>
               )}
               {!location && hex && (
-                <span className="text-xs text-stone-500 shrink-0">
+                <span className="text-xs text-muted-foreground shrink-0">
                   {hex.coord.q},{hex.coord.r}
                 </span>
               )}
@@ -95,7 +95,7 @@ export function LocationPanel({
             </div>
             <button
               onClick={onClose}
-              className="rounded p-1 text-stone-400 hover:bg-stone-700 hover:text-stone-200 shrink-0"
+              className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground shrink-0"
             >
               <X size={18} />
             </button>
@@ -103,12 +103,12 @@ export function LocationPanel({
 
           {/* Single line highlight for wilderness */}
           {highlight && (
-            <p className="mt-1 text-sm text-stone-400 truncate">{highlight}</p>
+            <p className="mt-1 text-sm text-muted-foreground truncate">{highlight}</p>
           )}
 
           {/* Single line description for locations */}
           {location && (
-            <p className="mt-1 text-sm text-stone-400 truncate">{location.description}</p>
+            <p className="mt-1 text-sm text-muted-foreground truncate">{location.description}</p>
           )}
 
           {/* Action Bar */}
@@ -116,7 +116,7 @@ export function LocationPanel({
             <div className="mt-2 flex gap-2">
               {hexId && (
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="rounded-lg bg-stone-700 px-2.5 py-1.5 text-stone-300 transition-colors hover:bg-stone-600">
+                  <DropdownMenuTrigger className="rounded-lg bg-muted px-2.5 py-1.5 text-muted-foreground transition-colors hover:bg-accent">
                     <Menu size={16} />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="min-w-[140px]">
