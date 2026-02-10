@@ -1,0 +1,1781 @@
+{
+  "id": "world-obojima-v2",
+  "name": "Obojima (Preview)",
+  "seed": "321536",
+  "ruleset": "shadowdark",
+  "createdAt": 1770706099747,
+  "updatedAt": 1770706099747,
+  "state": {
+    "day": 1,
+    "season": "spring",
+    "year": 1,
+    "weather": {
+      "condition": "clear",
+      "temperature": "warm",
+      "tempLow": 68,
+      "tempHigh": 82,
+      "wind": "breeze"
+    },
+    "moonPhase": "waxing",
+    "calendar": [],
+    "forecastEndDay": 0,
+    "visitedHexIds": []
+  },
+  "hexes": [
+    {
+      "coord": {
+        "q": 2,
+        "r": -6
+      },
+      "terrain": "water",
+      "description": "Northern Deep — open ocean north of the island."
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -6
+      },
+      "terrain": "water",
+      "description": "Sunken Town & Underwater Depot — submerged ruins visible through clear water.",
+      "locationId": "dungeon-sunken-town"
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -5
+      },
+      "terrain": "water",
+      "description": "NW Shallows — coral reefs and shallow waters."
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -5
+      },
+      "terrain": "hills",
+      "description": "Northern coastal settlement. A small port at the island's northern tip.",
+      "locationId": "settlement-durrin"
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -5
+      },
+      "terrain": "water",
+      "description": "NE Shallows — rocky coastline with tide pools."
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": -4
+      },
+      "terrain": "hills",
+      "description": "NW coast — Coastal Divers' Lodge North, Water Clock, and Pixie Boat anchorage.",
+      "locationId": "settlement-cdl-north"
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -4
+      },
+      "terrain": "forest",
+      "description": "Sweeping valley with enormous kites riding thermal winds.",
+      "locationId": "settlement-sky-kite"
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -4
+      },
+      "terrain": "mountains",
+      "description": "Upper slopes of Mount Arbora. Jumaga's Roost and the Ledge of Offering.",
+      "locationId": "settlement-jumaga-roost"
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -4
+      },
+      "terrain": "hills",
+      "description": "Chisuay's Teahouse — elegant teahouse run by a dashing oni sorcerer.",
+      "locationId": "settlement-chisuay"
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": -4
+      },
+      "terrain": "water",
+      "description": "NE coast — rocky cliffs above churning waters."
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": -3
+      },
+      "terrain": "water",
+      "description": "NW coast — Island of Hmug visible offshore."
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": -3
+      },
+      "terrain": "forest",
+      "description": "Kuroki Village — forest settlement near the mountain.",
+      "locationId": "settlement-kuroki"
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -3
+      },
+      "terrain": "hills",
+      "description": "Lom & Salt's College of Arms — training grounds on the hillside."
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -3
+      },
+      "terrain": "hills",
+      "description": "Hogstone Hot Springs — healing hamlet around natural hot springs.",
+      "locationId": "settlement-hogstone"
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -3
+      },
+      "terrain": "mountains",
+      "description": "Toggle — smithing hamlet on Mount Arbora's eastern slope. Opu Opu Spring nearby.",
+      "locationId": "settlement-toggle"
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": -3
+      },
+      "terrain": "hills",
+      "description": "Toraf & Boulder's School of Guts & Grit — martial training academy.",
+      "locationId": "settlement-toraf-boulder"
+    },
+    {
+      "coord": {
+        "q": 5,
+        "r": -3
+      },
+      "terrain": "hills",
+      "description": "Coastal Divers' Lodge East — NE coast outpost of the Mariners' Guild.",
+      "locationId": "settlement-cdl-east"
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": -2
+      },
+      "terrain": "water",
+      "description": "Western coast — forested cliffs above the ocean."
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": -2
+      },
+      "terrain": "forest",
+      "description": "Uluwa / Ferry Crossing — the Spirit Market, a twilight bazaar.",
+      "locationId": "settlement-uluwa"
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": -2
+      },
+      "terrain": "forest",
+      "description": "Matango Village — mushroom-obsessed village. Five fungal factions.",
+      "locationId": "settlement-matango"
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": -2
+      },
+      "terrain": "forest",
+      "description": "Dense forest wilderness between Matango and the Graysteps."
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -2
+      },
+      "terrain": "mountains",
+      "description": "The Graysteps — grey stone village on Mount Arbora's western slope.",
+      "locationId": "settlement-graysteps"
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -2
+      },
+      "terrain": "forest",
+      "description": "Forested foothills — transition zone between mountains and wetlands."
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -2
+      },
+      "terrain": "swamp",
+      "description": "Goodie Mart — provisions outpost at the edge of Brackwater Wetlands.",
+      "locationId": "settlement-goodie-mart"
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": -2
+      },
+      "terrain": "forest",
+      "description": "Gobo Village — settlement in the eastern forests.",
+      "locationId": "settlement-gobo"
+    },
+    {
+      "coord": {
+        "q": 5,
+        "r": -2
+      },
+      "terrain": "water",
+      "description": "Eastern coast — mangrove-lined shore."
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": -1
+      },
+      "terrain": "water",
+      "description": "Western deep — Island of Hmug and open ocean."
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": -1
+      },
+      "terrain": "forest",
+      "description": "Sheep Dragon Grazing Grounds — pastoral meadows in the western forest."
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": -1
+      },
+      "terrain": "hills",
+      "description": "Wooded hills — wilderness between western settlements."
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": -1
+      },
+      "terrain": "plains",
+      "description": "The Way Gate & Amak Shurak — ancient waypoint at the island's crossroads."
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -1
+      },
+      "terrain": "hills",
+      "description": "Rolling foothills — wilderness between mountains and wetlands."
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -1
+      },
+      "terrain": "swamp",
+      "description": "Roa Kala — sacred grove of the Kohdoi dara.",
+      "locationId": "settlement-roa-kala"
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -1
+      },
+      "terrain": "swamp",
+      "description": "Hakumon's Ramen Shop — legendary ramen in the wetlands.",
+      "locationId": "settlement-hakumon"
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": -1
+      },
+      "terrain": "swamp",
+      "description": "Ten Wheels Grove — ancient grove in Brackwater Wetlands."
+    },
+    {
+      "coord": {
+        "q": 5,
+        "r": -1
+      },
+      "terrain": "swamp",
+      "description": "Polewater Village & The Sally Sue — stilts village, closest to Corruption.",
+      "locationId": "settlement-polewater"
+    },
+    {
+      "coord": {
+        "q": -4,
+        "r": 0
+      },
+      "terrain": "water",
+      "description": "The Coral Castle — Lionfish King's underwater fortress.",
+      "locationId": "dungeon-coral-castle"
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": 0
+      },
+      "terrain": "hills",
+      "description": "Coastal Divers' Lodge West — western coast outpost.",
+      "locationId": "settlement-cdl-west"
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 0
+      },
+      "terrain": "hills",
+      "description": "Okiri Village — quiet farming hamlet with shepherds and slingers.",
+      "locationId": "settlement-okiri"
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 0
+      },
+      "terrain": "plains",
+      "description": "Fort Harglo — Courier Brigade fortress at the crossroads.",
+      "locationId": "settlement-fort-harglo"
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": 0
+      },
+      "terrain": "plains",
+      "description": "Witching Tower — Fish Head Coven compound with four Gatehouses.",
+      "locationId": "settlement-witching-tower"
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": 0
+      },
+      "terrain": "plains",
+      "description": "North & East Gatehouse area — Witching Tower outer defenses."
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": 0
+      },
+      "terrain": "hills",
+      "description": "River Master's Tower — overlooks the eastern rivers."
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": 0
+      },
+      "terrain": "forest",
+      "description": "Shade Wood & Whispering Forest — dense, eerie woodland."
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": 0
+      },
+      "terrain": "forest",
+      "description": "Ekmu Village — settlement at the edge of the eastern forest.",
+      "locationId": "settlement-ekmu"
+    },
+    {
+      "coord": {
+        "q": 5,
+        "r": 0
+      },
+      "terrain": "water",
+      "description": "Eastern coast — New Moon Lagoon and coastal waters."
+    },
+    {
+      "coord": {
+        "q": -4,
+        "r": 1
+      },
+      "terrain": "water",
+      "description": "SW coast — rocky waters and fishing grounds."
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": 1
+      },
+      "terrain": "hills",
+      "description": "Crak Caves — cave system in the western hills.",
+      "locationId": "dungeon-crak-caves"
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 1
+      },
+      "terrain": "hills",
+      "description": "SW interior wilderness — scrubby hills and goat paths."
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 1
+      },
+      "terrain": "plains",
+      "description": "South Gatehouse & West Gatehouse area — southern Witching Tower defenses."
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": 1
+      },
+      "terrain": "hills",
+      "description": "Opal Falls — cascading waterfalls from the highland plateau.",
+      "locationId": "settlement-opal-falls"
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": 1
+      },
+      "terrain": "hills",
+      "description": "Broken Bird Airfield — First Age airfield ruins.",
+      "locationId": "settlement-broken-bird"
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": 1
+      },
+      "terrain": "hills",
+      "description": "Crumbled Hut — mysterious ruins in the Coastal Highlands."
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": 1
+      },
+      "terrain": "forest",
+      "description": "SE forest wilderness — dense canopy and hidden trails."
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": 1
+      },
+      "terrain": "water",
+      "description": "SE coast — highland cliffs above the ocean."
+    },
+    {
+      "coord": {
+        "q": -4,
+        "r": 2
+      },
+      "terrain": "water",
+      "description": "SW coast — open waters south of Tidewater."
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": 2
+      },
+      "terrain": "hills",
+      "description": "Tidewater — sandy coastal village. Tower of Glass holds the Pearl of Rongol.",
+      "locationId": "settlement-tidewater"
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 2
+      },
+      "terrain": "forest",
+      "description": "Lake Ellior area — forested lowlands around a shimmering lake."
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 2
+      },
+      "terrain": "forest",
+      "description": "Temple of Shoom — ancient nakudama ziggurat in dense jungle.",
+      "locationId": "dungeon-temple-of-shoom"
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": 2
+      },
+      "terrain": "plains",
+      "description": "Southern fields — open grassland approaching the coast."
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": 2
+      },
+      "terrain": "hills",
+      "description": "AHA Headquarters — observatory and research campus.",
+      "locationId": "settlement-aha-hq"
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": 2
+      },
+      "terrain": "water",
+      "description": "SE waters — Cloud Depot visible on the horizon."
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": 3
+      },
+      "terrain": "water",
+      "description": "SW coast — fishing waters south of Tidewater."
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 3
+      },
+      "terrain": "hills",
+      "description": "Yatamon — largest city on Obojima. Spirit trolleys, undercity below.",
+      "locationId": "settlement-yatamon"
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 3
+      },
+      "terrain": "hills",
+      "description": "Coastal Divers' Lodge South — southern coast outpost.",
+      "locationId": "settlement-cdl-south"
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": 3
+      },
+      "terrain": "water",
+      "description": "Southern coast — surf breaks against dark volcanic rock."
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 4
+      },
+      "terrain": "water",
+      "description": "Southern Shallows — Lionfish King patrols these waters."
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 4
+      },
+      "terrain": "water",
+      "description": "Southern Deep — the Venomous Rex's corrupted forces."
+    }
+  ],
+  "edges": [
+    {
+      "from": {
+        "q": -2,
+        "r": 3
+      },
+      "to": {
+        "q": -1,
+        "r": 2
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": -2,
+        "r": 3
+      },
+      "to": {
+        "q": -3,
+        "r": 2
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": -2,
+        "r": 3
+      },
+      "to": {
+        "q": -1,
+        "r": 3
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": -2,
+        "r": 0
+      },
+      "to": {
+        "q": -1,
+        "r": 0
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": -1,
+        "r": 0
+      },
+      "to": {
+        "q": 0,
+        "r": 0
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": -2,
+        "r": 0
+      },
+      "to": {
+        "q": -1,
+        "r": -2
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": 5,
+        "r": -1
+      },
+      "to": {
+        "q": 4,
+        "r": 0
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": 0,
+        "r": 1
+      },
+      "to": {
+        "q": 1,
+        "r": 2
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": -2,
+        "r": 3
+      },
+      "to": {
+        "q": -1,
+        "r": 2
+      },
+      "type": "trail"
+    },
+    {
+      "from": {
+        "q": -1,
+        "r": 2
+      },
+      "to": {
+        "q": -1,
+        "r": 1
+      },
+      "type": "trail"
+    },
+    {
+      "from": {
+        "q": -1,
+        "r": 1
+      },
+      "to": {
+        "q": 0,
+        "r": 0
+      },
+      "type": "trail"
+    },
+    {
+      "from": {
+        "q": 0,
+        "r": 0
+      },
+      "to": {
+        "q": 0,
+        "r": -1
+      },
+      "type": "trail"
+    },
+    {
+      "from": {
+        "q": 0,
+        "r": -1
+      },
+      "to": {
+        "q": 1,
+        "r": -2
+      },
+      "type": "trail"
+    },
+    {
+      "from": {
+        "q": 1,
+        "r": -2
+      },
+      "to": {
+        "q": 2,
+        "r": -3
+      },
+      "type": "trail"
+    },
+    {
+      "from": {
+        "q": 2,
+        "r": -3
+      },
+      "to": {
+        "q": 1,
+        "r": -4
+      },
+      "type": "trail"
+    },
+    {
+      "from": {
+        "q": 2,
+        "r": -4
+      },
+      "to": {
+        "q": 1,
+        "r": -2
+      },
+      "type": "river"
+    },
+    {
+      "from": {
+        "q": 1,
+        "r": -2
+      },
+      "to": {
+        "q": 0,
+        "r": -2
+      },
+      "type": "river"
+    },
+    {
+      "from": {
+        "q": 0,
+        "r": -2
+      },
+      "to": {
+        "q": -1,
+        "r": -2
+      },
+      "type": "river"
+    },
+    {
+      "from": {
+        "q": 2,
+        "r": -4
+      },
+      "to": {
+        "q": 3,
+        "r": -3
+      },
+      "type": "river"
+    },
+    {
+      "from": {
+        "q": 3,
+        "r": -3
+      },
+      "to": {
+        "q": 3,
+        "r": -2
+      },
+      "type": "river"
+    },
+    {
+      "from": {
+        "q": 3,
+        "r": -2
+      },
+      "to": {
+        "q": 3,
+        "r": -1
+      },
+      "type": "river"
+    },
+    {
+      "from": {
+        "q": 3,
+        "r": -1
+      },
+      "to": {
+        "q": 5,
+        "r": -1
+      },
+      "type": "river"
+    }
+  ],
+  "locations": [
+    {
+      "id": "settlement-durrin",
+      "name": "Durrin",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 2,
+        "r": -5
+      },
+      "description": "Northern coastal settlement at the island's tip.",
+      "tags": [
+        "coastal",
+        "north"
+      ],
+      "size": "thorpe",
+      "population": 30,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-cdl-north",
+      "name": "Coastal Divers' Lodge (North)",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 0,
+        "r": -4
+      },
+      "description": "NW coast outpost. Water Clock and Pixie Boat nearby.",
+      "tags": [
+        "coastal",
+        "mariners"
+      ],
+      "size": "thorpe",
+      "population": 20,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-sky-kite",
+      "name": "Sky Kite Valley",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 1,
+        "r": -4
+      },
+      "description": "Second largest settlement. Enormous kites, barges, aeronauts.",
+      "tags": [
+        "town",
+        "kites"
+      ],
+      "size": "town",
+      "population": 1800,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-jumaga-roost",
+      "name": "Jumaga's Roost",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 2,
+        "r": -4
+      },
+      "description": "Climbing settlement near the elder sky salamander's lair.",
+      "tags": [
+        "mountains",
+        "climbing"
+      ],
+      "size": "thorpe",
+      "population": 30,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-chisuay",
+      "name": "Chisuay's Teahouse",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 3,
+        "r": -4
+      },
+      "description": "Elegant teahouse run by an oni sorcerer. Awakened fossa staff.",
+      "tags": [
+        "teahouse",
+        "oni"
+      ],
+      "size": "thorpe",
+      "population": 25,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-kuroki",
+      "name": "Kuroki Village",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 0,
+        "r": -3
+      },
+      "description": "Forest village near the mountain.",
+      "tags": [
+        "forest",
+        "village"
+      ],
+      "size": "village",
+      "population": 300,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-hogstone",
+      "name": "Hogstone Hot Springs",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 2,
+        "r": -3
+      },
+      "description": "Healing hamlet around natural hot springs.",
+      "tags": [
+        "hot-springs",
+        "healing"
+      ],
+      "size": "hamlet",
+      "population": 200,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-toggle",
+      "name": "Toggle",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 3,
+        "r": -3
+      },
+      "description": "Smithing hamlet. Dara masters forge unique alloys. Opu Opu Spring nearby.",
+      "tags": [
+        "smithing",
+        "dara"
+      ],
+      "size": "hamlet",
+      "population": 120,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-toraf-boulder",
+      "name": "Toraf & Boulder's School of Guts & Grit",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 4,
+        "r": -3
+      },
+      "description": "Martial training academy in the hills.",
+      "tags": [
+        "training",
+        "martial"
+      ],
+      "size": "thorpe",
+      "population": 40,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-cdl-east",
+      "name": "Coastal Divers' Lodge (East)",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 5,
+        "r": -3
+      },
+      "description": "NE coast outpost of the Mariners' Guild.",
+      "tags": [
+        "coastal",
+        "mariners"
+      ],
+      "size": "thorpe",
+      "population": 15,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-uluwa",
+      "name": "Uluwa (Spirit Market)",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -2,
+        "r": -2
+      },
+      "description": "Twilight bazaar where spirits and mortals trade. Ferry Crossing.",
+      "tags": [
+        "market",
+        "spirits"
+      ],
+      "size": "village",
+      "population": 500,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-matango",
+      "name": "Matango Village",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -1,
+        "r": -2
+      },
+      "description": "Mushroom village. Five fungal factions compete for Truffle Prince.",
+      "tags": [
+        "mushrooms",
+        "forest"
+      ],
+      "size": "village",
+      "population": 400,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-graysteps",
+      "name": "The Graysteps",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 1,
+        "r": -2
+      },
+      "description": "Grey stone village on Mount Arbora's western slope.",
+      "tags": [
+        "mountains",
+        "watchers"
+      ],
+      "size": "hamlet",
+      "population": 100,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-goodie-mart",
+      "name": "Goodie Mart",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 3,
+        "r": -2
+      },
+      "description": "Provisions outpost at the Brackwater edge. Subway station.",
+      "tags": [
+        "provisions",
+        "swamp"
+      ],
+      "size": "thorpe",
+      "population": 30,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-gobo",
+      "name": "Gobo Village",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 4,
+        "r": -2
+      },
+      "description": "Eastern forest settlement.",
+      "tags": [
+        "forest",
+        "east"
+      ],
+      "size": "village",
+      "population": 200,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-roa-kala",
+      "name": "Roa Kala",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 2,
+        "r": -1
+      },
+      "description": "Sacred grove of the Kohdoi dara.",
+      "tags": [
+        "dara",
+        "sacred"
+      ],
+      "size": "hamlet",
+      "population": 80,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-hakumon",
+      "name": "Hakumon's Ramen Shop",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 3,
+        "r": -1
+      },
+      "description": "Legendary ramen in the wetlands. Oni chef.",
+      "tags": [
+        "ramen",
+        "oni"
+      ],
+      "size": "thorpe",
+      "population": 30,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-polewater",
+      "name": "Polewater Village",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 5,
+        "r": -1
+      },
+      "description": "Stilts village in Brackwater. Closest to the Corruption. Sally Sue nearby.",
+      "tags": [
+        "wetlands",
+        "stilts"
+      ],
+      "size": "village",
+      "population": 350,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-cdl-west",
+      "name": "Coastal Divers' Lodge (West)",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -3,
+        "r": 0
+      },
+      "description": "Western coast outpost of the Mariners' Guild.",
+      "tags": [
+        "coastal",
+        "mariners"
+      ],
+      "size": "thorpe",
+      "population": 20,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-okiri",
+      "name": "Okiri Village",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -2,
+        "r": 0
+      },
+      "description": "Quiet farming hamlet. Shepherds, slingers, Miss Lindley fixes anything.",
+      "tags": [
+        "farming",
+        "pastoral"
+      ],
+      "size": "hamlet",
+      "population": 150,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-fort-harglo",
+      "name": "Fort Harglo",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -1,
+        "r": 0
+      },
+      "description": "Courier Brigade fortress at the crossroads.",
+      "tags": [
+        "fort",
+        "courier-brigade"
+      ],
+      "size": "hamlet",
+      "population": 80,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-witching-tower",
+      "name": "Witching Tower (Fish Head Coven)",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 0,
+        "r": 0
+      },
+      "description": "Fish Head Coven compound. Council of Three and Thirty. Four Gatehouses.",
+      "tags": [
+        "witches",
+        "coven"
+      ],
+      "size": "village",
+      "population": 300,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-ekmu",
+      "name": "Ekmu Village",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 4,
+        "r": 0
+      },
+      "description": "Settlement at the eastern forest edge.",
+      "tags": [
+        "forest",
+        "east"
+      ],
+      "size": "village",
+      "population": 150,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-opal-falls",
+      "name": "Opal Falls",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 0,
+        "r": 1
+      },
+      "description": "Cascading waterfalls from the highland plateau.",
+      "tags": [
+        "waterfalls",
+        "highlands"
+      ],
+      "size": "village",
+      "population": 250,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-broken-bird",
+      "name": "Broken Bird Airfield",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 1,
+        "r": 1
+      },
+      "description": "First Age airfield ruins. Spirit Plitsu guards.",
+      "tags": [
+        "ruins",
+        "first-age"
+      ],
+      "size": "thorpe",
+      "population": 10,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-tidewater",
+      "name": "Tidewater",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -3,
+        "r": 2
+      },
+      "description": "Sandy coastal village. Tower of Glass holds the Pearl of Rongol.",
+      "tags": [
+        "coastal",
+        "pearl"
+      ],
+      "size": "village",
+      "population": 300,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-aha-hq",
+      "name": "AHA Headquarters",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 1,
+        "r": 2
+      },
+      "description": "Observatory and research campus. The Asloh triumvirate.",
+      "tags": [
+        "observatory",
+        "scholars"
+      ],
+      "size": "hamlet",
+      "population": 60,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-yatamon",
+      "name": "Yatamon",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -2,
+        "r": 3
+      },
+      "description": "Largest city on Obojima. Spirit trolleys, detective agencies, undercity.",
+      "tags": [
+        "city",
+        "capital"
+      ],
+      "size": "city",
+      "population": 5000,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-cdl-south",
+      "name": "Coastal Divers' Lodge (South)",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -1,
+        "r": 3
+      },
+      "description": "Southern coast outpost.",
+      "tags": [
+        "coastal",
+        "mariners"
+      ],
+      "size": "thorpe",
+      "population": 20,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "dungeon-sunken-town",
+      "name": "Sunken Town & Underwater Depot",
+      "type": "dungeon",
+      "hexCoord": {
+        "q": 3,
+        "r": -6
+      },
+      "description": "Submerged ruins north of the island.",
+      "tags": [
+        "underwater",
+        "ruins"
+      ],
+      "size": "medium",
+      "theme": "temple",
+      "depth": 2,
+      "cleared": false,
+      "gridWidth": 40,
+      "gridHeight": 40,
+      "rooms": [],
+      "passages": [],
+      "entranceRoomId": ""
+    },
+    {
+      "id": "dungeon-coral-castle",
+      "name": "The Coral Castle",
+      "type": "dungeon",
+      "hexCoord": {
+        "q": -4,
+        "r": 0
+      },
+      "description": "Lionfish King's underwater fortress.",
+      "tags": [
+        "underwater",
+        "fortress"
+      ],
+      "size": "large",
+      "theme": "fortress",
+      "depth": 3,
+      "cleared": false,
+      "gridWidth": 60,
+      "gridHeight": 60,
+      "rooms": [],
+      "passages": [],
+      "entranceRoomId": ""
+    },
+    {
+      "id": "dungeon-crak-caves",
+      "name": "Crak Caves",
+      "type": "dungeon",
+      "hexCoord": {
+        "q": -3,
+        "r": 1
+      },
+      "description": "Cave system in the western hills.",
+      "tags": [
+        "caves",
+        "western"
+      ],
+      "size": "medium",
+      "theme": "cave",
+      "depth": 2,
+      "cleared": false,
+      "gridWidth": 40,
+      "gridHeight": 40,
+      "rooms": [],
+      "passages": [],
+      "entranceRoomId": ""
+    },
+    {
+      "id": "dungeon-temple-of-shoom",
+      "name": "Temple of Shoom",
+      "type": "dungeon",
+      "hexCoord": {
+        "q": -1,
+        "r": 2
+      },
+      "description": "Ancient nakudama ziggurat. Midwives above, Voraro feeds below.",
+      "tags": [
+        "large",
+        "temple",
+        "nakudama"
+      ],
+      "size": "large",
+      "theme": "temple",
+      "depth": 3,
+      "cleared": false,
+      "gridWidth": 60,
+      "gridHeight": 60,
+      "rooms": [],
+      "passages": [],
+      "entranceRoomId": ""
+    }
+  ],
+  "dwellings": [],
+  "npcs": [],
+  "factions": [],
+  "significantItems": [],
+  "hooks": [],
+  "clocks": []
+}
