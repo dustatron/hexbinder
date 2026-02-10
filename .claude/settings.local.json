@@ -45,9 +45,10 @@
       "WebFetch(domain:fontawesome.com)",
       "Bash(git rm:*)",
       "mcp__chrome-devtools__get_console_message",
-      "Bash(node:*)",
-      "Bash(git rebase:*)",
-      "Bash(GIT_EDITOR=true git rebase:*)"
+      "Bash(git fetch:*)",
+      "Bash(git branch:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)"
     ]
   }
 }
