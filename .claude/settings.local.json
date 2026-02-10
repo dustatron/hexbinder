@@ -38,7 +38,11 @@
       "Skill(playwright-local)",
       "Bash(bd stats)",
       "Bash(bd sync:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(ls:*)",
+      "Bash(wc:*)",
+      "Bash(python3:*)",
+      "WebFetch(domain:fontawesome.com)"
     ]
   }
 }

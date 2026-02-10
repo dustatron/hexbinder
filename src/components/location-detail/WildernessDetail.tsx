@@ -1,6 +1,8 @@
+import { useCallback } from "react";
 import { MapPin, Sparkles, Home } from "lucide-react";
-import type { Dwelling, DwellingType, EncounterOverrides, Hex, TerrainType, Ruleset } from "~/models";
+import type { Dwelling, DwellingType, EncounterOverrides, Hex, HexFeature, QuestObject, TerrainType, Ruleset, WorldData } from "~/models";
 import { ImprovedEncounterTable } from "~/components/encounter-table/ImprovedEncounterTable";
+import { InlineEditText } from "~/components/ui/inline-edit";
 
 interface WildernessDetailProps {
   hex: Hex;
@@ -9,6 +11,7 @@ interface WildernessDetailProps {
   ruleset: Ruleset;
   onReroll: () => void;
   onOverridesChange?: (overrides: EncounterOverrides) => void;
+  onUpdateWorld?: (updater: (world: WorldData) => WorldData) => void;
   seed: string;
 }
 
@@ -29,21 +32,6 @@ const TERRAIN_COLORS: Record<TerrainType, string> = {
   swamp: "bg-emerald-800",
 };
 
-const TERRAIN_DESCRIPTIONS: Record<TerrainType, string> = {
-  plains:
-    "Rolling grasslands stretch to the horizon. Wind ripples through tall grasses, hiding game trails and ancient stone markers.",
-  forest:
-    "Dense woodland blocks the sun. Ancient trees creak overhead, their canopy hiding whatever lurks in the shadows below.",
-  hills:
-    "Rugged slopes and rocky outcrops break the landscape. Hidden valleys and caves pockmark the terrain.",
-  mountains:
-    "Jagged peaks pierce the sky. Treacherous paths wind between sheer cliffs and snow-capped summits.",
-  water:
-    "Dark waters stretch before you. Reeds and mist obscure what lies beneath the surface.",
-  swamp:
-    "Murky wetlands choke the land. Stagnant pools, twisted trees, and the buzz of insects fill this fetid place.",
-};
-
 export function WildernessDetail({
   hex,
   dwelling,
@@ -51,9 +39,53 @@ export function WildernessDetail({
   ruleset,
   onReroll,
   onOverridesChange,
+  onUpdateWorld,
   seed,
 }: WildernessDetailProps) {
   const { coord, terrain, feature, questObject, encounterOverrides, lastEncounterTimestamp } = hex;
+
+  const updateHex = useCallback(
+    <K extends keyof Hex>(field: K, value: Hex[K]) => {
+      onUpdateWorld?.((world) => ({
+        ...world,
+        hexes: world.hexes.map((h) =>
+          h.coord.q === coord.q && h.coord.r === coord.r
+            ? { ...h, [field]: value }
+            : h,
+        ),
+      }));
+    },
+    [onUpdateWorld, coord.q, coord.r],
+  );
+
+  const updateFeature = useCallback(
+    (field: keyof HexFeature, value: string) => {
+      if (!feature) return;
+      updateHex("feature", { ...feature, [field]: value });
+    },
+    [feature, updateHex],
+  );
+
+  const updateQuestObject = useCallback(
+    (field: keyof QuestObject, value: string) => {
+      if (!questObject) return;
+      updateHex("questObject", { ...questObject, [field]: value });
+    },
+    [questObject, updateHex],
+  );
+
+  const updateDwelling = useCallback(
+    (field: keyof Dwelling, value: string) => {
+      if (!dwelling) return;
+      onUpdateWorld?.((world) => ({
+        ...world,
+        dwellings: world.dwellings.map((d) =>
+          d.id === dwelling.id ? { ...d, [field]: value } : d,
+        ),
+      }));
+    },
+    [dwelling, onUpdateWorld],
+  );
 
   return (
     <div className="space-y-6 bg-stone-900 p-4 text-stone-100">
@@ -95,14 +127,24 @@ export function WildernessDetail({
           </h3>
           <div className="rounded-lg border border-stone-700 bg-stone-800 p-3">
             <div className="flex items-center justify-between">
-              <span className="font-medium text-stone-200">{feature.name}</span>
+              <InlineEditText
+                value={feature.name}
+                onSave={(v) => updateFeature("name", v)}
+                className="font-medium text-stone-200"
+              />
               {feature.cleared && (
                 <span className="rounded bg-stone-700 px-2 py-0.5 text-xs text-stone-400">
                   Cleared
                 </span>
               )}
             </div>
-            <p className="mt-1 text-sm text-stone-400">{feature.description}</p>
+            <InlineEditText
+              value={feature.description}
+              onSave={(v) => updateFeature("description", v)}
+              as="p"
+              multiline
+              className="mt-1 text-sm text-stone-400"
+            />
             {feature.treasure && feature.treasure.length > 0 && (
               <div className="mt-2 border-t border-stone-700 pt-2">
                 <span className="text-xs text-stone-500">Treasure:</span>
@@ -132,16 +174,22 @@ export function WildernessDetail({
           </h3>
           <div className="rounded-lg border border-stone-700 bg-stone-800 p-3">
             <div className="flex items-center justify-between">
-              <span className="font-medium text-stone-200">
-                {questObject.name}
-              </span>
+              <InlineEditText
+                value={questObject.name}
+                onSave={(v) => updateQuestObject("name", v)}
+                className="font-medium text-stone-200"
+              />
               <span className="rounded bg-stone-700 px-2 py-0.5 text-xs capitalize text-stone-400">
                 {questObject.type}
               </span>
             </div>
-            <p className="mt-1 text-sm text-stone-400">
-              {questObject.description}
-            </p>
+            <InlineEditText
+              value={questObject.description}
+              onSave={(v) => updateQuestObject("description", v)}
+              as="p"
+              multiline
+              className="mt-1 text-sm text-stone-400"
+            />
             {questObject.found && (
               <span className="mt-2 inline-block rounded bg-green-900 px-2 py-0.5 text-xs text-green-300">
                 Found
@@ -160,17 +208,23 @@ export function WildernessDetail({
           </h3>
           <div className="rounded-lg border border-stone-700 bg-stone-800 p-3">
             <div className="flex items-center justify-between">
-              <span className="font-medium text-stone-200">
-                {dwelling.name}
-              </span>
+              <InlineEditText
+                value={dwelling.name}
+                onSave={(v) => updateDwelling("name", v)}
+                className="font-medium text-stone-200"
+              />
               <span className="rounded bg-stone-700 px-2 py-0.5 text-xs text-stone-400">
                 {DWELLING_LABELS[dwelling.type]}
               </span>
             </div>
             {dwelling.description && (
-              <p className="mt-1 text-sm text-stone-400">
-                {dwelling.description}
-              </p>
+              <InlineEditText
+                value={dwelling.description}
+                onSave={(v) => updateDwelling("description", v)}
+                as="p"
+                multiline
+                className="mt-1 text-sm text-stone-400"
+              />
             )}
             {dwelling.hasQuest && (
               <span className="mt-2 inline-block rounded bg-amber-900 px-2 py-0.5 text-xs text-amber-300">

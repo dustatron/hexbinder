@@ -245,6 +245,7 @@ function HexDetailPage() {
             ruleset={world.ruleset}
             onReroll={handleReroll}
             onOverridesChange={handleOverridesChange}
+            onUpdateWorld={handleUpdateWorld}
             seed={seed}
           />
         )}

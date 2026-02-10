@@ -4,10 +4,11 @@ import { isSpatialSettlement, isDungeon, isSettlement, type SpatialSettlement } 
 
 import { EncounterTable } from "~/components/encounter-table/EncounterTable";
 import { QuickNames } from "~/components/encounter-table/QuickNames";
+import { InlineEditText, InlineEditSelect, InlineEditList } from "~/components/ui/inline-edit";
 
 import { TownMap } from "~/components/town-map";
 import { NPCStatLine } from "~/components/npc/NPCStatLine";
-import { useState, useMemo, type ReactNode } from "react";
+import { useState, useMemo, useCallback, type ReactNode } from "react";
 import { generateRumors, generateNotices } from "~/generators/RumorGenerator";
 import { nanoid } from "nanoid";
 import { Link } from "@tanstack/react-router";
@@ -233,6 +234,19 @@ export function SettlementDetail({
   onUpdateWorld,
   seed,
 }: SettlementDetailProps) {
+  // Inline edit helper
+  const updateSettlement = useCallback(
+    <K extends keyof Settlement>(field: K, value: Settlement[K]) => {
+      onUpdateWorld((world) => ({
+        ...world,
+        locations: world.locations.map((loc) =>
+          loc.id === settlement.id ? { ...loc, [field]: value } : loc,
+        ),
+      }));
+    },
+    [onUpdateWorld, settlement.id],
+  );
+
   // Tab state
   const [activeTab, setActiveTab] = useState<"locations" | "rumors" | "notices" | "encounters">("locations");
 
@@ -409,7 +423,12 @@ export function SettlementDetail({
       <div className="space-y-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-stone-100">{settlement.name}</h2>
+            <InlineEditText
+              value={settlement.name}
+              onSave={(v) => updateSettlement("name", v)}
+              as="h2"
+              className="text-xl font-bold text-stone-100"
+            />
             <div className="mt-1 flex flex-wrap items-center gap-2">
               {settlement.isCapital && (
                 <span className="rounded bg-yellow-500 px-2 py-0.5 text-xs font-bold text-yellow-950">
@@ -423,33 +442,54 @@ export function SettlementDetail({
               </span>
               <span className="flex items-center gap-1 text-xs text-stone-400">
                 <Users size={12} />
-                Pop. {settlement.population.toLocaleString()}
+                Pop.{" "}
+                <InlineEditText
+                  value={String(settlement.population)}
+                  onSave={(v) => updateSettlement("population", Number(v) || 0)}
+                  type="number"
+                  className="text-xs text-stone-400"
+                />
               </span>
               <span className="flex items-center gap-1 text-xs text-stone-400">
                 <Shield size={12} />
-                {settlement.defenses}
+                <InlineEditSelect
+                  value={settlement.defenses}
+                  options={["none", "militia", "guards", "walls", "fortified"] as const}
+                  onSave={(v) => updateSettlement("defenses", v)}
+                  className="text-xs text-stone-400"
+                />
               </span>
             </div>
           </div>
         </div>
 
-        <p className="text-sm text-stone-300">{settlement.description}</p>
+        <InlineEditText
+          value={settlement.description}
+          onSave={(v) => updateSettlement("description", v)}
+          as="p"
+          multiline
+          className="text-sm text-stone-300"
+        />
 
         {/* Sensory Impressions - Quick scene-setting bullets */}
         {settlement.sensoryImpressions && settlement.sensoryImpressions.length > 0 && (
-          <ul className="mt-2 space-y-0.5 text-sm italic text-stone-400">
-            {settlement.sensoryImpressions.map((impression, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <span className="text-amber-500/60">•</span>
-                {impression}
-              </li>
-            ))}
-          </ul>
+          <div className="mt-2">
+            <InlineEditList
+              values={settlement.sensoryImpressions}
+              onSave={(v) => updateSettlement("sensoryImpressions", v)}
+            />
+          </div>
         )}
 
         {/* Quick stats */}
         <div className="flex flex-wrap gap-3 text-xs text-stone-400">
-          <span>Govt: {settlement.governmentType}</span>
+          <span>Govt:{" "}
+            <InlineEditSelect
+              value={settlement.governmentType}
+              options={["council", "mayor", "lord", "elder", "guild", "theocracy"] as const}
+              onSave={(v) => updateSettlement("governmentType", v)}
+            />
+          </span>
           {settlement.rulerNpcId && settlement.rulerTitle && (() => {
             const ruler = npcs.find((n) => n.id === settlement.rulerNpcId);
             const titleLabel = {
@@ -472,7 +512,13 @@ export function SettlementDetail({
               </span>
             ) : null;
           })()}
-          <span>Mood: {settlement.mood}</span>
+          <span>Mood:{" "}
+            <InlineEditSelect
+              value={settlement.mood}
+              options={["prosperous", "struggling", "fearful", "hostile", "welcoming", "secretive"] as const}
+              onSave={(v) => updateSettlement("mood", v)}
+            />
+          </span>
           <span className="flex items-center gap-1">
             <Coins size={12} />
             {settlement.economyBase.join(", ")}
@@ -495,12 +541,22 @@ export function SettlementDetail({
               <div className="space-y-1 rounded bg-stone-900/50 p-2 text-sm">
                 {settlement.trouble && (
                   <p className="text-amber-400">
-                    <span className="font-medium">Trouble:</span> {settlement.trouble}
+                    <span className="font-medium">Trouble:</span>{" "}
+                    <InlineEditText
+                      value={settlement.trouble}
+                      onSave={(v) => updateSettlement("trouble", v)}
+                      className="text-amber-400"
+                    />
                   </p>
                 )}
                 {settlement.quirk && (
                   <p className="text-stone-400">
-                    <span className="font-medium">Quirk:</span> {settlement.quirk}
+                    <span className="font-medium">Quirk:</span>{" "}
+                    <InlineEditText
+                      value={settlement.quirk}
+                      onSave={(v) => updateSettlement("quirk", v)}
+                      className="text-stone-400"
+                    />
                   </p>
                 )}
               </div>
