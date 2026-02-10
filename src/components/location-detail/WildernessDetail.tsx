@@ -1,15 +1,12 @@
-import { RefreshCw, MapPin, Sparkles, Home } from "lucide-react";
+import { MapPin, Sparkles, Home } from "lucide-react";
 import type { Dwelling, DwellingType, EncounterOverrides, Hex, TerrainType, Ruleset } from "~/models";
-import type { RegenerationType } from "~/lib/hex-regenerate";
 import { ImprovedEncounterTable } from "~/components/encounter-table/ImprovedEncounterTable";
-import { RegenerateButton } from "./RegenerateButton";
 
 interface WildernessDetailProps {
   hex: Hex;
   dwelling?: Dwelling | null;
   worldId: string;
   ruleset: Ruleset;
-  onRegenerate: (type: RegenerationType) => void;
   onReroll: () => void;
   onOverridesChange?: (overrides: EncounterOverrides) => void;
   seed: string;
@@ -52,7 +49,6 @@ export function WildernessDetail({
   dwelling,
   worldId,
   ruleset,
-  onRegenerate,
   onReroll,
   onOverridesChange,
   seed,
@@ -73,20 +69,6 @@ export function WildernessDetail({
             >
               {terrain}
             </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={onReroll}
-              className="flex items-center gap-1 rounded px-2 py-1 text-xs text-stone-400 hover:bg-stone-700 hover:text-stone-200"
-              title="Re-roll hex content"
-            >
-              <RefreshCw size={14} />
-            </button>
-            <RegenerateButton
-              onRegenerate={onRegenerate}
-              currentLocationType="wilderness"
-              defaultType={terrain}
-            />
           </div>
         </div>
       </header>

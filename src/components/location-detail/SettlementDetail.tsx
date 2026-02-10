@@ -1,10 +1,10 @@
 import { RefreshCw, Users, Shield, Coins, AlertTriangle, ScrollText, MessageSquare, Building2, User, Flag, Map as MapIcon, ClipboardList, Calendar, BookOpen, Lock, ChevronDown, ChevronRight } from "lucide-react";
 import type { Settlement, NPC, Faction, DayEvent, SettlementSite, WorldData, Hook, Dungeon, Location, Ruleset } from "~/models";
 import { isSpatialSettlement, isDungeon, isSettlement, type SpatialSettlement } from "~/models";
-import type { RegenerationType } from "~/lib/hex-regenerate";
+
 import { EncounterTable } from "~/components/encounter-table/EncounterTable";
 import { QuickNames } from "~/components/encounter-table/QuickNames";
-import { RegenerateButton } from "./RegenerateButton";
+
 import { TownMap } from "~/components/town-map";
 import { NPCStatLine } from "~/components/npc/NPCStatLine";
 import { useState, useMemo, type ReactNode } from "react";
@@ -176,7 +176,6 @@ interface SettlementDetailProps {
   locations: Location[];
   worldId: string;
   ruleset: Ruleset;
-  onRegenerate: (type: RegenerationType) => void;
   onReroll: () => void;
   onUpdateWorld: (updater: (world: WorldData) => WorldData) => void;
   seed: string;
@@ -230,7 +229,6 @@ export function SettlementDetail({
   locations,
   worldId,
   ruleset,
-  onRegenerate,
   onReroll,
   onUpdateWorld,
   seed,
@@ -433,11 +431,6 @@ export function SettlementDetail({
               </span>
             </div>
           </div>
-          <RegenerateButton
-            onRegenerate={onRegenerate}
-            currentLocationType="settlement"
-            defaultType={settlement.size}
-          />
         </div>
 
         <p className="text-sm text-stone-300">{settlement.description}</p>

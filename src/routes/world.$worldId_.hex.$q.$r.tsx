@@ -1,19 +1,22 @@
 import { useState, useCallback } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, MapPin, Eye, EyeOff, Menu, Check } from "lucide-react";
+import { ArrowLeft, MapPin, Eye, EyeOff, Menu, Check, RefreshCw } from "lucide-react";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/lib/hex-regenerate";
 import { WildernessDetail } from "~/components/location-detail/WildernessDetail";
 import { SettlementDetail, type LocationEvent } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
+import { RegenerateModal } from "~/components/location-detail/RegenerateButton";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "~/components/ui/dropdown-menu";
 import type { EncounterOverrides, Settlement, Dungeon, WorldData } from "~/models";
+import { isDungeon, isSettlement } from "~/models";
 
 export const Route = createFileRoute("/world/$worldId_/hex/$q/$r")({
   loader: ({ params }) => {
@@ -91,6 +94,19 @@ function HexDetailPage() {
     saveWorld(updated);
     setWorld(updated);
   }, [world, hex.coord]);
+
+  // Regenerate modal state
+  const [showRegenerateModal, setShowRegenerateModal] = useState(false);
+  const currentLocationType = location
+    ? isSettlement(location) ? "settlement" as const
+    : isDungeon(location) ? "dungeon" as const
+    : "wilderness" as const
+    : "wilderness" as const;
+  const defaultRegenerateType = location
+    ? isSettlement(location) ? (location as Settlement).size
+    : isDungeon(location) ? (location as Dungeon).theme
+    : hex.terrain
+    : hex.terrain;
 
   // Party location tracking
   const hexId = `${hex.coord.q},${hex.coord.r}`;
@@ -183,7 +199,7 @@ function HexDetailPage() {
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon" className="h-8 w-8">
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-stone-400 hover:text-stone-100">
                 <Menu size={18} />
               </Button>
             </DropdownMenuTrigger>
@@ -200,8 +216,22 @@ function HexDetailPage() {
                 {isVisited ? <EyeOff size={14} /> : <Eye size={14} />}
                 {isVisited ? "Unmark Visited" : "Mark as Visited"}
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setShowRegenerateModal(true)}>
+                <RefreshCw size={14} />
+                Regenerate
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <RegenerateModal
+            open={showRegenerateModal}
+            onOpenChange={setShowRegenerateModal}
+            onRegenerate={handleRegenerate}
+            currentLocationType={currentLocationType}
+            defaultType={defaultRegenerateType}
+            currentSize={location && isDungeon(location) ? (location as Dungeon).size : undefined}
+            currentSeed={seed}
+          />
         </div>
       </header>
 
@@ -213,7 +243,6 @@ function HexDetailPage() {
             dwelling={dwelling}
             worldId={world.id}
             ruleset={world.ruleset}
-            onRegenerate={handleRegenerate}
             onReroll={handleReroll}
             onOverridesChange={handleOverridesChange}
             seed={seed}
@@ -232,7 +261,6 @@ function HexDetailPage() {
             locations={world.locations}
             worldId={world.id}
             ruleset={world.ruleset}
-            onRegenerate={handleRegenerate}
             onReroll={handleReroll}
             onUpdateWorld={handleUpdateWorld}
             seed={seed}
@@ -248,7 +276,6 @@ function HexDetailPage() {
             factions={world.factions}
             worldId={world.id}
             ruleset={world.ruleset}
-            onRegenerate={handleRegenerate}
             onReroll={handleReroll}
             seed={seed}
           />

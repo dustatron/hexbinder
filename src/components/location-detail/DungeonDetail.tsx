@@ -5,9 +5,9 @@ import {
 } from "lucide-react";
 import type { Dungeon, Hook, DungeonTheme, NPC, SpatialDungeon, DungeonNPC, KeyLockPair, Faction, ExitPoint, Ruleset } from "~/models";
 import { isSpatialDungeon } from "~/models";
-import type { RegenerationType, RegenerateOptions } from "~/lib/hex-regenerate";
+
 import { EncounterTable } from "~/components/encounter-table/EncounterTable";
-import { RegenerateButton } from "./RegenerateButton";
+
 import { RoomCard } from "./RoomCard";
 import { DungeonMap } from "~/components/dungeon-map";
 import { NPCStatLine } from "~/components/npc/NPCStatLine";
@@ -21,7 +21,6 @@ interface DungeonDetailProps {
   factions?: Faction[]; // All factions for lookup
   worldId: string;
   ruleset: Ruleset;
-  onRegenerate: (type: RegenerationType, options?: RegenerateOptions) => void;
   onReroll?: () => void;
   seed: string;
 }
@@ -52,7 +51,6 @@ export function DungeonDetail({
   factions = [],
   worldId,
   ruleset,
-  onRegenerate,
   onReroll,
   seed,
 }: DungeonDetailProps) {
@@ -182,16 +180,6 @@ export function DungeonDetail({
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-2">
-            <RegenerateButton
-              onRegenerate={onRegenerate}
-              currentLocationType="dungeon"
-              defaultType={dungeon.theme}
-              currentSize={dungeon.size}
-              currentSeed={seed}
-            />
-          </div>
         </div>
 
         {/* Description */}

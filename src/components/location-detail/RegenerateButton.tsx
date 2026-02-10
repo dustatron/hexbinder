@@ -1,9 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RefreshCw, Shuffle } from "lucide-react";
 import { nanoid } from "nanoid";
 import type { RegenerationType, RegenerateOptions } from "~/lib/hex-regenerate";
 import type { DungeonSize } from "~/models";
 import { Button } from "~/components/ui/button";
+
+interface RegenerateModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onRegenerate: (type: RegenerationType, options?: RegenerateOptions) => void;
+  currentLocationType?: "settlement" | "dungeon" | "wilderness" | null;
+  defaultType?: RegenerationType;
+  currentSize?: DungeonSize;
+  currentSeed?: string;
+}
 
 interface RegenerateButtonProps {
   onRegenerate: (type: RegenerationType, options?: RegenerateOptions) => void;
@@ -88,30 +98,32 @@ const DUNGEON_TYPES = [
   "witch_hut", "bandit_hideout", "cultist_lair", "beast_den", "sea_cave", "floating_keep",
 ];
 
-export function RegenerateButton({
+export function RegenerateModal({
+  open,
+  onOpenChange,
   onRegenerate,
   currentLocationType,
   defaultType,
   currentSize = "small",
   currentSeed = "",
-}: RegenerateButtonProps) {
-  const [showModal, setShowModal] = useState(false);
+}: RegenerateModalProps) {
   const [selectedType, setSelectedType] = useState<RegenerationType>(defaultType ?? "random");
   const [selectedSize, setSelectedSize] = useState<DungeonSize>(currentSize);
   const [customSeed, setCustomSeed] = useState(currentSeed);
 
   const isDungeonType = DUNGEON_TYPES.includes(selectedType);
 
-  const handleOpenModal = () => {
-    // Reset to current values when opening
-    setSelectedType(defaultType ?? "random");
-    setSelectedSize(currentSize);
-    setCustomSeed(currentSeed || `seed-${nanoid(8)}`);
-    setShowModal(true);
-  };
+  // Reset state when modal opens
+  useEffect(() => {
+    if (open) {
+      setSelectedType(defaultType ?? "random");
+      setSelectedSize(currentSize);
+      setCustomSeed(currentSeed || `seed-${nanoid(8)}`);
+    }
+  }, [open, defaultType, currentSize, currentSeed]);
 
   const handleConfirm = () => {
-    setShowModal(false);
+    onOpenChange(false);
     onRegenerate(selectedType, {
       dungeonSize: isDungeonType ? selectedSize : undefined,
       customSeed: customSeed || undefined,
@@ -122,120 +134,142 @@ export function RegenerateButton({
     setCustomSeed(`seed-${nanoid(8)}`);
   };
 
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+      <div className="w-full max-w-md rounded-lg border border-stone-700 bg-stone-900 p-4 shadow-xl max-h-[90vh] overflow-y-auto">
+        <div className="mb-4 flex items-center gap-2">
+          <RefreshCw size={18} className="text-stone-400" />
+          <h3 className="text-lg font-semibold text-stone-100">Regenerate Location</h3>
+        </div>
+
+        {currentLocationType && (
+          <p className="mb-4 text-sm text-amber-400/80">
+            ⚠️ Current {currentLocationType} will be replaced
+          </p>
+        )}
+
+        {/* Type selector */}
+        <div className="mb-4 space-y-2">
+          <label className="text-sm font-medium text-stone-300">Location Type</label>
+          <select
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value as RegenerationType)}
+            className="w-full rounded-md border border-stone-700 bg-stone-800 px-3 py-2 text-sm text-stone-200 focus:border-amber-600 focus:outline-none"
+          >
+            {REGENERATE_OPTIONS.map((group) => (
+              <optgroup key={group.group} label={group.group}>
+                {group.options.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        </div>
+
+        {/* Size selector (only for dungeon types) */}
+        {isDungeonType && (
+          <div className="mb-4 space-y-2">
+            <label className="text-sm font-medium text-stone-300">Dungeon Size</label>
+            <div className="grid grid-cols-5 gap-1">
+              {SIZE_OPTIONS.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => setSelectedSize(option.value)}
+                  className={`rounded-md border px-2 py-1.5 text-xs transition-colors ${
+                    selectedSize === option.value
+                      ? "border-amber-600 bg-amber-900/30 text-amber-200"
+                      : "border-stone-700 bg-stone-800 text-stone-400 hover:border-stone-600 hover:text-stone-200"
+                  }`}
+                  title={option.description}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-stone-500">
+              {SIZE_OPTIONS.find(o => o.value === selectedSize)?.description}
+            </p>
+          </div>
+        )}
+
+        {/* Seed input */}
+        <div className="mb-4 space-y-2">
+          <label className="text-sm font-medium text-stone-300">Generation Seed</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={customSeed}
+              onChange={(e) => setCustomSeed(e.target.value)}
+              className="flex-1 rounded-md border border-stone-700 bg-stone-800 px-3 py-1.5 text-sm text-stone-200 focus:border-amber-600 focus:outline-none"
+              placeholder="Enter custom seed..."
+            />
+            <button
+              onClick={handleRandomizeSeed}
+              className="rounded-md border border-stone-700 bg-stone-800 px-2 py-1.5 text-stone-400 hover:border-stone-600 hover:text-stone-200 transition-colors"
+              title="Randomize seed"
+            >
+              <Shuffle size={16} />
+            </button>
+          </div>
+          <p className="text-xs text-stone-500">
+            Same seed + type = same result
+          </p>
+        </div>
+
+        {/* Actions */}
+        <div className="flex justify-end gap-2">
+          <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={handleConfirm}
+            className={selectedType === "clear" ? "bg-red-600 hover:bg-red-700" : "bg-amber-600 hover:bg-amber-700"}
+          >
+            <RefreshCw size={14} className="mr-1.5" />
+            {selectedType === "clear" ? "Clear Hex" : "Regenerate"}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function RegenerateButton({
+  onRegenerate,
+  currentLocationType,
+  defaultType,
+  currentSize = "small",
+  currentSeed = "",
+}: RegenerateButtonProps) {
+  const [showModal, setShowModal] = useState(false);
+
   return (
     <>
       <Button
         variant="outline"
         size="sm"
-        onClick={handleOpenModal}
+        onClick={() => setShowModal(true)}
         className="border-stone-600 bg-stone-800 text-stone-200 hover:bg-stone-700 hover:text-stone-100"
       >
         <RefreshCw size={14} className="mr-1.5" />
         Regenerate
       </Button>
 
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="w-full max-w-md rounded-lg border border-stone-700 bg-stone-900 p-4 shadow-xl max-h-[90vh] overflow-y-auto">
-            <div className="mb-4 flex items-center gap-2">
-              <RefreshCw size={18} className="text-stone-400" />
-              <h3 className="text-lg font-semibold text-stone-100">Regenerate Location</h3>
-            </div>
-
-            {currentLocationType && (
-              <p className="mb-4 text-sm text-amber-400/80">
-                ⚠️ Current {currentLocationType} will be replaced
-              </p>
-            )}
-
-            {/* Type selector */}
-            <div className="mb-4 space-y-2">
-              <label className="text-sm font-medium text-stone-300">Location Type</label>
-              <select
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value as RegenerationType)}
-                className="w-full rounded-md border border-stone-700 bg-stone-800 px-3 py-2 text-sm text-stone-200 focus:border-amber-600 focus:outline-none"
-              >
-                {REGENERATE_OPTIONS.map((group) => (
-                  <optgroup key={group.group} label={group.group}>
-                    {group.options.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </option>
-                    ))}
-                  </optgroup>
-                ))}
-              </select>
-            </div>
-
-            {/* Size selector (only for dungeon types) */}
-            {isDungeonType && (
-              <div className="mb-4 space-y-2">
-                <label className="text-sm font-medium text-stone-300">Dungeon Size</label>
-                <div className="grid grid-cols-5 gap-1">
-                  {SIZE_OPTIONS.map((option) => (
-                    <button
-                      key={option.value}
-                      onClick={() => setSelectedSize(option.value)}
-                      className={`rounded-md border px-2 py-1.5 text-xs transition-colors ${
-                        selectedSize === option.value
-                          ? "border-amber-600 bg-amber-900/30 text-amber-200"
-                          : "border-stone-700 bg-stone-800 text-stone-400 hover:border-stone-600 hover:text-stone-200"
-                      }`}
-                      title={option.description}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-                <p className="text-xs text-stone-500">
-                  {SIZE_OPTIONS.find(o => o.value === selectedSize)?.description}
-                </p>
-              </div>
-            )}
-
-            {/* Seed input */}
-            <div className="mb-4 space-y-2">
-              <label className="text-sm font-medium text-stone-300">Generation Seed</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={customSeed}
-                  onChange={(e) => setCustomSeed(e.target.value)}
-                  className="flex-1 rounded-md border border-stone-700 bg-stone-800 px-3 py-1.5 text-sm text-stone-200 focus:border-amber-600 focus:outline-none"
-                  placeholder="Enter custom seed..."
-                />
-                <button
-                  onClick={handleRandomizeSeed}
-                  className="rounded-md border border-stone-700 bg-stone-800 px-2 py-1.5 text-stone-400 hover:border-stone-600 hover:text-stone-200 transition-colors"
-                  title="Randomize seed"
-                >
-                  <Shuffle size={16} />
-                </button>
-              </div>
-              <p className="text-xs text-stone-500">
-                Same seed + type = same result
-              </p>
-            </div>
-
-            {/* Actions */}
-            <div className="flex justify-end gap-2">
-              <Button variant="ghost" size="sm" onClick={() => setShowModal(false)}>
-                Cancel
-              </Button>
-              <Button
-                variant="default"
-                size="sm"
-                onClick={handleConfirm}
-                className={selectedType === "clear" ? "bg-red-600 hover:bg-red-700" : "bg-amber-600 hover:bg-amber-700"}
-              >
-                <RefreshCw size={14} className="mr-1.5" />
-                {selectedType === "clear" ? "Clear Hex" : "Regenerate"}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      <RegenerateModal
+        open={showModal}
+        onOpenChange={setShowModal}
+        onRegenerate={onRegenerate}
+        currentLocationType={currentLocationType}
+        defaultType={defaultType}
+        currentSize={currentSize}
+        currentSeed={currentSeed}
+      />
     </>
   );
 }

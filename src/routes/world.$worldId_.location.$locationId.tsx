@@ -1,11 +1,19 @@
 import { useState, useCallback } from "react";
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Menu, RefreshCw } from "lucide-react";
 import { SettlementDetail, type LocationEvent } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
+import { RegenerateModal } from "~/components/location-detail/RegenerateButton";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/lib/hex-regenerate";
 import { isSettlement, isDungeon, type Settlement, type Dungeon, type NPC, type DayEvent, type Hook, type WorldData } from "~/models";
+import { Button } from "~/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "~/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/world/$worldId_/location/$locationId")({
   loader: ({ params }) => {
@@ -96,6 +104,9 @@ function LocationPage() {
     setSeed(`${world.seed}-${initialLocation.id}-${Date.now()}`);
   }, [world.seed, initialLocation.id]);
 
+  // Regenerate modal state
+  const [showRegenerateModal, setShowRegenerateModal] = useState(false);
+
   // Location not found (shouldn't happen in normal flow)
   if (!location) {
     return (
@@ -112,22 +123,57 @@ function LocationPage() {
     );
   }
 
+  const currentLocationType = isSettlement(location)
+    ? "settlement" as const
+    : isDungeon(location)
+    ? "dungeon" as const
+    : "wilderness" as const;
+  const defaultRegenerateType = isSettlement(location)
+    ? (location as Settlement).size
+    : isDungeon(location)
+    ? (location as Dungeon).theme
+    : undefined;
+
   return (
     <div className="flex h-svh flex-col bg-stone-900 text-stone-100">
       {/* Header */}
       <header className="z-10 border-b border-stone-700 bg-stone-900 px-4 py-3">
-        <div className="flex items-center gap-3">
-          <Link
-            to="/world/$worldId"
-            params={{ worldId: world.id }}
-            className="text-stone-400 hover:text-stone-200"
-          >
-            <ArrowLeft size={20} />
-          </Link>
-          <h1 className="font-semibold">{location.name}</h1>
-          <span className="rounded bg-stone-700 px-2 py-0.5 text-xs capitalize text-stone-400">
-            {location.type}
-          </span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link
+              to="/world/$worldId"
+              params={{ worldId: world.id }}
+              className="text-stone-400 hover:text-stone-200"
+            >
+              <ArrowLeft size={20} />
+            </Link>
+            <h1 className="font-semibold">{location.name}</h1>
+            <span className="rounded bg-stone-700 px-2 py-0.5 text-xs capitalize text-stone-400">
+              {location.type}
+            </span>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-stone-400 hover:text-stone-100">
+                <Menu size={18} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[180px]">
+              <DropdownMenuItem onClick={() => setShowRegenerateModal(true)}>
+                <RefreshCw size={14} />
+                Regenerate
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <RegenerateModal
+            open={showRegenerateModal}
+            onOpenChange={setShowRegenerateModal}
+            onRegenerate={handleRegenerate}
+            currentLocationType={currentLocationType}
+            defaultType={defaultRegenerateType}
+            currentSize={isDungeon(location) ? (location as Dungeon).size : undefined}
+            currentSeed={seed}
+          />
         </div>
       </header>
 
@@ -145,7 +191,6 @@ function LocationPage() {
             locations={world.locations}
             worldId={world.id}
             ruleset={world.ruleset}
-            onRegenerate={handleRegenerate}
             onReroll={handleReroll}
             onUpdateWorld={handleUpdateWorld}
             seed={seed}
@@ -161,7 +206,6 @@ function LocationPage() {
             factions={world.factions}
             worldId={world.id}
             ruleset={world.ruleset}
-            onRegenerate={handleRegenerate}
             onReroll={handleReroll}
             seed={seed}
           />

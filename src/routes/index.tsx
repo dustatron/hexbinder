@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { formatDistanceToNow } from "date-fns";
 import { Plus, Download, Upload, Trash2, Map } from "lucide-react";
-import { ThemeToggle } from "~/components/theme-toggle";
+
 import { Button } from "~/components/ui/button";
 import {
   listWorlds,
@@ -144,7 +144,7 @@ function HomePage() {
               Procedural sandbox generator
             </p>
           </div>
-          <ThemeToggle />
+
         </header>
 
         <div className="mb-6 flex gap-2">
