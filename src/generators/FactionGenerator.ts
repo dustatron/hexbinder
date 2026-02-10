@@ -569,7 +569,7 @@ export function generateFactions(options: FactionGeneratorOptions): Faction[] {
 
   // Filter hexes suitable for lairs
   const lairHexes = hexes.filter(
-    (h) => h.terrain === "hills" || h.terrain === "forest" || h.terrain === "mountains"
+    (h) => h.terrain === "hills" || h.terrain === "forest" || h.terrain === "mountains" || h.terrain === "desert"
   );
 
   // Track which items have been claimed

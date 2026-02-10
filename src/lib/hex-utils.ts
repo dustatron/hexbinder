@@ -51,6 +51,7 @@ export const TERRAIN_COLORS: Record<TerrainType, string> = {
   mountains: "#78716c", // stone-500
   water: "#60a5fa", // blue-400
   swamp: "#166534", // green-800
+  desert: "#e8c170", // bright sandy gold
 };
 
 // Terrain border colors (darker variants)
@@ -61,6 +62,7 @@ export const TERRAIN_BORDER_COLORS: Record<TerrainType, string> = {
   mountains: "#44403c", // stone-700
   water: "#1d4ed8", // blue-700
   swamp: "#14532d", // green-900
+  desert: "#c49a3c", // warm amber border
 };
 
 // Calculate viewBox for grid
@@ -148,6 +150,7 @@ export const TERRAIN_COSTS: Record<TerrainType, number> = {
   plains: 1,
   hills: 2,
   forest: 3,
+  desert: 3,
   swamp: 4,
   mountains: Infinity, // impassable
   water: Infinity, // impassable

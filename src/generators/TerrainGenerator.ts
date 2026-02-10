@@ -3,12 +3,13 @@ import { SeededRandom, createWeightedTable } from "./SeededRandom";
 
 /** Terrain distribution weights */
 const TERRAIN_WEIGHTS = createWeightedTable<TerrainType>({
-  plains: 40,
-  forest: 25,
+  plains: 35,
+  forest: 22,
   hills: 15,
   mountains: 10,
   water: 5,
   swamp: 5,
+  desert: 8,
 });
 
 export interface TerrainGeneratorOptions {

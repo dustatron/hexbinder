@@ -171,6 +171,33 @@ export const IMPRESSIONS_BY_TERRAIN: Record<TerrainType, TerrainImpressions> = {
       "Strange flowers with cloying sweetness",
     ],
   },
+
+  desert: {
+    sight: [
+      "Heat shimmer distorts the barren horizon",
+      "Cracked earth stretches in every direction",
+      "Steam rises from geothermal vents ahead",
+      "Vivid mineral deposits streak the ground red and yellow",
+      "A lone hot spring bubbles in a rocky basin",
+      "Bleached bones half-buried in dry sand",
+    ],
+    sound: [
+      "Hot wind hisses across bare rock",
+      "Geysers rumble deep underground",
+      "Sand rattles against stone like whispered warnings",
+      "A distant hiss of steam from cracked earth",
+      "Silence so vast it rings in your ears",
+      "Rocks crack and pop in the relentless heat",
+    ],
+    smell: [
+      "Sulfur and mineral-rich steam",
+      "Baked earth and sun-heated stone",
+      "Hot springs carry a faint metallic tang",
+      "Dry dust that catches in the throat",
+      "Something acrid from a fumarole nearby",
+      "Clean heat with no trace of moisture",
+    ],
+  },
 };
 
 // === Helper Functions ===

@@ -30,6 +30,7 @@ const TERRAIN_COLORS: Record<TerrainType, string> = {
   mountains: "bg-stone-600",
   water: "bg-blue-700",
   swamp: "bg-emerald-800",
+  desert: "bg-amber-700",
 };
 
 export function WildernessDetail({

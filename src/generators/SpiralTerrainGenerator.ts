@@ -11,6 +11,7 @@ const TERRAIN_LOOP: TerrainType[] = [
   "forest",
   "hills",
   "mountains",
+  "desert",
   "swamp",
   "water",
 ];

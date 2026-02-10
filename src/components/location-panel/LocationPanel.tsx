@@ -29,6 +29,7 @@ const TERRAIN_LABELS: Record<TerrainType, string> = {
   mountains: "Mountains",
   water: "Water",
   swamp: "Swamp",
+  desert: "Desert",
 };
 
 const DWELLING_LABELS: Record<DwellingType, string> = {

@@ -20,7 +20,8 @@ export type TerrainType =
   | "hills"
   | "mountains"
   | "water"
-  | "swamp";
+  | "swamp"
+  | "desert";
 
 // === Hex ===
 

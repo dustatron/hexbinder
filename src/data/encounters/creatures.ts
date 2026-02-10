@@ -67,6 +67,15 @@ export const CREATURES_BY_TERRAIN: Record<TerrainType, CreatureEntry[]> = {
     { name: "Shambling Mound", slug: "shambling-mound", level: 5, weight: 1, countDice: "1" },
     { name: "Black Dragon (young)", slug: "black-dragon-young", level: 6, weight: 1, countDice: "1" },
   ],
+
+  desert: [
+    { name: "Giant Scorpion", slug: "giant-scorpion", level: 2, weight: 4, countDice: "1d2" },
+    { name: "Gnoll Raiders", slug: "gnoll", level: 2, weight: 3, countDice: "1d4" },
+    { name: "Manticore", slug: "manticore", level: 4, weight: 2, countDice: "1" },
+    { name: "Giant Vulture", slug: "giant-vulture", level: 1, weight: 3, countDice: "1d4" },
+    { name: "Dust Devil", slug: "air-elemental", level: 4, weight: 1, countDice: "1" },
+    { name: "Blue Dragon (young)", slug: "blue-dragon-young", level: 6, weight: 1, countDice: "1" },
+  ],
 };
 
 // === Helper Functions ===

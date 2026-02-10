@@ -13,6 +13,7 @@ const TERRAIN_FEATURES: Record<TerrainType, FeatureType[]> = {
   mountains: ["mountain_pass", "eagle_nest", "frozen_shrine", "abandoned_mine"],
   swamp: ["witch_hut", "sunken_ruins", "sacrificial_altar"],
   water: ["shipwreck", "reef", "sea_shrine", "whirlpool", "lighthouse_ruins", "drowned_village"],
+  desert: ["standing_stones", "abandoned_mine", "crossroads_shrine", "burial_mound"],
 };
 
 const ANY_TERRAIN_FEATURES: FeatureType[] = [

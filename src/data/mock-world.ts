@@ -20,6 +20,7 @@ function generateHexGrid(): { hexes: Hex[]; locationCoords: HexCoord[] } {
     ...Array(10).fill("mountains"),
     ...Array(5).fill("water"),
     ...Array(5).fill("swamp"),
+    ...Array(8).fill("desert"),
   ] as TerrainType[];
 
   // Shuffle terrain pool for variety

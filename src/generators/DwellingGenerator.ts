@@ -107,7 +107,7 @@ export function generateDwellings(options: DwellingGeneratorOptions): DwellingGe
   // Find eligible hexes: plains/forest without locations or dwellings
   const eligibleHexes = hexes.filter(
     (h) =>
-      (h.terrain === "plains" || h.terrain === "forest") &&
+      (h.terrain === "plains" || h.terrain === "forest" || h.terrain === "desert") &&
       !h.locationId &&
       !h.dwellingId
   );

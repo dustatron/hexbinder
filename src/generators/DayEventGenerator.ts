@@ -26,7 +26,7 @@ const RUMOR_TEXTS = [
 ];
 
 const DIRECTIONS = ["north", "south", "east", "west", "northeast", "northwest"];
-const TERRAINS = ["forest", "hills", "swamp", "mountains", "plains"];
+const TERRAINS = ["forest", "hills", "swamp", "mountains", "plains", "desert"];
 const CREATURES = ["wolves", "bandits", "goblins", "undead", "trolls", "orcs"];
 const SUBJECTS = ["the old ruins", "the abandoned mine", "the tower", "travelers", "the mayor"];
 const GOODS = ["iron", "salt", "horses", "grain", "weapons", "potions"];

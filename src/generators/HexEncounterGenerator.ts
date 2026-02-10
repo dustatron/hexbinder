@@ -12,6 +12,7 @@ const CREATURES_BY_TERRAIN: Record<TerrainType, string[]> = {
   mountains: ["Ogre", "Griffon", "Giant, Stone", "Orc, Chieftain", "Harpy"],
   swamp: ["Lizardfolk", "Crocodile", "Will-o'-wisp", "Hag, Weald", "Frog, Giant"],
   water: [], // no encounters
+  desert: ["Manticore", "Scorpion, Giant", "Gnoll", "Bandit", "Vulture, Giant"],
 };
 
 // Behavior weights: hostile 50%, neutral 30%, fleeing 20%

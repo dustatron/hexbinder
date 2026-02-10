@@ -52,6 +52,10 @@ const CREATURES_BY_TERRAIN: Record<TerrainType, string[]> = {
     "merfolk", "giant_crabs", "sea_serpents", "water_elementals",
     "pirates", "krakens", "sahaugin",
   ],
+  desert: [
+    "manticores", "giant_scorpions", "gnolls", "bandits",
+    "sand_worms", "fire_elementals", "vultures", "jackals",
+  ],
 };
 
 // Behavior weights
@@ -137,6 +141,7 @@ export function checkWandererEncounter(
     mountains: 3,
     swamp: 2,
     water: 2,
+    desert: 2,
   };
 
   const encounter = generateEncounter({

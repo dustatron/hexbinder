@@ -30,6 +30,7 @@ export type RegenerationType =
   | "mountains"
   | "water"
   | "swamp"
+  | "desert"
   // Dungeon themes
   | "tomb"
   | "cave"
@@ -123,7 +124,7 @@ export function regenerateHex(
   if (type === "clear") return updated;
 
   // If changing terrain type, update the hex terrain
-  const TERRAIN_TYPES = ["plains", "forest", "hills", "mountains", "water", "swamp"] as const;
+  const TERRAIN_TYPES = ["plains", "forest", "hills", "mountains", "water", "swamp", "desert"] as const;
   if (TERRAIN_TYPES.includes(type as typeof TERRAIN_TYPES[number])) {
     return {
       ...updated,

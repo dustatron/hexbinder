@@ -149,6 +149,7 @@ const TERRAIN_DESCRIPTORS: Record<string, string> = {
   mountains: "mountain pass",
   water: "lakeside",
   swamp: "marshland",
+  desert: "arid wastes",
 };
 
 // === Rumor Sources ===
