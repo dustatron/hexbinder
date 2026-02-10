@@ -36,7 +36,10 @@ export const Route = createRootRouteWithContext<{
         content: "Procedural sandbox generator for tabletop RPGs",
       },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+    ],
   }),
   component: RootComponent,
 });
