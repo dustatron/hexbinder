@@ -1,19 +1,25 @@
 # Hexbinder
 
-Procedural sandbox generator for tabletop RPG GMs. Generates hex maps, settlements, dungeons, NPCs, factions, and tracks world state over time.
+**[Try the demo](https://hexbinder.vercel.app/)**
 
-Built for **Shadowdark RPG**. Optimized for iPad, works on web.
+A mobile-friendly hex sandbox tool for running improvised exploration games at the table. Name a world, pick a seed, and instantly get a fully populated hex crawl — terrain, settlements, dungeons, factions, NPCs, encounter tables, and a world calendar — all generated on the fly so you can run a session with zero prep.
 
-## Features
+Built for **Shadowdark RPG**. Designed for phones and tablets, works on desktop too.
 
-- **Hex Map Generation** - Spiral terrain with roads, rivers, bridges
-- **Settlements** - Villages, towns, cities with NPCs, shops, rumors, notices
-- **Dungeons** - Room-by-room layouts with monsters, treasure, traps
-- **Wilderness Lairs** - Bandit hideouts, cultist caves, witch huts, etc.
-- **Factions** - Goals, clocks, territory, member NPCs
-- **World Calendar** - 28-day event forecasting, weather, faction activity
-- **Encounter Tables** - 1d6 tables with monster/NPC/treasure/omen results
-- **Seeded Generation** - Same seed = identical world, shareable
+## What It Does
+
+You create a world by entering a name and an optional seed. Hexbinder procedurally generates:
+
+- **Hex Map** — A spiral hex grid with varied terrain (forests, mountains, swamps, deserts, etc.), roads, rivers, and bridges. Tap any hex to explore its contents.
+- **Settlements** — Villages, towns, and cities populated with NPCs, shops, tavern rumors, notice boards, and local hooks.
+- **Dungeons** — Multi-room dungeon layouts with monsters, treasure, traps, and environmental details drawn from Shadowdark's rules.
+- **Wilderness Lairs** — Bandit camps, cultist caves, witch huts, and other wilderness encounters tied to hex terrain.
+- **Factions** — Organizations with goals, progress clocks, territory control, and named member NPCs that drive world events.
+- **World Calendar** — A 28-day forecast of weather, faction activity, and random events to keep the world feeling alive between sessions.
+- **Encounter Tables** — Per-hex 1d6 tables with monsters, NPCs, treasure, and omens ready to roll at the table.
+- **Seeded Generation** — Every world is fully deterministic. Share a seed with another GM and they get the exact same world.
+
+All data lives in your browser's localStorage — no accounts, no backend. Export/import JSON to back up or share worlds.
 
 ## Quick Start
 
