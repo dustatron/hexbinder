@@ -18,6 +18,15 @@ const ARCHETYPE_TO_SHADOWDARK: Record<CreatureArchetype, string> = {
   commoner: "Commoner",
   merchant: "Commoner",
   scholar: "Commoner",
+  ranger: "Knight",
+  explorer: "Bandit",
+  artisan: "Commoner",
+  diplomat: "Commoner",
+  shaman: "Mage",
+  swordmaster: "Knight",
+  courier: "Guard",
+  pirate: "Bandit",
+  spirit_bonded: "Mage",
 };
 
 /**
@@ -36,6 +45,15 @@ const ARCHETYPE_TO_CAIRN: Record<CreatureArchetype, string> = {
   commoner: "Commoner",
   merchant: "Commoner",
   scholar: "Commoner",
+  ranger: "Knight",
+  explorer: "Bandit",
+  artisan: "Commoner",
+  diplomat: "Commoner",
+  shaman: "Wood Witch",
+  swordmaster: "Knight",
+  courier: "Guard",
+  pirate: "Bandit",
+  spirit_bonded: "Wood Witch",
 };
 
 /**

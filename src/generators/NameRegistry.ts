@@ -13,7 +13,8 @@ import { SeededRandom, type WeightedTable } from "./SeededRandom";
 import { NAME_DATA, SURNAMES, NICKNAMES, EMERGENCY_TITLES } from "../data/names";
 
 const RACES: NPCRace[] = [
-  "human", "elf", "dwarf", "halfling", "half-elf", "half-orc", "gnome", "goblin"
+  "human", "elf", "dwarf", "halfling", "half-elf", "half-orc", "gnome", "goblin",
+  "nakudama", "dara", "spirit", "oni", "fish_folk", "awakened_animal",
 ];
 
 interface NamePool {
@@ -51,7 +52,11 @@ export class NameRegistry {
    * Generate a unique first name for a given race and gender
    */
   generateFirstName(race: NPCRace, gender: NPCGender): string {
-    const key = `${race}-${gender}`;
+    // Nonbinary: pick from either male or female pool randomly
+    const effectiveGender = gender === "nonbinary"
+      ? (this.rng.chance(0.5) ? "male" : "female")
+      : gender;
+    const key = `${race}-${effectiveGender}`;
     const pool = this.pools.get(key);
 
     if (!pool) {
@@ -69,7 +74,7 @@ export class NameRegistry {
 
     // 2. Fallback: syllable combiner
     const raceData = NAME_DATA[race];
-    const syllables = gender === "male" ? raceData.maleSyllables : raceData.femaleSyllables;
+    const syllables = effectiveGender === "male" ? raceData.maleSyllables : raceData.femaleSyllables;
 
     if (syllables) {
       for (let attempt = 0; attempt < 100; attempt++) {
@@ -196,6 +201,19 @@ export const SETTLEMENT_RACE_WEIGHTS: Record<string, WeightedTable<NPCRace>> = {
       { value: "goblin", weight: 2 },
     ],
   },
+};
+
+// Obojima race weights (no dwarves/halflings/half-orcs/gnomes/goblins)
+export const OBOJIMA_RACE_WEIGHTS: WeightedTable<NPCRace> = {
+  entries: [
+    { value: "human", weight: 50 },
+    { value: "elf", weight: 12 },
+    { value: "nakudama", weight: 18 },
+    { value: "dara", weight: 12 },
+    { value: "oni", weight: 4 },
+    { value: "spirit", weight: 2 },
+    { value: "fish_folk", weight: 2 },
+  ],
 };
 
 /**

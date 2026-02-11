@@ -9,6 +9,7 @@ interface WildernessDetailProps {
   dwelling?: Dwelling | null;
   worldId: string;
   ruleset: Ruleset;
+  themeId?: string;
   onReroll: () => void;
   onOverridesChange?: (overrides: EncounterOverrides) => void;
   onUpdateWorld?: (updater: (world: WorldData) => WorldData) => void;
@@ -38,6 +39,7 @@ export function WildernessDetail({
   dwelling,
   worldId,
   ruleset,
+  themeId,
   onReroll,
   onOverridesChange,
   onUpdateWorld,
@@ -112,6 +114,7 @@ export function WildernessDetail({
           seed={seed}
           terrain={terrain}
           ruleset={ruleset}
+          themeId={themeId}
           overrides={encounterOverrides}
           onOverridesChange={onOverridesChange}
           onReroll={onReroll}

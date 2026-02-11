@@ -117,27 +117,27 @@ const PURPOSE_BY_TYPE: Record<FactionType, string[]> = {
 };
 
 const LEADER_ARCHETYPES: Record<FactionArchetype, CreatureArchetype[]> = {
-  criminal: ["bandit", "thief", "assassin"],
-  religious: ["priest", "cultist"],
-  political: ["noble", "knight"],
-  mercantile: ["merchant", "noble"],
-  military: ["knight", "guard"],
-  arcane: ["witch", "scholar"],
-  tribal: ["commoner", "bandit"],
-  monstrous: ["bandit", "cultist"],
-  secret: ["assassin", "cultist", "scholar"],
+  criminal: ["bandit", "thief", "assassin", "pirate"],
+  religious: ["priest", "cultist", "shaman"],
+  political: ["noble", "knight", "diplomat"],
+  mercantile: ["merchant", "noble", "explorer"],
+  military: ["knight", "guard", "swordmaster", "ranger"],
+  arcane: ["witch", "scholar", "shaman", "spirit_bonded"],
+  tribal: ["commoner", "bandit", "shaman"],
+  monstrous: ["bandit", "cultist", "pirate"],
+  secret: ["assassin", "cultist", "scholar", "spirit_bonded"],
 };
 
 const MEMBER_ARCHETYPES: Record<FactionArchetype, CreatureArchetype[]> = {
-  criminal: ["bandit", "thief", "commoner"],
-  religious: ["priest", "commoner", "cultist"],
-  political: ["guard", "noble", "commoner"],
-  mercantile: ["merchant", "commoner", "guard"],
-  military: ["guard", "knight", "commoner"],
-  arcane: ["scholar", "witch", "commoner"],
-  tribal: ["commoner", "bandit"],
-  monstrous: ["bandit", "cultist"],
-  secret: ["commoner", "thief", "cultist"],
+  criminal: ["bandit", "thief", "commoner", "pirate"],
+  religious: ["priest", "commoner", "cultist", "shaman"],
+  political: ["guard", "noble", "commoner", "diplomat"],
+  mercantile: ["merchant", "commoner", "guard", "artisan", "courier"],
+  military: ["guard", "knight", "commoner", "ranger", "courier"],
+  arcane: ["scholar", "witch", "commoner", "explorer", "spirit_bonded"],
+  tribal: ["commoner", "bandit", "ranger"],
+  monstrous: ["bandit", "cultist", "pirate"],
+  secret: ["commoner", "thief", "cultist", "spirit_bonded"],
 };
 
 const GOALS: Record<FactionArchetype, string[]> = {
@@ -225,15 +225,15 @@ const SYMBOLS = [
 // === Cairn-Inspired Advantage Tables ===
 
 const ADVANTAGE_TYPES_BY_ARCHETYPE: Record<FactionArchetype, AdvantageType[]> = {
-  criminal: ["wealth", "knowledge", "territory", "influence"],
-  religious: ["influence", "alliance", "magic", "territory"],
-  political: ["influence", "wealth", "alliance", "military"],
-  mercantile: ["wealth", "knowledge", "influence", "territory"],
-  military: ["military", "territory", "alliance", "wealth"],
-  arcane: ["magic", "knowledge", "artifact", "alliance"],
-  tribal: ["territory", "military", "alliance", "knowledge"],
-  monstrous: ["military", "territory", "magic", "alliance"],
-  secret: ["knowledge", "influence", "wealth", "magic"],
+  criminal: ["wealth", "knowledge", "territory", "influence", "subterfuge"],
+  religious: ["influence", "alliance", "magic", "territory", "specialization"],
+  political: ["influence", "wealth", "alliance", "military", "subterfuge"],
+  mercantile: ["wealth", "knowledge", "influence", "territory", "apparatus"],
+  military: ["military", "territory", "alliance", "wealth", "apparatus"],
+  arcane: ["magic", "knowledge", "artifact", "alliance", "specialization"],
+  tribal: ["territory", "military", "alliance", "knowledge", "specialization"],
+  monstrous: ["military", "territory", "magic", "alliance", "apparatus"],
+  secret: ["knowledge", "influence", "wealth", "magic", "subterfuge"],
 };
 
 const ADVANTAGE_NAMES: Record<AdvantageType, string[]> = {
@@ -292,6 +292,27 @@ const ADVANTAGE_NAMES: Record<AdvantageType, string[]> = {
     "Crown of authority",
     "Tome of secrets",
     "Seal of power",
+  ],
+  apparatus: [
+    "Experimental war machine",
+    "Arcane forge",
+    "Flying vessel",
+    "Submersible craft",
+    "Siege engine prototype",
+  ],
+  specialization: [
+    "Master artificers",
+    "Expert trackers",
+    "Renowned healers",
+    "Elite saboteurs",
+    "Ancient techniques",
+  ],
+  subterfuge: [
+    "Embedded agents",
+    "Spy network",
+    "Double agents in rival factions",
+    "Hidden informants",
+    "Shadow operatives",
   ],
 };
 

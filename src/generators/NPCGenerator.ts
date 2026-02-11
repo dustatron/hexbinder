@@ -153,6 +153,78 @@ const WANTS_BY_ARCHETYPE: Record<CreatureArchetype, string[]> = {
     "Help silencing someone who knows too much",
     "Sacrifice materials from a holy place",
   ],
+  ranger: [
+    "Help tracking a dangerous beast through the wilderness",
+    "Someone to deliver supplies to a remote outpost",
+    "Aid investigating corruption spreading in the region",
+    "Escort for a patrol through contested territory",
+    "Help relocating displaced wildlife from a corrupted zone",
+    "Information about unusual creature activity",
+  ],
+  explorer: [
+    "A guide to an uncharted ruin or cave system",
+    "Help recovering artifacts from a dangerous site",
+    "Someone to map a newly discovered passage",
+    "Funding for an expedition to a remote location",
+    "Help interpreting ancient inscriptions",
+    "A partner for exploring a First Age structure",
+  ],
+  artisan: [
+    "Rare materials from a dangerous source",
+    "Help setting up a workshop in a new location",
+    "Protection while traveling to deliver a commission",
+    "Someone to test a new invention",
+    "Help acquiring tools from a rival craftsperson",
+    "Delivery of a custom piece to a distant patron",
+  ],
+  diplomat: [
+    "Discreet messenger for sensitive negotiations",
+    "Help resolving a dispute between rival factions",
+    "Intelligence about a faction's true intentions",
+    "Escort to a dangerous meeting location",
+    "Help preventing a conflict from escalating",
+    "Someone to mediate a trade disagreement",
+  ],
+  shaman: [
+    "Rare spirit-touched herbs from a sacred grove",
+    "Help communing with a difficult elder spirit",
+    "Someone to cleanse a corrupted spirit site",
+    "Escort to a remote shrine in dangerous territory",
+    "Help interpreting omens from the Spirit Realm",
+    "Protection during a spirit-calling ritual",
+  ],
+  swordmaster: [
+    "A worthy sparring partner to test new techniques",
+    "Help recovering a stolen ancestral blade",
+    "Someone to deliver a challenge to a rival school",
+    "Escort for a student traveling to a tournament",
+    "Help investigating dishonor within the school",
+    "Recovery of training scrolls from a ruin",
+  ],
+  courier: [
+    "Help clearing a blocked delivery route",
+    "Escort for a high-value package through dangerous territory",
+    "Investigation into missing couriers on a route",
+    "Someone to cover a delivery shift in hostile area",
+    "Help repairing a bridge on a critical route",
+    "Information about bandits targeting deliveries",
+  ],
+  pirate: [
+    "A partner for raiding a rival's hidden cache",
+    "Information about a wealthy ship's route",
+    "Help repairing a vessel in a remote cove",
+    "Someone to fence stolen maritime goods",
+    "A diver to salvage cargo from a wreck",
+    "Help settling a score with a coastal patrol",
+  ],
+  spirit_bonded: [
+    "Help finding a lost companion spirit",
+    "Rare offerings for a spirit bonding ritual",
+    "Someone to guard during a trance communion",
+    "Help calming a raging spirit in the area",
+    "Ingredients for a spirit-soothing potion",
+    "Escort to a spirit crossing point",
+  ],
 };
 
 const SECRETS: string[] = [
@@ -272,6 +344,51 @@ const ARCHETYPE_DESCRIPTIONS: Record<CreatureArchetype, string[]> = {
     "A secretive devotee of dark powers",
     "A zealot hiding dark intentions",
   ],
+  ranger: [
+    "A weathered wilderness tracker",
+    "A keen-eyed scout in practical gear",
+    "A rugged protector of the wilds",
+  ],
+  explorer: [
+    "A dust-covered adventurer with bright eyes",
+    "A curious wanderer laden with maps",
+    "A daring ruin-delver with scrapes to show",
+  ],
+  artisan: [
+    "A skilled craftsperson with calloused hands",
+    "A focused maker surrounded by tools",
+    "A creative builder with an appraising eye",
+  ],
+  diplomat: [
+    "A well-spoken envoy in fine attire",
+    "A composed negotiator with a warm smile",
+    "A sharp-minded mediator",
+  ],
+  shaman: [
+    "A spirit-touched mystic with faraway eyes",
+    "A ritual keeper wreathed in incense smoke",
+    "A quiet figure draped in spirit charms",
+  ],
+  swordmaster: [
+    "A disciplined warrior with perfect posture",
+    "A battle-scarred instructor with keen eyes",
+    "A legendary blade-wielder",
+  ],
+  courier: [
+    "A swift-footed messenger in travel-worn boots",
+    "A determined delivery runner",
+    "A reliable carrier with a bulging pack",
+  ],
+  pirate: [
+    "A salt-crusted sea raider",
+    "A cunning mariner with a wicked grin",
+    "A weather-beaten sailor with stories to tell",
+  ],
+  spirit_bonded: [
+    "A quiet figure trailed by flickering light",
+    "A person with an otherworldly air about them",
+    "A soul touched by the Spirit Realm",
+  ],
 };
 
 const ARCHETYPE_THREAT: Record<CreatureArchetype, ThreatLevel> = {
@@ -287,6 +404,15 @@ const ARCHETYPE_THREAT: Record<CreatureArchetype, ThreatLevel> = {
   scholar: 1,
   thief: 2,
   cultist: 3,
+  ranger: 3,
+  explorer: 2,
+  artisan: 1,
+  diplomat: 2,
+  shaman: 3,
+  swordmaster: 4,
+  courier: 2,
+  pirate: 3,
+  spirit_bonded: 3,
 };
 
 export interface NPCGeneratorOptions {

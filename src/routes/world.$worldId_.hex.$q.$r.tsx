@@ -6,6 +6,7 @@ import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/
 import { WildernessDetail } from "~/components/location-detail/WildernessDetail";
 import { SettlementDetail, type LocationEvent } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
+import { LandmarkDetail } from "~/components/location-detail/LandmarkDetail";
 import { RegenerateModal } from "~/components/location-detail/RegenerateButton";
 import { Button } from "~/components/ui/button";
 import {
@@ -243,6 +244,7 @@ function HexDetailPage() {
             dwelling={dwelling}
             worldId={world.id}
             ruleset={world.ruleset}
+            themeId={world.themeId}
             onReroll={handleReroll}
             onOverridesChange={handleOverridesChange}
             onUpdateWorld={handleUpdateWorld}
@@ -279,6 +281,17 @@ function HexDetailPage() {
             ruleset={world.ruleset}
             onReroll={handleReroll}
             seed={seed}
+          />
+        )}
+
+        {location?.type === "landmark" && (
+          <LandmarkDetail
+            landmark={location}
+            hex={hex}
+            npcs={world.npcs}
+            factions={world.factions}
+            worldId={world.id}
+            ruleset={world.ruleset}
           />
         )}
       </div>

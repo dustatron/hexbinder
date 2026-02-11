@@ -293,6 +293,8 @@ export interface FeatureGeneratorOptions {
   seed: string;
   hexes: Hex[];
   roadHexes: Set<string>;
+  /** Override density range. Default [0.15, 0.25] */
+  density?: [number, number];
 }
 
 export interface FeatureGeneratorResult {
@@ -305,19 +307,20 @@ export interface FeatureGeneratorResult {
  * Places features on 15-25% of eligible hexes.
  */
 export function generateFeatures(options: FeatureGeneratorOptions): FeatureGeneratorResult {
-  const { seed, hexes, roadHexes } = options;
+  const { seed, hexes, roadHexes, density } = options;
   const rng = new SeededRandom(`${seed}-features`);
+  const [minPct, maxPct] = density ?? [0.15, 0.25];
 
-  // Find eligible hexes (no location)
-  const eligibleHexes = hexes.filter((hex) => !hex.locationId);
+  // Find eligible hexes (no location, no existing feature)
+  const eligibleHexes = hexes.filter((hex) => !hex.locationId && !hex.feature);
 
   if (eligibleHexes.length === 0) {
     return { hexes, features: [] };
   }
 
-  // Determine how many features to place (15-25% of eligible)
-  const minFeatures = Math.floor(eligibleHexes.length * 0.15);
-  const maxFeatures = Math.ceil(eligibleHexes.length * 0.25);
+  // Determine how many features to place
+  const minFeatures = Math.floor(eligibleHexes.length * minPct);
+  const maxFeatures = Math.ceil(eligibleHexes.length * maxPct);
   const featureCount = rng.between(minFeatures, Math.max(minFeatures, maxFeatures));
 
   // Select hexes for features

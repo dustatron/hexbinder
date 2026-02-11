@@ -753,7 +753,7 @@ function AtlasPage() {
                             {faction.name}
                           </Link>
                           <span className={`rounded px-1.5 py-0.5 text-xs uppercase ${FACTION_TYPE_COLORS[faction.factionType] || "bg-stone-600"}`}>
-                            {faction.factionType}
+                            {faction.displayType || faction.factionType}
                           </span>
                         </div>
                         <p className="mt-1 text-sm text-stone-400">

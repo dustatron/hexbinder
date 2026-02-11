@@ -19,9 +19,16 @@ export function loadWorld(id: string): WorldData | null {
   const world = JSON.parse(data) as WorldData;
   // Default ruleset for legacy worlds
   world.ruleset ??= "shadowdark";
-  // Default party tracking for legacy worlds
+  // Default arrays for legacy/incomplete worlds
+  world.npcs ??= [];
+  world.factions ??= [];
+  world.hooks ??= [];
+  world.clocks ??= [];
+  world.dwellings ??= [];
+  world.significantItems ??= [];
   world.state.currentHexId ??= null;
   world.state.visitedHexIds ??= [];
+  world.state.calendar ??= [];
   return world;
 }
 
@@ -90,7 +97,8 @@ export async function importDefaultWorld(url: string): Promise<WorldData> {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to fetch default world: ${res.status}`);
   const world = (await res.json()) as WorldData;
-  world.id = nanoid();
+  // Use the world's own stable ID so repeated loads overwrite rather than duplicate
+  world.id ??= nanoid();
   world.updatedAt = Date.now();
   saveWorld(world);
   return world;

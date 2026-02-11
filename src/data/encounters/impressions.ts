@@ -202,8 +202,13 @@ export const IMPRESSIONS_BY_TERRAIN: Record<TerrainType, TerrainImpressions> = {
 
 // === Helper Functions ===
 
-/** Get impressions for terrain */
-export function getImpressionsForTerrain(terrain: TerrainType): TerrainImpressions {
+import { OBOJIMA_IMPRESSIONS_BY_TERRAIN } from "./impressions-obojima";
+
+/** Get impressions for terrain, branching on themeId */
+export function getImpressionsForTerrain(terrain: TerrainType, themeId?: string): TerrainImpressions {
+  if (themeId === "obojima") {
+    return OBOJIMA_IMPRESSIONS_BY_TERRAIN[terrain] ?? OBOJIMA_IMPRESSIONS_BY_TERRAIN.plains;
+  }
   return IMPRESSIONS_BY_TERRAIN[terrain] ?? IMPRESSIONS_BY_TERRAIN.plains;
 }
 
@@ -212,9 +217,10 @@ export function getRandomImpressions(
   terrain: TerrainType,
   sightIndex: number,
   soundIndex: number,
-  smellIndex: number
+  smellIndex: number,
+  themeId?: string
 ): { sight: string; sound: string; smell: string } {
-  const impressions = getImpressionsForTerrain(terrain);
+  const impressions = getImpressionsForTerrain(terrain, themeId);
   return {
     sight: impressions.sight[sightIndex % impressions.sight.length],
     sound: impressions.sound[soundIndex % impressions.sound.length],

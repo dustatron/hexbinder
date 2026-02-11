@@ -3,6 +3,7 @@ import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-rout
 import { ArrowLeft, Menu, RefreshCw } from "lucide-react";
 import { SettlementDetail, type LocationEvent } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
+import { LandmarkDetail } from "~/components/location-detail/LandmarkDetail";
 import { RegenerateModal } from "~/components/location-detail/RegenerateButton";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/lib/hex-regenerate";
@@ -211,24 +212,16 @@ function LocationPage() {
           />
         )}
 
-        {/* Fallback for other location types */}
-        {!isSettlement(location) && !isDungeon(location) && (
-          <div className="p-4">
-            <h2 className="text-xl font-bold">{location.name}</h2>
-            <p className="mt-2 text-stone-400">{location.description}</p>
-            {location.tags.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-2">
-                {location.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded bg-stone-700 px-2 py-0.5 text-xs text-stone-300"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
+        {/* Landmark */}
+        {location.type === "landmark" && hex && (
+          <LandmarkDetail
+            landmark={location}
+            hex={hex}
+            npcs={world.npcs}
+            factions={world.factions}
+            worldId={world.id}
+            ruleset={world.ruleset}
+          />
         )}
       </div>
     </div>

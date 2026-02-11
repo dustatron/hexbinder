@@ -127,7 +127,7 @@ function HomePage() {
     try {
       const world = await importDefaultWorld("/worlds/obojima.hexbinder.json");
       refreshWorlds();
-      navigate({ to: "/world/$worldId", params: { worldId: world.id } });
+      navigate({ to: "/atlas/$worldId", params: { worldId: world.id } });
     } catch {
       alert("Failed to load default world.");
     } finally {

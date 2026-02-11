@@ -247,6 +247,7 @@ export interface ImprovedEncounterOptions {
   seed: string;
   terrain: TerrainType;
   overrides?: EncounterOverrides;
+  themeId?: string;
 }
 
 /**
@@ -256,7 +257,7 @@ export interface ImprovedEncounterOptions {
 export function generateImprovedEncounter(
   options: ImprovedEncounterOptions
 ): ImprovedEncounterResult {
-  const { seed, terrain, overrides } = options;
+  const { seed, terrain, overrides, themeId } = options;
   const rng = new SeededRandom(`${seed}-improved-encounter`);
 
   // Master table roll (1d6)
@@ -265,11 +266,11 @@ export function generateImprovedEncounter(
   const masterEntry = MASTER_TABLE[masterIndex] ?? MASTER_TABLE[0];
   const encounterType = masterEntry.type;
 
-  // First impressions (always generated)
+  // First impressions (always generated, themed)
   const sightIdx = rng.between(0, 5);
   const soundIdx = rng.between(0, 5);
   const smellIdx = rng.between(0, 5);
-  const impressions = getRandomImpressions(terrain, sightIdx, soundIdx, smellIdx);
+  const impressions = getRandomImpressions(terrain, sightIdx, soundIdx, smellIdx, themeId);
 
   const hasOverrides = !!(
     overrides?.masterIndex !== undefined ||
@@ -289,7 +290,7 @@ export function generateImprovedEncounter(
   // Generate sub-table results based on encounter type
   switch (encounterType) {
     case "creature": {
-      const creatures = getCreaturesForTerrain(terrain);
+      const creatures = getCreaturesForTerrain(terrain, themeId);
       const creatureIndex = overrides?.creatureIndex ?? pickWeightedCreatureIndex(rng, creatures);
       const creature = creatures[creatureIndex] ?? creatures[0];
 
@@ -310,7 +311,8 @@ export function generateImprovedEncounter(
     case "npc": {
       // Generate actual NPC
       const npcArchetypes: CreatureArchetype[] = [
-        "commoner", "merchant", "bandit", "guard", "thief", "priest", "scholar"
+        "commoner", "merchant", "bandit", "guard", "thief", "priest", "scholar",
+        "ranger", "explorer", "artisan", "courier",
       ];
       const archetype = rng.pick(npcArchetypes);
 

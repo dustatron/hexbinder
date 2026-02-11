@@ -50,7 +50,16 @@
       "Bash(git pull:*)",
       "Bash(git stash:*)",
       "Bash(node:*)",
-      "WebFetch(domain:cairnrpg.com)"
+      "WebFetch(domain:cairnrpg.com)",
+      "Bash(cmp:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npx --yes tsx:*)",
+      "Bash(pnpm ls:*)",
+      "Bash(npx vite-node:*)",
+      "Bash(pnpm run build:obojima:*)",
+      "Bash(pnpm add:*)",
+      "Bash(grep:*)",
+      "Bash(jq:*)"
     ]
   }
 }

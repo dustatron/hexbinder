@@ -80,8 +80,13 @@ export const CREATURES_BY_TERRAIN: Record<TerrainType, CreatureEntry[]> = {
 
 // === Helper Functions ===
 
-/** Get creature list for terrain */
-export function getCreaturesForTerrain(terrain: TerrainType): CreatureEntry[] {
+import { getObojimCreaturesForTerrain } from "./creatures-obojima";
+
+/** Get creature list for terrain, branching on themeId */
+export function getCreaturesForTerrain(terrain: TerrainType, themeId?: string): CreatureEntry[] {
+  if (themeId === "obojima") {
+    return getObojimCreaturesForTerrain(terrain);
+  }
   return CREATURES_BY_TERRAIN[terrain] ?? CREATURES_BY_TERRAIN.plains;
 }
 
