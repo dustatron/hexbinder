@@ -521,38 +521,43 @@ The invisible hand. Every faction needs their currency. They maintain strict neu
 
 ## 12. Flying Phin's Airship Service
 
-- **Type:** Transport / aviation
-- **Base:** Broken Bird Airfield
+- **Type:** Aviation obsessive / airfield hermit — mechanic-for-hire specializing in flying machines
+- **Base:** Broken Bird Airfield (Coastal Highlands) — derelict First Age airstrip with skeletal aircraft, a pair of modest hangars, and an air traffic control tower occupied by harpies. Prickly shrubs through cracked runway. Red-orange lichen on everything. Notorious and dangerous.
+- **Leaders:** Phin (sole operator)
 - **Region:** Coastal Highlands
-- **Traits:** Dreamy, Reckless
+- **Traits:** Obsessive, Resourceful
 
 ### Agents
-- **Phin** — The pilot. Obsessed with First Age aviation. Wears a battered flight jacket with faded insignia. Lives in the control tower. Will talk about biplanes until you physically leave. Reckless but lovable.
-- **Mechanic Gretta** — Keeps the airfield's machinery running. Built a working glider from scavenged parts. Pragmatic counterweight to Phin's dreams. Secretly believes powered flight is impossible without First Age spirits.
+- **Phin** — (male human). Old man, former AHA member, has lived at the airfield longer than anyone — including the harpies, which he calls "those dumb birds who are always stealing my tools." Lives in a ramshackle loft built from scaffolding inside one of the hangars. Devoted his life to restoring a First Age aircraft he lovingly calls "the Menace." Disheveled. Takes the occasional commission cobbling together flying machines for paying customers — business is slow. His machines can only stay aloft for limited durations, if they get off the ground at all — often sputtering out on the runway to a chorus of cackling harpies. Grows cucumbers behind the hangars to make pickles. Eats pickles constantly and bathes daily in pickle brine — the harpies despise vinegar, which is the only reason they won't eat him. Carries his most prized tools on his person. "I'll get this hunk of junk flying, just you watch!"
+- **Plitsu** — (spirit). Adorable little spectral spirit and the TRUE reason for Phin's repeated failures. Believes First Age flight technology needs to remain grounded. Has been secretly stealing Phin's tools — not the harpies. Uses its cuteness to win over visitors and paints Phin as the villain. Has a cache of stolen tools hidden in a nearby copse of trees. Phin blames the harpies and has no idea.
+- **Bomber** — (harpy). Hulking harpy with clipped wings — unable to fly. Fascinated by aircraft, spends her time sitting in cockpits of derelict planes. Wants to learn from Phin but can't bring herself to ask — the other harpies would frown on fraternizing. Has valuable information she'll trade if someone helps her fly again. Desperate.
+- **Gouger, Cutya, and Strafe** — (harpies). Gang leadership of the 12 harpies occupying the control tower. Gouger is the self-proclaimed captain — quiet, cunning, even-keeled, deadpan humor, can outdrink any harpy. Cutya is bloodthirsty and cruel with a penchant for nakudama flesh ("oh so succulent"). Strafe is the most approachable, which makes her the most dangerous — lulls people into false security. All 12 dress as pilots with flight jackets, scarves, and goggles. Spend nights in rowdy revelry: smoking, bawdy jokes, gambling at "rusty spades." Drunk into collective stupor by morning.
 
 ### Advantages
 | Type | Detail |
 |------|--------|
-| Apparatus | Multiple biplane frames, air traffic control equipment, weather instruments, derelict runway |
-| Information | Airplane maintenance manuals (water-damaged but readable) with First Age alloy compositions |
-| Resources | Flight jackets with pilot insignia, MRE stockpile, functioning glider |
-| Position | Broken Bird Airfield — strategic high-ground overlooking Coastal Highlands |
+| Apparatus | Multiple First Age aircraft frames in various states of repair, "the Menace" restoration project, runway (cracked but functional), two hangars full of salvageable parts |
+| Information | Airplane plans stored in the control tower (currently in harpy territory). Phin's former AHA membership gives him deep knowledge of First Age mechanics |
+| Specialization | Phin is one of the best flying machine mechanics Obojima has to offer — even if results are limited |
+| Position | Dangerous but tantalizing airfield — a rite of passage for Young Stewards, a destination for anyone fascinated by First Age flight |
 
 ### Agenda
-1. Trade airfield artifact access with AHA for spirit-binding research
-2. Find spirits willing to power a biplane engine (requires multiple spirits in concert)
-3. Successfully test a short powered flight
-4. Establish regular aerial routes between major settlements
-5. Fly to the Vanishing Mountain that appeared on the northeast horizon
+1. Get the Menace airworthy — restore it to sustained powered flight
+2. Figure out why his tools keep disappearing (he blames the harpies — it's actually Plitsu)
+3. Retrieve the airplane plans from inside the harpy-occupied control tower
+4. Find spirits willing to power a biplane engine (large First Age vehicles may require multiple spirits in concert)
+5. Achieve real flight — and eventually reach the Sky King's domain or the Vanishing Mountain
 
-### Obstacle
-Powered flight requires multiple spirits working in concert — extremely rare and dangerous. AHA has research on First Age spirit-binding techniques but won't share without access to the airfield's tech archive, which Phin considers his personal treasure.
+### Obstacles
+**Long-term:** Everything conspires against flight at Broken Bird Airfield. Plitsu is secretly sabotaging his work and Phin doesn't know. The airplane plans he needs are locked in the harpy-occupied control tower. Powered flight requires multiple spirits working in concert — extremely rare. An enormous dormant slime colony lives beneath the cracked runway — drawn to machines, they'd emerge as a flood if anything heavy trundles down the strip, latching onto aircraft and adding catastrophic weight. Neither Phin nor the harpies know how big the colony is. And if he ever succeeds at sustained flight, the noise will wake Rumble Hill — actually a Cat of Prodigious Size sleeping nearby (a former housecat named Lyle from Opal Falls who kept growing). Once awakened, it fixates on movement. A flying machine barreling down the runway would be "the most enticing plaything."
+
+**Immediate:** A group of Young Stewards snuck onto the airfield as part of a dare — sneaking in and returning with a trinket is a rite of passage. They haven't come back and are believed to be in the harpies' clutches. Meanwhile, Bomber has been approaching visitors, offering valuable information in exchange for help flying again. She could be the key to a truce with the harpies — or helping her could turn the entire gang hostile. Phin doesn't know Bomber exists as a potential ally; he's too busy cursing the harpies for stealing tools that Plitsu actually took.
 
 ### Want
-AHA's spirit-binding research. Spirits willing to power an engine. Also intrigued by the Aquatic Stabilizer's gyroscopic principles — could be adapted for flight stabilization.
+His tools back (from Plitsu, though he doesn't know that). The airplane plans from the control tower. Spirits willing to power the Menace. To be left alone to work — but he'll accept help if it comes with no strings attached.
 
 ### Tension
-Phin was once an AHA member himself — left to pursue flight obsession. AHA wants access to the airfield's First Age tech archive. A gang of twelve harpies occupies the control tower and steals Phin's tools. Rumble Hill (a giant sleeping cat nearby) could be a problem if the engines get loud.
+Phin's former AHA membership is a live connection — AHA wants access to the airfield's tech archive and would trade research. Rock Raley's aviation craze in Sky Kite Valley is the competition — Raley has a team, funding, and public support while Phin works alone in pickle brine. The harpies are an uneasy coexistence — Bomber's desperation could fracture the balance. Plitsu's sabotage is invisible to everyone — if discovered, it reframes Phin's decades-long failure as spirit interference, not incompetence.
 
 ---
 
