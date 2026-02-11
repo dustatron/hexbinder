@@ -85,3 +85,13 @@ export async function importWorld(file: File): Promise<WorldData> {
   saveWorld(world);
   return world;
 }
+
+export async function importDefaultWorld(url: string): Promise<WorldData> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch default world: ${res.status}`);
+  const world = (await res.json()) as WorldData;
+  world.id = nanoid();
+  world.updatedAt = Date.now();
+  saveWorld(world);
+  return world;
+}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { formatDistanceToNow } from "date-fns";
-import { Plus, Download, Upload, Trash2, Map } from "lucide-react";
+import { Plus, Download, Upload, Trash2, Map, Globe } from "lucide-react";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -10,6 +10,7 @@ import {
   loadWorld,
   exportWorld,
   importWorld,
+  importDefaultWorld,
   saveWorld,
 } from "~/lib/storage";
 import { generateWorld, type MapSize, type StartPosition } from "~/generators";
@@ -71,6 +72,7 @@ function HomePage() {
   const [dungeonCount, setDungeonCount] = useState<number | "">("");
   const [lairCount, setLairCount] = useState<number | "">("");
   const [factionCount, setFactionCount] = useState<number | "">("");
+  const [loadingDefault, setLoadingDefault] = useState(false);
 
   // Default counts by map size
   const defaultCounts = {
@@ -120,6 +122,19 @@ function HomePage() {
     }
   };
 
+  const handleLoadDefault = async () => {
+    setLoadingDefault(true);
+    try {
+      const world = await importDefaultWorld("/worlds/obojima.hexbinder.json");
+      refreshWorlds();
+      navigate({ to: "/world/$worldId", params: { worldId: world.id } });
+    } catch {
+      alert("Failed to load default world.");
+    } finally {
+      setLoadingDefault(false);
+    }
+  };
+
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -158,6 +173,15 @@ function HomePage() {
           >
             <Plus size={18} />
             New World
+          </Button>
+          <Button
+            onClick={handleLoadDefault}
+            disabled={loadingDefault}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <Globe size={18} />
+            {loadingDefault ? "Loading..." : "Obojima"}
           </Button>
           <label className="cursor-pointer">
             <span className="inline-flex h-9 items-center gap-2 rounded-md border border-stone-600 bg-stone-800 px-3 text-sm font-medium hover:bg-stone-700">
