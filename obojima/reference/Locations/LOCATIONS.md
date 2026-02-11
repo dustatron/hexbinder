@@ -122,3 +122,16 @@ Every named location from the sourcebook, organized by region.
 
 - "Toraf & Boulder's School of Guts & Grit" (16,-12) duplicates "Torf and Bolder's School" (15,-10) — SAME school, keep one
 - "Glittering Depot" also at (16,-12) — coord conflict with Toraf duplicate
+
+
+
+AMA SHURAK
+
+Home brew town
+
+Makes a special sword called a spirit blade. They have a deal with a demon that he can eat people if he leaves them a heart stone. Which the sword forge uses to fuel their forges and craft the spirit blade. The heart stones power their town and their tech. 
+
+They have signs up in the woods that workers are needed. But it's a scam to draw people in to feed them to the demon. 
+
+The demon is the town elders grandson who has spirit bonded with the demon.
+

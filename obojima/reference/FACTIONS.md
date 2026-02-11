@@ -63,18 +63,22 @@ Deep Current ←→ Council of Kroo        (floppy disk calculations may relate 
 4. Recover the Aquatic Stabilizer from the Lionfish King's Doomspine
 5. Launch a deep-water expedition to find the Corruption's origin point
 
-### Obstacle
-The Aquatic Stabilizer — the First Age magic gyroscope critical for deep-current navigation — is mounted on the Lionfish King's flagship Doomspine. Without it, the Pointue can't safely navigate the deep Shallows.
+### Obstacles
+**Long-term:** The Aquatic Stabilizer — the First Age magic gyroscope critical for deep-current navigation — is mounted on the Lionfish King's flagship Doomspine. Without it, the Pointue can't safely navigate the deep Shallows. Holly is the only engineer who can repair the sub, but she's at the northern lodge while the Pointue sits in drydock at the southern lodge — and the Lionfish King's patrols make transport between them extremely dangerous.
+
+**Immediate:** Paloma Clintock has been secretly infected with the Corruption. A dart from a Venomous Rex raider struck her during a recent solo mission into the Lionfish King's domain. She hasn't told anyone — not her father, not her sister, not the lodge. She's still launching reckless solo raids in her catamaran the Shrike, wearing her cloak of mist. The lodge's AHA researcher is studying Corruption samples just rooms away and could potentially help — but Paloma would have to admit what happened, and Captain Clintock would ground her permanently. Meanwhile the infection is progressing.
 
 ### Want
 The Aquatic Stabilizer. They'd also accept AHA's help reverse-engineering a replacement, but AHA wants underwater ruin access in return.
+
+Take down the Lionfish king
 
 ### Tension
 Lionfish King sank the original Pointue and took the Stabilizer. Clintock got the King imprisoned in Uluwa. Decades-long blood feud. Neither will negotiate directly — players make ideal intermediaries.
 
 ---
 
-## 2. Domain of the Lionfish King
+## 2. The Lionfish King
 
 - **Type:** Underwater kingdom
 - **HQ:** Coral Castle in the Shallows
@@ -109,8 +113,10 @@ Lionfish King sank the original Pointue and took the Stabilizer. Clintock got th
 5. Destroy Captain Clintock and sink whatever's left of his fleet
 6. Expand territory from the Shallows into coastal waters
 
-### Obstacle
-The Royal Lineages are written in cryptic nakudama code. His wizard Sleethar has failed to crack it. He needs AHA's translation expertise — but approaching surface-dwellers openly would undermine his authority. Meanwhile, Venomous Rex's corrupted deep-sea fish folk encroach from the east, forcing him to fight on two fronts.
+### Obstacles
+**Long-term:** The Royal Lineages are written in cryptic nakudama code. His wizard Sleethar has failed to crack it. He needs AHA's translation expertise — but approaching surface-dwellers openly would undermine his authority. Meanwhile, Venomous Rex's corrupted deep-sea fish folk encroach from the east, forcing him to fight on two fronts. Schools of fish folk fleeing "the foul waters" are flooding into his domain, straining resources and making him more territorial and aggressive.
+
+**Immediate:** Bloodfin the Foul — his exiled captain — is being corrupted by the sea hag Slurpgill, who is grooming Bloodfin to become a hag herself and start a coven. Slurpgill is also pushing Bloodfin to defect to Venomous Rex. The Lionfish King doesn't know about Slurpgill's involvement — he thinks Bloodfin is just a disgraced exile raiding the northern coast to win back his favor. If Slurpgill succeeds, the King loses a potential vassal and gains a new enemy on his flank — a hag coven allied with Venomous Rex, operating from a sunken First Age town just miles from the northern divers' lodge.
 
 ### Want
 A scholar who can decipher the Royal Lineages. Would trade almost anything except the Aquatic Stabilizer (his flagship's heart) or the octopus.
@@ -158,8 +164,10 @@ Has what Mariners' Guild desperately needs (Stabilizer). Needs what AHA has (tra
 6. Decode Lonzo's mysterious radio "war dispatches" — who is broadcasting?
 7. Find the Disappearing Mountain — appeared on the northeast horizon, traveled south for two days, then vanished. Expedition sent to find it never returned. Still obsesses a small group of members.
 
-### Obstacle
-Spread too thin. Field researchers are falling ill from Corruption exposure. The most critical underwater ruins require the Mariners' Guild submarine, but the Guild demands Corruption research help first. The Yatamon subway dig keeps hitting collapsed tunnels and dangerous creatures. Resources pulled in every direction.
+### Obstacles
+**Long-term:** Spread too thin. Field researchers are falling ill from Corruption exposure. The most critical underwater ruins require the Mariners' Guild submarine, but the Guild demands Corruption research help first. The Yatamon subway dig keeps hitting collapsed tunnels and dangerous creatures. Resources pulled in every direction.
+
+**Immediate:** The flooded lowest levels of AHA headquarters — sealed off and forgotten long ago — have been discovered and occupied by corrupted viperfish folk loyal to Venomous Rex. They're actively looking for a way into the upper floors. AHA has no idea they're down there. If they breach the labs housing Corruption-infected rangers and skeletonized fish specimens, the consequences could be catastrophic — both for the researchers and for the volatile specimens getting loose.
 
 ### Want
 Underwater First Age ruin access (Mariners' Guild has it). The Royal Lineages (Lionfish King has them) — could trade translation services but that would legitimize a tyrant. Safe passage through subway tunnels. Answers about the Wandering Line depot network.
@@ -172,62 +180,75 @@ Natural partnership with Mariners' Guild but competing priorities. Could be king
 ## 4. Fish Head Coven
 
 - **Type:** Most powerful witch coven
-- **HQ:** Witching Tower — three brick towers in the Gale Fields
-- **Leaders:** Council of Three and Thirty (3 witches + The Thirty amalgamated spirit)
-- **Region:** Gale Fields (HQ), island-wide influence
+- **HQ:** Witching Tower — three brick towers connected by bridges in the Gale Fields. Domain surrounded by magical hedgerow that alerts the Council when crossed, with gatehouses at four cardinal directions (each garrisoned by a trio of witches).
+- **Leaders:** Council of Three and Thirty (3 witches + The Thirty, an amalgamated spirit entity)
+- **Region:** Gale Fields (HQ), island-wide influence. Dozens of affiliated witches across the island.
 - **Traits:** Domineering, Secretive
 
 ### Agents
-- **Bim of the Beasts** — Field witch and ingredient hunter. Travels with a menagerie of enchanted animals. Friendly on the surface, utterly loyal to the Council. Found wherever rare ingredients grow.
-- **Whisper** — Spy embedded in Yatamon's markets. Collects gossip and tracks rival coven movements. Appears as a cheerful tea vendor. Reports directly to the Council.
+- **Yolikanter Crogiss** — Council Witch (female nakudama). Paranoid, specializes in warding magic. "It's easier to catch a wandering door than it is to catch Yolikanter by surprise." Almost always present at the Witches' Bridge.
+- **Bim of the Beasts** — Council Witch (female human, unknown age). Enigmatic. Speaks ONLY through animals — never uses her own voice. Almost always at the Witches' Bridge.
+- **Brass Eyes** — Council Witch (male human, tiny, withered). Eyes replaced with brass orbs. Said to live simultaneously in both Physical and Spirit Realm. No living witch knows his real name. Often unclear if he's talking to you or to unseen spirits.
+- **Tan the Apprentice & Abi** — Newcomer (13-year-old human boy). Apprentices for renowned Witch Ognev. Awkward kid who appears to talk to himself — actually speaking to invisible spirit companion Abi, who is very protective. Learning to be a spirit medium. Sneaks out at night to explore the grounds, has a trinket stash at a serpent standing stone.
+- **Ognev** — Renowned Witch (male). Tan's master. Recognized Tan's gift when everyone else thought he was just a weird kid.
+- **Ermy Flower** — Coven Witch, runs ingredient kiosk cart below the Witching Tower's lowest bridge. Personable, chatty, loves talking about the best places to eat on the island. Has three magpies: Licorice, Sugar, and Molasses.
+- **Alkun** — Resident Witch. Has connections to elder spirit Sorolu (made of earth and vines) — would seek help healing it from unknown malady.
+- **Unnamed retired Witch** — Former Council of Three and Thirty member, once one of the most powerful and politically influential Fish Head witches. Retired years ago to Okiri village, now runs a repair shop using transmutation magic. Locals don't know she's a witch. Accepts odd payment ("a piece of blue glass and a turnip — and the glass had better be blue!").
+- **The Lady & The Mighty Peapaleap** — Two resident companion spirits (cats). The Lady is highly sociable. Peapaleap is a fat fluffy long-haired cat who rides a floating square cushion. They wander the grounds together, sometimes following interesting visitors.
 
 ### Advantages
 | Type | Detail |
 |------|--------|
-| Magic | 2 Almanac volumes (Gale Fields & Shallows regions), cassette tape spell scrolls |
+| Magic | 2 of 7 Almanac volumes (Gale Fields & Shallows), cassette tape spell scrolls |
 | Apparatus | First Age cassette players repurposed as spellcasting foci |
-| Subterfuge | Network of affiliated witches embedded in settlements across island |
-| Position | Two sealed vaults called the "Closed Fists" (contents unknown) |
-| Renown | Recognized as most powerful coven — other covens defer or resent them |
+| Subterfuge | Dozens of affiliated witches embedded in settlements across island; chot-to spy statues in the Sanctum that secretly record conversations and report to the Council |
+| Position | The Closed Fists (twin vaults): Northern = bulk ingredient stores guarded by urugama demons bound to wall masks. Southern = most dangerous magic items, protected by silver-chained mushroom cages (paralyzing spore cloud, DC 20 Con, 3 days). |
+| Information | The Sanctum — secret underground cavern beneath the central tower. Hundreds of chot-to statues (spirit-inhabited figurines), each storing a spell, event, or ingredient recipe. Witches summon them with a keystone. |
+| Renown | Most powerful coven — others defer or resent them. Help run the Witchery academy in Yatamon (First Age movie theater) where all covens train new witches. Neutral ground managed by Warlock Mr. Basingstoke and his silent octopus spirit Sorrow. |
 
 ### Agenda
-1. Locate the covens holding the remaining 5 Almanac volumes
+1. Locate the covens holding the remaining 5 Almanac volumes (7 total, one per region — Fish Head has 2, every other major coven has 1)
 2. Acquire volumes through trade, trickery, or intimidation — starting with Cloud Cap's
-3. Obtain Spirit Coal from the Wandering Line's caboose for a master recipe
-4. Open the Closed Fists (even the Council doesn't know what's inside — they need all 7 volumes as keys)
-5. Achieve total monopoly over magical ingredient knowledge on Obojima
+3. Obtain Spirit Coal from the Wandering Line's caboose for master recipes
+4. Achieve total monopoly over magical ingredient knowledge on Obojima
+5. Discover what the Crawling Canopy is hiding — the Council of Kroo's territorial secrecy intrigues them
 
-### Obstacle
-Every rival coven guards their Almanac volume with their lives. Direct theft risks open coven war. The Council must acquire them without uniting the other covens against them.
+### Obstacles
+**Long-term:** Every rival coven guards their Almanac volume with their lives. Direct theft risks open coven war. The Council must acquire them without uniting the other covens against them. The Crawling Canopy keeps evading their scouting parties.
+
+**Immediate:** Sorolu — an elder spirit made of earth and vines that dwells in the Gale Fields — is suffering from an unknown malady. Sorolu has been a silent guardian of the domain for generations, and its decline is weakening the land magic the coven draws on. Alkun can't diagnose or cure it alone and needs rare ingredients and outside help. The Council has been ignoring the Corruption as someone else's problem, but Sorolu's sickness may be the first sign it's already seeping into their territory. If Sorolu dies or turns demon, the Fish Head domain loses its spiritual anchor — and the hedgerow wards may fail with it.
 
 ### Want
-The 5 remaining Almanac volumes (one per rival coven). Spirit Coal from the Wandering Line. Will trade cassette spell scrolls, ingredient knowledge, or favors — but never their own volumes.
+The 5 remaining Almanac volumes (one per rival coven). Spirit Coal from the Wandering Line. Access to the Crawling Canopy's secrets. Will trade cassette spell scrolls, ingredient knowledge, or favors — but never their own volumes.
 
 ### Tension
-Every coven interaction is colored by this rivalry. Goro Goros' Mikiko is secretly a Fish Head apprentice. Council of Kroo's Canopy secrets intrigue them. Dawn Blossom needs their ingredients for currency.
+Every coven interaction is colored by this rivalry. Goro Goros' Mikiko is secretly a Fish Head apprentice — if discovered, the coven may punish her and crush the gang. Council of Kroo keeps moving the Crawling Canopy to evade Fish Head scouts. Tellu & Scale's nomadic school needs passage through Gale Fields — Fish Head sees their nakudama heritage claim to Lilywin as a territorial threat. Dawn Blossom needs their ingredients for currency. A retired former Council member hides in plain sight in Okiri.
 
 ---
 
 ## 5. Courier Brigade
 
 - **Type:** Postal knights order
-- **HQ:** Fort Harglo (Gale Fields), brigade halls in towns
-- **Leaders:** Postmaster General Escalante (Yatamon)
-- **Region:** Island-wide
+- **HQ:** First Age bank in Yatamon (vault used for package storage). The Flying Lantern (famous hot air balloon) is moored on the roof — a major city attraction. Training ground on-site for riding, running, and lantern piloting. Also maintains Fort Harglo (crossroads fort in the Gale Fields, used for ceremonies) and brigade halls in most towns.
+- **Leaders:** Postmaster General Miranda Escalante (female human, Yatamon)
+- **Region:** Island-wide — parcel boxes in most settlements, all designed to look like fish mouths (honoring the river spirit Din, where the very first postal box was established at Opal Falls)
 - **Traits:** Dutiful, Stubborn
 
 ### Agents
-- **Rider Corvo** — Elite courier who runs the dangerous eastern routes. One of the few who's been to Polewater and back since the Corruption spread. Scarred, quiet, rides a massive war-hawk named Gust.
-- **Dispatch Chief Yula** — Runs the Yatamon sorting hall from the old First Age bank vault. Bureaucratic but fiercely protective of her couriers. Keeps meticulous route logs.
+- **Postmaster General Miranda Escalante** — Female human. Oversees training of every knight in the brigade. Makes sure recruits understand and respect their oath to the postal corps. Honest, forthcoming, tries to help those around her. Personally leads an elite squad dispatched to relieve imperiled couriers. Quotes: "A letter isn't just a piece of paper... these things bind the island, they connect us."
+- **Gomber and Beeks** — Private eyes (male human and paunchy bird spirit). Hard-boiled, straight-shooting detective duo. Beeks pretty much just says "Beek!" but Gomber understands him completely. Officially part of the Brigade — track down mail fraud, apprehend package thieves, and thwart skullduggery within Yatamon city limits.
+- **Wayla** — River Master at Opal Falls (female elf). Oversees boat traffic and toll collection. Runs two gangs of dockworkers operating water-powered elevators. Also a Brigade member — proudly tells everyone that the very first postal box was established at the falls, made in honor of the river spirit Din.
+- **Lomi** — 13-year-old boy, younger brother of Ashi (a Courier Brigade knight). Dreams of being a postal knight. Eager but accident-prone — delivered a letter to the wrong address and is desperate to fix it before his sister finds out.
 
 ### Advantages
 | Type | Detail |
 |------|--------|
-| Position | Fort Harglo — formidable fortress controlling Gale Fields crossroads |
-| Force | Elite rapid-response courier squad, trained bird mounts |
-| Apparatus | First Age bank vault in Yatamon (working vault door, now HQ) |
-| Information | Island-wide postal network — couriers see and hear everything |
-| Beliefs | "Deliverance Through Delivery" — unshakeable institutional creed |
+| Position | Fort Harglo (Gale Fields crossroads fort), Yatamon bank HQ, brigade halls and outposts in most towns. Maintains the major roads that crisscross the Gale Fields. |
+| Force | Elite postal knights (rapid-response squad led by Escalante), trained bird mounts (large flightless birds preferred). Every knight has a home anywhere on the island — knock and food/shelter are theirs. |
+| Apparatus | First Age bank vault (package storage), the Flying Lantern (hot air balloon, powered by pink enchanted candles), Toggle minecarts and water flume for mountain delivery |
+| Specialization | Waxworks Division — founded by Lydia Starwright, the first Waxwork Rogue, who learned arcane wax/fire enchantments from a witch in the Land of Hot Water. Dedicated arcane rogues for the most perilous deliveries. Now practiced island-wide. |
+| Information | Island-wide postal network — couriers see and hear everything. Fish-mouth postal boxes in every settlement. Gomber & Beeks handle intelligence/fraud. |
+| Beliefs | "Deliverance Through Delivery" — unshakeable institutional creed. Sworn in through ceremonial oath. |
 
 ### Agenda
 1. Map safe routes through eastern corrupted territory using Ranger intel
@@ -236,207 +257,227 @@ Every coven interaction is colored by this rivalry. Goro Goros' Mikiko is secret
 4. Restore full delivery service to Polewater and eastern settlements
 5. Earn formal recognition as Obojima's civil defense force (not just mail carriers)
 
-### Obstacle
-The Rangers of the Greenward Path have the territory maps and safe-passage knowledge the Brigade needs, but the Rangers are overwhelmed and infected — sharing intel means publicly admitting the eastern front is collapsing.
+### Obstacles
+**Long-term:** The Rangers of the Greenward Path have the territory maps and safe-passage knowledge the Brigade needs, but the Rangers are overwhelmed and infected — sharing intel means publicly admitting the eastern front is collapsing. The established paths through the Brackwater Wetlands were washed away by the tsunami, and cross-country travel has proven too dangerous.
+
+**Immediate:** Imelda, a package thief in Yatamon, uses her floating fur-covered spirit companion Choofi (who can identify any object by smell alone) to raid unattended Brigade wagons for valuables. Gomber and Beeks are on her trail, but she keeps evading them. Every stolen package undermines public trust in the Brigade's sacred oath.
 
 ### Want
-Rangers' Corruption territory maps and safe-passage routes. Working First Age motorcycles or kei trucks. Toraf & Boulder's combat-experienced students as route escorts.
+Rangers' Corruption territory maps and safe-passage routes. Working First Age vehicles (motorcycles, kei trucks). Toraf & Boulder's combat-experienced students as route escorts. A way to reopen communication with Polewater.
 
 ### Tension
-Loosely allied with Rangers but the alliance is strained by pride on both sides. Fort Harglo's position in Fish Head Coven territory requires a delicate non-aggression arrangement.
+Loosely allied with Rangers but strained by pride on both sides. Fort Harglo sits in Fish Head Coven territory — requires a delicate non-aggression arrangement. Roads they maintain in the Gale Fields may trace the streets of ancient Lilywin — Tellu & Scale's territorial claim could complicate their road maintenance. Sea routes to the east have become impassable due to increased Corruption in the Shallows.
 
 ---
 
 ## 6. Cloud Cap Coven
 
 - **Type:** Mountain witch coven
-- **HQ:** Base of Mount Arbora
-- **Members:** Including Nuharo (disguised as Grimcloak)
+- **HQ:** Mount Arbora (exact location secret — said to have originated from a mountaintop village of a bygone era where the tradition of "hunting for lightning" was common practice)
+- **Leaders:** Unknown (coven leadership kept secret)
 - **Region:** Mount Arbora
 - **Traits:** Vigilant, Reclusive
 
 ### Agents
-- **Nuharo / "Grimcloak"** — Disguised operative who moves between mountain settlements gathering information. Nobody knows Grimcloak is a Cloud Cap witch. Suspicious of outsiders, protective of mountain spirits.
-- **Root** — Herb gatherer who tends the high-altitude gardens. Trades rare mountain fungi with travelers. Cheerful but evasive about coven matters. Found on mountain trails.
+- **Nuharo / "Grimcloak"** — 14-year-old human girl apprenticing with the Cloud Cap Coven. Disguises herself as "Grimcloak," an old male wizard with a short wild black beard and faded blue eyepatch. Runs a small arcana and curio shop in the cellar of Murgin's Tavern and Inn in the Graysteps. Established a reputation for reversing curses and hexes, particularly spirit-related ones. Speaks in hushed tones, sentences trail off. Entrepreneurial spirit led her to set up shop on her own — no one in the Graysteps knows her true identity. The only thing she and Grimcloak share is the eyepatch. Hates walking on stilts (common in the Graysteps) but has gotten quite good at it. Uses the Witch stat block.
+- **Sessra** — [NOT FROM SOURCE] Coven elder (female elf, ancient). Cloud Cap's senior weather-reader and keeper of the lightning rites. Lives at the coven's hidden high-altitude HQ where she monitors storm patterns and spirit migrations across the mountain. Rarely descends below the snowline. Communicates with lower-altitude members via a trained pair of storm hawks that carry knotted cord messages. Deeply suspicious of Lom & Salt's forge smoke drifting into sacred thermals. Nuharo's mentor — proud of the girl's initiative but worried she's too exposed in the Graysteps.
+- **Kettro** — [NOT FROM SOURCE] Trail warden (male nakudama). Patrols the mountain paths between the Graysteps, Toggle, and the upper slopes. Poses as a wandering mushroom forager selling rare high-altitude fungi to travelers — actually mapping who comes and goes on the mountain and why. Stocky, quiet, carries a walking staff carved with Cloud Cap ward-glyphs that hum faintly near corrupted ground. Recently noticed Lom & Salt students venturing further from the school grounds than usual, prospecting for new geothermal vents. Reports to Sessra.
 
 ### Advantages
 | Type | Detail |
 |------|--------|
-| Magic | 1 Almanac volume (Mount Arbora region) |
-| Specialization | Rare high-altitude herbs and fungi found nowhere else |
-| Information | Deep knowledge of mountain spirit pathways and sacred sites |
-| Subterfuge | Nuharo's network of disguised agents in mountain settlements |
+| Magic | 1 Almanac volume (Mount Arbora region) — one of Granny Prumple's seven volumes, jealously guarded |
+| Specialization | Rare high-altitude herbs and fungi found nowhere else on the island; lightning-hunting tradition |
+| Information | Deep knowledge of Mount Arbora's spirit pathways, sacred sites, and massive creatures that roam its slopes |
+| Position | Hidden mountain HQ in Obojima's most treacherous terrain — thick mists, crags, titanic creatures deter intruders |
+| Subterfuge | Nuharo embedded in the Graysteps as "Grimcloak," gathering intelligence from mountain travelers and spirit-troubled visitors |
 
 ### Agenda
-1. Intercept and decode the strange signals emanating from Mount Arbora's peak
-2. Acquire a working First Age radio from AHA to listen properly
-3. Determine if Lom & Salt's forge expansion threatens spirit sanctuaries
-4. Strengthen spirit-ward boundaries around Mount Arbora's sacred sites
-5. Discover the source of the peak signals before anyone else does
+1. Protect Mount Arbora's sacred spirit sanctuaries from encroachment — Lom & Salt's forge expansion near the summit is pushing into sacred ground
+2. Resist Fish Head Coven's escalating pressure to surrender their Almanac volume — every major coven wants what they don't have
+3. Monitor the Sky King's domain high on the mountain and the aeronaut craze from Sky Kite Valley — Rock Raley's teams are building flying machines to ascend to the peak, which could disturb sacred sites and the great beast
+4. Assess whether the Corruption threatens Mount Arbora — the mountain's rivers feed the whole island, and contaminated meltwater could spread devastation everywhere
+5. Maintain Nuharo's cover in the Graysteps and expand intelligence gathering across mountain settlements
 
-### Obstacle
-They lack the technology to intercept the signals — they need a First Age radio, and AHA has the only working ones. AHA would trade one, but wants access to the mountain's sacred sites in return, which Cloud Cap considers sacrilege.
+### Obstacles
+**Long-term:** Squeezed from all sides. Fish Head Coven constantly pressures for the Almanac volume and has the political weight to escalate. Lom & Salt's forge on the upper slopes needs geothermal vents that cut through spirit sanctuaries — and the school's ancient prestige makes it hard to oppose openly. AHA wants access to mountain sacred sites for research. Rock Raley's expedition to the Sky King threatens to bring swarms of outsiders into territory the coven has kept private for generations. Every faction wants something from Mount Arbora.
+
+**Immediate:** In the Graysteps, village elder Phent has a secret chamber in his cellar where he keeps a Corruption-tainted spirit captive. He's deliberately prodding it toward madness, and once it fully transforms into a demon, he plans to release it in the town of Toggle to foment fear and paranoia about spirits. Nuharo is operating her shop in the same village — in the cellar of the tavern next door — and has no idea. If Phent's demon escapes prematurely or if his scheme is exposed violently, Nuharo could be caught in the crossfire, and her cover as Grimcloak could unravel. Worse, an unleashed demon on Mount Arbora would be blamed on spirit activity — exactly the kind of crisis that could justify outsiders demanding access to Cloud Cap's sacred sites.
 
 ### Want
-A working First Age radio from AHA's archive. Also want Fish Head Coven to stop pressuring them for their Almanac volume.
+Fish Head Coven to stop pressuring for the Almanac volume. Lom & Salt to respect spirit sanctuary boundaries. Outsiders to stay away from the Sky King's domain. Intelligence about the Corruption's potential spread to mountain waterways.
 
 ### Tension
-Fish Head Coven constantly pressures for the Almanac volume. Lom & Salt school's forge expansion near the summit encroaches on sacred ground. The signals from the peak could change everything.
+Fish Head Coven's pressure for the Almanac is relentless — they already have two volumes and want all seven. Lom & Salt operates in Cloud Cap territory and trades sacred Guardian Sphere fragments to AHA, which Cloud Cap considers profane. The Deep Current seeks mountain access for reasons Cloud Cap doesn't understand — they unknowingly guard the approaches to Oghmai's prison inside Mount Arbora. Rock Raley's Sky King expedition could bring chaos to the peak. The Graysteps' anti-spirit culture makes it a hostile operating environment for Nuharo, and Phent's secret demon scheme is a ticking bomb.
 
 ---
 
 ## 7. Rangers of the Greenward Path
 
 - **Type:** Ranger organization
-- **Base:** Brackwater Wetlands
-- **Region:** Eastern Obojima
+- **Base:** Brackwater Wetlands (no fixed HQ — operate from outposts, camps, and allied locations across eastern Obojima)
+- **Region:** Eastern Obojima (Brackwater Wetlands, Shade Wood, eastern coastline)
 - **Traits:** Grim, Loyal
 
 ### Agents
-- **Warden Ashka** — Field commander, eastern Corruption front. Half her squad is infected. Makes brutal triage decisions daily. Trusted by Toraf & Boulder but hiding the true casualty count from island leadership.
-- **Scout Fennel** — Fastest scout in the wetlands. Runs messages between Ranger outposts and Toraf & Boulder's school. Young, idealistic, not yet infected. Carries hand-drawn Corruption spread maps.
+- **Stout Crumm** — Former Ranger (female elf). Short, stocky, and silent. Rumored to have been among the first Rangers to encounter the Corruption. Now a fixture at Murgin's Tavern in the Graysteps, where she communicates only by scrawling on a slate with chalk — won't speak beyond the occasional grunt or snort. An accomplished warrior who can be challenged for a sword school signet. Only talks about the Corruption to people who buy her a drink. What she saw broke something in her.
+- **Tetsuri** — Corrupted Ranger (male human). Was infected during the initial Corruption incursion and fled his village to avoid spreading it. Weakened and desperate, he made a deal with Venomous Rex — stonefish venom to slow the Corruption in exchange for service. Now hooked on the venom and acting as Rex's underling. Currently hiding in Toggle under a new identity, waiting for Holly Clintock to arrive so he can kidnap her and deliver her to Venomous Rex. Will befriend adventurers if he hears them mention Holly, the Pointue, or Duro's golem — then betray them when the time is right.
+- **Poli** — Grove Keeper (female dara). Ranger stationed at Roa Kala, the sacred dara forest. Records new glyphs found within the forest and protects glyph trees from howlers who chop them down for firewood. Spends almost all her time outdoors patrolling — the trees stretch for miles. Well-liked by the dara but less than friendly to outsiders after a lifetime of running woodcutters and bandits out of the forest.
+- **Master Boulder** — Former Ranger, now co-master of Toraf & Boulder's sword school (male human). Credits years as a Ranger of the Greenward Path for his fighting skill. Still driven by his ranger's oath to keep the Brackwater safe. Consummate survivalist — lives beyond the school in a wilderness camp. Speaks in a low voice, moves in a semi-crouch as though always about to pounce. "It's good to be scared — fear is the ultimate catalyst for action."
+- **Unnamed Ranger at Shade Wood camp** — A ranger suffering advanced Corruption who, alongside a local druid, has been single-handedly defending a refugee camp in the Shade Wood for over a month. Using the last vestiges of her strength to keep the camp safe from skeletonized howlers that pick off the weak at night. Believes it's only a matter of time before the woods overrun the camp.
+- **Rangers at AHA HQ** — Several rangers among the first to respond to the Corruption now live in AHA's laboratory units under constant care and observation. Researchers monitor them for signs of change but have found no cure or way to slow the spread.
 
 ### Advantages
 | Type | Detail |
 |------|--------|
-| Information | Detailed maps of Corruption spread, updated weekly |
-| Specialization | Firsthand knowledge of corrupted territory survival |
-| Alliances | Military alliance with Toraf & Boulder's sword school |
-| Resources | Field samples of corrupted flora and fauna |
+| Information | Detailed maps of Corruption spread, firsthand knowledge of corrupted territory survival |
+| Specialization | Vaulter's Axe — signature ranger tool designed for Brackwater exploration (tall haft for checking water depth and vaulting obstacles). Field expertise in tracking and fighting Wetlands monsters |
+| Alliances | Military alliance with Toraf & Boulder's sword school (Master Boulder is a former Ranger). Attempting supply runs to Polewater. Crowsworn coven is their closest magical ally |
+| Resources | Field samples of corrupted flora and fauna. Rangers embedded at AHA labs providing live Corruption data |
 | Conviction | Will not abandon the eastern front regardless of cost |
 
 ### Agenda
 1. Compare land Corruption samples with Mariners' Guild underwater samples
 2. Identify common origin point or vulnerability in the Corruption
 3. Develop a field-deployable countermeasure (working with Crowsworn potions)
-4. Cure infected rangers before the disease becomes irreversible
-5. Push the Corruption boundary back from populated areas
+4. Get relief supplies through to Polewater — roads destroyed by tsunami, cross-country travel too dangerous, marauders in the Wetlands
+5. Cure infected rangers before the disease becomes irreversible
+6. Push the Corruption boundary back from populated areas
 
-### Obstacle
-Many rangers are already infected. Publicly admitting this could cause island-wide panic and withdrawal of support. The Mariners' Guild has the underwater samples they need but demands Corruption territory escorts in return — sending infected rangers underwater risks spreading it.
+### Obstacles
+**Long-term:** The Rangers are losing. Many are already infected — publicly admitting the true casualty count could cause island-wide panic and withdrawal of support. The Mariners' Guild has underwater Corruption samples they need but demands Corruption territory escorts in return — sending infected rangers underwater risks spreading it. Spread impossibly thin: defending refugee camps in the Shade Wood, attempting supply runs to cut-off Polewater, providing live research data at AHA labs, and holding the Corruption boundary — all with dwindling healthy numbers.
+
+**Immediate:** Tetsuri, one of their own, has turned. A corrupted Ranger hiding in Toggle under a false identity, hooked on Venomous Rex's stonefish venom, waiting to kidnap Holly Clintock — the one engineer who can repair the Pointue submarine that the entire island's Corruption research depends on. The Rangers don't know they have a traitor. If Tetsuri succeeds, the Mariners' Guild loses Holly, the Pointue stays broken, the underwater expedition never launches, and the Corruption's source stays hidden. One compromised Ranger could unravel the whole fight.
 
 ### Want
-Mariners' Guild underwater Corruption samples. Courier Brigade military reinforcements. Crowsworn's experimental Corruption-resistance potions.
+Mariners' Guild underwater Corruption samples. Courier Brigade reinforcements and supply route escorts. Crowsworn's experimental Corruption-resistance potions. Healthy replacements — they're running out of people.
 
 ### Tension
-Most urgent faction — they're losing. Alliance with Toraf & Boulder is strong but both are exhausted. Crowsworn coven is their best magical ally but demands an Almanac volume trade with Fish Head as payment.
+Most urgent faction — they're losing. Alliance with Toraf & Boulder is strong but both are exhausted. Crowsworn coven is their best magical ally but demands an Almanac volume trade with Fish Head as payment. Master Boulder at Toraf & Boulder's school still holds his ranger's oath sacred — a bridge between the factions. Stout Crumm in the Graysteps carries intelligence about the early Corruption encounters that she won't share easily. Tetsuri's betrayal, once discovered, will shake the Rangers' trust in their own.
 
 ---
 
 ## 8. Lom & Salt's College of Arms
 
 - **Type:** Oldest sword school
-- **HQ:** Mount Arbora upper slopes near summit
+- **HQ:** Cut into the mountainside on the upper reaches of Mount Arbora — the most remote of the island's sword schools. Those who make the ascent have "taken the first step toward tempering the body and honing the will."
 - **Leaders:** Master Lom, Master Salt
 - **Region:** Mount Arbora
 - **Traits:** Traditional, Proud
 
 ### Agents
-- **Forge-Keeper Duro** — Master smith at the geothermal forge. Obsessed with First Age alloy compositions. Will talk anyone's ear off about metallurgy. Found at the forge, always covered in soot.
-- **Signet-Bearer Hara** — Senior student who carries the school's challenge signet. Travels to other schools delivering formal invitations to tournaments. Honorable to a fault, secretly admires Tellu & Scale's philosophy.
+- **Master Lom** — Co-master (female human). Rough but friendly manner, sarcastic humor. Lovingly calls new students "ingots" — a nod to the potential in everyone to become something greater. Known to take students with troubled pasts under her wing. Before dedicating herself to swordcraft, Lom had an unsavory past as part of a bandit company raiding Mount Arbora's foothills. Heard about a cache of prized swords at the College, led a raid to steal them — and was awed when Master Salt fought off the entire attack alone. Surrendered, pleaded to learn. Salt dismissed her. It took Lom years of making amends before she was accepted as Salt's disciple. Proved a talented warrior and smith. Together with Salt for six years.
+- **Master Salt** — Co-master (female elf). Grim-faced, born at the school among the din of hammers. Even as a child her forging skill was recognized. Tireless before the forge — when she starts a project, she dons her headphones and works to synth-pop. Legendary endurance as a duelist, prefers to win by outlasting opponents. Speaks rarely, usually in whispers. "Things will get hard. Endurance allows us to act without rashness — the source of all mistakes." Senior master, mentored Lom. In the absence of students, the pair communicate entirely through an ad hoc sign language they developed over the years.
 
 ### Advantages
 | Type | Detail |
 |------|--------|
-| Apparatus | Ancient forge heated by Mount Arbora's geothermal vents |
-| Specialization | Blade-crafting secrets predating the First Age |
-| Resources | Guardian Sphere fragments (ancient nakudama defensive tech) |
-| Lineage | Oldest martial institution on Obojima |
-| Position | Summit location gives strategic mountain control |
+| Apparatus | Ancient forge heated by Mount Arbora's geothermal vents; secret sanctum forge where worthy students forge their own blade under both masters' tutelage (two-week process) |
+| Specialization | Swordsmanship AND swordsmithing tradition dating to the early Nakudama Age (Second Age). Metal selection system: cobalt (spirit detection), copper (lightning resistance), lead (magic nullification), nickel (spellcasting focus), tungsten (object destruction), zinc (animal mastery). Blades coveted across the island — the masters of every other school wield Lom & Salt blades |
+| Renown | Oldest martial institution on Obojima. Every sword school master on the island carries one of their blades. Tellu & Scale each wield a blade forged by the other during their time here |
+| Position | Most remote school — the ascent itself serves as the first test. Cut into the mountainside near the summit |
+| Beliefs | Four virtues: "I drew my blade in defense." "I drew my blade to help another." "I kept a sword from an unworthy hand." "I did not draw my blade." Philosophy: "A sword is a thing of terrible potential." |
 
 ### Agenda
 1. Obtain First Age metallurgy manuals from AHA (airplane maintenance docs detail alloy compositions)
-2. Acquire Spirit Coal to fuel the forge to First Age temperatures
-3. Successfully combine First Age alloys with traditional blade techniques
+2. Acquire Spirit Coal from the Wandering Line's caboose to fuel the forge to temperatures needed for new alloys
+3. Successfully combine First Age alloys with traditional blade techniques and the glyph-folding methods pioneered by Duro and Garo in Toggle
 4. Forge a legendary blade worthy of the school's ancient reputation
 5. Present the blade at a grand tournament, re-establishing dominance over rival schools
 
-### Obstacle
-The metallurgy manuals are at AHA's archive and Broken Bird Airfield. AHA will trade them only for Guardian Sphere fragments — but those fragments are sacred to the school, and Cloud Cap Coven considers them part of the mountain's heritage.
+### Obstacles
+**Long-term:** The metallurgy manuals are split between AHA's archive and Broken Bird Airfield. AHA wants access to the mountain's sacred sites or rare artifacts in return — but operating in Cloud Cap Coven's territory means any trade that invites outsiders up the mountain risks coven retaliation. Spirit Coal requires entering the Wandering Line's caboose and striking a deal with the Coal Master — a trial few have survived. The school's remote position, once its greatest strength, now isolates it from the alliances forming across the island.
+
+**Immediate:** Lom's past is catching up. Air pirates have established a stronghold on the western slope of Mount Arbora, raiding settlements in the foothills — the same territory where Lom once operated as a bandit. Some of the pirates are former associates who know exactly who she was. If word spreads that one of the island's most respected swordmasters was once a raider, it could undermine the school's moral authority — the very foundation of their philosophy that only the worthy should wield their blades. Lom hasn't told Salt how close the pirates are, or that she recognizes faces among them.
 
 ### Want
-First Age metallurgy manuals (AHA has them). Spirit Coal (Wandering Line). Permission from Cloud Cap to expand the forge without violating spirit sanctuaries.
+First Age metallurgy manuals (AHA has them). Spirit Coal (Wandering Line caboose — requires dealing with the Coal Master). Collaboration with Toggle's forgemasters Duro and Garo on glyph-folding techniques. Cloud Cap Coven to acknowledge the school's ancient claim to its mountain position.
 
 ### Tension
-Operating in Cloud Cap Coven's territory. Trading Guardian Spheres to AHA would anger Cloud Cap. Canden & Moon's political ambitions threaten their "oldest school" prestige.
+Operating in Cloud Cap Coven's territory — any forge expansion risks sacred ground. Cloud Cap would oppose outsiders (AHA, researchers) being invited up the mountain for trades. Canden & Moon's political ambitions threaten their "oldest school" prestige — but Canden & Moon's students lack the character Lom & Salt demand. Toraf & Boulder respects them but is too consumed by the Corruption front to engage. Tellu & Scale trained here and carry their blades — a connection that could be leveraged or exploited.
 
 ---
 
 ## 9. Canden & Moon's School
 
 - **Type:** Largest sword school
-- **HQ:** Ornate hexagonal structure in Yatamon City
+- **HQ:** Ornate hexagonal structure built with a First Age aesthetic — takes up an entire city block in the heart of Yatamon, once a First Age boarding school. Manicured garden doubles as training ground. Attached dormitory for students.
 - **Leaders:** Master Canden, Master Moon
 - **Region:** Gift of Shuritashi (Yatamon)
-- **Traits:** Ambitious, Polished
+- **Traits:** Disciplined, Influential
 
 ### Agents
-- **Instructor Venn** — Public face of the school, runs recruitment demonstrations in Yatamon's plazas. Charismatic, politically savvy, secretly negotiating with Dawn Blossom Guild for coin recognition.
-- **Student Captain Reiko** — Leads the school's patrol squad that "volunteers" for city watch duty. Actually trying to catch Goro Goros taggers. Frustrated, competitive, wants a real fight.
+- **Master Canden** — Co-master (male human). Full name Carmine Canden. Stern face and measured speech that intimidates new students — but in truth an exceedingly patient teacher who sees the best in his pupils. Not a coddler: mastery comes with work and dedication. Teaches that skill without purpose is meaningless — service to others is core curriculum. Found most mornings at dawn practicing forms beneath his beloved maple tree in the garden courtyard. Utterly devoted to the school, which he considers his greatest accomplishment.
+- **Master Moon** — Co-master (female human). The embodiment of elegance — her presence is imposing, her movements so majestic she appears otherworldly at times. Grace and precision with a sword likely unrivaled on the island — even Canden believes hers to be the most technically competent hands he's ever seen. Quick to laugh, passion for reading and reciting humorous poetry. Selects students for monster-slaying missions when threats range close to Yatamon.
 
 ### Advantages
 | Type | Detail |
 |------|--------|
-| Members | Largest student body on the island |
-| Position | Prime location in Yatamon, Obojima's largest city |
-| Popularity | Political connections to city governance |
-| Apparatus | Extensive First Age vinyl record collection used for training rhythms |
-| Wealth | Wealthy patrons fund the school's operations |
+| Members | Largest student body on the island — so popular that most Obojimans have "at least spent a summer" here. Students bolster the city watch and escort AHA researchers into subway tunnels |
+| Position | Prime hexagonal structure in Yatamon's heart. Training ground, dormitory, community service hub |
+| Renown | Masters have no political ambitions but wield tremendous political influence — their reputation for wisdom and producing fine warriors makes their counsel highly sought after. Universally well-regarded, unblemished by controversy |
+| Specialization | Master technique "The Inscrutable Sword" — emphasizes swiftness and keeping the opponent unsure whether one is attacking or defending. Dance-like movements allow strikes from any direction or turning aside unblockable attacks |
+| Beliefs | Motto: "Right conduct and proper form in every situation." Four acts of service required before students may challenge the masters: guard duty (city watch), judging contests, monster threats, escorting AHA researchers into subway tunnels |
 
 ### Agenda
-1. Expel Goro Goros from Yatamon — their graffiti defaces the hexagonal hall
-2. Win a decisive public tournament victory over a rival school
-3. Secure Dawn Blossom Guild recognition (school signet on Gold Flower coins)
-4. Establish Canden & Moon as Obojima's official civil defense martial academy
-5. Absorb or marginalize the other three sword schools
+1. Address the Goro Goros problem — their magical graffiti defaces the school and mocks the institution publicly
+2. Demonstrate the school's value through expanded community service — monster patrols, city watch, subway escorts
+3. Win a decisive public tournament victory over a rival school to reaffirm their standing
+4. Ensure the school's integrity remains unblemished as the island's security situation deteriorates
+5. Fulfill Master Canden's vision: every student who leaves this school should serve Obojima, not just themselves
 
-### Obstacle
-The Goro Goros street gang openly mocks them, and their magical graffiti resists removal. Violent crackdown would damage the school's polished reputation. They need to outmaneuver the gang, not overpower them.
+### Obstacles
+**Long-term:** The school's greatest strength — its spotless reputation — is also its greatest vulnerability. The Goro Goros' magical graffiti openly mocks them and resists removal, making the institution look powerless. A violent crackdown would destroy the school's image of disciplined restraint. Meanwhile, Toraf & Boulder and the Rangers are fighting and dying in the east — Canden & Moon's students have numbers but lack real combat experience. Sending untrained students to the front could be a massacre. Doing nothing looks cowardly. The masters' refusal to play politics means other factions use their influence without their consent.
+
+**Immediate:** Students escorting AHA researchers into the subway tunnels beneath Yatamon are encountering increasingly dangerous conditions as Dr. Frond's dig pushes deeper into the undercity. Collapsed passages, hostile spirits, and creatures that dwell in the tunnels have injured several students. Master Moon has been personally assessing the threats, but the deeper excavations — steered by Krocius toward passages the school knows nothing about — are opening areas that no one has entered in centuries. A student going missing or being killed in the tunnels would force the masters to cut off AHA's escort arrangement, crippling Frond's dig and exposing a rift between two of Yatamon's most important institutions.
 
 ### Want
-Goro Goros gone from Yatamon. A tournament victory (needs a rival school to accept challenge). Dawn Blossom's political endorsement.
+The Goro Goros to stop defacing the school. A rival school willing to accept a formal tournament challenge. Recognition of the school's community service record — not political endorsement, but acknowledgment that their students serve Obojima. Safe passage through the subway tunnels for their students escorting AHA.
 
 ### Tension
-Goro Goros' Mikiko is secretly Fish Head trained — escalation could draw coven involvement. Toraf & Boulder views their political ambitions as insulting while real fighters die in the east. Lom & Salt considers them pretenders.
+Goro Goros' Mikiko is secretly a budding witch making pigment potions for the gang's magic ink — she's also a Young Steward who feels bad about the vandalism but wants to fit in and thinks Tatsu is "totally cool." If Fish Head Coven discovers she's using potion-brewing knowledge for graffiti, it could escalate far beyond a street gang problem. Toraf & Boulder views the school as privileged and untested while real fighters die. Lom & Salt respects the masters' skill but considers the school's emphasis on form over substance misguided. The subway escort missions quietly make them AHA's most important local ally in Yatamon — a relationship neither institution has formalized but both depend on.
 
 ---
 
 ## 10. Toraf & Boulder's School
 
 - **Type:** Practical combat sword school
-- **HQ:** Waterlogged plain in Brackwater Wetlands
+- **Full Name:** Toraf & Boulder's School of Guts & Grit
+- **HQ:** A squat, square tower built of stone on the southernmost point of the Pale Hills, overlooking the Brackwater Wetlands. Once a hunting lodge in the days of the nakudama monarchy. Field training over drills — even the greenest students are expected on expeditions.
 - **Leaders:** Master Toraf, Master Boulder
-- **Region:** Brackwater Wetlands
+- **Region:** Brackwater Wetlands / Pale Hills
 - **Traits:** Battle-Hardened, Blunt
 
 ### Agents
-- **Master Boulder** — Personally leads patrols into corrupted territory. Enormous, speaks in short sentences, judges people by what they do not what they say. Found at the training grounds or the front line.
-- **Quartermaster Jig** — Manages supplies and salvage from a nearby submerged First Age garage. Scrounges everything — wrenches, ratchets, car jacks repurposed as training equipment. Practical, never wastes anything.
+- **Master Toraf** — Co-master (male human). Barking way of speaking — possesses but one volume: loud. Enormous frame clad in onyx black armor and helm — looks like a monster from the Wetlands. Not the nurturing sort: his bellows boom through the school as he rips students' technique to shreds. Calls students who demonstrate "a special kind of stupid" his "hangnails." Lives at the school. Has learned at every sword school on the island and remains convinced the other masters are too content with the theory of fighting. Previously worked as armed escort for merchants, earning the nickname "The Door" for filling doorways entirely with his bulk. Students under his tutelage live at the school and accompany him into the Wetlands to aid wayward travelers.
+- **Master Boulder** — Co-master (male human). Consummate survivalist. Lives outside the school in a nearby wilderness camp. Credits years as a Ranger of the Greenward Path for his fighting skill — still driven by his ranger's oath to keep the region safe. Restless manner, moving in a semi-crouch as though always a moment from pouncing on a foe just out of sight. Speaks in a low voice that forces students to lean in to hear him. In rare still moments, hones his sword edge with a whetstone. "It's good to be scared — fear is the ultimate catalyst for action." His students camp in the wilderness and are led on expeditions to track the most dangerous monsters in the Wetlands.
 
 ### Advantages
 | Type | Detail |
 |------|--------|
-| Force | Battle-hardened students with real combat experience against Corruption |
-| Alliances | Military alliance with Rangers of the Greenward Path |
-| Apparatus | Salvaged First Age garage tools repurposed for combat training |
-| Conviction | Will not retreat from the eastern front |
-| Specialization | Only school with actual monster-fighting experience |
+| Force | Battle-hardened students with real combat experience against Wetlands monsters and Corruption. Only school where field training IS the curriculum |
+| Alliances | Military alliance with Rangers of the Greenward Path — Master Boulder is a former Ranger and still holds his oath. Both factions operate in the same territory |
+| Specialization | Master technique "Grim Skill Set" aka "The Striking Snake" — three strikes from the same guard position, obscuring the target (head, torso, or leg) until the last moment. Developed specifically to counter Brackwater monsters. Students master it by fighting those monsters |
+| Conviction | Will not retreat from the eastern front. The previous masters died of a Wetlands sickness and summoned Toraf and Boulder as successors — they carry that weight |
+| Position | Stone tower on the Pale Hills gives high ground overlooking the Wetlands — natural watchtower and defensible position |
 
 ### Agenda
-1. Request reinforcements from Courier Brigade and Canden & Moon
-2. Secure uncorrupted fresh water — their wells are turning brackish
-3. Establish a defensible forward position closer to the Corruption boundary
-4. Train enough students to rotate front-line shifts without burning out
-5. Hold the line until Rangers find a cure
+1. Hold the Brackwater against the Corruption's westward spread — patrol, protect refugees, fight corrupted creatures
+2. Send student expeditions to Polewater to help rebuild after the tsunami — encountering Corruption, refugees, and Courier Brigade trouble en route
+3. Train enough students to rotate front-line shifts without burning out
+4. Secure uncorrupted fresh water — the Wetlands are being poisoned
+5. Get reinforcements from anywhere — Courier Brigade, Canden & Moon, anyone willing to fight
 
-### Obstacle
-Asking for help means admitting the east is losing. Canden & Moon has the numbers but their students lack real combat experience — sending them to the front unprepared could be a massacre.
+### Obstacles
+**Long-term:** Asking for help means admitting the east is losing. Canden & Moon has the numbers but their students lack real combat experience — sending them to the Wetlands unprepared could be a massacre. The Rangers are their closest allies but both are exhausted and depleted. The previous masters died of a Wetlands sickness — a grim precedent as the Corruption poisons the same territory. The masters are NOT friends: bound only by mutual contempt for the other schools. Their sparring demonstrations inevitably escalate to real blows. If one falls to the Corruption or exhaustion, the other won't carry the school alone out of loyalty — he'll do it out of spite, and that's a thin thread.
+
+**Immediate:** A traveler has collapsed on the school steps, managing only to whisper "Hakumon's" before falling unconscious. Vespoma — creatures with enchanting speech — have overrun Hakumon's Ramen Shop in the Wetlands, tormenting patrons. Master Toraf has assembled students for a rescue mission. Meanwhile, a student expedition sent to Polewater hasn't reported back on schedule — the route through the Wetlands has become more treacherous as Corruption-warped creatures stalk the paths. Boulder wants to go after the missing students personally, but leaving the school undefended means trusting Toraf alone with every remaining student. Neither master trusts the other that far.
 
 ### Want
-Courier Brigade soldiers. Canden & Moon students (trained up quickly). Clean water source. Crowsworn's experimental potions for infected allies.
+Courier Brigade soldiers. Canden & Moon students (trained up fast). Clean water source. Crowsworn's experimental Corruption-resistance potions. Their missing student expedition returned safely.
 
 ### Tension
-Most militarily exposed faction. Respects Rangers deeply but both are exhausted. Contempt for Canden & Moon's political games while real people die. Would accept any help, from any faction, no questions asked.
+Most militarily exposed faction. Respects Rangers deeply — Boulder still holds his ranger's oath — but both are running on fumes. Contempt for Canden & Moon's privileged, untested students, though they'd take any warm body willing to fight. Would accept help from any faction, no questions asked. The masters' volatile relationship is held together by necessity — one crack and the school splits. Hakumon's ramen shop crisis and the missing Polewater expedition are forcing them to divide already-thin resources.
 
 ---
 
