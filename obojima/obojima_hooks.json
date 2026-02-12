@@ -1,0 +1,1856 @@
+[
+  {
+    "id": "hook-bT1MqTB-",
+    "type": "rescue",
+    "rumor": "A midwife from Polewater went into the Shoom to gather herbs and hasn't returned for three days",
+    "truth": "The midwife stumbled into Voraro's territory and is being held captive, her life force slowly drained",
+    "sourceNpcId": "npc-Y5UmNWQ0",
+    "targetLocationId": "dungeon-bqafTLDH",
+    "missingNpcId": "npc-1538sWHN",
+    "involvedNpcIds": [
+      "npc-Y5UmNWQ0",
+      "npc-1538sWHN"
+    ],
+    "involvedLocationIds": [
+      "dungeon-bqafTLDH",
+      "settlement-_N0PVVNb"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Gold flowers",
+    "status": "available"
+  },
+  {
+    "id": "hook-ErSg_Cn4",
+    "type": "rescue",
+    "rumor": "A pearl diver was captured by fish folk near the Coral Throne",
+    "truth": "The Lionfish King is holding the diver as a bargaining chip to negotiate with surface dwellers",
+    "sourceNpcId": "npc-fZWJ7gZi",
+    "targetLocationId": "dungeon-ic32fqpx",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-fZWJ7gZi"
+    ],
+    "involvedLocationIds": [
+      "dungeon-ic32fqpx",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Rare potion ingredients",
+    "status": "available"
+  },
+  {
+    "id": "hook-m3_CFNVd",
+    "type": "rescue",
+    "rumor": "A Courier Brigade rider never arrived at Toggle with an urgent message",
+    "truth": "The courier was swept off the mountain path by corrupted winds and is trapped in a cave",
+    "sourceNpcId": "npc-dc-k4mKz",
+    "targetLocationId": "dungeon-qTQ51c_U",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-dc-k4mKz"
+    ],
+    "involvedLocationIds": [
+      "dungeon-qTQ51c_U",
+      "settlement-kCsR6cxU"
+    ],
+    "involvedFactionIds": [
+      "faction-PbhkQa-n"
+    ],
+    "reward": "First Age artifact",
+    "status": "available"
+  },
+  {
+    "id": "hook-mZ4JMM0a",
+    "type": "rescue",
+    "rumor": "A child from Okiri wandered into the Crawling Canopy chasing a glowing butterfly",
+    "truth": "The child found a First Age chamber and is protected by ancient guardians but cannot leave",
+    "sourceNpcId": "npc-RCK3jIFI",
+    "targetLocationId": "dungeon-pNKQj3ws",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-RCK3jIFI"
+    ],
+    "involvedLocationIds": [
+      "dungeon-pNKQj3ws",
+      "settlement-37cK4TIX"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Magical tea blend",
+    "status": "available"
+  },
+  {
+    "id": "hook-sGW9Gilh",
+    "type": "rescue",
+    "rumor": "An AHA ranger went to investigate strange lights in the wetlands and hasn't reported back",
+    "truth": "Ranger Kesso is imprisoned in the Shoom by Voraro, who uses him as bait for more captives",
+    "sourceNpcId": "npc-bzLFEADX",
+    "targetLocationId": "dungeon-bqafTLDH",
+    "missingNpcId": "npc-8fPHQ6J5",
+    "involvedNpcIds": [
+      "npc-bzLFEADX",
+      "npc-8fPHQ6J5"
+    ],
+    "involvedLocationIds": [
+      "dungeon-bqafTLDH",
+      "settlement-_N0PVVNb"
+    ],
+    "involvedFactionIds": [
+      "faction-o3Wd4Xcu"
+    ],
+    "reward": "Happy Joy Cake recipe",
+    "status": "available"
+  },
+  {
+    "id": "hook-gxD2BLeS",
+    "type": "rescue",
+    "rumor": "A tea merchant disappeared on the road between Hogstone and Yatamon",
+    "truth": "Bandits ambushed the merchant and are holding them in a mountain hideout for ransom",
+    "sourceNpcId": "npc-KPjlobsT",
+    "targetLocationId": "dungeon-DUsbpKcn",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-KPjlobsT"
+    ],
+    "involvedLocationIds": [
+      "dungeon-DUsbpKcn",
+      "settlement-VuGghMRN"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Custom forged weapon",
+    "status": "available"
+  },
+  {
+    "id": "hook-hIpSnNZx",
+    "type": "rescue",
+    "rumor": "Granny Yuzu's apprentice went to retrieve an artifact from beneath the city and hasn't returned",
+    "truth": "The apprentice activated a First Age defense system in the subway tunnels",
+    "sourceNpcId": "npc-4Zm92bRy",
+    "targetLocationId": "dungeon-yIL6pItd",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-4Zm92bRy"
+    ],
+    "involvedLocationIds": [
+      "dungeon-yIL6pItd",
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Diving equipment",
+    "status": "available"
+  },
+  {
+    "id": "hook-v_nRKn8b",
+    "type": "rescue",
+    "rumor": "A spirit fisherman from Uluwa vanished while fishing in deep waters",
+    "truth": "The fisherman discovered an underwater passage and is trapped by a collapsed entrance",
+    "sourceNpcId": "npc-HH5c1QZG",
+    "targetLocationId": "dungeon-SgXJriDd",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-HH5c1QZG"
+    ],
+    "involvedLocationIds": [
+      "dungeon-SgXJriDd",
+      "settlement-e0MHafVM"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Spirit fish",
+    "status": "available"
+  },
+  {
+    "id": "hook-Jgckkj5K",
+    "type": "escort",
+    "rumor": "Someone needs to transport a crate of Pointue mushrooms past fish folk territory to Tidewater",
+    "truth": "The mushrooms are actually a cover for smuggling a First Age power cell that Humble Utzu wants",
+    "sourceNpcId": "npc-oDH2q4ST",
+    "targetLocationId": "settlement-qaroUeGg",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-oDH2q4ST"
+    ],
+    "involvedLocationIds": [
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Sand sculpture",
+    "status": "available"
+  },
+  {
+    "id": "hook-5wzkter8",
+    "type": "escort",
+    "rumor": "The mushroom harvest from Matango needs armed escort to the Yatamon market",
+    "truth": "Chogo's gang plans to hijack the shipment and sell it on the black market",
+    "sourceNpcId": "npc-n956iuui",
+    "targetLocationId": "settlement-HmoL5chU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-n956iuui"
+    ],
+    "involvedLocationIds": [
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Healing at Hogstone",
+    "status": "available"
+  },
+  {
+    "id": "hook-x_0FXTgD",
+    "type": "escort",
+    "rumor": "The AHA needs guides for an expedition into the corrupted southern marshes",
+    "truth": "The AHA suspects the corruption has a central source they want to locate and study",
+    "sourceNpcId": "npc-nRXe6fAp",
+    "targetLocationId": "dungeon-qooARykv",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-nRXe6fAp"
+    ],
+    "involvedLocationIds": [
+      "dungeon-qooARykv",
+      "settlement-_N0PVVNb"
+    ],
+    "involvedFactionIds": [
+      "faction-o3Wd4Xcu"
+    ],
+    "reward": "Gold flowers",
+    "status": "available"
+  },
+  {
+    "id": "hook-HTjtUPQa",
+    "type": "escort",
+    "rumor": "A nervous scholar needs bodyguards to reach the Coral Throne for research",
+    "truth": "Dr. Frond believes the Coral Throne holds proof that the Corruption is artificial",
+    "sourceNpcId": "npc-BpTGNnjY",
+    "targetLocationId": "dungeon-ic32fqpx",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-BpTGNnjY"
+    ],
+    "involvedLocationIds": [
+      "dungeon-ic32fqpx",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Rare potion ingredients",
+    "status": "available"
+  },
+  {
+    "id": "hook-tJ-uag8W",
+    "type": "escort",
+    "rumor": "Captain Clintock needs a crew to escort a shipment of alloys down from Toggle to the coast",
+    "truth": "The alloys are needed to repair ancient machinery that Holly discovered",
+    "sourceNpcId": "npc-xWzF8Cq8",
+    "targetLocationId": "settlement-kCsR6cxU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-xWzF8Cq8"
+    ],
+    "involvedLocationIds": [
+      "settlement-kCsR6cxU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "First Age artifact",
+    "status": "available"
+  },
+  {
+    "id": "hook-73lvOUT-",
+    "type": "escort",
+    "rumor": "A delegation from Uluwa needs protection traveling to Yatamon for trade negotiations",
+    "truth": "The delegation carries a spirit artifact that certain humans would kill to possess",
+    "sourceNpcId": "npc-FNsM0Gsw",
+    "targetLocationId": "settlement-HmoL5chU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-FNsM0Gsw"
+    ],
+    "involvedLocationIds": [
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [
+      "faction-PbhkQa-n"
+    ],
+    "reward": "Magical tea blend",
+    "status": "available"
+  },
+  {
+    "id": "hook-tI2wdRKS",
+    "type": "escort",
+    "rumor": "Mama Amala needs someone to escort her to a remote shrine in the mountains",
+    "truth": "The shrine contains a sealed evil that Mama Amala must re-bind before the next full moon",
+    "sourceNpcId": "npc--8WDPwAp",
+    "targetLocationId": "dungeon-DUsbpKcn",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc--8WDPwAp"
+    ],
+    "involvedLocationIds": [
+      "dungeon-DUsbpKcn",
+      "settlement-VuGghMRN"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Happy Joy Cake recipe",
+    "status": "available"
+  },
+  {
+    "id": "hook-EWEh6qTH",
+    "type": "escort",
+    "rumor": "A wounded AHA ranger needs safe passage from the Gale Fields back to Yatamon",
+    "truth": "The ranger carries intelligence about a new corruption outbreak that enemies want suppressed",
+    "sourceNpcId": "npc-sgrG_DsX",
+    "targetLocationId": "settlement-HmoL5chU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-sgrG_DsX"
+    ],
+    "involvedLocationIds": [
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [
+      "faction-o3Wd4Xcu"
+    ],
+    "reward": "Custom forged weapon",
+    "status": "available"
+  },
+  {
+    "id": "hook-5jAKDd07",
+    "type": "mystery",
+    "rumor": "The legendary Moonpearl has been stolen from Tidewater's shrine",
+    "truth": "Mr. Basingstoke orchestrated the theft to use the pearl in a ritual for his patron",
+    "sourceNpcId": "npc-4gAs3NJJ",
+    "targetLocationId": "settlement-qaroUeGg",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-4gAs3NJJ"
+    ],
+    "involvedLocationIds": [
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Diving equipment",
+    "status": "available"
+  },
+  {
+    "id": "hook-NWsDlCnD",
+    "type": "mystery",
+    "rumor": "The Corruption is spreading faster than natural, someone might be feeding it",
+    "truth": "Voraro the Parasite is channeling energy from captured victims to accelerate the corruption",
+    "sourceNpcId": "npc-DsRCvaff",
+    "targetLocationId": "dungeon-bqafTLDH",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-DsRCvaff"
+    ],
+    "involvedLocationIds": [
+      "dungeon-bqafTLDH",
+      "settlement-_N0PVVNb"
+    ],
+    "involvedFactionIds": [
+      "faction-o3Wd4Xcu"
+    ],
+    "reward": "Spirit fish",
+    "status": "available"
+  },
+  {
+    "id": "hook-QuFgIk5V",
+    "type": "mystery",
+    "rumor": "Vorian's masterwork sand sculpture was sabotaged the night before the festival",
+    "truth": "Great Ferek's apprentice did it out of jealousy, but Ferek himself is horrified",
+    "sourceNpcId": "npc-CyroueQy",
+    "targetLocationId": "settlement-qaroUeGg",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-CyroueQy"
+    ],
+    "involvedLocationIds": [
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Sand sculpture",
+    "status": "available"
+  },
+  {
+    "id": "hook-crRVXKV2",
+    "type": "mystery",
+    "rumor": "Three different cooks in Yatamon have reported their secret ingredients going missing",
+    "truth": "A mischievous spirit is collecting the ingredients to recreate a legendary First Age dish",
+    "sourceNpcId": "npc-dVZGtYSC",
+    "targetLocationId": "settlement-HmoL5chU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-dVZGtYSC"
+    ],
+    "involvedLocationIds": [
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Healing at Hogstone",
+    "status": "available"
+  },
+  {
+    "id": "hook-G3qFd8yq",
+    "type": "mystery",
+    "rumor": "People near the hot springs are having identical strange visions of a burning city",
+    "truth": "The springs are channeling memories from a First Age catastrophe sealed beneath Hogstone",
+    "sourceNpcId": "npc-t6KPs0Xb",
+    "targetLocationId": "settlement-VuGghMRN",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-t6KPs0Xb"
+    ],
+    "involvedLocationIds": [
+      "settlement-VuGghMRN"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Gold flowers",
+    "status": "available"
+  },
+  {
+    "id": "hook-78pbWRPF",
+    "type": "mystery",
+    "rumor": "Ships are disappearing near the coast with no wreckage found",
+    "truth": "The Lionfish King's forces are capturing ships and dragging them to an underwater base",
+    "sourceNpcId": "npc-4gAs3NJJ",
+    "targetLocationId": "dungeon-ic32fqpx",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-4gAs3NJJ"
+    ],
+    "involvedLocationIds": [
+      "dungeon-ic32fqpx",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Rare potion ingredients",
+    "status": "available"
+  },
+  {
+    "id": "hook-vp2wu85t",
+    "type": "mystery",
+    "rumor": "Someone has been leaving strange glowing symbols on buildings in Yatamon at night",
+    "truth": "Mikiko is sleepwalking and casting spells unconsciously, channeling First Age magic",
+    "sourceNpcId": "npc-FHVF-_HA",
+    "targetLocationId": "settlement-HmoL5chU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-FHVF-_HA"
+    ],
+    "involvedLocationIds": [
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "First Age artifact",
+    "status": "available"
+  },
+  {
+    "id": "hook-7S2DjivF",
+    "type": "mystery",
+    "rumor": "The mycelium network in Matango has stopped growing, and mushrooms are dying",
+    "truth": "A buried First Age device is emitting energy that poisons the fungal network",
+    "sourceNpcId": "npc-XSrwxfg1",
+    "targetLocationId": "dungeon-YN2lLblj",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-XSrwxfg1"
+    ],
+    "involvedLocationIds": [
+      "dungeon-YN2lLblj",
+      "settlement-CbSD55DO"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Magical tea blend",
+    "status": "available"
+  },
+  {
+    "id": "hook-NMvW2TBO",
+    "type": "mystery",
+    "rumor": "Travelers between Okiri and Polewater report hearing singing from empty fields",
+    "truth": "A trapped spirit in an old well is calling for help, growing weaker each day",
+    "sourceNpcId": "npc-GXi33zy2",
+    "targetLocationId": "settlement-37cK4TIX",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-GXi33zy2"
+    ],
+    "involvedLocationIds": [
+      "settlement-37cK4TIX"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Happy Joy Cake recipe",
+    "status": "available"
+  },
+  {
+    "id": "hook-Z2bkKX8y",
+    "type": "mystery",
+    "rumor": "Gomber has been hired to investigate why the trolley keeps breaking down at the same spot",
+    "truth": "A First Age subway station beneath the tracks is interfering with surface mechanisms",
+    "sourceNpcId": "npc-4CJuWe6L",
+    "targetLocationId": "settlement-HmoL5chU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-4CJuWe6L"
+    ],
+    "involvedLocationIds": [
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Custom forged weapon",
+    "status": "available"
+  },
+  {
+    "id": "hook-aRHL2RgB",
+    "type": "fetch",
+    "rumor": "Rokoko needs a specific bioluminescent mushroom that only grows in the deep caves near Toggle",
+    "truth": "The mushroom is actually a symbiotic organism with a cave spirit who must be negotiated with",
+    "sourceNpcId": "npc-uziFT03_",
+    "targetLocationId": "dungeon-qTQ51c_U",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-uziFT03_"
+    ],
+    "involvedLocationIds": [
+      "dungeon-qTQ51c_U",
+      "settlement-kCsR6cxU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Diving equipment",
+    "status": "available"
+  },
+  {
+    "id": "hook-PZclYk9I",
+    "type": "fetch",
+    "rumor": "Holly Clintock needs a special alloy from the deep mines of Toggle for a critical repair",
+    "truth": "The alloy vein is in territory claimed by a territorial rock spirit",
+    "sourceNpcId": "npc-dc-k4mKz",
+    "targetLocationId": "settlement-kCsR6cxU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-dc-k4mKz"
+    ],
+    "involvedLocationIds": [
+      "settlement-kCsR6cxU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Spirit fish",
+    "status": "available"
+  },
+  {
+    "id": "hook-Skf-7P9z",
+    "type": "fetch",
+    "rumor": "Someone is willing to pay handsomely for Laughing Moss from the Crawling Canopy",
+    "truth": "The moss is needed for an antidote to a rare poison that is slowly killing a village elder",
+    "sourceNpcId": "npc-GXi33zy2",
+    "targetLocationId": "dungeon-pNKQj3ws",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-GXi33zy2"
+    ],
+    "involvedLocationIds": [
+      "dungeon-pNKQj3ws",
+      "settlement-37cK4TIX"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Sand sculpture",
+    "status": "available"
+  },
+  {
+    "id": "hook-VAsPn2RO",
+    "type": "fetch",
+    "rumor": "Orble the Fisher needs someone to catch a spirit fish from the deepest pool in Uluwa",
+    "truth": "The spirit fish contains a message from an ancient water spirit about coming danger",
+    "sourceNpcId": "npc-EI0C3N4Y",
+    "targetLocationId": "settlement-e0MHafVM",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-EI0C3N4Y"
+    ],
+    "involvedLocationIds": [
+      "settlement-e0MHafVM"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Healing at Hogstone",
+    "status": "available"
+  },
+  {
+    "id": "hook-1IkIkHMu",
+    "type": "fetch",
+    "rumor": "Chisuay needs a specific mineral spring water from a cave guarded by corrupted creatures",
+    "truth": "The water is the only thing that can suppress his oni nature during the solstice",
+    "sourceNpcId": "npc-oyvdEQh2",
+    "targetLocationId": "dungeon-DUsbpKcn",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-oyvdEQh2"
+    ],
+    "involvedLocationIds": [
+      "dungeon-DUsbpKcn",
+      "settlement-VuGghMRN"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Gold flowers",
+    "status": "available"
+  },
+  {
+    "id": "hook-HpmsC8CH",
+    "type": "fetch",
+    "rumor": "Dr. Frond needs coral samples from the reef that only grows near the Corrupted Coastline",
+    "truth": "The coral contains traces of First Age bio-engineering that could explain the Corruption",
+    "sourceNpcId": "npc-LqDjDsn-",
+    "targetLocationId": "dungeon-M42RS8S-",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-LqDjDsn-"
+    ],
+    "involvedLocationIds": [
+      "dungeon-M42RS8S-",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [
+      "faction-o3Wd4Xcu"
+    ],
+    "reward": "Rare potion ingredients",
+    "status": "available"
+  },
+  {
+    "id": "hook-xxO5dtR0",
+    "type": "fetch",
+    "rumor": "Master Hu's legendary recipe requires honey from spirit bees in the Gale Fields",
+    "truth": "The spirit bees are dying and their hive is the last one, making this a conservation mission too",
+    "sourceNpcId": "npc-H5JPh3qQ",
+    "targetLocationId": "dungeon-Jv9NpCZZ",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-H5JPh3qQ"
+    ],
+    "involvedLocationIds": [
+      "dungeon-Jv9NpCZZ",
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "First Age artifact",
+    "status": "available"
+  },
+  {
+    "id": "hook-Ywx9mH-s",
+    "type": "fetch",
+    "rumor": "Madame Porcini needs a rare truffle that only grows in the ruins beneath Matango",
+    "truth": "The truffle is growing on a First Age power conduit and removing it may have consequences",
+    "sourceNpcId": "npc-p3GXX0bu",
+    "targetLocationId": "dungeon-YN2lLblj",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-p3GXX0bu"
+    ],
+    "involvedLocationIds": [
+      "dungeon-YN2lLblj",
+      "settlement-CbSD55DO"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Magical tea blend",
+    "status": "available"
+  },
+  {
+    "id": "hook-9k5X3m8W",
+    "type": "fetch",
+    "rumor": "A blacksmith in Toggle needs fire-iron ore from a volcanic vent near the coast",
+    "truth": "The volcanic vent is actually a slumbering fire spirit who trades ore for offerings",
+    "sourceNpcId": "npc-co3dDzP1",
+    "targetLocationId": "dungeon-M42RS8S-",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-co3dDzP1"
+    ],
+    "involvedLocationIds": [
+      "dungeon-M42RS8S-",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Happy Joy Cake recipe",
+    "status": "available"
+  },
+  {
+    "id": "hook-F1u4FdNE",
+    "type": "exploration",
+    "rumor": "Fishermen have spotted structures beneath the waves off Tidewater's coast",
+    "truth": "An entire First Age underwater facility lies beneath the reef, still partially powered",
+    "sourceNpcId": "npc-4gAs3NJJ",
+    "targetLocationId": "dungeon-ic32fqpx",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-4gAs3NJJ"
+    ],
+    "involvedLocationIds": [
+      "dungeon-ic32fqpx",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Custom forged weapon",
+    "status": "available"
+  },
+  {
+    "id": "hook-lSn2f4An",
+    "type": "exploration",
+    "rumor": "The AHA wants a detailed map of the Crawling Canopy's interior",
+    "truth": "Previous mapping expeditions have all returned with incomplete and contradictory maps",
+    "sourceNpcId": "npc-lz6mMjvd",
+    "targetLocationId": "dungeon-pNKQj3ws",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-lz6mMjvd"
+    ],
+    "involvedLocationIds": [
+      "dungeon-pNKQj3ws",
+      "settlement-37cK4TIX"
+    ],
+    "involvedFactionIds": [
+      "faction-o3Wd4Xcu"
+    ],
+    "reward": "Diving equipment",
+    "status": "available"
+  },
+  {
+    "id": "hook-kKPOdyQt",
+    "type": "exploration",
+    "rumor": "The Corrupted Coastline has shifted, revealing cave entrances that weren't there before",
+    "truth": "The corruption is eroding barriers to a First Age weapons vault",
+    "sourceNpcId": "npc-jr8tb8Ho",
+    "targetLocationId": "dungeon-M42RS8S-",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-jr8tb8Ho"
+    ],
+    "involvedLocationIds": [
+      "dungeon-M42RS8S-",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Spirit fish",
+    "status": "available"
+  },
+  {
+    "id": "hook-hqg-5lb9",
+    "type": "exploration",
+    "rumor": "Cholly claims there are abandoned subway tunnels beneath Yatamon from the First Age",
+    "truth": "The tunnels connect to a vast underground network that spans much of the island",
+    "sourceNpcId": "npc-FHVF-_HA",
+    "targetLocationId": "dungeon-yIL6pItd",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-FHVF-_HA"
+    ],
+    "involvedLocationIds": [
+      "dungeon-yIL6pItd",
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Sand sculpture",
+    "status": "available"
+  },
+  {
+    "id": "hook-h4w37XTi",
+    "type": "exploration",
+    "rumor": "A new hot spring has erupted near Hogstone, but the water is an unnatural color",
+    "truth": "The spring breached a First Age containment chamber, and something is leaking out",
+    "sourceNpcId": "npc-BppzA1GV",
+    "targetLocationId": "dungeon-DUsbpKcn",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-BppzA1GV"
+    ],
+    "involvedLocationIds": [
+      "dungeon-DUsbpKcn",
+      "settlement-VuGghMRN"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Healing at Hogstone",
+    "status": "available"
+  },
+  {
+    "id": "hook-KI1K1_a4",
+    "type": "exploration",
+    "rumor": "Spirit paths in the wetlands have shifted, opening routes to previously unreachable areas",
+    "truth": "The shift was caused by a spiritual earthquake and the new paths are unstable",
+    "sourceNpcId": "npc-2QkjwSpN",
+    "targetLocationId": "dungeon-qooARykv",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-2QkjwSpN"
+    ],
+    "involvedLocationIds": [
+      "dungeon-qooARykv",
+      "settlement-_N0PVVNb"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Gold flowers",
+    "status": "available"
+  },
+  {
+    "id": "hook-rqjgFm-X",
+    "type": "exploration",
+    "rumor": "An old map found in Granny Yuzu's collection shows a tower that doesn't appear on modern maps",
+    "truth": "The tower is cloaked by spirit magic and can only be seen during certain moon phases",
+    "sourceNpcId": "npc-upaVhDl_",
+    "targetLocationId": "dungeon-Jv9NpCZZ",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-upaVhDl_"
+    ],
+    "involvedLocationIds": [
+      "dungeon-Jv9NpCZZ",
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Rare potion ingredients",
+    "status": "available"
+  },
+  {
+    "id": "hook-Eish6o5R",
+    "type": "exploration",
+    "rumor": "Miners in Toggle broke through to an enormous cavern filled with First Age machinery",
+    "truth": "The machinery is still functional and appears to be a weather control system",
+    "sourceNpcId": "npc-KKPTIaoe",
+    "targetLocationId": "dungeon-qTQ51c_U",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-KKPTIaoe"
+    ],
+    "involvedLocationIds": [
+      "dungeon-qTQ51c_U",
+      "settlement-kCsR6cxU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "First Age artifact",
+    "status": "available"
+  },
+  {
+    "id": "hook-g_B3q_h6",
+    "type": "diplomacy",
+    "rumor": "A fish folk messenger has appeared at Tidewater asking to speak with human leaders",
+    "truth": "A faction of fish folk wants to defect from the Lionfish King and seek asylum on land",
+    "sourceNpcId": "npc-fZWJ7gZi",
+    "targetLocationId": "settlement-qaroUeGg",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-fZWJ7gZi"
+    ],
+    "involvedLocationIds": [
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [
+      "faction-PbhkQa-n"
+    ],
+    "reward": "Magical tea blend",
+    "status": "available"
+  },
+  {
+    "id": "hook-KUerQBGt",
+    "type": "diplomacy",
+    "rumor": "Two mushroom clans in Matango are on the verge of war over truffle territory",
+    "truth": "Both clans are being manipulated by Chogo who profits from the conflict",
+    "sourceNpcId": "npc-pvmx6k5K",
+    "targetLocationId": "settlement-CbSD55DO",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-pvmx6k5K"
+    ],
+    "involvedLocationIds": [
+      "settlement-CbSD55DO"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Happy Joy Cake recipe",
+    "status": "available"
+  },
+  {
+    "id": "hook-iH0iyFst",
+    "type": "diplomacy",
+    "rumor": "The Lionfish King has sent an emissary demanding tribute from coastal settlements",
+    "truth": "The King is actually testing surface-dweller resolve before a major offensive",
+    "sourceNpcId": "npc-VN7LxMd0",
+    "targetLocationId": "dungeon-ic32fqpx",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-VN7LxMd0"
+    ],
+    "involvedLocationIds": [
+      "dungeon-ic32fqpx",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [
+      "faction-PbhkQa-n"
+    ],
+    "reward": "Custom forged weapon",
+    "status": "available"
+  },
+  {
+    "id": "hook-xEjJusIm",
+    "type": "diplomacy",
+    "rumor": "A coven of witches near Okiri wants to negotiate a mutual defense pact with the village",
+    "truth": "The coven has been secretly protecting Okiri from corruption and wants recognition",
+    "sourceNpcId": "npc-sfQZAHok",
+    "targetLocationId": "settlement-37cK4TIX",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-sfQZAHok"
+    ],
+    "involvedLocationIds": [
+      "settlement-37cK4TIX"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Diving equipment",
+    "status": "available"
+  },
+  {
+    "id": "hook-ZGoFR7cP",
+    "type": "diplomacy",
+    "rumor": "The spirits of Uluwa are considering closing their market to non-spirits",
+    "truth": "Recent disrespectful behavior by human traders has deeply offended the spirit community",
+    "sourceNpcId": "npc-EI0C3N4Y",
+    "targetLocationId": "settlement-e0MHafVM",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-EI0C3N4Y"
+    ],
+    "involvedLocationIds": [
+      "settlement-e0MHafVM"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Spirit fish",
+    "status": "available"
+  },
+  {
+    "id": "hook-yfxJhDxe",
+    "type": "diplomacy",
+    "rumor": "The AHA and the Courier Brigade disagree about who should control the mountain passes",
+    "truth": "Both organizations are needed and a compromise would benefit everyone",
+    "sourceNpcId": "npc-RpS0tGNm",
+    "targetLocationId": "settlement-HmoL5chU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-RpS0tGNm"
+    ],
+    "involvedLocationIds": [
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [
+      "faction-o3Wd4Xcu",
+      "faction-PbhkQa-n"
+    ],
+    "reward": "Sand sculpture",
+    "status": "available"
+  },
+  {
+    "id": "hook-xlXHXeU5",
+    "type": "diplomacy",
+    "rumor": "A powerful spirit in the Gale Fields is demanding offerings to let travelers pass",
+    "truth": "The spirit is actually scared and defensive because corruption is approaching its territory",
+    "sourceNpcId": "npc-RmQzy41B",
+    "targetLocationId": "dungeon-Jv9NpCZZ",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-RmQzy41B"
+    ],
+    "involvedLocationIds": [
+      "dungeon-Jv9NpCZZ",
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Healing at Hogstone",
+    "status": "available"
+  },
+  {
+    "id": "hook-EgOp1xjB",
+    "type": "diplomacy",
+    "rumor": "Toggle and Tidewater are in a trade dispute over mineral rights",
+    "truth": "A third party is forging trade documents to create conflict and profit from both sides",
+    "sourceNpcId": "npc-KKPTIaoe",
+    "targetLocationId": "settlement-kCsR6cxU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-KKPTIaoe"
+    ],
+    "involvedLocationIds": [
+      "settlement-kCsR6cxU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Gold flowers",
+    "status": "available"
+  },
+  {
+    "id": "hook-lTUjGmNW",
+    "type": "rescue",
+    "rumor": "A midwife from Polewater went into the Shoom to gather herbs and hasn't returned for three days",
+    "truth": "The midwife stumbled into Voraro's territory and is being held captive, her life force slowly drained",
+    "sourceNpcId": "npc-t66vooNF",
+    "targetLocationId": "dungeon-bqafTLDH",
+    "missingNpcId": "npc-1538sWHN",
+    "involvedNpcIds": [
+      "npc-t66vooNF",
+      "npc-1538sWHN"
+    ],
+    "involvedLocationIds": [
+      "dungeon-bqafTLDH",
+      "settlement-_N0PVVNb"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Rare potion ingredients",
+    "status": "available"
+  },
+  {
+    "id": "hook-4qFrit2J",
+    "type": "rescue",
+    "rumor": "A pearl diver was captured by fish folk near the Coral Throne",
+    "truth": "The Lionfish King is holding the diver as a bargaining chip to negotiate with surface dwellers",
+    "sourceNpcId": "npc-DrTengN6",
+    "targetLocationId": "dungeon-ic32fqpx",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-DrTengN6"
+    ],
+    "involvedLocationIds": [
+      "dungeon-ic32fqpx",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "First Age artifact",
+    "status": "available"
+  },
+  {
+    "id": "hook-4Bx9GODo",
+    "type": "rescue",
+    "rumor": "A Courier Brigade rider never arrived at Toggle with an urgent message",
+    "truth": "The courier was swept off the mountain path by corrupted winds and is trapped in a cave",
+    "sourceNpcId": "npc-Rnz3ohHL",
+    "targetLocationId": "dungeon-qTQ51c_U",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-Rnz3ohHL"
+    ],
+    "involvedLocationIds": [
+      "dungeon-qTQ51c_U",
+      "settlement-kCsR6cxU"
+    ],
+    "involvedFactionIds": [
+      "faction-PbhkQa-n"
+    ],
+    "reward": "Magical tea blend",
+    "status": "available"
+  },
+  {
+    "id": "hook-Rvf0Tsm8",
+    "type": "rescue",
+    "rumor": "A child from Okiri wandered into the Crawling Canopy chasing a glowing butterfly",
+    "truth": "The child found a First Age chamber and is protected by ancient guardians but cannot leave",
+    "sourceNpcId": "npc-9gYKXc3m",
+    "targetLocationId": "dungeon-pNKQj3ws",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-9gYKXc3m"
+    ],
+    "involvedLocationIds": [
+      "dungeon-pNKQj3ws",
+      "settlement-37cK4TIX"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Happy Joy Cake recipe",
+    "status": "available"
+  },
+  {
+    "id": "hook-pQQnAD2-",
+    "type": "rescue",
+    "rumor": "An AHA ranger went to investigate strange lights in the wetlands and hasn't reported back",
+    "truth": "Ranger Kesso is imprisoned in the Shoom by Voraro, who uses him as bait for more captives",
+    "sourceNpcId": "npc-DsRCvaff",
+    "targetLocationId": "dungeon-bqafTLDH",
+    "missingNpcId": "npc-8fPHQ6J5",
+    "involvedNpcIds": [
+      "npc-DsRCvaff",
+      "npc-8fPHQ6J5"
+    ],
+    "involvedLocationIds": [
+      "dungeon-bqafTLDH",
+      "settlement-_N0PVVNb"
+    ],
+    "involvedFactionIds": [
+      "faction-o3Wd4Xcu"
+    ],
+    "reward": "Custom forged weapon",
+    "status": "available"
+  },
+  {
+    "id": "hook-xQLmFtis",
+    "type": "rescue",
+    "rumor": "A tea merchant disappeared on the road between Hogstone and Yatamon",
+    "truth": "Bandits ambushed the merchant and are holding them in a mountain hideout for ransom",
+    "sourceNpcId": "npc--8WDPwAp",
+    "targetLocationId": "dungeon-DUsbpKcn",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc--8WDPwAp"
+    ],
+    "involvedLocationIds": [
+      "dungeon-DUsbpKcn",
+      "settlement-VuGghMRN"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Diving equipment",
+    "status": "available"
+  },
+  {
+    "id": "hook-t5WZJKEc",
+    "type": "rescue",
+    "rumor": "Granny Yuzu's apprentice went to retrieve an artifact from beneath the city and hasn't returned",
+    "truth": "The apprentice activated a First Age defense system in the subway tunnels",
+    "sourceNpcId": "npc-VTCC_nye",
+    "targetLocationId": "dungeon-yIL6pItd",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-VTCC_nye"
+    ],
+    "involvedLocationIds": [
+      "dungeon-yIL6pItd",
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Spirit fish",
+    "status": "available"
+  },
+  {
+    "id": "hook-vPqou9qO",
+    "type": "rescue",
+    "rumor": "A spirit fisherman from Uluwa vanished while fishing in deep waters",
+    "truth": "The fisherman discovered an underwater passage and is trapped by a collapsed entrance",
+    "sourceNpcId": "npc-85m8hg53",
+    "targetLocationId": "dungeon-SgXJriDd",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-85m8hg53"
+    ],
+    "involvedLocationIds": [
+      "dungeon-SgXJriDd",
+      "settlement-e0MHafVM"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Sand sculpture",
+    "status": "available"
+  },
+  {
+    "id": "hook-6hTLaG25",
+    "type": "escort",
+    "rumor": "Someone needs to transport a crate of Pointue mushrooms past fish folk territory to Tidewater",
+    "truth": "The mushrooms are actually a cover for smuggling a First Age power cell that Humble Utzu wants",
+    "sourceNpcId": "npc-CyroueQy",
+    "targetLocationId": "settlement-qaroUeGg",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-CyroueQy"
+    ],
+    "involvedLocationIds": [
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Healing at Hogstone",
+    "status": "available"
+  },
+  {
+    "id": "hook-nmvhEupC",
+    "type": "escort",
+    "rumor": "The mushroom harvest from Matango needs armed escort to the Yatamon market",
+    "truth": "Chogo's gang plans to hijack the shipment and sell it on the black market",
+    "sourceNpcId": "npc-ZkY0uq7S",
+    "targetLocationId": "settlement-HmoL5chU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-ZkY0uq7S"
+    ],
+    "involvedLocationIds": [
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Gold flowers",
+    "status": "available"
+  },
+  {
+    "id": "hook-4-HBdCpL",
+    "type": "escort",
+    "rumor": "The AHA needs guides for an expedition into the corrupted southern marshes",
+    "truth": "The AHA suspects the corruption has a central source they want to locate and study",
+    "sourceNpcId": "npc-nRXe6fAp",
+    "targetLocationId": "dungeon-qooARykv",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-nRXe6fAp"
+    ],
+    "involvedLocationIds": [
+      "dungeon-qooARykv",
+      "settlement-_N0PVVNb"
+    ],
+    "involvedFactionIds": [
+      "faction-o3Wd4Xcu"
+    ],
+    "reward": "Rare potion ingredients",
+    "status": "available"
+  },
+  {
+    "id": "hook-gXpHB7rL",
+    "type": "escort",
+    "rumor": "A nervous scholar needs bodyguards to reach the Coral Throne for research",
+    "truth": "Dr. Frond believes the Coral Throne holds proof that the Corruption is artificial",
+    "sourceNpcId": "npc-co3dDzP1",
+    "targetLocationId": "dungeon-ic32fqpx",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-co3dDzP1"
+    ],
+    "involvedLocationIds": [
+      "dungeon-ic32fqpx",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "First Age artifact",
+    "status": "available"
+  },
+  {
+    "id": "hook-cce93kYz",
+    "type": "escort",
+    "rumor": "Captain Clintock needs a crew to escort a shipment of alloys down from Toggle to the coast",
+    "truth": "The alloys are needed to repair ancient machinery that Holly discovered",
+    "sourceNpcId": "npc-Rnz3ohHL",
+    "targetLocationId": "settlement-kCsR6cxU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-Rnz3ohHL"
+    ],
+    "involvedLocationIds": [
+      "settlement-kCsR6cxU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Magical tea blend",
+    "status": "available"
+  },
+  {
+    "id": "hook-gF0ymzPS",
+    "type": "escort",
+    "rumor": "A delegation from Uluwa needs protection traveling to Yatamon for trade negotiations",
+    "truth": "The delegation carries a spirit artifact that certain humans would kill to possess",
+    "sourceNpcId": "npc-4CJuWe6L",
+    "targetLocationId": "settlement-HmoL5chU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-4CJuWe6L"
+    ],
+    "involvedLocationIds": [
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [
+      "faction-PbhkQa-n"
+    ],
+    "reward": "Happy Joy Cake recipe",
+    "status": "available"
+  },
+  {
+    "id": "hook-mnN4y9t9",
+    "type": "escort",
+    "rumor": "Mama Amala needs someone to escort her to a remote shrine in the mountains",
+    "truth": "The shrine contains a sealed evil that Mama Amala must re-bind before the next full moon",
+    "sourceNpcId": "npc-oyvdEQh2",
+    "targetLocationId": "dungeon-DUsbpKcn",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-oyvdEQh2"
+    ],
+    "involvedLocationIds": [
+      "dungeon-DUsbpKcn",
+      "settlement-VuGghMRN"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Custom forged weapon",
+    "status": "available"
+  },
+  {
+    "id": "hook-9Djlnt-6",
+    "type": "escort",
+    "rumor": "A wounded AHA ranger needs safe passage from the Gale Fields back to Yatamon",
+    "truth": "The ranger carries intelligence about a new corruption outbreak that enemies want suppressed",
+    "sourceNpcId": "npc-RpS0tGNm",
+    "targetLocationId": "settlement-HmoL5chU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-RpS0tGNm"
+    ],
+    "involvedLocationIds": [
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [
+      "faction-o3Wd4Xcu"
+    ],
+    "reward": "Diving equipment",
+    "status": "available"
+  },
+  {
+    "id": "hook-xbf7izA8",
+    "type": "mystery",
+    "rumor": "The legendary Moonpearl has been stolen from Tidewater's shrine",
+    "truth": "Mr. Basingstoke orchestrated the theft to use the pearl in a ritual for his patron",
+    "sourceNpcId": "npc-co3dDzP1",
+    "targetLocationId": "settlement-qaroUeGg",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-co3dDzP1"
+    ],
+    "involvedLocationIds": [
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Spirit fish",
+    "status": "available"
+  },
+  {
+    "id": "hook-yZzPhJae",
+    "type": "mystery",
+    "rumor": "The Corruption is spreading faster than natural, someone might be feeding it",
+    "truth": "Voraro the Parasite is channeling energy from captured victims to accelerate the corruption",
+    "sourceNpcId": "npc-2QkjwSpN",
+    "targetLocationId": "dungeon-bqafTLDH",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-2QkjwSpN"
+    ],
+    "involvedLocationIds": [
+      "dungeon-bqafTLDH",
+      "settlement-_N0PVVNb"
+    ],
+    "involvedFactionIds": [
+      "faction-o3Wd4Xcu"
+    ],
+    "reward": "Sand sculpture",
+    "status": "available"
+  },
+  {
+    "id": "hook-I_Q2_duq",
+    "type": "mystery",
+    "rumor": "Vorian's masterwork sand sculpture was sabotaged the night before the festival",
+    "truth": "Great Ferek's apprentice did it out of jealousy, but Ferek himself is horrified",
+    "sourceNpcId": "npc-BpTGNnjY",
+    "targetLocationId": "settlement-qaroUeGg",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-BpTGNnjY"
+    ],
+    "involvedLocationIds": [
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Healing at Hogstone",
+    "status": "available"
+  },
+  {
+    "id": "hook-vEwDm3q7",
+    "type": "mystery",
+    "rumor": "Three different cooks in Yatamon have reported their secret ingredients going missing",
+    "truth": "A mischievous spirit is collecting the ingredients to recreate a legendary First Age dish",
+    "sourceNpcId": "npc-RpS0tGNm",
+    "targetLocationId": "settlement-HmoL5chU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-RpS0tGNm"
+    ],
+    "involvedLocationIds": [
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Gold flowers",
+    "status": "available"
+  },
+  {
+    "id": "hook-aQsaGiDq",
+    "type": "mystery",
+    "rumor": "People near the hot springs are having identical strange visions of a burning city",
+    "truth": "The springs are channeling memories from a First Age catastrophe sealed beneath Hogstone",
+    "sourceNpcId": "npc--8WDPwAp",
+    "targetLocationId": "settlement-VuGghMRN",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc--8WDPwAp"
+    ],
+    "involvedLocationIds": [
+      "settlement-VuGghMRN"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Rare potion ingredients",
+    "status": "available"
+  },
+  {
+    "id": "hook-o4o5464v",
+    "type": "mystery",
+    "rumor": "Ships are disappearing near the coast with no wreckage found",
+    "truth": "The Lionfish King's forces are capturing ships and dragging them to an underwater base",
+    "sourceNpcId": "npc-jr8tb8Ho",
+    "targetLocationId": "dungeon-ic32fqpx",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-jr8tb8Ho"
+    ],
+    "involvedLocationIds": [
+      "dungeon-ic32fqpx",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "First Age artifact",
+    "status": "available"
+  },
+  {
+    "id": "hook-jfW-Yr8F",
+    "type": "mystery",
+    "rumor": "Someone has been leaving strange glowing symbols on buildings in Yatamon at night",
+    "truth": "Mikiko is sleepwalking and casting spells unconsciously, channeling First Age magic",
+    "sourceNpcId": "npc-FJxHcxJH",
+    "targetLocationId": "settlement-HmoL5chU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-FJxHcxJH"
+    ],
+    "involvedLocationIds": [
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Magical tea blend",
+    "status": "available"
+  },
+  {
+    "id": "hook-wMtTK-KO",
+    "type": "mystery",
+    "rumor": "The mycelium network in Matango has stopped growing, and mushrooms are dying",
+    "truth": "A buried First Age device is emitting energy that poisons the fungal network",
+    "sourceNpcId": "npc-0Zh1gK6c",
+    "targetLocationId": "dungeon-YN2lLblj",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-0Zh1gK6c"
+    ],
+    "involvedLocationIds": [
+      "dungeon-YN2lLblj",
+      "settlement-CbSD55DO"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Happy Joy Cake recipe",
+    "status": "available"
+  },
+  {
+    "id": "hook-XPBFNfIS",
+    "type": "mystery",
+    "rumor": "Travelers between Okiri and Polewater report hearing singing from empty fields",
+    "truth": "A trapped spirit in an old well is calling for help, growing weaker each day",
+    "sourceNpcId": "npc-msZM7pOv",
+    "targetLocationId": "settlement-37cK4TIX",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-msZM7pOv"
+    ],
+    "involvedLocationIds": [
+      "settlement-37cK4TIX"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Custom forged weapon",
+    "status": "available"
+  },
+  {
+    "id": "hook-TTkEuJwy",
+    "type": "mystery",
+    "rumor": "Gomber has been hired to investigate why the trolley keeps breaking down at the same spot",
+    "truth": "A First Age subway station beneath the tracks is interfering with surface mechanisms",
+    "sourceNpcId": "npc-4Zm92bRy",
+    "targetLocationId": "settlement-HmoL5chU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-4Zm92bRy"
+    ],
+    "involvedLocationIds": [
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Diving equipment",
+    "status": "available"
+  },
+  {
+    "id": "hook-ntudrmzU",
+    "type": "fetch",
+    "rumor": "Rokoko needs a specific bioluminescent mushroom that only grows in the deep caves near Toggle",
+    "truth": "The mushroom is actually a symbiotic organism with a cave spirit who must be negotiated with",
+    "sourceNpcId": "npc-dc-k4mKz",
+    "targetLocationId": "dungeon-qTQ51c_U",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-dc-k4mKz"
+    ],
+    "involvedLocationIds": [
+      "dungeon-qTQ51c_U",
+      "settlement-kCsR6cxU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Spirit fish",
+    "status": "available"
+  },
+  {
+    "id": "hook-QKW2Y_G6",
+    "type": "fetch",
+    "rumor": "Holly Clintock needs a special alloy from the deep mines of Toggle for a critical repair",
+    "truth": "The alloy vein is in territory claimed by a territorial rock spirit",
+    "sourceNpcId": "npc-KKPTIaoe",
+    "targetLocationId": "settlement-kCsR6cxU",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-KKPTIaoe"
+    ],
+    "involvedLocationIds": [
+      "settlement-kCsR6cxU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Sand sculpture",
+    "status": "available"
+  },
+  {
+    "id": "hook--xI1FOJP",
+    "type": "fetch",
+    "rumor": "Someone is willing to pay handsomely for Laughing Moss from the Crawling Canopy",
+    "truth": "The moss is needed for an antidote to a rare poison that is slowly killing a village elder",
+    "sourceNpcId": "npc-msZM7pOv",
+    "targetLocationId": "dungeon-pNKQj3ws",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-msZM7pOv"
+    ],
+    "involvedLocationIds": [
+      "dungeon-pNKQj3ws",
+      "settlement-37cK4TIX"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Healing at Hogstone",
+    "status": "available"
+  },
+  {
+    "id": "hook-_x-xOv0n",
+    "type": "fetch",
+    "rumor": "Orble the Fisher needs someone to catch a spirit fish from the deepest pool in Uluwa",
+    "truth": "The spirit fish contains a message from an ancient water spirit about coming danger",
+    "sourceNpcId": "npc-EI0C3N4Y",
+    "targetLocationId": "settlement-e0MHafVM",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-EI0C3N4Y"
+    ],
+    "involvedLocationIds": [
+      "settlement-e0MHafVM"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Gold flowers",
+    "status": "available"
+  },
+  {
+    "id": "hook-tBorSb6y",
+    "type": "fetch",
+    "rumor": "Chisuay needs a specific mineral spring water from a cave guarded by corrupted creatures",
+    "truth": "The water is the only thing that can suppress his oni nature during the solstice",
+    "sourceNpcId": "npc-KD15H8tN",
+    "targetLocationId": "dungeon-DUsbpKcn",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-KD15H8tN"
+    ],
+    "involvedLocationIds": [
+      "dungeon-DUsbpKcn",
+      "settlement-VuGghMRN"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Rare potion ingredients",
+    "status": "available"
+  },
+  {
+    "id": "hook-eyLKqMzh",
+    "type": "fetch",
+    "rumor": "Dr. Frond needs coral samples from the reef that only grows near the Corrupted Coastline",
+    "truth": "The coral contains traces of First Age bio-engineering that could explain the Corruption",
+    "sourceNpcId": "npc-BpTGNnjY",
+    "targetLocationId": "dungeon-M42RS8S-",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-BpTGNnjY"
+    ],
+    "involvedLocationIds": [
+      "dungeon-M42RS8S-",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [
+      "faction-o3Wd4Xcu"
+    ],
+    "reward": "First Age artifact",
+    "status": "available"
+  },
+  {
+    "id": "hook-ThX-vq9Y",
+    "type": "fetch",
+    "rumor": "Master Hu's legendary recipe requires honey from spirit bees in the Gale Fields",
+    "truth": "The spirit bees are dying and their hive is the last one, making this a conservation mission too",
+    "sourceNpcId": "npc-dVZGtYSC",
+    "targetLocationId": "dungeon-Jv9NpCZZ",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-dVZGtYSC"
+    ],
+    "involvedLocationIds": [
+      "dungeon-Jv9NpCZZ",
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Magical tea blend",
+    "status": "available"
+  },
+  {
+    "id": "hook-HjqNaPOE",
+    "type": "fetch",
+    "rumor": "Madame Porcini needs a rare truffle that only grows in the ruins beneath Matango",
+    "truth": "The truffle is growing on a First Age power conduit and removing it may have consequences",
+    "sourceNpcId": "npc-XSrwxfg1",
+    "targetLocationId": "dungeon-YN2lLblj",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-XSrwxfg1"
+    ],
+    "involvedLocationIds": [
+      "dungeon-YN2lLblj",
+      "settlement-CbSD55DO"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Happy Joy Cake recipe",
+    "status": "available"
+  },
+  {
+    "id": "hook-3FgVbYKS",
+    "type": "fetch",
+    "rumor": "A blacksmith in Toggle needs fire-iron ore from a volcanic vent near the coast",
+    "truth": "The volcanic vent is actually a slumbering fire spirit who trades ore for offerings",
+    "sourceNpcId": "npc-LqDjDsn-",
+    "targetLocationId": "dungeon-M42RS8S-",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-LqDjDsn-"
+    ],
+    "involvedLocationIds": [
+      "dungeon-M42RS8S-",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Custom forged weapon",
+    "status": "available"
+  },
+  {
+    "id": "hook--YlaX0rs",
+    "type": "exploration",
+    "rumor": "Fishermen have spotted structures beneath the waves off Tidewater's coast",
+    "truth": "An entire First Age underwater facility lies beneath the reef, still partially powered",
+    "sourceNpcId": "npc-ma5NIKWb",
+    "targetLocationId": "dungeon-ic32fqpx",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-ma5NIKWb"
+    ],
+    "involvedLocationIds": [
+      "dungeon-ic32fqpx",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Diving equipment",
+    "status": "available"
+  },
+  {
+    "id": "hook-fPCLAC0u",
+    "type": "exploration",
+    "rumor": "The AHA wants a detailed map of the Crawling Canopy's interior",
+    "truth": "Previous mapping expeditions have all returned with incomplete and contradictory maps",
+    "sourceNpcId": "npc-RCK3jIFI",
+    "targetLocationId": "dungeon-pNKQj3ws",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-RCK3jIFI"
+    ],
+    "involvedLocationIds": [
+      "dungeon-pNKQj3ws",
+      "settlement-37cK4TIX"
+    ],
+    "involvedFactionIds": [
+      "faction-o3Wd4Xcu"
+    ],
+    "reward": "Spirit fish",
+    "status": "available"
+  },
+  {
+    "id": "hook-YP-crqir",
+    "type": "exploration",
+    "rumor": "The Corrupted Coastline has shifted, revealing cave entrances that weren't there before",
+    "truth": "The corruption is eroding barriers to a First Age weapons vault",
+    "sourceNpcId": "npc-oDH2q4ST",
+    "targetLocationId": "dungeon-M42RS8S-",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-oDH2q4ST"
+    ],
+    "involvedLocationIds": [
+      "dungeon-M42RS8S-",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Sand sculpture",
+    "status": "available"
+  },
+  {
+    "id": "hook-t5bJO90E",
+    "type": "exploration",
+    "rumor": "Cholly claims there are abandoned subway tunnels beneath Yatamon from the First Age",
+    "truth": "The tunnels connect to a vast underground network that spans much of the island",
+    "sourceNpcId": "npc-upaVhDl_",
+    "targetLocationId": "dungeon-yIL6pItd",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-upaVhDl_"
+    ],
+    "involvedLocationIds": [
+      "dungeon-yIL6pItd",
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Healing at Hogstone",
+    "status": "available"
+  },
+  {
+    "id": "hook-Jwkx188L",
+    "type": "exploration",
+    "rumor": "A new hot spring has erupted near Hogstone, but the water is an unnatural color",
+    "truth": "The spring breached a First Age containment chamber, and something is leaking out",
+    "sourceNpcId": "npc-ccEJU_1M",
+    "targetLocationId": "dungeon-DUsbpKcn",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-ccEJU_1M"
+    ],
+    "involvedLocationIds": [
+      "dungeon-DUsbpKcn",
+      "settlement-VuGghMRN"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Gold flowers",
+    "status": "available"
+  },
+  {
+    "id": "hook-s7Q5Th99",
+    "type": "exploration",
+    "rumor": "Spirit paths in the wetlands have shifted, opening routes to previously unreachable areas",
+    "truth": "The shift was caused by a spiritual earthquake and the new paths are unstable",
+    "sourceNpcId": "npc-Y5UmNWQ0",
+    "targetLocationId": "dungeon-qooARykv",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-Y5UmNWQ0"
+    ],
+    "involvedLocationIds": [
+      "dungeon-qooARykv",
+      "settlement-_N0PVVNb"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Rare potion ingredients",
+    "status": "available"
+  },
+  {
+    "id": "hook-8hE9bM6j",
+    "type": "exploration",
+    "rumor": "An old map found in Granny Yuzu's collection shows a tower that doesn't appear on modern maps",
+    "truth": "The tower is cloaked by spirit magic and can only be seen during certain moon phases",
+    "sourceNpcId": "npc-5RyUOu7J",
+    "targetLocationId": "dungeon-Jv9NpCZZ",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-5RyUOu7J"
+    ],
+    "involvedLocationIds": [
+      "dungeon-Jv9NpCZZ",
+      "settlement-HmoL5chU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "First Age artifact",
+    "status": "available"
+  },
+  {
+    "id": "hook-aoxnUNzp",
+    "type": "exploration",
+    "rumor": "Miners in Toggle broke through to an enormous cavern filled with First Age machinery",
+    "truth": "The machinery is still functional and appears to be a weather control system",
+    "sourceNpcId": "npc-BfxbGp-d",
+    "targetLocationId": "dungeon-qTQ51c_U",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-BfxbGp-d"
+    ],
+    "involvedLocationIds": [
+      "dungeon-qTQ51c_U",
+      "settlement-kCsR6cxU"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Magical tea blend",
+    "status": "available"
+  },
+  {
+    "id": "hook-QQWrHpRO",
+    "type": "diplomacy",
+    "rumor": "A fish folk messenger has appeared at Tidewater asking to speak with human leaders",
+    "truth": "A faction of fish folk wants to defect from the Lionfish King and seek asylum on land",
+    "sourceNpcId": "npc-LqDjDsn-",
+    "targetLocationId": "settlement-qaroUeGg",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-LqDjDsn-"
+    ],
+    "involvedLocationIds": [
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [
+      "faction-PbhkQa-n"
+    ],
+    "reward": "Happy Joy Cake recipe",
+    "status": "available"
+  },
+  {
+    "id": "hook-WQoUc3R7",
+    "type": "diplomacy",
+    "rumor": "Two mushroom clans in Matango are on the verge of war over truffle territory",
+    "truth": "Both clans are being manipulated by Chogo who profits from the conflict",
+    "sourceNpcId": "npc-bGlfxsKC",
+    "targetLocationId": "settlement-CbSD55DO",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-bGlfxsKC"
+    ],
+    "involvedLocationIds": [
+      "settlement-CbSD55DO"
+    ],
+    "involvedFactionIds": [],
+    "reward": "Custom forged weapon",
+    "status": "available"
+  },
+  {
+    "id": "hook-hRGtY6A5",
+    "type": "diplomacy",
+    "rumor": "The Lionfish King has sent an emissary demanding tribute from coastal settlements",
+    "truth": "The King is actually testing surface-dweller resolve before a major offensive",
+    "sourceNpcId": "npc-VN7LxMd0",
+    "targetLocationId": "dungeon-ic32fqpx",
+    "missingNpcId": null,
+    "involvedNpcIds": [
+      "npc-VN7LxMd0"
+    ],
+    "involvedLocationIds": [
+      "dungeon-ic32fqpx",
+      "settlement-qaroUeGg"
+    ],
+    "involvedFactionIds": [
+      "faction-PbhkQa-n"
+    ],
+    "reward": "Diving equipment",
+    "status": "available"
+  }
+]

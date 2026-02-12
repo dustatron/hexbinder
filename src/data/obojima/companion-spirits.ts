@@ -1,0 +1,110 @@
+/**
+ * Obojima companion spirits.
+ * Source: obojima/reference/bestiary.md + NPC references
+ */
+
+import type { CompanionSpirit } from "~/models";
+
+export const OBOJIMA_COMPANION_SPIRITS: CompanionSpirit[] = [
+  {
+    id: "spirit-disaster",
+    name: "Disaster",
+    type: "Pelican spirit",
+    bondedNpcId: "npc-obojima-marcel",
+    description: "Marcel's pelican companion. Helps him navigate despite his blindness.",
+    abilities: ["Flight", "Keen sight", "Fish detection"],
+    locationId: "settlement-cdl-north",
+  },
+  {
+    id: "spirit-mr-tamlin",
+    name: "Mr. Tamlin",
+    type: "Crab spirit",
+    bondedNpcId: "npc-obojima-leobini",
+    description: "Ancient crab spirit that carries the elderly navigator Leobini on its back.",
+    abilities: ["Carry rider", "Amphibious", "Hard shell"],
+    locationId: "settlement-cdl-south",
+  },
+  {
+    id: "spirit-abi",
+    name: "Abi",
+    type: "Invisible spirit",
+    bondedNpcId: "npc-obojima-tan-the-apprentice",
+    description: "Protective invisible spirit companion to the apprentice Tan. Very protective of the boy.",
+    abilities: ["Invisibility", "Spirit medium channel", "Protection"],
+    locationId: "settlement-witching-tower",
+  },
+  {
+    id: "spirit-the-lady",
+    name: "The Lady",
+    type: "Cat spirit",
+    description: "Highly sociable cat spirit that wanders the Witching Tower grounds, following interesting visitors.",
+    abilities: ["Spirit sight", "Charm"],
+    locationId: "settlement-witching-tower",
+  },
+  {
+    id: "spirit-peapaleap",
+    name: "The Mighty Peapaleap",
+    type: "Cat spirit",
+    description: "Fat fluffy long-haired cat who rides a floating square cushion. Wanders the Witching Tower with The Lady.",
+    abilities: ["Levitation", "Cushion riding"],
+    locationId: "settlement-witching-tower",
+  },
+  {
+    id: "spirit-beeks",
+    name: "Beeks",
+    type: "Bird spirit",
+    bondedNpcId: "npc-obojima-gomber",
+    description: "Paunchy bird spirit and detective partner to Gomber. Pretty much just says 'Beek!' but Gomber understands him completely.",
+    abilities: ["Detection", "Tracking", "Communication with Gomber"],
+    locationId: "settlement-yatamon",
+  },
+  {
+    id: "spirit-choofi",
+    name: "Choofi",
+    type: "Floating fur spirit",
+    bondedNpcId: "npc-obojima-imelda",
+    description: "Floating fur-covered spirit that can identify any object by smell alone. Used by Imelda to raid Brigade wagons.",
+    abilities: ["Scent identification", "Levitation", "Object tracking"],
+    locationId: "settlement-yatamon",
+  },
+  {
+    id: "spirit-sorrow",
+    name: "Sorrow",
+    type: "Octopus spirit",
+    bondedNpcId: "npc-obojima-mr-basingstoke",
+    description: "Silent octopus spirit companion to Warlock Mr. Basingstoke at the Witchery academy in Yatamon.",
+    abilities: ["Silence", "Ink cloud", "Multiple grasps"],
+    locationId: "settlement-yatamon",
+  },
+  {
+    id: "spirit-borisss",
+    name: "Borisss",
+    type: "Sea snake spirit",
+    bondedNpcId: "npc-obojima-bloodfin-the-foul",
+    description: "Sea snake spirit fiercely loyal to Bloodfin. Coiled around a teddy bear he found when the gang first arrived.",
+    abilities: ["Venomous bite", "Aquatic", "Constriction"],
+  },
+  {
+    id: "spirit-morris",
+    name: "Morris",
+    type: "Giant seahorse spirit",
+    description: "Cowardly giant seahorse spirit intimidated into serving Bloodfin. Terrified of Slurpgill. Will lie to or tattle on outsiders.",
+    abilities: ["Aquatic mount", "Water breathing"],
+  },
+  {
+    id: "spirit-plitsu",
+    name: "Plitsu",
+    type: "Spectral spirit",
+    description: "Adorable little spectral spirit at Broken Bird Airfield. Believes First Age flight tech should stay grounded. Secretly stealing Phin's tools.",
+    abilities: ["Cuteness", "Invisibility", "Tool theft"],
+    locationId: "settlement-broken-bird",
+  },
+  {
+    id: "spirit-vutochi",
+    name: "Vutochi",
+    type: "Cat spirit",
+    description: "Foremost Corruption researcher at AHA. Exists in both Physical and Spirit Realms simultaneously. Transforms into a tall imposing mage in the Spirit Realm.",
+    abilities: ["Dual-realm existence", "Corruption research", "Spirit mage form"],
+    locationId: "settlement-aha-hq",
+  },
+];

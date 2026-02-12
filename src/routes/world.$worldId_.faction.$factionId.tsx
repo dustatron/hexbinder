@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
 import { FactionDetail } from "~/components/location-detail/FactionDetail";
 import { loadWorld } from "~/lib/storage";
+import { SidebarTrigger } from "~/components/ui/sidebar";
 
 export const Route = createFileRoute("/world/$worldId_/faction/$factionId")({
   loader: ({ params }) => {
@@ -34,17 +34,11 @@ function FactionPage() {
   );
 
   return (
-    <div className="flex h-svh flex-col bg-stone-900 text-stone-100">
+    <div className="flex h-full flex-col bg-stone-900 text-stone-100">
       {/* Header */}
       <header className="z-10 border-b border-stone-700 bg-stone-900 px-4 py-3">
         <div className="flex items-center gap-3">
-          <Link
-            to="/world/$worldId"
-            params={{ worldId: world.id }}
-            className="text-stone-400 hover:text-stone-200"
-          >
-            <ArrowLeft size={20} />
-          </Link>
+          <SidebarTrigger className="-ml-1 text-stone-400 hover:text-stone-200" />
           <h1 className="font-semibold">{faction.name}</h1>
         </div>
       </header>

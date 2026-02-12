@@ -130,6 +130,9 @@ function getTerrainWeights(terrain: TerrainType): Record<QuestObjectType, number
     case "water":
       // Water gets more artifacts/remains (sunken things)
       return { plant: 10, mineral: 15, artifact: 40, remains: 35 };
+    case "desert":
+      // Desert: minerals and artifacts (buried ruins, geodes)
+      return { plant: 5, mineral: 40, artifact: 35, remains: 20 };
     default:
       return base;
   }

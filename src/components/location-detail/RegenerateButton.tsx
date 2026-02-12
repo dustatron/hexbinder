@@ -80,6 +80,7 @@ const REGENERATE_OPTIONS: {
       { value: "mountains", label: "Mountains" },
       { value: "water", label: "Water" },
       { value: "swamp", label: "Swamp" },
+      { value: "desert", label: "Desert" },
     ],
   },
 ];

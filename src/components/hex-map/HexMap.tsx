@@ -1,33 +1,28 @@
-import { useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useGesture } from "@use-gesture/react";
-import { motion, useMotionValue } from "framer-motion";
 import { Plus, Minus, RotateCcw } from "lucide-react";
 import type { Hex, HexCoord, Location, HexEdge, Dungeon, Settlement } from "~/models";
 import { Tile, HEX_SIZE } from "~/lib/hex-utils";
 import { HexTile } from "./HexTile";
 
 const MAX_LABEL_CHARS = 10;
-const MIN_ZOOM = 0.5;
-const MAX_ZOOM = 4;
+const MIN_ZOOM = 0.3;
+const MAX_ZOOM = 6;
+const WHEEL_ZOOM_SPEED = 0.002;
+const ZOOM_BUTTON_FACTOR = 1.4;
 
 /**
  * Split a label into multiple lines for better readability.
- * Tries to split at word boundaries, falls back to mid-word split.
  */
 function splitLabel(name: string): string[] {
   if (name.length <= MAX_LABEL_CHARS) {
     return [name];
   }
-
-  // Try to split at a space near the middle
   const mid = Math.floor(name.length / 2);
   const spaceIndex = name.lastIndexOf(" ", mid + 3);
-
   if (spaceIndex > 2) {
     return [name.slice(0, spaceIndex), name.slice(spaceIndex + 1)];
   }
-
-  // No good space - split mid-word with hyphen
   const splitAt = Math.min(MAX_LABEL_CHARS - 1, mid);
   return [name.slice(0, splitAt) + "-", name.slice(splitAt)];
 }
@@ -37,10 +32,12 @@ interface HexMapProps {
   edges: HexEdge[];
   locations: Location[];
   selectedCoord: HexCoord | null;
-  currentHexId: string | null; // Party's current location (format: "q,r")
-  visitedHexIds: string[]; // Hexes party has visited (format: "q,r")
+  currentHexId: string | null;
+  visitedHexIds: string[];
   onHexClick: (coord: HexCoord) => void;
+  onHexDoubleClick?: (coord: HexCoord) => void;
   showLabels?: boolean;
+  initialZoom?: number;
 }
 
 export function HexMap({
@@ -51,22 +48,19 @@ export function HexMap({
   currentHexId,
   visitedHexIds,
   onHexClick,
+  onHexDoubleClick,
   showLabels = false,
+  initialZoom = 1,
 }: HexMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Motion values for pan and zoom
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const scale = useMotionValue(1);
 
   // Create honeycomb hex instances for each world hex
   const honeycombHexes = useMemo(() => {
     return hexes.map((hex) => new Tile(hex.coord));
   }, [hexes]);
 
-  // Calculate viewBox from actual hex positions
-  const viewBox = useMemo(() => {
+  // Calculate world bounds from hex positions
+  const worldBounds = useMemo(() => {
     let minX = Infinity,
       minY = Infinity,
       maxX = -Infinity,
@@ -81,12 +75,119 @@ export function HexMap({
     });
     const padding = HEX_SIZE * 0.5;
     return {
-      minX: minX - padding,
-      minY: minY - padding,
+      x: minX - padding,
+      y: minY - padding,
       width: maxX - minX + padding * 2,
       height: maxY - minY + padding * 2,
     };
   }, [honeycombHexes]);
+
+  // ViewBox-based pan/zoom state
+  // centerX/Y = center of the view in SVG coordinates
+  // zoom = multiplier (1 = fit whole map, 2 = zoomed in 2x)
+  const [camera, setCamera] = useState(() => ({
+    centerX: worldBounds.x + worldBounds.width / 2,
+    centerY: worldBounds.y + worldBounds.height / 2,
+    zoom: initialZoom,
+  }));
+
+  // Compute the viewBox from camera state + container size
+  const getViewBox = useCallback(() => {
+    const baseWidth = worldBounds.width;
+    const baseHeight = worldBounds.height;
+    const vw = baseWidth / camera.zoom;
+    const vh = baseHeight / camera.zoom;
+    return {
+      x: camera.centerX - vw / 2,
+      y: camera.centerY - vh / 2,
+      width: vw,
+      height: vh,
+    };
+  }, [worldBounds, camera]);
+
+  const vb = getViewBox();
+
+  // Persist zoom to localStorage (debounced)
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      try {
+        localStorage.setItem("hexbinder:zoom", String(camera.zoom));
+      } catch {}
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [camera.zoom]);
+
+  // Convert screen pixels to SVG units based on current view
+  const screenToSvgScale = useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return 1;
+    return vb.width / el.clientWidth;
+  }, [vb.width]);
+
+  // Gesture bindings
+  const bind = useGesture(
+    {
+      onDrag: ({ delta: [dx, dy], event }) => {
+        event.preventDefault();
+        const s = screenToSvgScale();
+        setCamera((prev) => ({
+          ...prev,
+          centerX: prev.centerX - dx * s,
+          centerY: prev.centerY - dy * s,
+        }));
+      },
+      onPinch: ({ offset: [s] }) => {
+        const newZoom = Math.min(Math.max(s, MIN_ZOOM), MAX_ZOOM);
+        setCamera((prev) => ({ ...prev, zoom: newZoom }));
+      },
+      onWheel: ({ delta: [, dy], event }) => {
+        event.preventDefault();
+        setCamera((prev) => {
+          const factor = 1 - dy * WHEEL_ZOOM_SPEED;
+          const newZoom = Math.min(
+            Math.max(prev.zoom * factor, MIN_ZOOM),
+            MAX_ZOOM
+          );
+          return { ...prev, zoom: newZoom };
+        });
+      },
+    },
+    {
+      drag: {
+        filterTaps: true,
+      },
+      pinch: {
+        from: () => [camera.zoom, 0],
+        scaleBounds: { min: MIN_ZOOM, max: MAX_ZOOM },
+      },
+      wheel: {
+        eventOptions: { passive: false },
+      },
+    }
+  );
+
+  // Zoom control handlers
+  const handleZoomIn = () => {
+    setCamera((prev) => ({
+      ...prev,
+      zoom: Math.min(prev.zoom * ZOOM_BUTTON_FACTOR, MAX_ZOOM),
+    }));
+  };
+
+  const handleZoomOut = () => {
+    setCamera((prev) => ({
+      ...prev,
+      zoom: Math.max(prev.zoom / ZOOM_BUTTON_FACTOR, MIN_ZOOM),
+    }));
+  };
+
+  const handleReset = () => {
+    setCamera({
+      centerX: worldBounds.x + worldBounds.width / 2,
+      centerY: worldBounds.y + worldBounds.height / 2,
+      zoom: 1,
+    });
+  };
 
   // Create hex center lookup for edge rendering
   const hexCenters = useMemo(() => {
@@ -108,51 +209,6 @@ export function HexMap({
 
   // Create visited set for O(1) lookup
   const visitedSet = useMemo(() => new Set(visitedHexIds), [visitedHexIds]);
-
-  // Gesture bindings
-  const bind = useGesture(
-    {
-      onDrag: ({ offset: [ox, oy] }) => {
-        x.set(ox);
-        y.set(oy);
-      },
-      onPinch: ({ offset: [s] }) => {
-        scale.set(Math.min(Math.max(s, MIN_ZOOM), MAX_ZOOM));
-      },
-      onWheel: ({ delta: [, dy] }) => {
-        // Zoom with mouse wheel
-        const currentScale = scale.get();
-        const newScale = Math.min(Math.max(currentScale - dy * 0.001, MIN_ZOOM), MAX_ZOOM);
-        scale.set(newScale);
-      },
-    },
-    {
-      drag: {
-        from: () => [x.get(), y.get()],
-      },
-      pinch: {
-        from: () => [scale.get(), 0],
-        scaleBounds: { min: MIN_ZOOM, max: MAX_ZOOM },
-      },
-    },
-  );
-
-  // Zoom control handlers
-  const handleZoomIn = () => {
-    const currentScale = scale.get();
-    scale.set(Math.min(currentScale * 1.3, MAX_ZOOM));
-  };
-
-  const handleZoomOut = () => {
-    const currentScale = scale.get();
-    scale.set(Math.max(currentScale / 1.3, MIN_ZOOM));
-  };
-
-  const handleReset = () => {
-    scale.set(1);
-    x.set(0);
-    y.set(0);
-  };
 
   return (
     <div
@@ -184,15 +240,10 @@ export function HexMap({
           <RotateCcw size={16} />
         </button>
       </div>
-      <motion.svg
+      <svg
         className="h-full w-full"
-        viewBox={`${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`}
+        viewBox={`${vb.x} ${vb.y} ${vb.width} ${vb.height}`}
         preserveAspectRatio="xMidYMid meet"
-        style={{
-          x,
-          y,
-          scale,
-        }}
       >
         {/* Render hex tiles with icons */}
         <g>
@@ -205,13 +256,11 @@ export function HexMap({
               selectedCoord?.q === hexData.coord.q &&
               selectedCoord?.r === hexData.coord.r;
 
-            // Get dungeon theme if location is a dungeon
             const dungeonTheme =
               location?.type === "dungeon"
                 ? (location as Dungeon).theme
                 : undefined;
 
-            // Check if settlement is a capital
             const isCapital =
               location?.type === "settlement"
                 ? (location as Settlement).isCapital
@@ -232,6 +281,7 @@ export function HexMap({
                 isCurrent={isCurrent}
                 isVisited={isVisited}
                 onClick={onHexClick}
+                onDoubleClick={onHexDoubleClick}
               />
             );
           })}
@@ -248,14 +298,11 @@ export function HexMap({
             const isRiver = edge.type === "river";
 
             if (isRiver) {
-              // Curved river using quadratic bezier
               const midX = (fromCenter.x + toCenter.x) / 2;
               const midY = (fromCenter.y + toCenter.y) / 2;
-              // Perpendicular offset for curve
               const dx = toCenter.x - fromCenter.x;
               const dy = toCenter.y - fromCenter.y;
               const len = Math.sqrt(dx * dx + dy * dy);
-              // Alternate curve direction based on index for variety
               const curveDir = index % 2 === 0 ? 1 : -1;
               const offset = len * 0.16 * curveDir;
               const ctrlX = midX + (-dy / len) * offset;
@@ -274,7 +321,6 @@ export function HexMap({
               );
             }
 
-            // Curved road using quadratic bezier
             const midX = (fromCenter.x + toCenter.x) / 2;
             const midY = (fromCenter.y + toCenter.y) / 2;
             const dx = toCenter.x - fromCenter.x;
@@ -309,7 +355,6 @@ export function HexMap({
               if (!location) return null;
 
               const lines = splitLabel(location.name);
-              // Offset first line up if multi-line so label stays centered below icon
               const baseY = honeycombHex.y + 20;
               const startY = lines.length > 1 ? baseY - 5 : baseY;
 
@@ -341,7 +386,7 @@ export function HexMap({
             })}
           </g>
         )}
-      </motion.svg>
+      </svg>
     </div>
   );
 }

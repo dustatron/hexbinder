@@ -171,12 +171,44 @@ export const IMPRESSIONS_BY_TERRAIN: Record<TerrainType, TerrainImpressions> = {
       "Strange flowers with cloying sweetness",
     ],
   },
+
+  desert: {
+    sight: [
+      "Heat shimmer distorts the barren horizon",
+      "Cracked earth stretches in every direction",
+      "Steam rises from geothermal vents ahead",
+      "Vivid mineral deposits streak the ground red and yellow",
+      "A lone hot spring bubbles in a rocky basin",
+      "Bleached bones half-buried in dry sand",
+    ],
+    sound: [
+      "Hot wind hisses across bare rock",
+      "Geysers rumble deep underground",
+      "Sand rattles against stone like whispered warnings",
+      "A distant hiss of steam from cracked earth",
+      "Silence so vast it rings in your ears",
+      "Rocks crack and pop in the relentless heat",
+    ],
+    smell: [
+      "Sulfur and mineral-rich steam",
+      "Baked earth and sun-heated stone",
+      "Hot springs carry a faint metallic tang",
+      "Dry dust that catches in the throat",
+      "Something acrid from a fumarole nearby",
+      "Clean heat with no trace of moisture",
+    ],
+  },
 };
 
 // === Helper Functions ===
 
-/** Get impressions for terrain */
-export function getImpressionsForTerrain(terrain: TerrainType): TerrainImpressions {
+import { OBOJIMA_IMPRESSIONS_BY_TERRAIN } from "./impressions-obojima";
+
+/** Get impressions for terrain, branching on themeId */
+export function getImpressionsForTerrain(terrain: TerrainType, themeId?: string): TerrainImpressions {
+  if (themeId === "obojima") {
+    return OBOJIMA_IMPRESSIONS_BY_TERRAIN[terrain] ?? OBOJIMA_IMPRESSIONS_BY_TERRAIN.plains;
+  }
   return IMPRESSIONS_BY_TERRAIN[terrain] ?? IMPRESSIONS_BY_TERRAIN.plains;
 }
 
@@ -185,9 +217,10 @@ export function getRandomImpressions(
   terrain: TerrainType,
   sightIndex: number,
   soundIndex: number,
-  smellIndex: number
+  smellIndex: number,
+  themeId?: string
 ): { sight: string; sound: string; smell: string } {
-  const impressions = getImpressionsForTerrain(terrain);
+  const impressions = getImpressionsForTerrain(terrain, themeId);
   return {
     sight: impressions.sight[sightIndex % impressions.sight.length],
     sound: impressions.sound[soundIndex % impressions.sound.length],

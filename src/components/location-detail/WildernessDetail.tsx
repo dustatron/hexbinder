@@ -9,6 +9,7 @@ interface WildernessDetailProps {
   dwelling?: Dwelling | null;
   worldId: string;
   ruleset: Ruleset;
+  themeId?: string;
   onReroll: () => void;
   onOverridesChange?: (overrides: EncounterOverrides) => void;
   onUpdateWorld?: (updater: (world: WorldData) => WorldData) => void;
@@ -30,6 +31,7 @@ const TERRAIN_COLORS: Record<TerrainType, string> = {
   mountains: "bg-stone-600",
   water: "bg-blue-700",
   swamp: "bg-emerald-800",
+  desert: "bg-amber-700",
 };
 
 export function WildernessDetail({
@@ -37,6 +39,7 @@ export function WildernessDetail({
   dwelling,
   worldId,
   ruleset,
+  themeId,
   onReroll,
   onOverridesChange,
   onUpdateWorld,
@@ -111,6 +114,7 @@ export function WildernessDetail({
           seed={seed}
           terrain={terrain}
           ruleset={ruleset}
+          themeId={themeId}
           overrides={encounterOverrides}
           onOverridesChange={onOverridesChange}
           onReroll={onReroll}

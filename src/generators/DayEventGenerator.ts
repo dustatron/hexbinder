@@ -26,7 +26,7 @@ const RUMOR_TEXTS = [
 ];
 
 const DIRECTIONS = ["north", "south", "east", "west", "northeast", "northwest"];
-const TERRAINS = ["forest", "hills", "swamp", "mountains", "plains"];
+const TERRAINS = ["forest", "hills", "swamp", "mountains", "plains", "desert"];
 const CREATURES = ["wolves", "bandits", "goblins", "undead", "trolls", "orcs"];
 const SUBJECTS = ["the old ruins", "the abandoned mine", "the tower", "travelers", "the mayor"];
 const GOODS = ["iron", "salt", "horses", "grain", "weapons", "potions"];
@@ -395,7 +395,7 @@ function generateFactionActivity(
 
   return {
     id: `event-${nanoid(8)}`,
-    type: "clock_tick", // Using clock_tick for faction activities
+    type: "faction_activity",
     description: text,
     linkedFactionId: faction.id,
   };
@@ -444,7 +444,7 @@ function generateWorldEvent(rng: SeededRandom, world: WorldData): DayEvent | nul
 
   return {
     id: `event-${nanoid(8)}`,
-    type: "weather_change", // Using weather_change for world events (catastrophic)
+    type: "world_event",
     description: text,
     linkedLocationId: settlement?.id,
   };

@@ -215,6 +215,82 @@ export const NAME_DATA: Record<NPCRace, RaceNameData> = {
       "Fanga", "Twitcha", "Nix", "Vex", "Grub", "Mox", "Fizz", "Glitch"
     ],
   },
+
+  // === Obojima races ===
+
+  nakudama: {
+    male: [
+      "Yolikanter", "Grifftang", "Blumpo", "Crump", "Toggo", "Wibba", "Sploosh", "Naku",
+      "Ribbo", "Flokk", "Muddik", "Gloppo", "Sproing", "Ketto", "Pippo", "Burbik",
+      "Zumbo", "Gruntle", "Plip", "Quibble", "Wobbert", "Skritt", "Thrumble", "Bripp",
+    ],
+    female: [
+      "Okumi", "Nettie", "Puddle", "Ribbette", "Lilika", "Poppet", "Glissma", "Chirpa",
+      "Wikket", "Tilli", "Burble", "Frizz", "Drippa", "Splasha", "Shimma", "Crikket",
+      "Mugga", "Pebbla", "Bloomi", "Spritza", "Guppa", "Warble", "Tuttie", "Plinka",
+    ],
+    maleSyllables: [["Yo", "Gri", "Blu", "Tog", "Wib", "Spl", "Na", "Ri", "Fl", "Mu", "Gl", "Sp", "Ke", "Pi", "Bu", "Zu", "Gru"], ["nter", "tang", "mpo", "go", "ba", "oosh", "ku", "bo", "okk", "dik", "ppo", "oing", "tto", "ppo", "bik", "mbo", "ntle"]],
+    femaleSyllables: [["Oku", "Net", "Pud", "Rib", "Lil", "Pop", "Gli", "Chi", "Wik", "Til", "Bur", "Fri", "Dri", "Spl"], ["mi", "tie", "dle", "ette", "ika", "pet", "ssma", "rpa", "ket", "li", "ble", "zz", "ppa", "asha"]],
+  },
+
+  dara: {
+    male: [
+      "Mookle", "Strum", "Gwenn", "Rootik", "Glimber", "Thornby", "Barken", "Knotto",
+      "Verdik", "Petrik", "Glyph", "Ashen", "Sonder", "Rune", "Oakum", "Fernik",
+      "Slate", "Cobble", "Wicken", "Plume", "Grundy", "Barkle", "Moss", "Emben",
+    ],
+    female: [
+      "Sayuri", "Thessa", "Brya", "Willowmere", "Fenna", "Mossa", "Rootle", "Petal",
+      "Ivyla", "Glenna", "Ashwyn", "Brambla", "Dewdra", "Fernly", "Thistla", "Clova",
+      "Glyphra", "Sorrela", "Brina", "Verdana", "Oakla", "Luma", "Wikka", "Embera",
+    ],
+    maleSyllables: [["Moo", "Stru", "Gwe", "Roo", "Gli", "Tho", "Bar", "Kno", "Ver", "Pet", "Gly", "Ash"], ["kle", "m", "nn", "tik", "mber", "rnby", "ken", "tto", "dik", "rik", "ph", "en"]],
+    femaleSyllables: [["Say", "The", "Bry", "Wil", "Fen", "Mos", "Roo", "Pet", "Ivy", "Gle", "Ash", "Bra"], ["uri", "ssa", "a", "mere", "na", "sa", "tle", "al", "la", "nna", "wyn", "mbla"]],
+  },
+
+  spirit: {
+    male: [
+      "Torum", "Whisp", "Flicker", "Shimmer", "Gloam", "Luminos", "Etheren", "Zephyr",
+      "Driftwood", "Phosphor", "Glisten", "Aether", "Flume", "Auric", "Prism", "Vesper",
+    ],
+    female: [
+      "Aurora", "Wisp", "Glimmer", "Solace", "Opalene", "Lumina", "Ethra", "Sylphine",
+      "Gossamer", "Phosphora", "Gleam", "Aethera", "Floriel", "Aurica", "Irisa", "Vespera",
+    ],
+  },
+
+  oni: {
+    male: [
+      "Chisuay", "Goruk", "Thunderfist", "Ironjaw", "Blazehorn", "Stonefang", "Kragmaw",
+      "Dreadtusk", "Grimhorn", "Ashclaw", "Rumblegut", "Steelskull", "Bonecrush", "Darkfire",
+    ],
+    female: [
+      "Onira", "Kaguya", "Blazehorn", "Stonefang", "Ashara", "Grimilda", "Ironheart",
+      "Duskfang", "Thundera", "Emberclaw", "Steelmaw", "Nighthorn", "Darkflame", "Firebrand",
+    ],
+  },
+
+  fish_folk: {
+    male: [
+      "Gurgul", "Brine", "Saltclaw", "Tidescale", "Deepfin", "Shellcrest", "Ripjaw",
+      "Coralspine", "Wavebreaker", "Darkwater", "Kelpfang", "Stingray", "Murk", "Abyssal",
+    ],
+    female: [
+      "Coralia", "Marina", "Tidala", "Pearlscale", "Shella", "Riviera", "Anemone",
+      "Serenica", "Laguna", "Nautila", "Kelpra", "Undina", "Deepcalla", "Brinella",
+    ],
+  },
+
+  awakened_animal: {
+    male: [
+      "Bristle", "Fang", "Growl", "Scratch", "Howl", "Bark", "Rumble", "Prowl",
+      "Snap", "Claw", "Snarl", "Tusk", "Flint", "Ember", "Moss", "Storm",
+    ],
+    female: [
+      "Whisker", "Bloom", "Feather", "Pebble", "Berry", "Luna", "Breeze", "Meadow",
+      "Shell", "Ripple", "Dawn", "Fern", "Frost", "Honey", "Sage", "Willow",
+    ],
+  },
 };
 
 // Surnames (shared across races, fantasy-style)

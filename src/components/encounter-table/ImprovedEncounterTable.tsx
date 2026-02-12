@@ -24,6 +24,7 @@ interface ImprovedEncounterTableProps {
   seed: string;
   terrain: TerrainType;
   ruleset: Ruleset;
+  themeId?: string;
   overrides?: EncounterOverrides;
   onOverridesChange?: (overrides: EncounterOverrides) => void;
   onReroll?: () => void;
@@ -34,6 +35,7 @@ export function ImprovedEncounterTable({
   seed,
   terrain,
   ruleset,
+  themeId,
   overrides,
   onOverridesChange,
   onReroll,
@@ -60,11 +62,12 @@ export function ImprovedEncounterTable({
       seed,
       terrain,
       overrides: effectiveOverrides,
+      themeId,
     });
-  }, [seed, terrain, effectiveOverrides]);
+  }, [seed, terrain, effectiveOverrides, themeId]);
 
-  // Get creature list for terrain
-  const creatures = useMemo(() => getCreaturesForTerrain(terrain), [terrain]);
+  // Get creature list for terrain (themed)
+  const creatures = useMemo(() => getCreaturesForTerrain(terrain, themeId), [terrain, themeId]);
 
   // Handlers for selection
   const handleMasterSelect = (index: number) => {

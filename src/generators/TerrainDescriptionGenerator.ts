@@ -87,6 +87,20 @@ const TERRAIN_DESCRIPTIONS: Record<TerrainType, readonly string[]> = {
     "White-capped waves suggest dangerous conditions further out.",
     "A half-sunken wreck is visible in the shallows.",
   ],
+  desert: [
+    "Cracked earth stretches to the shimmering horizon.",
+    "Steam rises from a fumarole between mineral-stained rocks.",
+    "Vivid bands of red and yellow streak the barren ground.",
+    "A bubbling hot spring sits in a rocky depression.",
+    "Hardy scrub clings to life in the parched soil.",
+    "Bleached animal bones mark a dried-up waterhole.",
+    "Wind-carved rock formations stand like sentinels.",
+    "Geothermal cracks vent sulfurous steam into the dry air.",
+    "The ground radiates heat even through thick-soled boots.",
+    "A geyser erupts in the distance, sending a plume skyward.",
+    "Sand and grit pile against ancient, sun-baked boulders.",
+    "The metallic tang of mineral water fills the air near a hot pool.",
+  ],
 };
 
 /**

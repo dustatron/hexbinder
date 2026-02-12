@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Cloud, Sun, CloudRain, Settings, ChevronRight, Tag } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
+import { Cloud, Sun, CloudRain, ChevronRight, Tag } from "lucide-react";
+import { SidebarTrigger } from "~/components/ui/sidebar";
 import { HexMap } from "~/components/hex-map";
 import { LocationPanel } from "~/components/location-panel";
 import { loadWorld, saveWorld } from "~/lib/storage";
@@ -29,9 +30,15 @@ const WEATHER_ICONS: Partial<Record<WeatherCondition, typeof Sun>> = {
 
 function WorldPage() {
   const initialWorld = Route.useLoaderData();
+  const navigate = useNavigate();
   const [world, setWorld] = useState<WorldData>(initialWorld);
   const [selectedCoord, setSelectedCoord] = useState<HexCoord | null>(null);
-  const [showLabels, setShowLabels] = useState(false);
+  const [showLabels, setShowLabels] = useState(() => {
+    try { return localStorage.getItem("hexbinder:showLabels") === "true"; } catch { return false; }
+  });
+  const savedZoom = useMemo(() => {
+    try { const v = localStorage.getItem("hexbinder:zoom"); return v ? parseFloat(v) : 1.69; } catch { return 1.69; }
+  }, []);
 
   // Sync state when navigating back (loader runs again with fresh localStorage data)
   useEffect(() => {
@@ -103,15 +110,13 @@ function WorldPage() {
   const todayEvents = (todayRecord?.events ?? []).filter(e => e.type !== "weather_change");
 
   return (
-    <div className="relative flex h-svh flex-col bg-stone-900 text-stone-100">
+    <div className="relative flex h-full flex-col bg-stone-900 text-stone-100">
       {/* Header */}
       <header className="z-10 border-b border-stone-700 bg-stone-900 px-4 py-3">
         <div className="flex items-center justify-between">
-          {/* Left: Back + World Name */}
+          {/* Left: Sidebar + World Name */}
           <div className="flex items-center gap-3">
-            <Link to="/" className="text-stone-400 hover:text-stone-200">
-              <ArrowLeft size={20} />
-            </Link>
+            <SidebarTrigger className="-ml-1 text-stone-400 hover:text-stone-200" />
             <h1 className="font-semibold">{world.name}</h1>
           </div>
 
@@ -154,13 +159,6 @@ function WorldPage() {
                 {world.state.weather.tempLow}°/{world.state.weather.tempHigh}°
               </span>
             </div>
-            <Link
-              to="/atlas/$worldId"
-              params={{ worldId: world.id }}
-              className="text-stone-400 hover:text-stone-200"
-            >
-              <Settings size={20} />
-            </Link>
           </div>
         </div>
       </header>
@@ -170,7 +168,11 @@ function WorldPage() {
         {/* Map Controls */}
         <div className="absolute top-2 left-2 z-10 flex gap-1">
           <button
-            onClick={() => setShowLabels(!showLabels)}
+            onClick={() => {
+              const next = !showLabels;
+              setShowLabels(next);
+              try { localStorage.setItem("hexbinder:showLabels", String(next)); } catch {}
+            }}
             className={`p-2 rounded border transition-colors ${
               showLabels
                 ? "bg-amber-600 border-amber-500 text-white"
@@ -190,7 +192,18 @@ function WorldPage() {
           currentHexId={world.state.currentHexId}
           visitedHexIds={world.state.visitedHexIds}
           onHexClick={setSelectedCoord}
+          onHexDoubleClick={(coord) => {
+            navigate({
+              to: "/world/$worldId/hex/$q/$r",
+              params: {
+                worldId: world.id,
+                q: String(coord.q),
+                r: String(coord.r),
+              },
+            });
+          }}
           showLabels={showLabels}
+          initialZoom={savedZoom}
         />
 
         {/* Location Panel */}
@@ -202,6 +215,7 @@ function WorldPage() {
           worldSeed={world.seed}
           currentHexId={world.state.currentHexId}
           visitedHexIds={world.state.visitedHexIds}
+          themeId={world.themeId}
           onClose={() => setSelectedCoord(null)}
           onSetCurrent={handleSetCurrent}
           onToggleVisited={handleToggleVisited}

@@ -11,10 +11,15 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
+import { useState, useEffect } from "react";
+
 import appCss from "~/styles.css?url";
 
 import { ThemeProvider } from "~/components/theme-provider";
 import { Toaster } from "~/components/ui/sonner";
+import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
+import { TooltipProvider } from "~/components/ui/tooltip";
+import { AppSidebar } from "~/components/app-sidebar";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -45,9 +50,32 @@ export const Route = createRootRouteWithContext<{
 });
 
 function RootComponent() {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Sync from localStorage on mount (avoids SSR mismatch)
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("hexbinder:sidebar-open");
+      if (stored === "false") setSidebarOpen(false);
+    } catch {}
+  }, []);
+
   return (
     <RootDocument>
-      <Outlet />
+      <SidebarProvider
+        open={sidebarOpen}
+        onOpenChange={(open) => {
+          setSidebarOpen(open);
+          try {
+            localStorage.setItem("hexbinder:sidebar-open", String(open));
+          } catch {}
+        }}
+      >
+        <AppSidebar />
+        <SidebarInset>
+          <Outlet />
+        </SidebarInset>
+      </SidebarProvider>
     </RootDocument>
   );
 }
@@ -61,7 +89,9 @@ function RootDocument({ children }: { readonly children: React.ReactNode }) {
       </head>
       <body>
         <ThemeProvider>
-          {children}
+          <TooltipProvider>
+            {children}
+          </TooltipProvider>
           <Toaster richColors />
         </ThemeProvider>
 

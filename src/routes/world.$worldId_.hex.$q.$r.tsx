@@ -1,11 +1,13 @@
 import { useState, useCallback } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, MapPin, Eye, EyeOff, Menu, Check, RefreshCw } from "lucide-react";
+import { MapPin, Eye, EyeOff, Menu, Check, RefreshCw } from "lucide-react";
+import { SidebarTrigger } from "~/components/ui/sidebar";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/lib/hex-regenerate";
 import { WildernessDetail } from "~/components/location-detail/WildernessDetail";
 import { SettlementDetail, type LocationEvent } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
+import { LandmarkDetail } from "~/components/location-detail/LandmarkDetail";
 import { RegenerateModal } from "~/components/location-detail/RegenerateButton";
 import { Button } from "~/components/ui/button";
 import {
@@ -173,18 +175,12 @@ function HexDetailPage() {
   const title = location?.name ?? `Hex (${hex.coord.q}, ${hex.coord.r})`;
 
   return (
-    <div className="flex h-svh flex-col bg-stone-900 text-stone-100">
+    <div className="flex h-full flex-col overflow-auto bg-stone-900 text-stone-100">
       {/* Header */}
       <header className="z-10 border-b border-stone-700 bg-stone-900 px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link
-              to="/world/$worldId"
-              params={{ worldId: world.id }}
-              className="text-stone-400 hover:text-stone-200"
-            >
-              <ArrowLeft size={20} />
-            </Link>
+            <SidebarTrigger className="-ml-1 text-stone-400 hover:text-stone-200" />
             <h1 className="font-semibold">{title}</h1>
             {isCurrent && (
               <span className="rounded-full bg-green-600/20 px-2 py-0.5 text-xs text-green-400">
@@ -243,6 +239,7 @@ function HexDetailPage() {
             dwelling={dwelling}
             worldId={world.id}
             ruleset={world.ruleset}
+            themeId={world.themeId}
             onReroll={handleReroll}
             onOverridesChange={handleOverridesChange}
             onUpdateWorld={handleUpdateWorld}
@@ -279,6 +276,17 @@ function HexDetailPage() {
             ruleset={world.ruleset}
             onReroll={handleReroll}
             seed={seed}
+          />
+        )}
+
+        {location?.type === "landmark" && (
+          <LandmarkDetail
+            landmark={location}
+            hex={hex}
+            npcs={world.npcs}
+            factions={world.factions}
+            worldId={world.id}
+            ruleset={world.ruleset}
           />
         )}
       </div>

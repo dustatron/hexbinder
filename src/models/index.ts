@@ -20,7 +20,8 @@ export type TerrainType =
   | "hills"
   | "mountains"
   | "water"
-  | "swamp";
+  | "swamp"
+  | "desert";
 
 // === Hex ===
 
@@ -40,6 +41,8 @@ export interface Hex {
   lastEncounterTimestamp?: number;
   // Reroll counter for encounter seed (persisted)
   encounterRerollCount?: number;
+  // Corruption level (Obojima)
+  corruption?: "clean" | "threatened" | "corrupted";
 }
 
 // === Hex Feature (Landmarks) ===
@@ -167,6 +170,10 @@ export interface Location {
   factionId?: string;
   controllingFactionId?: string; // Faction that controls this location (for dungeons as lairs)
   tags: string[];
+  /** Encounter hooks / points of interest at this location */
+  encounters?: string[];
+  /** NPC IDs associated with this location (for landmarks) */
+  npcIds?: string[];
 }
 
 // === Settlement ===
@@ -365,9 +372,15 @@ export type NPCRace =
   | "half-elf"
   | "half-orc"
   | "gnome"
-  | "goblin";
+  | "goblin"
+  | "nakudama"
+  | "dara"
+  | "spirit"
+  | "oni"
+  | "fish_folk"
+  | "awakened_animal";
 
-export type NPCGender = "male" | "female";
+export type NPCGender = "male" | "female" | "nonbinary";
 
 export type CreatureArchetype =
   | "commoner"
@@ -381,11 +394,20 @@ export type CreatureArchetype =
   | "merchant"
   | "scholar"
   | "thief"
-  | "cultist";
+  | "cultist"
+  | "ranger"
+  | "explorer"
+  | "artisan"
+  | "diplomat"
+  | "shaman"
+  | "swordmaster"
+  | "courier"
+  | "pirate"
+  | "spirit_bonded";
 
 export type ThreatLevel = 1 | 2 | 3 | 4 | 5;
 
-export type FactionRole = "leader" | "lieutenant" | "member" | "agent" | "informant";
+export type FactionRole = "leader" | "lieutenant" | "member" | "agent" | "informant" | "founder" | "elder_council" | "apprentice" | "champion";
 
 export type NPCRole =
   | "mayor"
@@ -406,7 +428,20 @@ export type NPCRole =
   | "king"
   | "baron"
   | "duke"
-  | "count";
+  | "count"
+  | "witch"
+  | "coven_leader"
+  | "sword_master"
+  | "ranger_captain"
+  | "archaeologist"
+  | "pilot"
+  | "chef"
+  | "brewer"
+  | "diviner"
+  | "ferryman"
+  | "lighthouse_keeper"
+  | "librarian"
+  | "spy";
 
 export type RulerTitle = "king" | "baron" | "duke" | "count";
 
@@ -446,6 +481,18 @@ export interface NPCFactionAspiration {
   task?: string; // "prove yourself", "bring us information"
 }
 
+// === Companion Spirit (Obojima) ===
+
+export interface CompanionSpirit {
+  id: string;
+  name: string;
+  type: string;           // "fire cat", "water sprite", etc.
+  bondedNpcId?: string;   // NPC they're bonded to
+  description: string;
+  abilities?: string[];
+  locationId?: string;
+}
+
 export interface NPC {
   id: string;
   name: string;
@@ -458,6 +505,8 @@ export interface NPC {
   variants?: string[];
   factionId?: string;
   factionRole?: FactionRole;
+  factionIds?: string[];                      // Multi-faction membership
+  factionRoles?: Record<string, FactionRole>; // Role per faction { "fac-id": "member" }
   locationId?: string;
   siteId?: string;
   age?: number;
@@ -498,7 +547,10 @@ export type AdvantageType =
   | "magic"         // Spells, artifacts, magical allies
   | "territory"     // Land, fortresses, hidden bases
   | "alliance"      // Pacts with other factions or creatures
-  | "artifact";     // Possession of a significant magic item
+  | "artifact"      // Possession of a significant magic item
+  | "apparatus"     // Functional tech/tools/devices (submarine, forge, airplanes)
+  | "specialization" // Expertise/techniques/skills
+  | "subterfuge";   // Spies, hidden operations, embedded agents
 
 export interface FactionAdvantage {
   type: AdvantageType;
@@ -577,6 +629,15 @@ export interface Faction {
   agenda: AgendaGoal[];                // 3-5 progressive goals toward objective
   obstacle: FactionObstacle;           // Primary thing blocking their agenda
   seneschalId?: string;                // NPC who is the "face" of the faction
+
+  // === Expanded fields (Obojima canon support) ===
+  displayType?: string;                // Descriptive type label ("Undersea explorers guild")
+  traits?: string[];                   // ["Tenacious", "Resourceful"]
+  region?: string;                     // Geographic region ("Mount Arbora")
+  leaderNpcIds?: string[];             // Multiple leader NPCs (supplements seneschalId)
+  immediateObstacle?: FactionObstacle; // Second obstacle (obstacle = long-term)
+  want?: string;                       // What the faction desires
+  tension?: string;                    // Inter-faction narrative dynamics
 
   // === Legacy fields (kept for compatibility) ===
   goals: FactionGoal[];                // @deprecated - use agenda instead
@@ -1367,7 +1428,7 @@ export type MoonPhase = "new" | "waxing" | "full" | "waning";
 
 // === Day Events (Atlas) ===
 
-export type DayEventType = "clock_tick" | "weather_change" | "rumor" | "encounter" | "arrival";
+export type DayEventType = "clock_tick" | "weather_change" | "faction_activity" | "world_event" | "rumor" | "encounter" | "arrival";
 
 export interface DayEvent {
   id: string;
@@ -1417,6 +1478,7 @@ export interface WorldData {
   name: string;
   seed: string;
   ruleset: Ruleset;
+  themeId?: string; // "obojima" | undefined (base fantasy)
   createdAt: number;
   updatedAt: number;
   state: WorldState;
@@ -1429,6 +1491,7 @@ export interface WorldData {
   significantItems: SignificantItem[]; // Setting Seed narrative items
   hooks: Hook[];
   clocks: Clock[];
+  companionSpirits?: CompanionSpirit[]; // Obojima companion spirits
 }
 
 // === World Summary (for list view) ===

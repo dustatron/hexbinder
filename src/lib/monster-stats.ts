@@ -8,7 +8,7 @@
 import type { Ruleset } from "~/models";
 import { getMonster, type Monster } from "./monsters";
 import { getCairnMonster, type CairnMonster } from "./cairn-monsters";
-import { toCanonicalName, getCairnTitle, slugToShadowdark, slugToCairn } from "./creature-ids";
+import { toCanonicalName, getCairnTitle, slugToShadowdark, slugToCairn, OBOJIMA_CREATURE_STATS } from "./creature-ids";
 
 // Shadowdark-specific stat display
 export interface ShadowdarkStats {
@@ -174,6 +174,20 @@ export function getMonsterStatsBySlug(
   slug: string,
   ruleset: Ruleset
 ): MonsterStats | undefined {
+  // Check Obojima creature stats first (system-agnostic)
+  const obojimaStats = OBOJIMA_CREATURE_STATS[slug];
+  if (obojimaStats) {
+    return {
+      name: obojimaStats.name,
+      ruleset,
+      hp: obojimaStats.hp,
+      defense: obojimaStats.ac,
+      defenseLabel: "AC",
+      attack: obojimaStats.attack,
+      description: obojimaStats.special,
+    };
+  }
+
   if (ruleset === "shadowdark") {
     // Map slug to Shadowdark name
     const shadowdarkName = slugToShadowdark(slug);

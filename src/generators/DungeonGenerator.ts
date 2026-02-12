@@ -159,7 +159,7 @@ export function placeDungeon(options: DungeonPlacementOptions): {
   } else {
     // Find suitable hexes (hills/forest without locations)
     const candidates = hexes.filter(
-      (h) => (h.terrain === "hills" || h.terrain === "forest") && !h.locationId
+      (h) => (h.terrain === "hills" || h.terrain === "forest" || h.terrain === "desert") && !h.locationId
     );
 
     if (candidates.length === 0) {

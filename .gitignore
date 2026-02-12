@@ -20,7 +20,7 @@ dist/
 *.swo
 
 # OS
-.DS_Store
+**/.DS_Store
 Thumbs.db
 
 # Claude Code
@@ -30,3 +30,4 @@ Thumbs.db
 *.log
 npm-debug.log*
 pnpm-debug.log*
+

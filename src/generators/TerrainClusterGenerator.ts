@@ -98,13 +98,14 @@ export function createBiomeZones(options: BiomeZoneOptions): Hex[] {
   }
 
   // Define biome types
-  const biomeTypes: TerrainType[] = ["plains", "forest", "hills", "swamp"];
+  const biomeTypes: TerrainType[] = ["plains", "forest", "hills", "swamp", "desert"];
   const biomeWeights = createWeightedTable<TerrainType>({
-    plains: 35,
-    forest: 30,
-    hills: 20,
+    plains: 30,
+    forest: 27,
+    hills: 18,
     mountains: 10,
     swamp: 5,
+    desert: 10,
     water: 0, // Water is handled separately
   });
 
@@ -182,6 +183,11 @@ export function smoothTerrainEdges(options: TerrainEdgeOptions): Hex[] {
     "hills-mountains": "hills",
     "plains-swamp": "plains",
     "forest-swamp": "swamp",
+    "plains-desert": "plains",
+    "desert-hills": "hills",
+    "desert-mountains": "hills",
+    "desert-forest": "plains",
+    "desert-swamp": "plains",
   };
 
   return hexes.map((hex) => {

@@ -35,6 +35,7 @@ export function generateRivers(options: RiverGeneratorOptions): RiverNetwork {
     hills: 4,
     forest: 2,
     plains: 2,
+    desert: 3,
     swamp: 1,
     water: 0,
   };

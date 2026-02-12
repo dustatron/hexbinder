@@ -31,6 +31,9 @@ const ADVANTAGE_TYPE_COLORS: Record<string, string> = {
   territory: "bg-green-700/50 text-green-200",
   alliance: "bg-cyan-700/50 text-cyan-200",
   artifact: "bg-amber-700/50 text-amber-200",
+  apparatus: "bg-orange-700/50 text-orange-200",
+  specialization: "bg-teal-700/50 text-teal-200",
+  subterfuge: "bg-rose-700/50 text-rose-200",
 };
 
 const GOAL_STATUS_STYLES: Record<string, { bg: string; dot: string }> = {
@@ -55,8 +58,10 @@ export function FactionDetail({
     (c) => c.ownerId === faction.id && c.ownerType === "faction"
   );
 
-  // Filter NPCs belonging to this faction
-  const factionNpcs = npcs.filter((n) => n.factionId === faction.id);
+  // Filter NPCs belonging to this faction (check both single and multi-faction fields)
+  const factionNpcs = npcs.filter(
+    (n) => n.factionId === faction.id || n.factionIds?.includes(faction.id)
+  );
 
   // Filter locations this faction controls or influences
   const controlledLocations = locations.filter((loc) =>
@@ -89,6 +94,11 @@ export function FactionDetail({
     ? npcs.find((n) => n.id === faction.seneschalId)
     : null;
 
+  // Get leader NPCs (multi-leader support)
+  const leaderNpcs = faction.leaderNpcIds
+    ? npcs.filter((n) => faction.leaderNpcIds!.includes(n.id))
+    : [];
+
   // Get headquarters location
   const headquarters = faction.headquartersId
     ? locations.find((loc) => loc.id === faction.headquartersId)
@@ -106,9 +116,9 @@ export function FactionDetail({
         <div className="flex items-center gap-3">
           <h2 className="text-xl font-bold">{faction.name}</h2>
           <span
-            className={`rounded px-2 py-0.5 text-xs font-medium uppercase ${FACTION_TYPE_COLORS[faction.factionType]}`}
+            className={`rounded px-2 py-0.5 text-xs font-medium uppercase ${FACTION_TYPE_COLORS[faction.factionType] || "bg-stone-600"}`}
           >
-            {faction.factionType}
+            {faction.displayType || faction.factionType}
           </span>
         </div>
         <div className="flex items-center gap-2 text-sm text-stone-400">
@@ -117,7 +127,25 @@ export function FactionDetail({
           <span className="capitalize">{faction.scale}</span>
           <span>·</span>
           <span className="capitalize">{faction.status}</span>
+          {faction.region && (
+            <>
+              <span>·</span>
+              <span>{faction.region}</span>
+            </>
+          )}
         </div>
+        {faction.traits && faction.traits.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {faction.traits.map((trait, i) => (
+              <span
+                key={i}
+                className="rounded bg-stone-700 px-1.5 py-0.5 text-xs text-stone-300"
+              >
+                {trait}
+              </span>
+            ))}
+          </div>
+        )}
       </header>
 
       {/* Description */}
@@ -131,21 +159,39 @@ export function FactionDetail({
         )}
       </section>
 
-      {/* Seneschal - The Face */}
-      {seneschal && (
+      {/* Leaders */}
+      {leaderNpcs.length > 0 && (
+        <section className="space-y-2">
+          <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-amber-400">
+            <Crown size={14} />
+            {leaderNpcs.length === 1 ? "Leader" : "Leaders"}
+          </h3>
+          <div className="space-y-2">
+            {leaderNpcs.map((npc) => (
+              <div key={npc.id} className="rounded border border-amber-500/30 bg-amber-900/20 px-3 py-2">
+                <span className="font-medium text-amber-200">
+                  {npc.name}
+                </span>
+                <p className="text-xs text-stone-400 capitalize">
+                  {npc.factionRoles?.[faction.id] || npc.factionRole || "leader"}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Seneschal - The Face (shown when no leaderNpcIds) */}
+      {seneschal && leaderNpcs.length === 0 && (
         <section className="space-y-2">
           <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-amber-400">
             <Crown size={14} />
             Seneschal
           </h3>
           <div className="rounded border border-amber-500/30 bg-amber-900/20 px-3 py-2">
-            <Link
-              to="/world/$worldId_/npc/$npcId"
-              params={{ worldId: worldId, npcId: seneschal.id }}
-              className="font-medium text-amber-200 hover:underline"
-            >
+            <span className="font-medium text-amber-200">
               {seneschal.name}
-            </Link>
+            </span>
             <p className="text-xs text-stone-400 capitalize">
               {seneschal.race} {seneschal.archetype} · The public face of {faction.name}
             </p>
@@ -167,7 +213,7 @@ export function FactionDetail({
                 <div>
                   <div className="flex items-center gap-2">
                     <Link
-                      to="/world/$worldId_/location/$locationId"
+                      to="/world/$worldId/location/$locationId"
                       params={{ worldId: worldId, locationId: headquarters.id }}
                       className="font-medium text-stone-200 hover:underline"
                     >
@@ -185,7 +231,7 @@ export function FactionDetail({
                 <div>
                   <div className="flex items-center gap-2">
                     <Link
-                      to="/world/$worldId_/location/$locationId"
+                      to="/world/$worldId/location/$locationId"
                       params={{ worldId: worldId, locationId: lairDungeon.id }}
                       className="font-medium text-stone-200 hover:underline"
                     >
@@ -234,19 +280,37 @@ export function FactionDetail({
         </section>
       )}
 
-      {/* Obstacle (Cairn-inspired) */}
-      {faction.obstacle && (
+      {/* Obstacles (Cairn-inspired) */}
+      {(faction.obstacle || faction.immediateObstacle) && (
         <section className="space-y-3">
           <h3 className="text-sm font-semibold uppercase tracking-wide text-red-400">
-            Obstacle
+            {faction.immediateObstacle ? "Obstacles" : "Obstacle"}
           </h3>
-          <div className="rounded border border-red-500/30 bg-red-900/20 px-3 py-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-red-200">{faction.obstacle.description}</span>
-              <span className="text-xs uppercase text-red-400/70">
-                {faction.obstacle.type.replace("_", " ")}
-              </span>
-            </div>
+          <div className="space-y-2">
+            {faction.obstacle && (
+              <div className="rounded border border-red-500/30 bg-red-900/20 px-3 py-2">
+                {faction.immediateObstacle && (
+                  <span className="mb-1 block text-xs font-medium text-red-400/80">Long-term</span>
+                )}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-red-200">{faction.obstacle.description}</span>
+                  <span className="ml-2 shrink-0 text-xs uppercase text-red-400/70">
+                    {faction.obstacle.type.replace("_", " ")}
+                  </span>
+                </div>
+              </div>
+            )}
+            {faction.immediateObstacle && (
+              <div className="rounded border border-orange-500/30 bg-orange-900/20 px-3 py-2">
+                <span className="mb-1 block text-xs font-medium text-orange-400/80">Immediate</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-orange-200">{faction.immediateObstacle.description}</span>
+                  <span className="ml-2 shrink-0 text-xs uppercase text-orange-400/70">
+                    {faction.immediateObstacle.type.replace("_", " ")}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </section>
       )}
@@ -295,6 +359,30 @@ export function FactionDetail({
                 );
               })}
           </ol>
+        </section>
+      )}
+
+      {/* Want */}
+      {faction.want && (
+        <section className="space-y-2">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-emerald-400">
+            Want
+          </h3>
+          <p className="rounded bg-emerald-900/20 px-3 py-2 text-sm text-emerald-200">
+            {faction.want}
+          </p>
+        </section>
+      )}
+
+      {/* Tension */}
+      {faction.tension && (
+        <section className="space-y-2">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-yellow-400">
+            Tension
+          </h3>
+          <p className="rounded bg-yellow-900/20 px-3 py-2 text-sm text-yellow-200">
+            {faction.tension}
+          </p>
         </section>
       )}
 
@@ -447,13 +535,26 @@ export function FactionDetail({
               <li key={npc.id} className="text-sm">
                 <div className="flex items-center gap-2">
                   <span className="text-stone-200">{npc.name}</span>
-                  {npc.factionRole && (
+                  {(npc.factionRoles?.[faction.id] || npc.factionRole) && (
                     <span className="rounded bg-stone-800 px-1.5 py-0.5 text-xs capitalize text-stone-400">
-                      {npc.factionRole}
+                      {npc.factionRoles?.[faction.id] || npc.factionRole}
                     </span>
                   )}
                 </div>
                 <p className="text-xs text-stone-500 capitalize">{npc.race} - {npc.role ? npc.role.replace("_", " ") : npc.archetype}</p>
+                {npc.locationId && (() => {
+                  const loc = locations.find(l => l.id === npc.locationId);
+                  return loc ? (
+                    <Link
+                      to="/world/$worldId/location/$locationId"
+                      params={{ worldId: worldId, locationId: loc.id }}
+                      className="text-xs text-cyan-400 hover:underline"
+                    >
+                      <MapPin size={10} className="mr-0.5 inline" />
+                      {loc.name}
+                    </Link>
+                  ) : null;
+                })()}
                 <NPCStatLine archetype={npc.archetype} ruleset={ruleset} />
               </li>
             ))}

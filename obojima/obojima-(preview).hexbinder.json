@@ -1,0 +1,3282 @@
+{
+  "id": "3Qkj9k7R-l_-gcR_QtZMe",
+  "name": "Obojima (Preview)",
+  "seed": "321536",
+  "ruleset": "shadowdark",
+  "createdAt": 1770706099747,
+  "updatedAt": 1770751094286,
+  "state": {
+    "day": 1,
+    "season": "spring",
+    "year": 1,
+    "weather": {
+      "condition": "clear",
+      "temperature": "warm",
+      "tempLow": 68,
+      "tempHigh": 82,
+      "wind": "breeze"
+    },
+    "moonPhase": "waxing",
+    "calendar": [],
+    "forecastEndDay": 0,
+    "visitedHexIds": [],
+    "currentHexId": null
+  },
+  "hexes": [
+    {
+      "coord": {
+        "q": 2,
+        "r": -6
+      },
+      "terrain": "water",
+      "description": "Northern Deep — open ocean north of the island."
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -6
+      },
+      "terrain": "water",
+      "description": "Sunken Town & Underwater Depot — submerged ruins visible through clear water.",
+      "locationId": "dungeon-sunken-town"
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -5
+      },
+      "terrain": "water",
+      "description": "NW Shallows — coral reefs and shallow waters."
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -5
+      },
+      "terrain": "hills",
+      "description": "Northern coastal settlement. A small port at the island's northern tip.",
+      "locationId": "settlement-durrin"
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -5
+      },
+      "terrain": "forest",
+      "description": "NE Shallows — rocky coastline with tide pools."
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": -4
+      },
+      "terrain": "hills",
+      "description": "NW coast — Coastal Divers' Lodge North, Water Clock, and Pixie Boat anchorage.",
+      "locationId": "settlement-cdl-north"
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -4
+      },
+      "terrain": "forest",
+      "description": "Sweeping valley with enormous kites riding thermal winds.",
+      "locationId": "settlement-sky-kite"
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -4
+      },
+      "terrain": "mountains",
+      "description": "Upper slopes of Mount Arbora. Jumaga's Roost and the Ledge of Offering.",
+      "locationId": "settlement-jumaga-roost"
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -4
+      },
+      "terrain": "hills",
+      "description": "Chisuay's Teahouse — elegant teahouse run by a dashing oni sorcerer.",
+      "locationId": "settlement-chisuay"
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": -4
+      },
+      "terrain": "swamp",
+      "description": "NE coast — rocky cliffs above churning waters."
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": -3
+      },
+      "terrain": "water",
+      "description": "NW coast — Island of Hmug visible offshore."
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": -3
+      },
+      "terrain": "forest",
+      "description": "Kuroki Village — forest settlement near the mountain.",
+      "locationId": "settlement-kuroki"
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -3
+      },
+      "terrain": "hills",
+      "description": "Lom & Salt's College of Arms — training grounds on the hillside."
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -3
+      },
+      "terrain": "hills",
+      "description": "Hogstone Hot Springs — healing hamlet around natural hot springs.",
+      "locationId": "settlement-hogstone"
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -3
+      },
+      "terrain": "plains",
+      "description": "Toggle — smithing hamlet on Mount Arbora's eastern slope. Opu Opu Spring nearby."
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": -3
+      },
+      "terrain": "hills",
+      "description": "Toraf & Boulder's School of Guts & Grit — martial training academy.",
+      "locationId": "settlement-toraf-boulder"
+    },
+    {
+      "coord": {
+        "q": 5,
+        "r": -3
+      },
+      "terrain": "hills",
+      "description": "Coastal Divers' Lodge East — NE coast outpost of the Mariners' Guild.",
+      "locationId": "settlement-cdl-east"
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": -2
+      },
+      "terrain": "water",
+      "description": "Western coast — forested cliffs above the ocean."
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": -2
+      },
+      "terrain": "forest",
+      "description": "Uluwa / Ferry Crossing — the Spirit Market, a twilight bazaar.",
+      "locationId": "settlement-uluwa"
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": -2
+      },
+      "terrain": "forest",
+      "description": "Matango Village — mushroom-obsessed village. Five fungal factions.",
+      "locationId": "settlement-matango"
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": -2
+      },
+      "terrain": "forest",
+      "description": "Dense forest wilderness between Matango and the Graysteps."
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -2
+      },
+      "terrain": "mountains",
+      "description": "The Graysteps — grey stone village on Mount Arbora's western slope.",
+      "locationId": "settlement-graysteps"
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -2
+      },
+      "terrain": "forest",
+      "description": "Forested foothills — transition zone between mountains and wetlands.",
+      "locationId": "settlement-ka0LE3px"
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -2
+      },
+      "terrain": "swamp",
+      "description": "Goodie Mart — provisions outpost at the edge of Brackwater Wetlands.",
+      "locationId": "settlement-goodie-mart"
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": -2
+      },
+      "terrain": "forest",
+      "description": "Gobo Village — settlement in the eastern forests.",
+      "locationId": "settlement-gobo"
+    },
+    {
+      "coord": {
+        "q": 5,
+        "r": -2
+      },
+      "terrain": "water",
+      "description": "Eastern coast — mangrove-lined shore."
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": -1
+      },
+      "terrain": "water",
+      "description": "Western deep — Island of Hmug and open ocean."
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": -1
+      },
+      "terrain": "forest",
+      "description": "Sheep Dragon Grazing Grounds — pastoral meadows in the western forest."
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": -1
+      },
+      "terrain": "hills",
+      "description": "Wooded hills — wilderness between western settlements."
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": -1
+      },
+      "terrain": "plains",
+      "description": "The Way Gate & Amak Shurak — ancient waypoint at the island's crossroads."
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -1
+      },
+      "terrain": "hills",
+      "description": "Rolling foothills — wilderness between mountains and wetlands."
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -1
+      },
+      "terrain": "swamp",
+      "description": "Roa Kala — sacred grove of the Kohdoi dara.",
+      "locationId": "settlement-roa-kala"
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -1
+      },
+      "terrain": "swamp",
+      "description": "Hakumon's Ramen Shop — legendary ramen in the wetlands.",
+      "locationId": "settlement-hakumon"
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": -1
+      },
+      "terrain": "swamp",
+      "description": "Ten Wheels Grove — ancient grove in Brackwater Wetlands."
+    },
+    {
+      "coord": {
+        "q": 5,
+        "r": -1
+      },
+      "terrain": "swamp",
+      "description": "Polewater Village & The Sally Sue — stilts village, closest to Corruption.",
+      "locationId": "settlement-polewater"
+    },
+    {
+      "coord": {
+        "q": -4,
+        "r": 0
+      },
+      "terrain": "water",
+      "description": "The Coral Castle — Lionfish King's underwater fortress.",
+      "locationId": "dungeon-coral-castle"
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": 0
+      },
+      "terrain": "hills",
+      "description": "Coastal Divers' Lodge West — western coast outpost.",
+      "locationId": "settlement-cdl-west"
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 0
+      },
+      "terrain": "hills",
+      "description": "Okiri Village — quiet farming hamlet with shepherds and slingers.",
+      "locationId": "settlement-okiri"
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 0
+      },
+      "terrain": "plains",
+      "description": "Fort Harglo — Courier Brigade fortress at the crossroads.",
+      "locationId": "settlement-fort-harglo"
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": 0
+      },
+      "terrain": "plains",
+      "description": "Witching Tower — Fish Head Coven compound with four Gatehouses.",
+      "locationId": "settlement-witching-tower"
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": 0
+      },
+      "terrain": "plains",
+      "description": "North & East Gatehouse area — Witching Tower outer defenses."
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": 0
+      },
+      "terrain": "hills",
+      "description": "River Master's Tower — overlooks the eastern rivers."
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": 0
+      },
+      "terrain": "forest",
+      "description": "Shade Wood & Whispering Forest — dense, eerie woodland."
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": 0
+      },
+      "terrain": "forest",
+      "description": "Ekmu Village — settlement at the edge of the eastern forest.",
+      "locationId": "settlement-ekmu"
+    },
+    {
+      "coord": {
+        "q": 5,
+        "r": 0
+      },
+      "terrain": "water",
+      "description": "Eastern coast — New Moon Lagoon and coastal waters."
+    },
+    {
+      "coord": {
+        "q": -4,
+        "r": 1
+      },
+      "terrain": "water",
+      "description": "SW coast — rocky waters and fishing grounds."
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": 1
+      },
+      "terrain": "hills",
+      "description": "Crak Caves — cave system in the western hills.",
+      "locationId": "dungeon-crak-caves"
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 1
+      },
+      "terrain": "hills",
+      "description": "SW interior wilderness — scrubby hills and goat paths."
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 1
+      },
+      "terrain": "plains",
+      "description": "South Gatehouse & West Gatehouse area — southern Witching Tower defenses."
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": 1
+      },
+      "terrain": "hills",
+      "description": "Opal Falls — cascading waterfalls from the highland plateau.",
+      "locationId": "settlement-opal-falls"
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": 1
+      },
+      "terrain": "hills",
+      "description": "Broken Bird Airfield — First Age airfield ruins.",
+      "locationId": "settlement-broken-bird"
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": 1
+      },
+      "terrain": "hills",
+      "description": "Crumbled Hut — mysterious ruins in the Coastal Highlands."
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": 1
+      },
+      "terrain": "forest",
+      "description": "SE forest wilderness — dense canopy and hidden trails."
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": 1
+      },
+      "terrain": "water",
+      "description": "SE coast — highland cliffs above the ocean."
+    },
+    {
+      "coord": {
+        "q": -4,
+        "r": 2
+      },
+      "terrain": "water",
+      "description": "SW coast — open waters south of Tidewater."
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": 2
+      },
+      "terrain": "hills",
+      "description": "Tidewater — sandy coastal village. Tower of Glass holds the Pearl of Rongol.",
+      "locationId": "settlement-tidewater"
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 2
+      },
+      "terrain": "forest",
+      "description": "Lake Ellior area — forested lowlands around a shimmering lake."
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 2
+      },
+      "terrain": "water",
+      "description": "Temple of Shoom — ancient nakudama ziggurat rising from coastal waters.",
+      "locationId": "dungeon-temple-of-shoom"
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": 2
+      },
+      "terrain": "plains",
+      "description": "Southern fields — open grassland approaching the coast."
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": 2
+      },
+      "terrain": "hills",
+      "description": "AHA Headquarters — observatory and research campus.",
+      "locationId": "settlement-aha-hq"
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": 2
+      },
+      "terrain": "water",
+      "description": "SE waters — Cloud Depot visible on the horizon."
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": 3
+      },
+      "terrain": "water",
+      "description": "SW coast — fishing waters south of Tidewater."
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 3
+      },
+      "terrain": "hills",
+      "description": "Yatamon — largest city on Obojima. Spirit trolleys, undercity below.",
+      "locationId": "settlement-yatamon"
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 3
+      },
+      "terrain": "hills",
+      "description": "Coastal Divers' Lodge South — southern coast outpost.",
+      "locationId": "settlement-cdl-south"
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": 3
+      },
+      "terrain": "water",
+      "description": "Southern coast — surf breaks against dark volcanic rock."
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 4
+      },
+      "terrain": "water",
+      "description": "Southern Shallows — Lionfish King patrols these waters."
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 4
+      },
+      "terrain": "water",
+      "description": "Southern Deep — the Venomous Rex's corrupted forces."
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -7
+      },
+      "terrain": "water",
+      "description": "Far northern ocean — deep blue waters beyond sight of land."
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -7
+      },
+      "terrain": "water",
+      "description": "Far northern ocean — wind-swept open sea."
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": -7
+      },
+      "terrain": "water",
+      "description": "Far NE ocean — distant horizon and circling seabirds."
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -6
+      },
+      "terrain": "water",
+      "description": "NW ocean — whitecaps rolling toward the island."
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": -6
+      },
+      "terrain": "water",
+      "description": "NE ocean — rocky shoals and strong currents."
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": -5
+      },
+      "terrain": "water",
+      "description": "NW ocean — kelp forests visible beneath the surface."
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": -5
+      },
+      "terrain": "forest",
+      "description": "NE coastal waters — waves crash against volcanic rock."
+    },
+    {
+      "coord": {
+        "q": 5,
+        "r": -5
+      },
+      "terrain": "water",
+      "description": "Far NE ocean — deep currents from the open sea."
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": -4
+      },
+      "terrain": "water",
+      "description": "NW coastal waters — sheltered cove with driftwood."
+    },
+    {
+      "coord": {
+        "q": 5,
+        "r": -4
+      },
+      "terrain": "water",
+      "description": "NE coastal waters — riptides along the cliffs."
+    },
+    {
+      "coord": {
+        "q": 6,
+        "r": -4
+      },
+      "terrain": "water",
+      "description": "Far NE ocean — nothing but open water to the east."
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": -3
+      },
+      "terrain": "water",
+      "description": "NW coastal waters — Island of Hmug looms nearby."
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": -3
+      },
+      "terrain": "water",
+      "description": "Western ocean — swells rolling in from the deep."
+    },
+    {
+      "coord": {
+        "q": 6,
+        "r": -3
+      },
+      "terrain": "water",
+      "description": "Eastern ocean — warm currents from the tropics."
+    },
+    {
+      "coord": {
+        "q": -4,
+        "r": -2
+      },
+      "terrain": "water",
+      "description": "Western deep — dark waters and occasional whale spouts."
+    },
+    {
+      "coord": {
+        "q": 6,
+        "r": -2
+      },
+      "terrain": "water",
+      "description": "Eastern ocean — mangrove debris floating on the tide."
+    },
+    {
+      "coord": {
+        "q": -4,
+        "r": -1
+      },
+      "terrain": "water",
+      "description": "Western ocean — Hmug's shadow visible on clear days."
+    },
+    {
+      "coord": {
+        "q": 6,
+        "r": -1
+      },
+      "terrain": "water",
+      "description": "Eastern ocean — the Corruption's haze darkens the horizon."
+    },
+    {
+      "coord": {
+        "q": -5,
+        "r": 0
+      },
+      "terrain": "water",
+      "description": "Far western ocean — deep waters beyond the Coral Castle."
+    },
+    {
+      "coord": {
+        "q": 6,
+        "r": 0
+      },
+      "terrain": "water",
+      "description": "Far eastern ocean — murky waters touched by Corruption."
+    },
+    {
+      "coord": {
+        "q": -5,
+        "r": 1
+      },
+      "terrain": "water",
+      "description": "SW ocean — fishing boats from Tidewater range here."
+    },
+    {
+      "coord": {
+        "q": 5,
+        "r": 1
+      },
+      "terrain": "water",
+      "description": "SE coastal waters — strong undertow near the cliffs."
+    },
+    {
+      "coord": {
+        "q": -5,
+        "r": 2
+      },
+      "terrain": "water",
+      "description": "SW ocean — deep blue waters south of Crak Caves."
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": 2
+      },
+      "terrain": "water",
+      "description": "SE coastal waters — coral formations below the surface."
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": 2
+      },
+      "terrain": "water",
+      "description": "SE ocean — the Cloud Depot's silhouette on the horizon."
+    },
+    {
+      "coord": {
+        "q": -5,
+        "r": 3
+      },
+      "terrain": "water",
+      "description": "Far SW ocean — deep ocean beyond Tidewater."
+    },
+    {
+      "coord": {
+        "q": -4,
+        "r": 3
+      },
+      "terrain": "water",
+      "description": "SW coastal waters — sandy shallows near Tidewater."
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": 3
+      },
+      "terrain": "water",
+      "description": "Southern coastal waters — volcanic reefs below."
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": 3
+      },
+      "terrain": "water",
+      "description": "SE ocean — warm shallow waters over sand."
+    },
+    {
+      "coord": {
+        "q": -4,
+        "r": 4
+      },
+      "terrain": "water",
+      "description": "Far SW ocean — open sea stretching to the horizon."
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": 4
+      },
+      "terrain": "water",
+      "description": "Southern ocean — Lionfish King's patrol boundary."
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": 4
+      },
+      "terrain": "water",
+      "description": "Southern ocean — dark volcanic rock beneath the waves."
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": 5
+      },
+      "terrain": "water",
+      "description": "Far southern ocean — empty waters and distant storms."
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 5
+      },
+      "terrain": "water",
+      "description": "Far southern ocean — the Venomous Rex's domain deepens."
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 5
+      },
+      "terrain": "water",
+      "description": "Far southern deep — corrupted waters at the map's edge."
+    }
+  ],
+  "edges": [
+    {
+      "from": {
+        "q": -2,
+        "r": 3
+      },
+      "to": {
+        "q": -1,
+        "r": 2
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": -2,
+        "r": 3
+      },
+      "to": {
+        "q": -3,
+        "r": 2
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": -2,
+        "r": 3
+      },
+      "to": {
+        "q": -1,
+        "r": 3
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": -2,
+        "r": 0
+      },
+      "to": {
+        "q": -1,
+        "r": 0
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": -1,
+        "r": 0
+      },
+      "to": {
+        "q": 0,
+        "r": 0
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": -2,
+        "r": 0
+      },
+      "to": {
+        "q": -1,
+        "r": -2
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": 5,
+        "r": -1
+      },
+      "to": {
+        "q": 4,
+        "r": 0
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": 0,
+        "r": 1
+      },
+      "to": {
+        "q": 1,
+        "r": 2
+      },
+      "type": "road"
+    },
+    {
+      "from": {
+        "q": -2,
+        "r": 3
+      },
+      "to": {
+        "q": -1,
+        "r": 2
+      },
+      "type": "trail"
+    },
+    {
+      "from": {
+        "q": -1,
+        "r": 2
+      },
+      "to": {
+        "q": -1,
+        "r": 1
+      },
+      "type": "trail"
+    },
+    {
+      "from": {
+        "q": -1,
+        "r": 1
+      },
+      "to": {
+        "q": 0,
+        "r": 0
+      },
+      "type": "trail"
+    },
+    {
+      "from": {
+        "q": 0,
+        "r": 0
+      },
+      "to": {
+        "q": 0,
+        "r": -1
+      },
+      "type": "trail"
+    },
+    {
+      "from": {
+        "q": 0,
+        "r": -1
+      },
+      "to": {
+        "q": 1,
+        "r": -2
+      },
+      "type": "trail"
+    },
+    {
+      "from": {
+        "q": 1,
+        "r": -2
+      },
+      "to": {
+        "q": 2,
+        "r": -3
+      },
+      "type": "trail"
+    },
+    {
+      "from": {
+        "q": 2,
+        "r": -3
+      },
+      "to": {
+        "q": 1,
+        "r": -4
+      },
+      "type": "trail"
+    },
+    {
+      "from": {
+        "q": 2,
+        "r": -4
+      },
+      "to": {
+        "q": 1,
+        "r": -2
+      },
+      "type": "river"
+    },
+    {
+      "from": {
+        "q": 1,
+        "r": -2
+      },
+      "to": {
+        "q": 0,
+        "r": -2
+      },
+      "type": "river"
+    },
+    {
+      "from": {
+        "q": 0,
+        "r": -2
+      },
+      "to": {
+        "q": -1,
+        "r": -2
+      },
+      "type": "river"
+    },
+    {
+      "from": {
+        "q": 2,
+        "r": -4
+      },
+      "to": {
+        "q": 3,
+        "r": -3
+      },
+      "type": "river"
+    },
+    {
+      "from": {
+        "q": 3,
+        "r": -3
+      },
+      "to": {
+        "q": 3,
+        "r": -2
+      },
+      "type": "river"
+    },
+    {
+      "from": {
+        "q": 3,
+        "r": -2
+      },
+      "to": {
+        "q": 3,
+        "r": -1
+      },
+      "type": "river"
+    },
+    {
+      "from": {
+        "q": 3,
+        "r": -1
+      },
+      "to": {
+        "q": 5,
+        "r": -1
+      },
+      "type": "river"
+    }
+  ],
+  "locations": [
+    {
+      "id": "settlement-durrin",
+      "name": "Durrin",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 2,
+        "r": -5
+      },
+      "description": "Northern coastal settlement at the island's tip.",
+      "tags": [
+        "coastal",
+        "north"
+      ],
+      "size": "thorpe",
+      "population": 30,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-cdl-north",
+      "name": "Coastal Divers' Lodge (North)",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 0,
+        "r": -4
+      },
+      "description": "NW coast outpost. Water Clock and Pixie Boat nearby.",
+      "tags": [
+        "coastal",
+        "mariners"
+      ],
+      "size": "thorpe",
+      "population": 20,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-sky-kite",
+      "name": "Sky Kite Valley",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 1,
+        "r": -4
+      },
+      "description": "Second largest settlement. Enormous kites, barges, aeronauts.",
+      "tags": [
+        "town",
+        "kites"
+      ],
+      "size": "town",
+      "population": 1800,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-jumaga-roost",
+      "name": "Jumaga's Roost",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 2,
+        "r": -4
+      },
+      "description": "Climbing settlement near the elder sky salamander's lair.",
+      "tags": [
+        "mountains",
+        "climbing"
+      ],
+      "size": "thorpe",
+      "population": 30,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-chisuay",
+      "name": "Chisuay's Teahouse",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 3,
+        "r": -4
+      },
+      "description": "Elegant teahouse run by an oni sorcerer. Awakened fossa staff.",
+      "tags": [
+        "teahouse",
+        "oni"
+      ],
+      "size": "thorpe",
+      "population": 25,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-kuroki",
+      "name": "Kuroki Village",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 0,
+        "r": -3
+      },
+      "description": "Forest village near the mountain.",
+      "tags": [
+        "forest",
+        "village"
+      ],
+      "size": "village",
+      "population": 300,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-hogstone",
+      "name": "Hogstone Hot Springs",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 2,
+        "r": -3
+      },
+      "description": "Healing hamlet around natural hot springs.",
+      "tags": [
+        "hot-springs",
+        "healing"
+      ],
+      "size": "hamlet",
+      "population": 200,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-toraf-boulder",
+      "name": "Toraf & Boulder's School of Guts & Grit",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 4,
+        "r": -3
+      },
+      "description": "Martial training academy in the hills.",
+      "tags": [
+        "training",
+        "martial"
+      ],
+      "size": "thorpe",
+      "population": 40,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-cdl-east",
+      "name": "Coastal Divers' Lodge (East)",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 5,
+        "r": -3
+      },
+      "description": "NE coast outpost of the Mariners' Guild.",
+      "tags": [
+        "coastal",
+        "mariners"
+      ],
+      "size": "thorpe",
+      "population": 15,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-uluwa",
+      "name": "Uluwa (Spirit Market)",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -2,
+        "r": -2
+      },
+      "description": "Twilight bazaar where spirits and mortals trade. Ferry Crossing.",
+      "tags": [
+        "market",
+        "spirits"
+      ],
+      "size": "village",
+      "population": 500,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-matango",
+      "name": "Matango Village",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -1,
+        "r": -2
+      },
+      "description": "Mushroom village. Five fungal factions compete for Truffle Prince.",
+      "tags": [
+        "mushrooms",
+        "forest"
+      ],
+      "size": "village",
+      "population": 400,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-graysteps",
+      "name": "The Graysteps",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 1,
+        "r": -2
+      },
+      "description": "Grey stone village on Mount Arbora's western slope.",
+      "tags": [
+        "mountains",
+        "watchers"
+      ],
+      "size": "hamlet",
+      "population": 100,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-goodie-mart",
+      "name": "Goodie Mart",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 3,
+        "r": -2
+      },
+      "description": "Provisions outpost at the Brackwater edge. Subway station.",
+      "tags": [
+        "provisions",
+        "swamp"
+      ],
+      "size": "thorpe",
+      "population": 30,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-gobo",
+      "name": "Gobo Village",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 4,
+        "r": -2
+      },
+      "description": "Eastern forest settlement.",
+      "tags": [
+        "forest",
+        "east"
+      ],
+      "size": "village",
+      "population": 200,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-roa-kala",
+      "name": "Roa Kala",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 2,
+        "r": -1
+      },
+      "description": "Sacred grove of the Kohdoi dara.",
+      "tags": [
+        "dara",
+        "sacred"
+      ],
+      "size": "hamlet",
+      "population": 80,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-hakumon",
+      "name": "Hakumon's Ramen Shop",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 3,
+        "r": -1
+      },
+      "description": "Legendary ramen in the wetlands. Oni chef.",
+      "tags": [
+        "ramen",
+        "oni"
+      ],
+      "size": "thorpe",
+      "population": 30,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-polewater",
+      "name": "Polewater Village",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 5,
+        "r": -1
+      },
+      "description": "Stilts village in Brackwater. Closest to the Corruption. Sally Sue nearby.",
+      "tags": [
+        "wetlands",
+        "stilts"
+      ],
+      "size": "village",
+      "population": 350,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-cdl-west",
+      "name": "Coastal Divers' Lodge (West)",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -3,
+        "r": 0
+      },
+      "description": "Western coast outpost of the Mariners' Guild.",
+      "tags": [
+        "coastal",
+        "mariners"
+      ],
+      "size": "thorpe",
+      "population": 20,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-okiri",
+      "name": "Okiri Village",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -2,
+        "r": 0
+      },
+      "description": "Quiet farming hamlet. Shepherds, slingers, Miss Lindley fixes anything.",
+      "tags": [
+        "farming",
+        "pastoral"
+      ],
+      "size": "hamlet",
+      "population": 150,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-fort-harglo",
+      "name": "Fort Harglo",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -1,
+        "r": 0
+      },
+      "description": "Courier Brigade fortress at the crossroads.",
+      "tags": [
+        "fort",
+        "courier-brigade"
+      ],
+      "size": "hamlet",
+      "population": 80,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-witching-tower",
+      "name": "Witching Tower (Fish Head Coven)",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 0,
+        "r": 0
+      },
+      "description": "Fish Head Coven compound. Council of Three and Thirty. Four Gatehouses.",
+      "tags": [
+        "witches",
+        "coven"
+      ],
+      "size": "village",
+      "population": 300,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-ekmu",
+      "name": "Ekmu Village",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 4,
+        "r": 0
+      },
+      "description": "Settlement at the eastern forest edge.",
+      "tags": [
+        "forest",
+        "east"
+      ],
+      "size": "village",
+      "population": 150,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-opal-falls",
+      "name": "Opal Falls",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 0,
+        "r": 1
+      },
+      "description": "Cascading waterfalls from the highland plateau.",
+      "tags": [
+        "waterfalls",
+        "highlands"
+      ],
+      "size": "village",
+      "population": 250,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-broken-bird",
+      "name": "Broken Bird Airfield",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 1,
+        "r": 1
+      },
+      "description": "First Age airfield ruins. Spirit Plitsu guards.",
+      "tags": [
+        "ruins",
+        "first-age"
+      ],
+      "size": "thorpe",
+      "population": 10,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-tidewater",
+      "name": "Tidewater",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -3,
+        "r": 2
+      },
+      "description": "Sandy coastal village. Tower of Glass holds the Pearl of Rongol.",
+      "tags": [
+        "coastal",
+        "pearl"
+      ],
+      "size": "village",
+      "population": 300,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-aha-hq",
+      "name": "AHA Headquarters",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": 1,
+        "r": 2
+      },
+      "description": "Observatory and research campus. The Asloh triumvirate.",
+      "tags": [
+        "observatory",
+        "scholars"
+      ],
+      "size": "hamlet",
+      "population": 60,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-yatamon",
+      "name": "Yatamon",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -2,
+        "r": 3
+      },
+      "description": "Largest city on Obojima. Spirit trolleys, detective agencies, undercity.",
+      "tags": [
+        "city",
+        "capital"
+      ],
+      "size": "city",
+      "population": 5000,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "settlement-cdl-south",
+      "name": "Coastal Divers' Lodge (South)",
+      "type": "settlement",
+      "settlementType": "human",
+      "hexCoord": {
+        "q": -1,
+        "r": 3
+      },
+      "description": "Southern coast outpost.",
+      "tags": [
+        "coastal",
+        "mariners"
+      ],
+      "size": "thorpe",
+      "population": 20,
+      "governmentType": "council",
+      "economyBase": [
+        "trade"
+      ],
+      "mood": "welcoming",
+      "trouble": "TBD",
+      "quirk": "TBD",
+      "defenses": "none",
+      "sites": [],
+      "npcIds": [],
+      "rumors": [],
+      "notices": []
+    },
+    {
+      "id": "dungeon-sunken-town",
+      "name": "Sunken Town & Underwater Depot",
+      "type": "dungeon",
+      "hexCoord": {
+        "q": 3,
+        "r": -6
+      },
+      "description": "Submerged ruins north of the island.",
+      "tags": [
+        "underwater",
+        "ruins"
+      ],
+      "size": "medium",
+      "theme": "temple",
+      "depth": 2,
+      "cleared": false,
+      "gridWidth": 40,
+      "gridHeight": 40,
+      "rooms": [],
+      "passages": [],
+      "entranceRoomId": ""
+    },
+    {
+      "id": "dungeon-coral-castle",
+      "name": "The Coral Castle",
+      "type": "dungeon",
+      "hexCoord": {
+        "q": -4,
+        "r": 0
+      },
+      "description": "Lionfish King's underwater fortress.",
+      "tags": [
+        "underwater",
+        "fortress"
+      ],
+      "size": "large",
+      "theme": "fortress",
+      "depth": 3,
+      "cleared": false,
+      "gridWidth": 60,
+      "gridHeight": 60,
+      "rooms": [],
+      "passages": [],
+      "entranceRoomId": ""
+    },
+    {
+      "id": "dungeon-crak-caves",
+      "name": "Crak Caves",
+      "type": "dungeon",
+      "hexCoord": {
+        "q": -3,
+        "r": 1
+      },
+      "description": "Cave system in the western hills.",
+      "tags": [
+        "caves",
+        "western"
+      ],
+      "size": "medium",
+      "theme": "cave",
+      "depth": 2,
+      "cleared": false,
+      "gridWidth": 40,
+      "gridHeight": 40,
+      "rooms": [],
+      "passages": [],
+      "entranceRoomId": ""
+    },
+    {
+      "id": "dungeon-temple-of-shoom",
+      "name": "Temple of Shoom",
+      "type": "dungeon",
+      "hexCoord": {
+        "q": -1,
+        "r": 2
+      },
+      "description": "Ancient nakudama ziggurat. Midwives above, Voraro feeds below.",
+      "tags": [
+        "large",
+        "temple",
+        "nakudama"
+      ],
+      "size": "large",
+      "theme": "temple",
+      "depth": 3,
+      "cleared": false,
+      "gridWidth": 60,
+      "gridHeight": 60,
+      "rooms": [],
+      "passages": [],
+      "entranceRoomId": ""
+    },
+    {
+      "id": "settlement-ka0LE3px",
+      "name": "Toggle",
+      "type": "settlement",
+      "settlementType": "human",
+      "description": "A human mining town called toggle",
+      "hexCoord": {
+        "q": 2,
+        "r": -2
+      },
+      "tags": [
+        "village",
+        "human"
+      ],
+      "size": "village",
+      "population": 507,
+      "governmentType": "elder",
+      "economyBase": [
+        "logging"
+      ],
+      "mood": "struggling",
+      "trouble": "Strange lights are seen in the hills at night",
+      "quirk": "A strange monument stands in the center of town",
+      "sites": [
+        {
+          "id": "site-G-_yAvki",
+          "name": "The Black Crown",
+          "type": "inn",
+          "description": "A rustic lodge with a roaring fireplace",
+          "staffIds": [],
+          "services": [
+            {
+              "name": "Room (common)",
+              "cost": "5 sp/night"
+            },
+            {
+              "name": "Room (private)",
+              "cost": "2 gp/night"
+            },
+            {
+              "name": "Meal",
+              "cost": "5 cp"
+            },
+            {
+              "name": "Stabling",
+              "cost": "5 sp/night"
+            }
+          ],
+          "rumorSource": true,
+          "noticeBoard": true,
+          "secret": "A ghost haunts the upper floors",
+          "ownerId": "npc-5AQ59bYt"
+        },
+        {
+          "id": "site-phGbLRbZ",
+          "name": "The Broken Orc",
+          "type": "tavern",
+          "description": "A smoky drinking hall filled with locals",
+          "staffIds": [],
+          "services": [
+            {
+              "name": "Ale",
+              "cost": "4 cp"
+            },
+            {
+              "name": "Wine",
+              "cost": "2 sp"
+            },
+            {
+              "name": "Meal",
+              "cost": "1 sp"
+            }
+          ],
+          "rumorSource": true,
+          "noticeBoard": true,
+          "quirk": "Locals avoid this place for unknown reasons",
+          "ownerId": "npc-m0nUx-k3"
+        },
+        {
+          "id": "site-wSfex0vW",
+          "name": "Old Provisions",
+          "type": "general_store",
+          "description": "A dusty emporium selling everything imaginable",
+          "staffIds": [],
+          "services": [
+            {
+              "name": "Adventuring Gear",
+              "cost": "Varies"
+            },
+            {
+              "name": "Rations",
+              "cost": "5 sp/day"
+            },
+            {
+              "name": "Torches (10)",
+              "cost": "1 gp"
+            },
+            {
+              "name": "Rope (50ft)",
+              "cost": "1 gp"
+            }
+          ],
+          "rumorSource": false,
+          "noticeBoard": true,
+          "ownerId": "npc-g81AfI_I"
+        }
+      ],
+      "npcIds": [
+        "npc-6y0KajJT",
+        "npc-5AQ59bYt",
+        "npc-m0nUx-k3",
+        "npc-g81AfI_I",
+        "npc-sm3ygMt_",
+        "npc-RuL1rUCO",
+        "npc-xydPiHOz",
+        "npc-xRODnXyA"
+      ],
+      "rumors": [
+        {
+          "id": "rumor-K-f5VrON",
+          "text": "Whatever's in Temple of Shoom is waking up. The ground shakes at night now.",
+          "isTrue": true,
+          "source": "The temple beggar"
+        },
+        {
+          "id": "rumor-W-KMpfUn",
+          "text": "A child went missing near The Coral Castle. The search party found only her doll - and strange tracks leading inside.",
+          "isTrue": true,
+          "source": "Graffiti on a wall",
+          "targetLocationId": "dungeon-coral-castle"
+        },
+        {
+          "id": "rumor-gSqAa02B",
+          "text": "Aldric Blackwood inherited a map but can't read it. Might be worth something to the right person.",
+          "isTrue": true,
+          "source": "An unsigned note"
+        },
+        {
+          "id": "rumor-xZIYQHlU",
+          "text": "An old map surfaced showing The Coral Castle. The merchant who sold it was found dead the next morning.",
+          "isTrue": true,
+          "source": "A drunk at the tavern",
+          "targetLocationId": "dungeon-coral-castle"
+        }
+      ],
+      "notices": [
+        {
+          "id": "notice-bSQY9zdJ",
+          "title": "WARNING",
+          "description": "WARNING: goblins reported on the the old mill road",
+          "noticeType": "warning"
+        },
+        {
+          "id": "notice-Qoix3CvC",
+          "title": "BOUNTY",
+          "description": "BOUNTY: a notorious thief - Dead or Alive. 62 gold reward",
+          "noticeType": "bounty",
+          "reward": "45 gp"
+        }
+      ],
+      "defenses": "militia",
+      "center": {
+        "x": 0,
+        "y": 0
+      },
+      "radius": 90,
+      "wards": [
+        {
+          "id": "60T1G94iSB4jib0zM1BlP",
+          "type": "residential",
+          "shape": {
+            "vertices": [
+              {
+                "x": -89.95104319297693,
+                "y": -83.31269300351316
+              },
+              {
+                "x": 87.04735674986243,
+                "y": -83.31269300351316
+              },
+              {
+                "x": 87.04735674986243,
+                "y": 82.21716609502396
+              },
+              {
+                "x": -89.95104319297693,
+                "y": 82.21716609502396
+              }
+            ]
+          },
+          "buildings": [
+            {
+              "id": "zHDWn5CMJG7Q-EE5QX2No",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": -30.38549888738489,
+                    "y": -72.93846634774464
+                  },
+                  {
+                    "x": -10.88909013063914,
+                    "y": -73.31269300351316
+                  },
+                  {
+                    "x": -10.589708806024316,
+                    "y": -57.71556599811656
+                  },
+                  {
+                    "x": -30.086117562770063,
+                    "y": -57.341339342348036
+                  }
+                ]
+              },
+              "type": "landmark",
+              "siteId": "site-phGbLRbZ",
+              "name": "The Broken Orc",
+              "icon": "🍺",
+              "npcIds": [
+                "npc-m0nUx-k3"
+              ]
+            },
+            {
+              "id": "sJItTK8iKdJovPdyyU7_5",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": -79.36846346780493,
+                    "y": -56.47144405800046
+                  },
+                  {
+                    "x": -69.5599503541555,
+                    "y": -56.34426921162725
+                  },
+                  {
+                    "x": -69.58368317496716,
+                    "y": -54.51384683807146
+                  },
+                  {
+                    "x": -66.38346884196008,
+                    "y": -54.47235362075648
+                  },
+                  {
+                    "x": -66.45843557743146,
+                    "y": -48.69045390608562
+                  },
+                  {
+                    "x": -79.46716302408797,
+                    "y": -48.85912196977381
+                  }
+                ]
+              },
+              "type": "house",
+              "npcIds": [
+                "npc-6y0KajJT"
+              ]
+            },
+            {
+              "id": "IfsemnDYxlo-JrQF8iH-M",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": -69.25266685966774,
+                    "y": -20.78664882645331
+                  },
+                  {
+                    "x": -69.85401980597653,
+                    "y": -18.542369077547626
+                  },
+                  {
+                    "x": -71.49694660857342,
+                    "y": -16.899442274950744
+                  },
+                  {
+                    "x": -73.7412263574791,
+                    "y": -16.298089328641943
+                  },
+                  {
+                    "x": -75.98550610638479,
+                    "y": -16.899442274950744
+                  },
+                  {
+                    "x": -77.62843290898168,
+                    "y": -18.542369077547626
+                  },
+                  {
+                    "x": -78.22978585529047,
+                    "y": -20.78664882645331
+                  },
+                  {
+                    "x": -77.62843290898167,
+                    "y": -23.030928575358992
+                  },
+                  {
+                    "x": -75.98550610638479,
+                    "y": -24.673855377955874
+                  },
+                  {
+                    "x": -73.7412263574791,
+                    "y": -25.275208324264675
+                  },
+                  {
+                    "x": -71.49694660857342,
+                    "y": -24.673855377955874
+                  },
+                  {
+                    "x": -69.85401980597655,
+                    "y": -23.030928575358992
+                  }
+                ]
+              },
+              "type": "house",
+              "npcIds": [
+                "npc-sm3ygMt_"
+              ]
+            },
+            {
+              "id": "sbmMU2BiWUrlC1KiIiXui",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": -60.12709308741914,
+                    "y": -24.529055526909545
+                  },
+                  {
+                    "x": -49.078444308750264,
+                    "y": -24.045885835818538
+                  },
+                  {
+                    "x": -49.451388939498884,
+                    "y": -15.51775521212894
+                  },
+                  {
+                    "x": -52.525361117063625,
+                    "y": -15.652183432014418
+                  },
+                  {
+                    "x": -52.62733100888795,
+                    "y": -13.320436342866827
+                  },
+                  {
+                    "x": -60.602007609992086,
+                    "y": -13.669177814072356
+                  }
+                ]
+              },
+              "type": "house",
+              "npcIds": [
+                "npc-RuL1rUCO"
+              ]
+            },
+            {
+              "id": "VN35CQGW72pCYVbQJ4A7i",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": -28.762590447522427,
+                    "y": -23.7616115137633
+                  },
+                  {
+                    "x": -16.243825646972084,
+                    "y": -23.14097082038991
+                  },
+                  {
+                    "x": -16.711182019693673,
+                    "y": -13.71405993522181
+                  },
+                  {
+                    "x": -25.857462723744497,
+                    "y": -14.167503552734315
+                  },
+                  {
+                    "x": -25.74352719905717,
+                    "y": -16.46566422962348
+                  },
+                  {
+                    "x": -29.11601129555669,
+                    "y": -16.632861305484365
+                  }
+                ]
+              },
+              "type": "house",
+              "npcIds": [
+                "npc-xydPiHOz"
+              ]
+            },
+            {
+              "id": "RwSXkjKjNjAgxI6TZHChU",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": -9.525453849536134,
+                    "y": -23.426431359614
+                  },
+                  {
+                    "x": -0.5186714045908978,
+                    "y": -22.545384971023672
+                  },
+                  {
+                    "x": -1.3997177931812257,
+                    "y": -13.538602526078435
+                  },
+                  {
+                    "x": -10.406500238126462,
+                    "y": -14.419648914668763
+                  }
+                ]
+              },
+              "type": "house",
+              "npcIds": [
+                "npc-xRODnXyA"
+              ]
+            },
+            {
+              "id": "IBnlB7pyelhuq0c9pW2nm",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": 65.38733533847711,
+                    "y": -21.34982389705574
+                  },
+                  {
+                    "x": 74.9362546634316,
+                    "y": -20.724787513325555
+                  },
+                  {
+                    "x": 74.47690174821606,
+                    "y": -13.707077755537403
+                  },
+                  {
+                    "x": 67.63259358503353,
+                    "y": -14.155080453839703
+                  },
+                  {
+                    "x": 67.7372916833737,
+                    "y": -15.75459325109485
+                  },
+                  {
+                    "x": 65.03268052160175,
+                    "y": -15.931626936522733
+                  }
+                ]
+              },
+              "type": "house"
+            },
+            {
+              "id": "oload8ImdxwaWyjiToFlZ",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": -78.96976334997255,
+                    "y": 6.234620809166524
+                  },
+                  {
+                    "x": -69.56638399681076,
+                    "y": 5.651375625891751
+                  },
+                  {
+                    "x": -69.09999712049803,
+                    "y": 13.17070514470665
+                  },
+                  {
+                    "x": -78.50337647365983,
+                    "y": 13.753950327981423
+                  }
+                ]
+              },
+              "type": "house"
+            },
+            {
+              "id": "TAQP_MtsTFenqM-C9gTF4",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": -64.67838687916593,
+                    "y": 6.118387556756597
+                  },
+                  {
+                    "x": -53.11366231946757,
+                    "y": 4.965927908957346
+                  },
+                  {
+                    "x": -52.394111209719306,
+                    "y": 12.186493424422112
+                  },
+                  {
+                    "x": -63.95883576941766,
+                    "y": 13.338953072221363
+                  }
+                ]
+              },
+              "type": "house"
+            },
+            {
+              "id": "_NALeLoFEvJyhDU8SFtpF",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": -31.431659177357115,
+                    "y": 0.6107688342523288
+                  },
+                  {
+                    "x": -17.517212935124473,
+                    "y": -0.2876068685011086
+                  },
+                  {
+                    "x": -16.802145949609386,
+                    "y": 10.787671658121955
+                  },
+                  {
+                    "x": -30.71659219184203,
+                    "y": 11.686047360875392
+                  }
+                ]
+              },
+              "type": "landmark",
+              "siteId": "site-G-_yAvki",
+              "name": "The Black Crown",
+              "icon": "🏨",
+              "npcIds": [
+                "npc-5AQ59bYt"
+              ]
+            },
+            {
+              "id": "-eOMED2TUUq5aNqnrIjl6",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": 46.59221094550897,
+                    "y": 0.49197338415149217
+                  },
+                  {
+                    "x": 53.95119480750479,
+                    "y": 0.6817386933120804
+                  },
+                  {
+                    "x": 53.7614294983442,
+                    "y": 8.040722555307898
+                  },
+                  {
+                    "x": 46.402445636348375,
+                    "y": 7.85095724614731
+                  }
+                ]
+              },
+              "type": "house"
+            },
+            {
+              "id": "_JSgzSzFmq87pHSAv_73M",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": 63.671423928708336,
+                    "y": -2.9923898168843492
+                  },
+                  {
+                    "x": 72.92019179022357,
+                    "y": -3.4631431894833313
+                  },
+                  {
+                    "x": 73.44696372710963,
+                    "y": 6.886206690523297
+                  },
+                  {
+                    "x": 64.1981958655944,
+                    "y": 7.356960063122278
+                  }
+                ]
+              },
+              "type": "house"
+            },
+            {
+              "id": "F21oXgXMfqqE4QkoovMJU",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": -79.95104319297693,
+                    "y": 38.26807253062293
+                  },
+                  {
+                    "x": -66.39235608686232,
+                    "y": 36.676063916560665
+                  },
+                  {
+                    "x": -65.19663215620153,
+                    "y": 46.859706453364936
+                  },
+                  {
+                    "x": -78.75531926231614,
+                    "y": 48.4517150674272
+                  }
+                ]
+              },
+              "type": "house"
+            },
+            {
+              "id": "UUpOFr8BU49TlFsLiS3TK",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": -22.056675673651107,
+                    "y": 34.80216456272855
+                  },
+                  {
+                    "x": -9.35645641496476,
+                    "y": 35.021224104413164
+                  },
+                  {
+                    "x": -9.502243037779284,
+                    "y": 43.473364835144466
+                  },
+                  {
+                    "x": -22.202462296465633,
+                    "y": 43.25430529345985
+                  }
+                ]
+              },
+              "type": "house"
+            },
+            {
+              "id": "bxBUBmuMeoikpIv6eAGuK",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": 18.716040733500588,
+                    "y": 33.28707052133711
+                  },
+                  {
+                    "x": 30.320089304331955,
+                    "y": 32.944461472833204
+                  },
+                  {
+                    "x": 30.608225417658982,
+                    "y": 42.70353079297511
+                  },
+                  {
+                    "x": 19.004176846827615,
+                    "y": 43.04613984147901
+                  }
+                ]
+              },
+              "type": "house"
+            },
+            {
+              "id": "umR_l-8EqX7O2LKE_z20u",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": -17.859351424558135,
+                    "y": 52.00303206802007
+                  },
+                  {
+                    "x": -16.28592693489854,
+                    "y": 66.15411214886376
+                  },
+                  {
+                    "x": -26.286304650961767,
+                    "y": 67.26603004590118
+                  },
+                  {
+                    "x": -27.85972914062136,
+                    "y": 53.1149499650575
+                  }
+                ]
+              },
+              "type": "landmark",
+              "siteId": "site-wSfex0vW",
+              "name": "Old Provisions",
+              "icon": "🏪",
+              "npcIds": [
+                "npc-g81AfI_I"
+              ]
+            },
+            {
+              "id": "KJDzgG7YYELP2yKSM9kBi",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": -54.938950619752895,
+                    "y": -8.298080858884312
+                  },
+                  {
+                    "x": -54.028237361325544,
+                    "y": -0.5182889286771851
+                  },
+                  {
+                    "x": -61.80802929153267,
+                    "y": 0.39242432975016517
+                  },
+                  {
+                    "x": -62.71874254996002,
+                    "y": -7.387367600456962
+                  }
+                ]
+              },
+              "type": "house"
+            },
+            {
+              "id": "DkcPPjRngUwEPl02BkMZD",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": -51.803840987217214,
+                    "y": 42.65641489429756
+                  },
+                  {
+                    "x": -51.667317254643194,
+                    "y": 53.98864882040598
+                  },
+                  {
+                    "x": -61.386356437450885,
+                    "y": 54.1057377822931
+                  },
+                  {
+                    "x": -61.48266652300405,
+                    "y": 46.11146163444309
+                  },
+                  {
+                    "x": -59.510556259308025,
+                    "y": 46.087702871960516
+                  },
+                  {
+                    "x": -59.55076990632888,
+                    "y": 42.74974509370211
+                  }
+                ]
+              },
+              "type": "house"
+            },
+            {
+              "id": "tmVykNguA1fSS3AJxb-1L",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": -49.09065128020595,
+                    "y": 67.01380779051173
+                  },
+                  {
+                    "x": -49.78776910801786,
+                    "y": 69.61548694276784
+                  },
+                  {
+                    "x": -51.69233043246206,
+                    "y": 71.52004826721205
+                  },
+                  {
+                    "x": -54.29400958471817,
+                    "y": 72.21716609502396
+                  },
+                  {
+                    "x": -56.89568873697428,
+                    "y": 71.52004826721205
+                  },
+                  {
+                    "x": -58.800250061418474,
+                    "y": 69.61548694276784
+                  },
+                  {
+                    "x": -59.49736788923039,
+                    "y": 67.01380779051173
+                  },
+                  {
+                    "x": -58.800250061418474,
+                    "y": 64.41212863825562
+                  },
+                  {
+                    "x": -56.89568873697428,
+                    "y": 62.50756731381143
+                  },
+                  {
+                    "x": -54.29400958471817,
+                    "y": 61.81044948599951
+                  },
+                  {
+                    "x": -51.69233043246206,
+                    "y": 62.50756731381143
+                  },
+                  {
+                    "x": -49.78776910801786,
+                    "y": 64.41212863825562
+                  }
+                ]
+              },
+              "type": "house"
+            },
+            {
+              "id": "J8lWpBTYK28cO0EScS1dn",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": 28.14306476689866,
+                    "y": 54.00717289614271
+                  },
+                  {
+                    "x": 27.77354628915485,
+                    "y": 64.46970041312215
+                  },
+                  {
+                    "x": 17.949059639430473,
+                    "y": 64.12271644146435
+                  },
+                  {
+                    "x": 18.318578117174283,
+                    "y": 53.660188924484906
+                  }
+                ]
+              },
+              "type": "house"
+            },
+            {
+              "id": "ufNcsqWYW7CWzJTCYuRWl",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": 59.71026666754171,
+                    "y": -45.5138493112498
+                  },
+                  {
+                    "x": 59.03239596534073,
+                    "y": -42.98400140967337
+                  },
+                  {
+                    "x": 57.18041876596528,
+                    "y": -41.132024210297914
+                  },
+                  {
+                    "x": 54.65057086438885,
+                    "y": -40.45415350809694
+                  },
+                  {
+                    "x": 52.120722962812415,
+                    "y": -41.132024210297914
+                  },
+                  {
+                    "x": 50.26874576343696,
+                    "y": -42.98400140967337
+                  },
+                  {
+                    "x": 49.590875061235984,
+                    "y": -45.5138493112498
+                  },
+                  {
+                    "x": 50.26874576343696,
+                    "y": -48.04369721282623
+                  },
+                  {
+                    "x": 52.120722962812415,
+                    "y": -49.895674412201686
+                  },
+                  {
+                    "x": 54.65057086438885,
+                    "y": -50.57354511440266
+                  },
+                  {
+                    "x": 57.18041876596528,
+                    "y": -49.895674412201686
+                  },
+                  {
+                    "x": 59.03239596534073,
+                    "y": -48.04369721282623
+                  }
+                ]
+              },
+              "type": "house"
+            },
+            {
+              "id": "zhIbTPjSwfuaHldrghEp4",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": 59.583256805158236,
+                    "y": -17.479825426477532
+                  },
+                  {
+                    "x": 59.43620143047935,
+                    "y": -8.670836767067982
+                  },
+                  {
+                    "x": 50.6272127710698,
+                    "y": -8.817892141746864
+                  },
+                  {
+                    "x": 50.774268145748685,
+                    "y": -17.626880801156418
+                  }
+                ]
+              },
+              "type": "house"
+            },
+            {
+              "id": "M_t4_NcMDVkWQ_bDe-ads",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": 58.80657565838494,
+                    "y": 40.490955947847645
+                  },
+                  {
+                    "x": 58.98752426360326,
+                    "y": 55.08153936771203
+                  },
+                  {
+                    "x": 51.438964349894405,
+                    "y": 55.17515463644302
+                  },
+                  {
+                    "x": 51.25801574467609,
+                    "y": 40.58457121657863
+                  }
+                ]
+              },
+              "type": "house"
+            },
+            {
+              "id": "rzhYwSoClzY2HPq035K7p",
+              "shape": {
+                "vertices": [
+                  {
+                    "x": 26.538853484773348,
+                    "y": -50.26578965700304
+                  },
+                  {
+                    "x": 26.135878840564757,
+                    "y": -42.56102209925224
+                  },
+                  {
+                    "x": 18.431111282813966,
+                    "y": -42.963996743460825
+                  },
+                  {
+                    "x": 18.834085927022556,
+                    "y": -50.668764301211624
+                  }
+                ]
+              },
+              "type": "house"
+            }
+          ]
+        }
+      ],
+      "streets": [
+        {
+          "id": "l2SLq_d3uN1s81OXs7HHw",
+          "waypoints": [
+            {
+              "x": -88.31975670391695,
+              "y": -37.170220921514556
+            },
+            {
+              "x": 86.21302646677941,
+              "y": -32.62619277415797
+            }
+          ],
+          "width": "main"
+        },
+        {
+          "id": "IAnR4Whpcu5omts48HOfo",
+          "waypoints": [
+            {
+              "x": -88.31975670391695,
+              "y": 26.120248555205762
+            },
+            {
+              "x": 86.21302646677941,
+              "y": 18.36034877412021
+            }
+          ],
+          "width": "main"
+        },
+        {
+          "id": "L5ML-8qGwU-f1QyyMNF_R",
+          "waypoints": [
+            {
+              "x": -46.46760484890548,
+              "y": -81.44434277527034
+            },
+            {
+              "x": -37.85047847765965,
+              "y": 84.1650118175894
+            }
+          ],
+          "width": "side"
+        },
+        {
+          "id": "x0XmguoUtZLvL_reLWW5o",
+          "waypoints": [
+            {
+              "x": 12.34005419653839,
+              "y": -81.44434277527034
+            },
+            {
+              "x": 5.0019878649618335,
+              "y": 84.1650118175894
+            }
+          ],
+          "width": "main"
+        },
+        {
+          "id": "Alk0N55AUOggtmz0JonIe",
+          "waypoints": [
+            {
+              "x": 37.9733638941543,
+              "y": -81.44434277527034
+            },
+            {
+              "x": 39.73344073386396,
+              "y": 84.1650118175894
+            }
+          ],
+          "width": "side"
+        },
+        {
+          "id": "jobgdVd52D8HTWy9uVgPy",
+          "waypoints": [
+            {
+              "x": 20.513375201204312,
+              "y": -36.186836494132876
+            },
+            {
+              "x": 20.513375201204312,
+              "y": 23.86580727249384
+            }
+          ],
+          "width": "alley"
+        }
+      ],
+      "plaza": {
+        "vertices": [
+          {
+            "x": -3.3289789692498886,
+            "y": -8.239665478840472
+          },
+          {
+            "x": 20.67102103075011,
+            "y": -8.239665478840472
+          },
+          {
+            "x": 20.67102103075011,
+            "y": 10.960334521159531
+          },
+          {
+            "x": -3.3289789692498886,
+            "y": 10.960334521159531
+          }
+        ]
+      },
+      "mayorNpcId": "npc-6y0KajJT",
+      "lore": {
+        "history": {
+          "founding": "Built by families escaping famine and plague",
+          "founderType": "refugees",
+          "age": "established",
+          "majorEvents": [
+            "A famous battle was fought on these grounds",
+            "Survived a devastating plague"
+          ]
+        },
+        "secrets": [
+          {
+            "id": "secret-BeJ3DFWz",
+            "text": "A resident is maintaining a secret correspondence with a rival settlement",
+            "severity": "minor",
+            "discovered": false,
+            "involvedSiteIds": [
+              "site-G-_yAvki"
+            ]
+          }
+        ]
+      },
+      "sensoryImpressions": [
+        "Moss grows on ancient cobblestones",
+        "A bard's tune drifts from the tavern",
+        "Fish drying in the sun"
+      ]
+    }
+  ],
+  "dwellings": [],
+  "npcs": [
+    {
+      "id": "npc-6y0KajJT",
+      "name": "Gareth Brightwater",
+      "race": "halfling",
+      "gender": "male",
+      "description": "A refined individual of breeding",
+      "distinguishingFeature": "ornate earrings",
+      "archetype": "noble",
+      "threatLevel": 2,
+      "age": 68,
+      "role": "elder",
+      "relationships": [],
+      "flavorWant": "Escort for a secret meeting with a rival",
+      "wants": [],
+      "status": "alive",
+      "tags": [
+        "noble",
+        "halfling"
+      ],
+      "locationId": "settlement-ka0LE3px"
+    },
+    {
+      "id": "npc-5AQ59bYt",
+      "name": "Brynn Blackwood",
+      "race": "half-elf",
+      "gender": "female",
+      "description": "A nervous townsperson",
+      "distinguishingFeature": "beauty mark",
+      "archetype": "commoner",
+      "threatLevel": 1,
+      "age": 43,
+      "role": "innkeeper",
+      "relationships": [],
+      "flavorWant": "Someone to deliver medicine to family in another village",
+      "wants": [],
+      "status": "alive",
+      "tags": [
+        "commoner",
+        "half-elf"
+      ],
+      "locationId": "settlement-ka0LE3px",
+      "siteId": "site-G-_yAvki",
+      "secret": "Is dying of a mysterious illness"
+    },
+    {
+      "id": "npc-m0nUx-k3",
+      "name": "Cedric Brightwater",
+      "race": "half-orc",
+      "gender": "female",
+      "description": "A nervous townsperson",
+      "distinguishingFeature": "bushy eyebrows",
+      "archetype": "commoner",
+      "threatLevel": 1,
+      "age": 48,
+      "role": "innkeeper",
+      "relationships": [],
+      "flavorWant": "Help driving off wolves threatening the farm",
+      "wants": [],
+      "status": "alive",
+      "tags": [
+        "commoner",
+        "half-orc"
+      ],
+      "locationId": "settlement-ka0LE3px",
+      "siteId": "site-phGbLRbZ",
+      "secret": "Is planning to betray their allies"
+    },
+    {
+      "id": "npc-g81AfI_I",
+      "name": "Elric Stoneheart",
+      "race": "half-orc",
+      "gender": "female",
+      "description": "A shrewd trader with a ready smile",
+      "distinguishingFeature": "crooked nose",
+      "archetype": "merchant",
+      "threatLevel": 1,
+      "age": 43,
+      "role": "shopkeeper",
+      "relationships": [],
+      "flavorWant": "Guards for a valuable cargo shipment",
+      "wants": [],
+      "status": "alive",
+      "tags": [
+        "merchant",
+        "half-orc"
+      ],
+      "locationId": "settlement-ka0LE3px",
+      "siteId": "site-wSfex0vW"
+    },
+    {
+      "id": "npc-sm3ygMt_",
+      "name": "Gareth Stoneheart",
+      "race": "human",
+      "gender": "female",
+      "description": "A vigilant watchman in worn armor",
+      "distinguishingFeature": "unusually tall",
+      "archetype": "guard",
+      "threatLevel": 2,
+      "age": 63,
+      "role": "merchant",
+      "relationships": [],
+      "flavorWant": "Evidence to catch a corrupt official",
+      "wants": [],
+      "status": "alive",
+      "tags": [
+        "guard",
+        "human"
+      ],
+      "locationId": "settlement-ka0LE3px"
+    },
+    {
+      "id": "npc-RuL1rUCO",
+      "name": "Gareth Ironforge",
+      "race": "human",
+      "gender": "female",
+      "description": "A tired laborer with a kind smile",
+      "distinguishingFeature": "freckled face",
+      "archetype": "commoner",
+      "threatLevel": 1,
+      "age": 45,
+      "role": "merchant",
+      "relationships": [],
+      "flavorWant": "Help driving off wolves threatening the farm",
+      "wants": [],
+      "status": "alive",
+      "tags": [
+        "commoner",
+        "human"
+      ],
+      "locationId": "settlement-ka0LE3px",
+      "secret": "Is not who they claim to be"
+    },
+    {
+      "id": "npc-xydPiHOz",
+      "name": "Aldric Blackwood",
+      "race": "half-elf",
+      "gender": "male",
+      "description": "A shrewd trader with a ready smile",
+      "distinguishingFeature": "bushy eyebrows",
+      "archetype": "merchant",
+      "threatLevel": 1,
+      "age": 25,
+      "role": "craftsman",
+      "relationships": [],
+      "flavorWant": "Information about a competitor's supplier",
+      "wants": [],
+      "status": "alive",
+      "tags": [
+        "merchant",
+        "half-elf"
+      ],
+      "locationId": "settlement-ka0LE3px"
+    },
+    {
+      "id": "npc-xRODnXyA",
+      "name": "Brynn Blackwood",
+      "race": "elf",
+      "gender": "male",
+      "description": "A weathered farmer with calloused hands",
+      "distinguishingFeature": "bright red hair",
+      "archetype": "commoner",
+      "threatLevel": 1,
+      "age": 40,
+      "role": "merchant",
+      "relationships": [],
+      "flavorWant": "Escort for their child traveling to apprenticeship",
+      "wants": [],
+      "status": "alive",
+      "tags": [
+        "commoner",
+        "elf"
+      ],
+      "locationId": "settlement-ka0LE3px"
+    }
+  ],
+  "factions": [],
+  "significantItems": [],
+  "hooks": [],
+  "clocks": []
+}
