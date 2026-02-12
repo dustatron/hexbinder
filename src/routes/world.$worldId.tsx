@@ -191,6 +191,7 @@ function WorldPage() {
           visitedHexIds={world.state.visitedHexIds}
           onHexClick={setSelectedCoord}
           showLabels={showLabels}
+          initialZoom={1.69}
         />
 
         {/* Location Panel */}

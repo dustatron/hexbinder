@@ -24,6 +24,8 @@ import { OBOJIMA_HOOKS } from "~/data/obojima/hooks";
 import { OBOJIMA_CLOCKS } from "~/data/obojima/clocks";
 import { LANDMARK_ENRICHMENTS } from "~/data/obojima/landmarks";
 import { OBOJIMA_DUNGEON_CREATURES } from "~/data/obojima/dungeon-creatures";
+import { CANON_DUNGEON_ENRICHMENTS } from "~/data/obojima/canon-dungeons";
+import { OBOJIMA_QUEST_NAMES, OBOJIMA_QUEST_DESCRIPTIONS } from "~/data/obojima/quest-objects";
 
 // Procedural generators
 import { generateFeatures } from "~/generators/FeatureGenerator";
@@ -32,6 +34,7 @@ import { placeWildernessLair, placeDungeon } from "~/generators/DungeonGenerator
 import { generateTownLayout, assignNPCsToBuildings, linkSitesToBuildings } from "~/generators/TownLayoutEngine";
 import { generateSites } from "~/generators/SiteGenerator";
 import { generateRumors } from "~/generators/RumorGenerator";
+import { generateQuestObjects } from "~/generators/QuestObjectGenerator";
 import { SeededRandom } from "~/generators/SeededRandom";
 import { coordKey } from "~/lib/hex-utils";
 
@@ -174,6 +177,59 @@ function main() {
   }
   log(`  Converted ${convertedCount} landmarks to dungeons`);
 
+  // --- Generate Canon Dungeon Layouts ---
+  log("Generating canon dungeon layouts...");
+  let canonGenerated = 0;
+  for (const enrichment of CANON_DUNGEON_ENRICHMENTS) {
+    const existing = world.locations.find(l => l.id === enrichment.id);
+    if (!existing) {
+      warn(`Canon dungeon not found: ${enrichment.id}`);
+      continue;
+    }
+
+    // Only regenerate if the dungeon has no rooms
+    const existingDungeon = existing as SpatialDungeon;
+    if (existingDungeon.rooms && existingDungeon.rooms.length > 0) continue;
+
+    const result = placeDungeon({
+      seed: `obojima-canon-${enrichment.id}`,
+      hexes: world.hexes,
+      forceCoord: existing.hexCoord,
+      forceTheme: enrichment.theme,
+      size: enrichment.size,
+    });
+    if (!result) {
+      warn(`Failed to generate canon dungeon: ${enrichment.id}`);
+      continue;
+    }
+
+    const dungeon = result.dungeon as SpatialDungeon;
+    // Preserve original ID and overlay canon content
+    dungeon.id = enrichment.id;
+    dungeon.name = existing.name;
+    dungeon.description = enrichment.description;
+    dungeon.tags = enrichment.tags;
+    if (enrichment.npcIds) dungeon.npcIds = enrichment.npcIds;
+    if (enrichment.factionId) dungeon.factionId = enrichment.factionId;
+
+    // Apply room overrides
+    if (dungeon.rooms) {
+      for (const override of enrichment.roomOverrides) {
+        if (override.index < dungeon.rooms.length) {
+          dungeon.rooms[override.index].name = override.name;
+          dungeon.rooms[override.index].description = override.description;
+        }
+      }
+    }
+
+    // Replace in locations array
+    const locIdx = world.locations.findIndex(l => l.id === enrichment.id);
+    if (locIdx >= 0) world.locations[locIdx] = dungeon;
+
+    canonGenerated++;
+  }
+  log(`  Generated layouts for ${canonGenerated} canon dungeons`);
+
   // --- Apply Corruption Zones ---
   log("Applying corruption zones...");
   applyCorruption(world);
@@ -214,6 +270,7 @@ function main() {
     if (hex.locationId && toRemove.has(hex.locationId)) hex.locationId = undefined;
     hex.feature = undefined;
     hex.dwellingId = undefined;
+    hex.questObject = undefined;
   }
   world.dwellings = [];
   log(`Cleaned procedural content: removed ${toRemove.size} old generated dungeons`);
@@ -251,7 +308,12 @@ function main() {
   }
   log(`  Placed ${lairCount} wilderness lairs`);
 
-  // Step 3b: Replace dungeon creatures with Obojima bestiary
+  // Step 3b: Generate quest objects (discoverable items on hexes)
+  log("Generating quest objects...");
+  world.hexes = generateQuestObjects({ seed: SEED, hexes: world.hexes });
+  replaceQuestObjectsWithObojima(world);
+
+  // Step 3c: Replace dungeon creatures with Obojima bestiary
   log("Replacing dungeon creatures with Obojima bestiary...");
   replaceCreaturesWithObojima(world);
 
@@ -352,6 +414,7 @@ function main() {
   log(`Companion Spirits: ${world.companionSpirits?.length ?? 0}`);
   log(`Dwellings: ${world.dwellings.length}`);
   log(`Hex features: ${world.hexes.filter(h => h.feature).length}`);
+  log(`Quest objects: ${world.hexes.filter(h => h.questObject).length}`);
   log(`Corrupted hexes: ${world.hexes.filter(h => h.corruption === "corrupted").length}`);
   log(`Threatened hexes: ${world.hexes.filter(h => h.corruption === "threatened").length}`);
   log(`Edges: ${world.edges.length}`);
@@ -642,6 +705,12 @@ function generateObojimaNotices(
 // Dungeon Creature Replacement
 // ============================================================
 
+// Underwater dungeons should use sea creatures regardless of theme
+const CREATURE_POOL_OVERRIDES: Record<string, string[]> = {
+  "dungeon-coral-castle": OBOJIMA_DUNGEON_CREATURES.sea_cave,
+  "dungeon-sunken-town": OBOJIMA_DUNGEON_CREATURES.sea_cave,
+};
+
 function replaceCreaturesWithObojima(world: WorldData) {
   const rng = new SeededRandom("obojima-creatures");
   let dungeonCount = 0;
@@ -650,7 +719,7 @@ function replaceCreaturesWithObojima(world: WorldData) {
   for (const loc of world.locations) {
     if (loc.type !== "dungeon") continue;
     const dungeon = loc as SpatialDungeon;
-    const pool = OBOJIMA_DUNGEON_CREATURES[dungeon.theme];
+    const pool = CREATURE_POOL_OVERRIDES[dungeon.id] ?? OBOJIMA_DUNGEON_CREATURES[dungeon.theme];
     if (!pool || pool.length === 0) continue;
 
     dungeonCount++;
@@ -677,6 +746,30 @@ function replaceCreaturesWithObojima(world: WorldData) {
   }
 
   log(`  Replaced ${creatureCount} creature references across ${dungeonCount} dungeons`);
+}
+
+// ============================================================
+// Quest Object Replacement
+// ============================================================
+
+function replaceQuestObjectsWithObojima(world: WorldData) {
+  const rng = new SeededRandom("obojima-quest-objects");
+  let replaced = 0;
+
+  for (const hex of world.hexes) {
+    if (!hex.questObject) continue;
+
+    const type = hex.questObject.type;
+    const names = OBOJIMA_QUEST_NAMES[type];
+    const descs = OBOJIMA_QUEST_DESCRIPTIONS[type];
+    if (!names || !descs) continue;
+
+    hex.questObject.name = rng.pick(names);
+    hex.questObject.description = rng.pick(descs);
+    replaced++;
+  }
+
+  log(`  Placed ${replaced} quest objects (Obojima-themed)`);
 }
 
 // ============================================================

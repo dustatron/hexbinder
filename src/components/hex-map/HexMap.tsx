@@ -41,6 +41,7 @@ interface HexMapProps {
   visitedHexIds: string[]; // Hexes party has visited (format: "q,r")
   onHexClick: (coord: HexCoord) => void;
   showLabels?: boolean;
+  initialZoom?: number;
 }
 
 export function HexMap({
@@ -52,13 +53,14 @@ export function HexMap({
   visitedHexIds,
   onHexClick,
   showLabels = false,
+  initialZoom = 1,
 }: HexMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Motion values for pan and zoom
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const scale = useMotionValue(1);
+  const scale = useMotionValue(initialZoom);
 
   // Create honeycomb hex instances for each world hex
   const honeycombHexes = useMemo(() => {
