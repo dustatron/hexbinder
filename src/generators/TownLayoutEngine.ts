@@ -1305,7 +1305,7 @@ export function linkSitesToBuildings(
   };
 
   // Map site type to expected icon for landmarks
-  const siteTypeToIcon: Record<SiteType, string> = {
+  const siteTypeToIcon: Partial<Record<SiteType, string>> = {
     temple: "⛪",
     tavern: "🍺",
     market: "🏪",
@@ -1314,6 +1314,15 @@ export function linkSitesToBuildings(
     inn: "🏨",
     general_store: "🏪",
     noble_estate: "🏰",
+    dock: "⚓",
+    warehouse: "📦",
+    arena: "🏟️",
+    library: "📚",
+    bathhouse: "🛁",
+    gambling_hall: "🎲",
+    embassy: "🏛️",
+    barracks: "⚔️",
+    ruins_entrance: "🚪",
   };
 
   const usedSiteIds = new Set<string>();

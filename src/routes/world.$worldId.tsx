@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useState, useEffect, useCallback } from "react";
+import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, Cloud, Sun, CloudRain, Settings, ChevronRight, Tag } from "lucide-react";
 import { HexMap } from "~/components/hex-map";
 import { LocationPanel } from "~/components/location-panel";
@@ -28,6 +28,7 @@ const WEATHER_ICONS: Partial<Record<WeatherCondition, typeof Sun>> = {
 };
 
 function WorldPage() {
+  const router = useRouter();
   const initialWorld = Route.useLoaderData();
   const [world, setWorld] = useState<WorldData>(initialWorld);
   const [selectedCoord, setSelectedCoord] = useState<HexCoord | null>(null);
@@ -37,6 +38,13 @@ function WorldPage() {
   useEffect(() => {
     setWorld(initialWorld);
   }, [initialWorld]);
+
+  const handleHexDoubleClick = useCallback((coord: HexCoord) => {
+    router.navigate({
+      to: "/world/$worldId/hex/$q/$r",
+      params: { worldId: world.id, q: String(coord.q), r: String(coord.r) },
+    });
+  }, [router, world.id]);
 
   const handleAdvanceDay = () => {
     const newWorld = advanceDay(world);
@@ -190,6 +198,7 @@ function WorldPage() {
           currentHexId={world.state.currentHexId}
           visitedHexIds={world.state.visitedHexIds}
           onHexClick={setSelectedCoord}
+          onHexDoubleClick={handleHexDoubleClick}
           showLabels={showLabels}
         />
 

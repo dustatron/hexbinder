@@ -199,7 +199,7 @@ const SIZE_COLORS: Record<Settlement["size"], string> = {
 };
 
 // Icons match those used in StreetFirstTownGenerator landmarks
-const SITE_ICONS: Record<SettlementSite["type"], string> = {
+const SITE_ICONS: Partial<Record<SettlementSite["type"], string>> = {
   tavern: "🍺",
   inn: "🛏️",
   temple: "⛪",
@@ -208,6 +208,15 @@ const SITE_ICONS: Record<SettlementSite["type"], string> = {
   market: "🏪",        // Same icon as map landmarks
   guild_hall: "🏛️",   // Town Hall on map
   noble_estate: "🏰",
+  dock: "⚓",
+  warehouse: "📦",
+  arena: "🏟️",
+  library: "📚",
+  bathhouse: "🛁",
+  gambling_hall: "🎲",
+  embassy: "🏛️",
+  barracks: "⚔️",
+  ruins_entrance: "🚪",
 };
 
 function SectionHeader({ icon: Icon, title }: { icon: React.ElementType; title: string }) {

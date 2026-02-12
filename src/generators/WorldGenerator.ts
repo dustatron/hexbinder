@@ -49,6 +49,7 @@ import { generateSignificantItems, placeItemInLocation } from "./SignificantItem
 import { addTreasureBackstories } from "./dungeon/TreasureBackstoryGenerator";
 import { generateSettlementHistory, generateSensoryImpressions } from "./settlement/SettlementHistoryGenerator";
 import { generateSettlementSecrets } from "./settlement/SettlementSecretsGenerator";
+import { generateCityDistricts } from "./district/DistrictGenerator";
 
 export interface WorldGeneratorOptions {
   name: string;
@@ -512,6 +513,58 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
 
     // Generate sensory impressions for scene-setting
     settlement.sensoryImpressions = generateSensoryImpressions(`${seed}-${settlement.id}`);
+  }
+
+  // Step 15b: Generate districts for cities
+  for (const settlement of settlements) {
+    if (settlement.size === "city") {
+      const { districts, districtSites, districtNPCs, cityIdentity } =
+        generateCityDistricts(seed, settlement, factions, nameRegistry);
+
+      settlement.districts = districts;
+      settlement.cityIdentity = cityIdentity;
+
+      // Add district sites to settlement
+      settlement.sites.push(...districtSites);
+
+      // Add district NPCs to world
+      npcs.push(...districtNPCs);
+
+      // Add district NPC IDs to settlement
+      settlement.npcIds.push(...districtNPCs.map(n => n.id));
+
+      // Redistribute existing settlement NPCs across districts
+      // NPCs without a districtId get assigned to a random non-ruins district
+      const nonRuinsDistricts = districts.filter(d => d.type !== "ruins");
+      if (nonRuinsDistricts.length > 0) {
+        const districtRng = new SeededRandom(`${seed}-redistribute-${settlement.id}`);
+        for (const npc of npcs) {
+          if (npc.locationId === settlement.id && !npc.districtId) {
+            // If NPC owns a site, assign to that site's district
+            if (npc.siteId) {
+              const site = settlement.sites.find(s => s.id === npc.siteId);
+              if (site?.districtId) {
+                npc.districtId = site.districtId;
+                continue;
+              }
+            }
+            // Otherwise assign to a random district
+            const district = districtRng.pick(nonRuinsDistricts);
+            npc.districtId = district.id;
+            district.npcIds.push(npc.id);
+          }
+        }
+
+        // Also assign existing sites to districts if not already assigned
+        for (const site of settlement.sites) {
+          if (!site.districtId) {
+            const district = districtRng.pick(nonRuinsDistricts);
+            site.districtId = district.id;
+            district.siteIds.push(site.id);
+          }
+        }
+      }
+    }
   }
 
   // Faction NPCs (use pre-generated NPCs from dungeon population step)

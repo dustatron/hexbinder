@@ -5,6 +5,7 @@ import { loadWorld, saveWorld } from "~/lib/storage";
 import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/lib/hex-regenerate";
 import { WildernessDetail } from "~/components/location-detail/WildernessDetail";
 import { SettlementDetail, type LocationEvent } from "~/components/location-detail/SettlementDetail";
+import { CityDetail } from "~/components/location-detail/CityDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
 import { RegenerateModal } from "~/components/location-detail/RegenerateButton";
 import { Button } from "~/components/ui/button";
@@ -16,7 +17,7 @@ import {
   DropdownMenuSeparator,
 } from "~/components/ui/dropdown-menu";
 import type { EncounterOverrides, Settlement, Dungeon, WorldData } from "~/models";
-import { isDungeon, isSettlement } from "~/models";
+import { isDungeon, isSettlement, isCityWithDistricts } from "~/models";
 
 export const Route = createFileRoute("/world/$worldId_/hex/$q/$r")({
   loader: ({ params }) => {
@@ -250,7 +251,23 @@ function HexDetailPage() {
           />
         )}
 
-        {location?.type === "settlement" && (
+        {location?.type === "settlement" && isCityWithDistricts(location as Settlement) && (
+          <CityDetail
+            settlement={location as Settlement}
+            npcs={npcs}
+            todayEvents={todayEvents}
+            currentDay={world.state.day}
+            factions={world.factions}
+            hooks={world.hooks}
+            locations={world.locations}
+            worldId={world.id}
+            ruleset={world.ruleset}
+            onUpdateWorld={handleUpdateWorld}
+            seed={seed}
+          />
+        )}
+
+        {location?.type === "settlement" && !isCityWithDistricts(location as Settlement) && (
           <SettlementDetail
             settlement={location as Settlement}
             npcs={npcs}

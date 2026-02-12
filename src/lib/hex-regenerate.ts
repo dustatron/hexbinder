@@ -8,6 +8,7 @@ import { generateRumors, generateNotices } from "~/generators/RumorGenerator";
 import { generateSettlementHistory, generateSensoryImpressions } from "~/generators/settlement/SettlementHistoryGenerator";
 import { generateSettlementSecrets } from "~/generators/settlement/SettlementSecretsGenerator";
 import { assignNPCsToBuildings, linkSitesToBuildings } from "~/generators/TownLayoutEngine";
+import { generateCityDistricts } from "~/generators/district/DistrictGenerator";
 import { SeededRandom } from "~/generators/SeededRandom";
 import { nanoid } from "nanoid";
 
@@ -404,6 +405,18 @@ function generateSettlementAtHex(
 
   // Generate sensory impressions for scene-setting
   settlement.sensoryImpressions = generateSensoryImpressions(`${seed}-${settlement.id}`);
+
+  // Generate districts for cities
+  if (settlement.size === "city") {
+    const { districts, districtSites, districtNPCs, cityIdentity } =
+      generateCityDistricts(seed, settlement, world.factions);
+
+    settlement.districts = districts;
+    settlement.cityIdentity = cityIdentity;
+    settlement.sites.push(...districtSites);
+    settlementNPCs.push(...districtNPCs);
+    settlement.npcIds.push(...districtNPCs.map(n => n.id));
+  }
 
   // placeSettlement mutates the hex in the array, but we want immutable updates
   const hexes = world.hexes.map(h => {

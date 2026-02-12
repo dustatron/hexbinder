@@ -40,6 +40,7 @@ interface HexMapProps {
   currentHexId: string | null; // Party's current location (format: "q,r")
   visitedHexIds: string[]; // Hexes party has visited (format: "q,r")
   onHexClick: (coord: HexCoord) => void;
+  onHexDoubleClick?: (coord: HexCoord) => void;
   showLabels?: boolean;
 }
 
@@ -51,6 +52,7 @@ export function HexMap({
   currentHexId,
   visitedHexIds,
   onHexClick,
+  onHexDoubleClick,
   showLabels = false,
 }: HexMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -232,6 +234,7 @@ export function HexMap({
                 isCurrent={isCurrent}
                 isVisited={isVisited}
                 onClick={onHexClick}
+                onDoubleClick={onHexDoubleClick}
               />
             );
           })}

@@ -42,7 +42,7 @@ function generateAge(rng: SeededRandom): number {
 
 // === Site Type to NPC Role mapping ===
 
-const SITE_TYPE_TO_ROLE: Record<SiteType, NPCRole> = {
+const SITE_TYPE_TO_ROLE: Partial<Record<SiteType, NPCRole>> = {
   inn: "innkeeper",
   tavern: "innkeeper",
   temple: "priest",
@@ -51,6 +51,15 @@ const SITE_TYPE_TO_ROLE: Record<SiteType, NPCRole> = {
   market: "merchant",
   guild_hall: "merchant",
   noble_estate: "noble",
+  dock: "harbormaster",
+  warehouse: "merchant",
+  arena: "arena_master",
+  library: "sage",
+  bathhouse: "merchant",
+  gambling_hall: "crime_boss",
+  embassy: "ambassador",
+  barracks: "watch_captain",
+  ruins_entrance: "criminal",
 };
 
 // === Trait Tables ===

@@ -3,10 +3,11 @@ import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-rout
 import { ArrowLeft, Menu, RefreshCw } from "lucide-react";
 import { SettlementDetail, type LocationEvent } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
+import { CityDetail } from "~/components/location-detail/CityDetail";
 import { RegenerateModal } from "~/components/location-detail/RegenerateButton";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/lib/hex-regenerate";
-import { isSettlement, isDungeon, type Settlement, type Dungeon, type NPC, type DayEvent, type Hook, type WorldData } from "~/models";
+import { isSettlement, isDungeon, isCityWithDistricts, type Settlement, type Dungeon, type NPC, type DayEvent, type Hook, type WorldData } from "~/models";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
@@ -179,7 +180,23 @@ function LocationPage() {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        {isSettlement(location) && (
+        {isSettlement(location) && isCityWithDistricts(location as Settlement) && (
+          <CityDetail
+            settlement={location as Settlement}
+            npcs={npcs}
+            todayEvents={todayEvents}
+            currentDay={world.state.day}
+            factions={world.factions}
+            hooks={hooks}
+            locations={world.locations}
+            worldId={world.id}
+            ruleset={world.ruleset}
+            onUpdateWorld={handleUpdateWorld}
+            seed={seed}
+          />
+        )}
+
+        {isSettlement(location) && !isCityWithDistricts(location as Settlement) && (
           <SettlementDetail
             settlement={location as Settlement}
             npcs={npcs}

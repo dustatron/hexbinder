@@ -42,7 +42,8 @@
       "Bash(ls:*)",
       "Bash(wc:*)",
       "Bash(python3:*)",
-      "WebFetch(domain:fontawesome.com)"
+      "WebFetch(domain:fontawesome.com)",
+      "Bash(npx tsr:*)"
     ]
   }
 }

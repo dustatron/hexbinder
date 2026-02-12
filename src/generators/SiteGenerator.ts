@@ -28,7 +28,7 @@ const SITE_COUNTS: Record<SettlementSize, [number, number]> = {
 
 // === Name Tables ===
 
-const SITE_NAME_PREFIXES: Record<SiteType, string[]> = {
+const SITE_NAME_PREFIXES: Partial<Record<SiteType, string[]>> = {
   inn: ["The Weary", "The Golden", "The Silver", "The Red", "The Black", "The Wandering"],
   tavern: ["The Rusty", "The Drunken", "The Jolly", "The Dancing", "The Broken"],
   temple: ["Temple of", "Shrine of", "Chapel of", "Sanctum of"],
@@ -39,7 +39,7 @@ const SITE_NAME_PREFIXES: Record<SiteType, string[]> = {
   noble_estate: ["House", "Manor of", "Estate of"],
 };
 
-const SITE_NAME_SUFFIXES: Record<SiteType, string[]> = {
+const SITE_NAME_SUFFIXES: Partial<Record<SiteType, string[]>> = {
   inn: ["Traveler", "Dragon", "Stag", "Lion", "Horse", "Crown", "Shield"],
   tavern: ["Tankard", "Barrel", "Goblin", "Orc", "Sailor", "Mug"],
   temple: ["the Light", "the Dawn", "the Flame", "the Earth", "the Storm"],
@@ -52,7 +52,7 @@ const SITE_NAME_SUFFIXES: Record<SiteType, string[]> = {
 
 // === Services by Site Type ===
 
-const SITE_SERVICES: Record<SiteType, SiteService[]> = {
+const SITE_SERVICES: Partial<Record<SiteType, SiteService[]>> = {
   inn: [
     { name: "Room (common)", cost: "5 sp/night" },
     { name: "Room (private)", cost: "2 gp/night" },
@@ -95,7 +95,7 @@ const SITE_SERVICES: Record<SiteType, SiteService[]> = {
   ],
 };
 
-const SITE_DESCRIPTIONS: Record<SiteType, string[]> = {
+const SITE_DESCRIPTIONS: Partial<Record<SiteType, string[]>> = {
   inn: [
     "A cozy establishment with warm beds and hot meals",
     "A well-maintained inn popular with travelers",
@@ -206,8 +206,8 @@ export function generateSites(options: SiteGeneratorOptions): SettlementSite[] {
 
 function generateSite(rng: SeededRandom, type: SiteType): SettlementSite {
   const name = generateSiteName(rng, type);
-  const description = rng.pick(SITE_DESCRIPTIONS[type]);
-  const services = [...SITE_SERVICES[type]];
+  const description = rng.pick(SITE_DESCRIPTIONS[type] ?? ["A notable establishment"]);
+  const services = [...(SITE_SERVICES[type] ?? [])];
 
   // Determine if this is a rumor source (taverns and inns always are)
   const rumorSource = type === "tavern" || type === "inn" || rng.chance(0.3);
@@ -240,7 +240,7 @@ function generateSite(rng: SeededRandom, type: SiteType): SettlementSite {
 }
 
 function generateSiteName(rng: SeededRandom, type: SiteType): string {
-  const prefix = rng.pick(SITE_NAME_PREFIXES[type]);
-  const suffix = rng.pick(SITE_NAME_SUFFIXES[type]);
+  const prefix = rng.pick(SITE_NAME_PREFIXES[type] ?? ["The"]);
+  const suffix = rng.pick(SITE_NAME_SUFFIXES[type] ?? ["Place"]);
   return `${prefix} ${suffix}`;
 }

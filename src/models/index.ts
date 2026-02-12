@@ -238,6 +238,72 @@ export interface Settlement extends Location {
   defenses: DefenseLevel;
   lore?: SettlementLore;
   sensoryImpressions?: string[]; // 3 brief sensory descriptions (sight, sound, smell)
+  // District system (cities only)
+  districts?: District[];
+  cityIdentity?: CityIdentity;
+}
+
+// === City Districts ===
+
+export type DistrictType =
+  // Universal (any city)
+  | "market" | "temple" | "noble" | "slums" | "docks"
+  | "warehouse" | "artisan" | "military" | "academic"
+  | "foreign" | "residential"
+  // Always present in cities
+  | "ruins"
+  // Economy-flavored
+  | "cannery" | "smelter" | "lumber_yard" | "caravan"
+  | "arcane_academy" | "arena" | "foundry";
+
+export type DistrictMood =
+  | "bustling" | "quiet" | "dangerous" | "decaying"
+  | "prosperous" | "oppressed" | "festive" | "tense";
+
+export interface DistrictAdjacency {
+  districtId: string;
+  connectionType: "street" | "bridge" | "gate" | "tunnel";
+}
+
+export interface District {
+  id: string;
+  name: string;
+  type: DistrictType;
+  description: string;
+  mood: DistrictMood;
+  trouble: string;
+  flavor: string;        // Sensory impression (1 sentence)
+  economy: string;       // What drives this district
+
+  // People & Places
+  faceNpcId: string;     // Authority/power broker
+  siteIds: string[];     // Refs into settlement.sites[]
+  npcIds: string[];      // Refs into world.npcs[]
+
+  // District-level content
+  rumors: Rumor[];
+  notices: Notice[];
+
+  // Faction presence
+  controllingFactionId?: string;
+  contestedByFactionIds?: string[];
+
+  // Graph
+  adjacencies: DistrictAdjacency[];
+
+  // Node map position
+  position: { x: number; y: number };
+}
+
+export interface CityIdentity {
+  primaryEconomy: EconomyType;
+  secondaryEconomy?: EconomyType;
+  culturalFlavor: string;
+  cityEpithet: string;
+}
+
+export function isCityWithDistricts(s: Settlement): boolean {
+  return s.size === "city" && Array.isArray(s.districts) && s.districts.length > 0;
 }
 
 // === Spatial Town Types ===
@@ -310,7 +376,17 @@ export type SiteType =
   | "general_store"
   | "market"
   | "guild_hall"
-  | "noble_estate";
+  | "noble_estate"
+  // District-specific site types
+  | "dock"
+  | "warehouse"
+  | "arena"
+  | "library"
+  | "bathhouse"
+  | "gambling_hall"
+  | "embassy"
+  | "barracks"
+  | "ruins_entrance";
 
 export interface SiteService {
   name: string;
@@ -330,6 +406,7 @@ export interface SettlementSite {
   services: SiteService[];
   rumorSource: boolean;
   noticeBoard: boolean;
+  districtId?: string; // Which district this site belongs to (cities only)
 }
 
 // === Rumors & Notices ===
@@ -406,7 +483,15 @@ export type NPCRole =
   | "king"
   | "baron"
   | "duke"
-  | "count";
+  | "count"
+  // District-specific roles
+  | "harbormaster"
+  | "guild_master"
+  | "watch_captain"
+  | "crime_boss"
+  | "high_priest"
+  | "ambassador"
+  | "arena_master";
 
 export type RulerTitle = "king" | "baron" | "duke" | "count";
 
@@ -460,6 +545,7 @@ export interface NPC {
   factionRole?: FactionRole;
   locationId?: string;
   siteId?: string;
+  districtId?: string; // Which district (cities only)
   age?: number;
   role?: NPCRole;
   relationships: NPCRelationship[];
