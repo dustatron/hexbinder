@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import {
-  ArrowLeft,
   ChevronLeft,
   ChevronRight,
   Moon,
@@ -24,6 +23,7 @@ import {
   MapPin,
   Footprints,
 } from "lucide-react";
+import { SidebarTrigger } from "~/components/ui/sidebar";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { advanceDay, goBackDay, extendForecast, needsForecastExtension } from "~/generators/WorldGenerator";
 import type {
@@ -36,7 +36,12 @@ import type {
   Faction,
 } from "~/models";
 
+type TabId = "factions" | "events" | "settlements" | "dungeons" | "travel";
+
 export const Route = createFileRoute("/atlas/$worldId")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    tab: (search.tab as TabId) || "events",
+  }),
   loader: ({ params }) => {
     const world = loadWorld(params.worldId);
     if (!world) throw notFound();
@@ -66,8 +71,6 @@ const MOON_LABELS: Record<MoonPhase, string> = {
   full: "Full Moon",
   waning: "Waning",
 };
-
-type TabId = "factions" | "events" | "settlements" | "dungeons" | "travel";
 
 import type { Location } from "~/models";
 
@@ -227,14 +230,20 @@ function getWeatherIcon(condition: string) {
 
 function AtlasPage() {
   const initialWorld = Route.useLoaderData();
+  const { tab } = Route.useSearch();
   const [world, setWorld] = useState<WorldData>(initialWorld);
-  const [activeTab, setActiveTab] = useState<TabId>("events");
+  const [activeTab, setActiveTab] = useState<TabId>(tab);
   const [weekOffset, setWeekOffset] = useState(0);
 
   // Sync state when navigating back
   useEffect(() => {
     setWorld(initialWorld);
   }, [initialWorld]);
+
+  // Sync tab when search param changes (sidebar nav)
+  useEffect(() => {
+    setActiveTab(tab);
+  }, [tab]);
 
   const settlements = world.locations.filter(
     (loc): loc is Settlement => loc.type === "settlement"
@@ -289,17 +298,11 @@ function AtlasPage() {
   const WeatherIcon = WEATHER_ICONS[world.state.weather.condition] || Sun;
 
   return (
-    <div className="flex min-h-svh flex-col bg-stone-900 text-stone-100">
+    <div className="flex h-full flex-col overflow-auto bg-stone-900 text-stone-100">
       {/* Header */}
       <header className="sticky top-0 z-10 border-b border-stone-700 bg-stone-900 px-4 py-3">
         <div className="flex items-center gap-3">
-          <Link
-            to="/world/$worldId"
-            params={{ worldId: world.id }}
-            className="text-stone-400 hover:text-stone-200"
-          >
-            <ArrowLeft size={20} />
-          </Link>
+          <SidebarTrigger className="-ml-1 text-stone-400 hover:text-stone-200" />
           <div className="flex-1">
             <h1 className="font-semibold">{world.name}</h1>
             <p className="text-xs text-stone-400">Seed: {world.seed}</p>

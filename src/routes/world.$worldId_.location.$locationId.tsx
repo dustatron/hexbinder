@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
-import { ArrowLeft, Menu, RefreshCw } from "lucide-react";
+import { Menu, RefreshCw } from "lucide-react";
+import { SidebarTrigger } from "~/components/ui/sidebar";
 import { SettlementDetail, type LocationEvent } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
 import { LandmarkDetail } from "~/components/location-detail/LandmarkDetail";
@@ -111,7 +112,7 @@ function LocationPage() {
   // Location not found (shouldn't happen in normal flow)
   if (!location) {
     return (
-      <div className="flex h-svh flex-col items-center justify-center bg-stone-900 text-stone-100">
+      <div className="flex h-full flex-col items-center justify-center bg-stone-900 text-stone-100">
         <p className="text-stone-400">Location not found</p>
         <Link
           to="/world/$worldId"
@@ -136,18 +137,12 @@ function LocationPage() {
     : undefined;
 
   return (
-    <div className="flex h-svh flex-col bg-stone-900 text-stone-100">
+    <div className="flex h-full flex-col bg-stone-900 text-stone-100">
       {/* Header */}
       <header className="z-10 border-b border-stone-700 bg-stone-900 px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link
-              to="/world/$worldId"
-              params={{ worldId: world.id }}
-              className="text-stone-400 hover:text-stone-200"
-            >
-              <ArrowLeft size={20} />
-            </Link>
+            <SidebarTrigger className="-ml-1 text-stone-400 hover:text-stone-200" />
             <h1 className="font-semibold">{location.name}</h1>
             <span className="rounded bg-stone-700 px-2 py-0.5 text-xs capitalize text-stone-400">
               {location.type}

@@ -4,6 +4,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Plus, Download, Upload, Trash2, Map, Globe } from "lucide-react";
 
 import { Button } from "~/components/ui/button";
+import { SidebarTrigger } from "~/components/ui/sidebar";
 import {
   listWorlds,
   deleteWorld,
@@ -150,16 +151,18 @@ function HomePage() {
   };
 
   return (
-    <div className="min-h-svh bg-stone-900 p-4 text-stone-100">
+    <div className="h-full overflow-auto bg-stone-900 p-4 text-stone-100">
       <div className="mx-auto max-w-2xl">
         <header className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">Hexbinder</h1>
-            <p className="text-sm text-stone-400">
-              Procedural sandbox generator
-            </p>
+          <div className="flex items-center gap-3">
+            <SidebarTrigger className="-ml-1 text-stone-400 hover:text-stone-200" />
+            <div>
+              <h1 className="text-2xl font-bold">Hexbinder</h1>
+              <p className="text-sm text-stone-400">
+                Procedural sandbox generator
+              </p>
+            </div>
           </div>
-
         </header>
 
         <div className="mb-6 flex gap-2">

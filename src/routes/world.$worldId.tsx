@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Cloud, Sun, CloudRain, Settings, ChevronRight, Tag } from "lucide-react";
+import { createFileRoute, notFound } from "@tanstack/react-router";
+import { Cloud, Sun, CloudRain, ChevronRight, Tag } from "lucide-react";
+import { SidebarTrigger } from "~/components/ui/sidebar";
 import { HexMap } from "~/components/hex-map";
 import { LocationPanel } from "~/components/location-panel";
 import { loadWorld, saveWorld } from "~/lib/storage";
@@ -108,15 +109,13 @@ function WorldPage() {
   const todayEvents = (todayRecord?.events ?? []).filter(e => e.type !== "weather_change");
 
   return (
-    <div className="relative flex h-svh flex-col bg-stone-900 text-stone-100">
+    <div className="relative flex h-full flex-col bg-stone-900 text-stone-100">
       {/* Header */}
       <header className="z-10 border-b border-stone-700 bg-stone-900 px-4 py-3">
         <div className="flex items-center justify-between">
-          {/* Left: Back + World Name */}
+          {/* Left: Sidebar + World Name */}
           <div className="flex items-center gap-3">
-            <Link to="/" className="text-stone-400 hover:text-stone-200">
-              <ArrowLeft size={20} />
-            </Link>
+            <SidebarTrigger className="-ml-1 text-stone-400 hover:text-stone-200" />
             <h1 className="font-semibold">{world.name}</h1>
           </div>
 
@@ -159,13 +158,6 @@ function WorldPage() {
                 {world.state.weather.tempLow}°/{world.state.weather.tempHigh}°
               </span>
             </div>
-            <Link
-              to="/atlas/$worldId"
-              params={{ worldId: world.id }}
-              className="text-stone-400 hover:text-stone-200"
-            >
-              <Settings size={20} />
-            </Link>
           </div>
         </div>
       </header>
