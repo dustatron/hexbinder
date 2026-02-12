@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useGesture } from "@use-gesture/react";
 import { motion, useMotionValue } from "framer-motion";
 import { Plus, Minus, RotateCcw } from "lucide-react";
@@ -61,6 +61,18 @@ export function HexMap({
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const scale = useMotionValue(initialZoom);
+
+  // Persist zoom to localStorage on change (debounced)
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout>;
+    const unsub = scale.on("change", (v) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        try { localStorage.setItem("hexbinder:zoom", String(v)); } catch {}
+      }, 300);
+    });
+    return () => { unsub(); clearTimeout(timeout); };
+  }, [scale]);
 
   // Create honeycomb hex instances for each world hex
   const honeycombHexes = useMemo(() => {

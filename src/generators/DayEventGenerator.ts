@@ -395,7 +395,7 @@ function generateFactionActivity(
 
   return {
     id: `event-${nanoid(8)}`,
-    type: "clock_tick", // Using clock_tick for faction activities
+    type: "faction_activity",
     description: text,
     linkedFactionId: faction.id,
   };
@@ -444,7 +444,7 @@ function generateWorldEvent(rng: SeededRandom, world: WorldData): DayEvent | nul
 
   return {
     id: `event-${nanoid(8)}`,
-    type: "weather_change", // Using weather_change for world events (catastrophic)
+    type: "world_event",
     description: text,
     linkedLocationId: settlement?.id,
   };

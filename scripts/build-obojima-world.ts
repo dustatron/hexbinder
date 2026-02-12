@@ -36,6 +36,8 @@ import { generateSites } from "~/generators/SiteGenerator";
 import { generateRumors } from "~/generators/RumorGenerator";
 import { generateQuestObjects } from "~/generators/QuestObjectGenerator";
 import { SeededRandom } from "~/generators/SeededRandom";
+import { generateDayEvents } from "~/generators/DayEventGenerator";
+import { generateWeather, getSeasonFromDay, getMoonPhase } from "~/generators/WeatherGenerator";
 import { coordKey } from "~/lib/hex-utils";
 
 // ============================================================
@@ -386,6 +388,21 @@ function main() {
   log("Generating NPC wants...");
   generateMissingWants(world);
 
+  // --- Generate Calendar (28 days of events/weather) ---
+  log("Generating calendar...");
+  const FORECAST_DAYS = 28;
+  world.state.calendar = [];
+  for (let d = 1; d <= FORECAST_DAYS; d++) {
+    const daySeason = getSeasonFromDay(d);
+    const dayWeather = generateWeather({ seed: SEED, season: daySeason, day: d });
+    const dayMoonPhase = getMoonPhase(d);
+    const dayEvents = generateDayEvents({ seed: SEED, day: d, world });
+    world.state.calendar.push({ day: d, weather: dayWeather, moonPhase: dayMoonPhase, events: dayEvents });
+  }
+  world.state.forecastEndDay = FORECAST_DAYS;
+  const totalEvents = world.state.calendar.reduce((s, r) => s + r.events.length, 0);
+  log(`  Generated ${FORECAST_DAYS} days, ${totalEvents} events`);
+
   // --- Validate ---
   log("Validating cross-references...");
   const errors = validate(world);
@@ -420,6 +437,7 @@ function main() {
   log(`Edges: ${world.edges.length}`);
   log(`Rumors: ${settlements.reduce((s, set) => s + (set as Settlement).rumors.length, 0)}`);
   log(`Notices: ${settlements.reduce((s, set) => s + (set as Settlement).notices.length, 0)}`);
+  log(`Calendar: ${world.state.calendar.length} days, ${world.state.calendar.reduce((s, r) => s + r.events.length, 0)} events`);
   log(`Validation errors: ${errors.length}`);
   log("Done.");
 }

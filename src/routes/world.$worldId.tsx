@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Cloud, Sun, CloudRain, Settings, ChevronRight, Tag } from "lucide-react";
 import { HexMap } from "~/components/hex-map";
@@ -31,7 +31,12 @@ function WorldPage() {
   const initialWorld = Route.useLoaderData();
   const [world, setWorld] = useState<WorldData>(initialWorld);
   const [selectedCoord, setSelectedCoord] = useState<HexCoord | null>(null);
-  const [showLabels, setShowLabels] = useState(false);
+  const [showLabels, setShowLabels] = useState(() => {
+    try { return localStorage.getItem("hexbinder:showLabels") === "true"; } catch { return false; }
+  });
+  const savedZoom = useMemo(() => {
+    try { const v = localStorage.getItem("hexbinder:zoom"); return v ? parseFloat(v) : 1.69; } catch { return 1.69; }
+  }, []);
 
   // Sync state when navigating back (loader runs again with fresh localStorage data)
   useEffect(() => {
@@ -170,7 +175,11 @@ function WorldPage() {
         {/* Map Controls */}
         <div className="absolute top-2 left-2 z-10 flex gap-1">
           <button
-            onClick={() => setShowLabels(!showLabels)}
+            onClick={() => {
+              const next = !showLabels;
+              setShowLabels(next);
+              try { localStorage.setItem("hexbinder:showLabels", String(next)); } catch {}
+            }}
             className={`p-2 rounded border transition-colors ${
               showLabels
                 ? "bg-amber-600 border-amber-500 text-white"
@@ -191,7 +200,7 @@ function WorldPage() {
           visitedHexIds={world.state.visitedHexIds}
           onHexClick={setSelectedCoord}
           showLabels={showLabels}
-          initialZoom={1.69}
+          initialZoom={savedZoom}
         />
 
         {/* Location Panel */}

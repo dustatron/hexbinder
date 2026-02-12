@@ -1428,7 +1428,7 @@ export type MoonPhase = "new" | "waxing" | "full" | "waning";
 
 // === Day Events (Atlas) ===
 
-export type DayEventType = "clock_tick" | "weather_change" | "rumor" | "encounter" | "arrival";
+export type DayEventType = "clock_tick" | "weather_change" | "faction_activity" | "world_event" | "rumor" | "encounter" | "arrival";
 
 export interface DayEvent {
   id: string;

@@ -462,6 +462,34 @@ function AtlasPage() {
                             </li>
                           );
                         }
+                        if (event.type === "faction_activity") {
+                          return (
+                            <li key={event.id} className={`rounded px-3 py-2 text-sm ${
+                              isToday ? "bg-stone-700/70" : isPast ? "bg-stone-700/20 text-stone-500" : "bg-stone-700/30 text-stone-400"
+                            }`}>
+                              <span className={`mr-2 rounded px-1.5 py-0.5 text-xs uppercase ${
+                                isPast ? "bg-purple-900/50 text-purple-400/60" : "bg-purple-900/50 text-purple-300"
+                              }`}>
+                                faction
+                              </span>
+                              {linkifyDescription(event.description, world.id, world.factions, world.locations)}
+                            </li>
+                          );
+                        }
+                        if (event.type === "world_event") {
+                          return (
+                            <li key={event.id} className={`rounded px-3 py-2 text-sm ${
+                              isToday ? "bg-stone-700/70" : isPast ? "bg-stone-700/20 text-stone-500" : "bg-stone-700/30 text-stone-400"
+                            }`}>
+                              <span className={`mr-2 rounded px-1.5 py-0.5 text-xs uppercase ${
+                                isPast ? "bg-red-900/50 text-red-400/60" : "bg-red-900/50 text-red-300"
+                              }`}>
+                                world
+                              </span>
+                              {linkifyDescription(event.description, world.id, world.factions, world.locations)}
+                            </li>
+                          );
+                        }
                         if (event.type === "clock_tick" && event.linkedClockId) {
                           const clock = world.clocks.find((c) => c.id === event.linkedClockId);
                           if (clock) {
