@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { Cloud, Sun, CloudRain, ChevronRight, Tag } from "lucide-react";
 import { SidebarTrigger } from "~/components/ui/sidebar";
 import { HexMap } from "~/components/hex-map";
@@ -30,6 +30,7 @@ const WEATHER_ICONS: Partial<Record<WeatherCondition, typeof Sun>> = {
 
 function WorldPage() {
   const initialWorld = Route.useLoaderData();
+  const navigate = useNavigate();
   const [world, setWorld] = useState<WorldData>(initialWorld);
   const [selectedCoord, setSelectedCoord] = useState<HexCoord | null>(null);
   const [showLabels, setShowLabels] = useState(() => {
@@ -191,6 +192,16 @@ function WorldPage() {
           currentHexId={world.state.currentHexId}
           visitedHexIds={world.state.visitedHexIds}
           onHexClick={setSelectedCoord}
+          onHexDoubleClick={(coord) => {
+            navigate({
+              to: "/world/$worldId/hex/$q/$r",
+              params: {
+                worldId: world.id,
+                q: String(coord.q),
+                r: String(coord.r),
+              },
+            });
+          }}
           showLabels={showLabels}
           initialZoom={savedZoom}
         />
@@ -204,6 +215,7 @@ function WorldPage() {
           worldSeed={world.seed}
           currentHexId={world.state.currentHexId}
           visitedHexIds={world.state.visitedHexIds}
+          themeId={world.themeId}
           onClose={() => setSelectedCoord(null)}
           onSetCurrent={handleSetCurrent}
           onToggleVisited={handleToggleVisited}

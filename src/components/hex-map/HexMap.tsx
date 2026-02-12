@@ -35,6 +35,7 @@ interface HexMapProps {
   currentHexId: string | null;
   visitedHexIds: string[];
   onHexClick: (coord: HexCoord) => void;
+  onHexDoubleClick?: (coord: HexCoord) => void;
   showLabels?: boolean;
   initialZoom?: number;
 }
@@ -47,6 +48,7 @@ export function HexMap({
   currentHexId,
   visitedHexIds,
   onHexClick,
+  onHexDoubleClick,
   showLabels = false,
   initialZoom = 1,
 }: HexMapProps) {
@@ -279,6 +281,7 @@ export function HexMap({
                 isCurrent={isCurrent}
                 isVisited={isVisited}
                 onClick={onHexClick}
+                onDoubleClick={onHexDoubleClick}
               />
             );
           })}
