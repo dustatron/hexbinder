@@ -1,28 +1,8 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Moon,
-  Sun,
-  Cloud,
-  CloudRain,
-  Snowflake,
-  Castle,
-  Skull,
-  Users,
-  Calendar,
-  Gem,
-  Target,
-  Shield,
-  AlertTriangle,
-  Crown,
-  Sword,
-  BookOpen,
-  Key,
-  MapPin,
-  Footprints,
-} from "lucide-react";
+import { FaChevronLeft, FaChevronRight, FaMoon, FaSun, FaCloud, FaCloudRain } from "react-icons/fa";
+import { GiSnowflake1, GiCastle, GiSkullCrossedBones, GiThreeFriends, GiCalendar, GiFireGem, GiTargetArrows, GiShield, GiSpikedDragonHead, GiCrown, GiSwordWound, GiSpellBook, GiKey, GiFootprint } from "react-icons/gi";
+import { FaMapMarkerAlt } from "react-icons/fa";
 import { SidebarTrigger } from "~/components/ui/sidebar";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { advanceDay, goBackDay, extendForecast, needsForecastExtension } from "~/generators/WorldGenerator";
@@ -51,18 +31,18 @@ export const Route = createFileRoute("/atlas/$worldId")({
   component: AtlasPage,
 });
 
-const WEATHER_ICONS: Partial<Record<WeatherCondition, typeof Sun>> = {
-  clear: Sun,
-  cloudy: Cloud,
-  overcast: Cloud,
-  rain_light: CloudRain,
-  rain_heavy: CloudRain,
-  storm: CloudRain,
-  thunderstorm: CloudRain,
-  fog: Cloud,
-  snow_light: Snowflake,
-  snow_heavy: Snowflake,
-  blizzard: Snowflake,
+const WEATHER_ICONS: Partial<Record<WeatherCondition, typeof FaSun>> = {
+  clear: FaSun,
+  cloudy: FaCloud,
+  overcast: FaCloud,
+  rain_light: FaCloudRain,
+  rain_heavy: FaCloudRain,
+  storm: FaCloudRain,
+  thunderstorm: FaCloudRain,
+  fog: FaCloud,
+  snow_light: GiSnowflake1,
+  snow_heavy: GiSnowflake1,
+  blizzard: GiSnowflake1,
 };
 
 const MOON_LABELS: Record<MoonPhase, string> = {
@@ -75,15 +55,15 @@ const MOON_LABELS: Record<MoonPhase, string> = {
 import type { Location } from "~/models";
 
 // Setting Seeds item icons and colors
-const ITEM_TYPE_ICONS: Record<string, typeof Gem> = {
-  crown: Crown,
-  weapon: Sword,
-  tome: BookOpen,
-  key: Key,
-  relic: Gem,
-  vessel: Gem,
-  regalia: Crown,
-  focus: Gem,
+const ITEM_TYPE_ICONS: Record<string, typeof GiFireGem> = {
+  crown: GiCrown,
+  weapon: GiSwordWound,
+  tome: GiSpellBook,
+  key: GiKey,
+  relic: GiFireGem,
+  vessel: GiFireGem,
+  regalia: GiCrown,
+  focus: GiFireGem,
 };
 
 const ITEM_STATUS_COLORS: Record<string, { bg: string; text: string }> = {
@@ -222,10 +202,10 @@ function getWeatherFromDescription(desc: string): string {
 
 // Get weather icon for a condition string
 function getWeatherIcon(condition: string) {
-  if (condition.includes("snow") || condition.includes("blizzard")) return Snowflake;
-  if (condition.includes("rain") || condition.includes("storm") || condition.includes("thunder")) return CloudRain;
-  if (condition.includes("cloud") || condition.includes("overcast") || condition.includes("fog")) return Cloud;
-  return Sun;
+  if (condition.includes("snow") || condition.includes("blizzard")) return GiSnowflake1;
+  if (condition.includes("rain") || condition.includes("storm") || condition.includes("thunder")) return FaCloudRain;
+  if (condition.includes("cloud") || condition.includes("overcast") || condition.includes("fog")) return FaCloud;
+  return FaSun;
 }
 
 function AtlasPage() {
@@ -295,7 +275,7 @@ function AtlasPage() {
     setWorld(newWorld);
   };
 
-  const WeatherIcon = WEATHER_ICONS[world.state.weather.condition] || Sun;
+  const WeatherIcon = WEATHER_ICONS[world.state.weather.condition] || FaSun;
 
   return (
     <div className="flex h-full flex-col overflow-auto bg-stone-900 text-stone-100">
@@ -317,7 +297,7 @@ function AtlasPage() {
           <div className="mb-4 flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 text-xl font-semibold">
-                <Calendar size={20} className="text-stone-400" />
+                <GiCalendar size={20} className="text-stone-400" />
                 Day {world.state.day}, Year {world.state.year}
               </div>
               <p className="mt-1 text-stone-400 capitalize">
@@ -335,7 +315,7 @@ function AtlasPage() {
                 {world.state.weather.tempLow}° / {world.state.weather.tempHigh}°F
               </p>
               <p className="mt-1 flex items-center justify-end gap-2 text-sm text-stone-400">
-                <Moon size={14} />
+                <FaMoon size={14} />
                 {MOON_LABELS[world.state.moonPhase]}
               </p>
             </div>
@@ -348,7 +328,7 @@ function AtlasPage() {
               disabled={!canGoBack}
               className="flex items-center gap-1 rounded bg-stone-700 px-3 py-2 text-sm hover:bg-stone-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <ChevronLeft size={16} />
+              <FaChevronLeft size={16} />
               Previous Day
             </button>
             <button
@@ -357,7 +337,7 @@ function AtlasPage() {
               className="flex items-center gap-1 rounded bg-amber-700 px-3 py-2 text-sm hover:bg-amber-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Next Day
-              <ChevronRight size={16} />
+              <FaChevronRight size={16} />
             </button>
           </div>
         </section>
@@ -365,11 +345,11 @@ function AtlasPage() {
         {/* Tab Bar */}
         <div className="flex gap-1 rounded-lg border border-stone-700 bg-stone-800 p-1">
           {([
-            { id: "events", label: "Events", icon: Calendar, count: todayRecord?.events.length ?? 0 },
-            { id: "travel", label: "Travel", icon: Footprints, count: world.state.visitedHexIds.length },
-            { id: "factions", label: "Factions", icon: Users, count: world.factions.length },
-            { id: "settlements", label: "Settlements", icon: Castle, count: settlements.length },
-            { id: "dungeons", label: "Dungeons", icon: Skull, count: dungeons.length },
+            { id: "events", label: "Events", icon: GiCalendar, count: todayRecord?.events.length ?? 0 },
+            { id: "travel", label: "Travel", icon: GiFootprint, count: world.state.visitedHexIds.length },
+            { id: "factions", label: "Factions", icon: GiThreeFriends, count: world.factions.length },
+            { id: "settlements", label: "Settlements", icon: GiCastle, count: settlements.length },
+            { id: "dungeons", label: "Dungeons", icon: GiSkullCrossedBones, count: dungeons.length },
           ] as const).map(({ id, label, icon: Icon, count }) => (
             <button
               key={id}
@@ -398,7 +378,7 @@ function AtlasPage() {
               disabled={!canGoPrevWeek}
               className="flex items-center gap-1 rounded bg-stone-700 px-2 py-1 text-sm hover:bg-stone-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <ChevronLeft size={16} />
+              <FaChevronLeft size={16} />
               Prev
             </button>
             <div className="text-center">
@@ -421,7 +401,7 @@ function AtlasPage() {
               className="flex items-center gap-1 rounded bg-stone-700 px-2 py-1 text-sm hover:bg-stone-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Next
-              <ChevronRight size={16} />
+              <FaChevronRight size={16} />
             </button>
           </div>
 
@@ -552,7 +532,7 @@ function AtlasPage() {
               disabled={!canGoPrevWeek}
               className="flex items-center gap-1 rounded bg-stone-700 px-2 py-1 text-sm hover:bg-stone-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <ChevronLeft size={16} />
+              <FaChevronLeft size={16} />
               Prev
             </button>
             <div className="text-center">
@@ -566,7 +546,7 @@ function AtlasPage() {
               className="flex items-center gap-1 rounded bg-stone-700 px-2 py-1 text-sm hover:bg-stone-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Next
-              <ChevronRight size={16} />
+              <FaChevronRight size={16} />
             </button>
           </div>
 
@@ -588,7 +568,7 @@ function AtlasPage() {
             {/* Current Location */}
             <div className="mb-4">
               <h2 className="mb-2 flex items-center gap-2 font-semibold text-green-400">
-                <MapPin size={18} />
+                <FaMapMarkerAlt size={18} />
                 Current Location
               </h2>
               {world.state.currentHexId ? (
@@ -623,7 +603,7 @@ function AtlasPage() {
 
             {/* Visited Locations */}
             <h2 className="mb-3 flex items-center gap-2 font-semibold text-purple-400">
-              <Footprints size={18} />
+              <GiFootprint size={18} />
               Visited Hexes ({world.state.visitedHexIds.length})
             </h2>
             {world.state.visitedHexIds.length === 0 ? (
@@ -685,7 +665,7 @@ function AtlasPage() {
           {world.significantItems && world.significantItems.length > 0 && (
             <section className="rounded-lg border border-amber-700/50 bg-stone-800 p-4">
               <h2 className="mb-3 flex items-center gap-2 font-semibold text-amber-400">
-                <Gem size={18} />
+                <GiFireGem size={18} />
                 Significant Items ({world.significantItems.length})
               </h2>
               <p className="mb-4 text-xs text-stone-400">
@@ -722,14 +702,14 @@ function AtlasPage() {
                       <div className="mt-3 space-y-1 text-xs">
                         {holder && (
                           <div className="flex items-center gap-2 text-purple-300">
-                            <Shield size={12} />
+                            <GiShield size={12} />
                             <span>Held by: {holder}</span>
                           </div>
                         )}
 
                         {dungeon && (
                           <div className="flex items-center gap-2 text-amber-300">
-                            <Skull size={12} />
+                            <GiSkullCrossedBones size={12} />
                             <span>
                               Hidden in:{" "}
                               <Link
@@ -745,7 +725,7 @@ function AtlasPage() {
 
                         {seekers.length > 0 && (
                           <div className="flex items-center gap-2 text-red-300">
-                            <Target size={12} />
+                            <GiTargetArrows size={12} />
                             <span>Sought by: {seekers.join(", ")}</span>
                           </div>
                         )}
@@ -758,7 +738,7 @@ function AtlasPage() {
           )}
         <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
           <h2 className="mb-3 flex items-center gap-2 font-semibold">
-            <Users size={18} className="text-purple-400" />
+            <GiThreeFriends size={18} className="text-purple-400" />
             Factions ({world.factions.length})
           </h2>
           {world.factions.length === 0 ? (
@@ -800,7 +780,7 @@ function AtlasPage() {
                     {faction.advantages && faction.advantages.length > 0 && (
                       <div className="mt-3">
                         <div className="mb-1 flex items-center gap-1 text-xs font-medium text-green-400">
-                          <Shield size={12} />
+                          <GiShield size={12} />
                           Advantages
                         </div>
                         <div className="flex flex-wrap gap-1">
@@ -817,7 +797,7 @@ function AtlasPage() {
                     {currentGoal && (
                       <div className="mt-3">
                         <div className="mb-1 flex items-center gap-1 text-xs font-medium text-blue-400">
-                          <Target size={12} />
+                          <GiTargetArrows size={12} />
                           Current Goal ({completedGoals}/{totalGoals})
                         </div>
                         <p className="text-sm text-stone-300">{currentGoal.description}</p>
@@ -828,7 +808,7 @@ function AtlasPage() {
                     {faction.obstacle && (
                       <div className="mt-3">
                         <div className="mb-1 flex items-center gap-1 text-xs font-medium text-red-400">
-                          <AlertTriangle size={12} />
+                          <GiSpikedDragonHead size={12} />
                           Obstacle
                         </div>
                         <p className="text-sm text-stone-400">{faction.obstacle.description}</p>
@@ -863,7 +843,7 @@ function AtlasPage() {
         {activeTab === "settlements" && (
         <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
           <h2 className="mb-3 flex items-center gap-2 font-semibold">
-            <Castle size={18} className="text-amber-400" />
+            <GiCastle size={18} className="text-amber-400" />
             Settlements ({settlements.length})
           </h2>
           {settlements.length === 0 ? (
@@ -901,7 +881,7 @@ function AtlasPage() {
         {activeTab === "dungeons" && (
         <section className="rounded-lg border border-stone-700 bg-stone-800 p-4">
           <h2 className="mb-3 flex items-center gap-2 font-semibold">
-            <Skull size={18} className="text-red-400" />
+            <GiSkullCrossedBones size={18} className="text-red-400" />
             Dungeons ({dungeons.length})
           </h2>
           {dungeons.length === 0 ? (

@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { RefreshCw, Copy, Check } from "lucide-react";
+import { FaSync, FaCopy, FaCheck } from "react-icons/fa";
 import { generateQuickNames } from "~/generators/EncounterGenerator";
 
 interface QuickNamesProps {
@@ -45,7 +45,7 @@ export function QuickNames({ seed, onReroll }: QuickNamesProps) {
           className="rounded p-1 text-stone-400 hover:bg-stone-700 hover:text-stone-200"
           title="Re-roll names"
         >
-          <RefreshCw size={12} />
+          <FaSync size={12} />
         </button>
       </div>
 
@@ -92,7 +92,7 @@ function NameButton({ name, isCopied, onClick }: NameButtonProps) {
       }`}
     >
       <span className="truncate">{name}</span>
-      {isCopied && <Check size={10} className="shrink-0 text-green-400" />}
+      {isCopied && <FaCheck size={10} className="shrink-0 text-green-400" />}
     </button>
   );
 }

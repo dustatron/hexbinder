@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
-import { Menu, RefreshCw } from "lucide-react";
+import { FaBars, FaSync } from "react-icons/fa";
 import { SidebarTrigger } from "~/components/ui/sidebar";
 import { SettlementDetail, type LocationEvent } from "~/components/location-detail/SettlementDetail";
 import { DungeonDetail } from "~/components/location-detail/DungeonDetail";
@@ -151,12 +151,12 @@ function LocationPage() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-8 w-8 text-stone-400 hover:text-stone-100">
-                <Menu size={18} />
+                <FaBars size={18} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="min-w-[180px]">
               <DropdownMenuItem onClick={() => setShowRegenerateModal(true)}>
-                <RefreshCw size={14} />
+                <FaSync size={14} />
                 Regenerate
               </DropdownMenuItem>
             </DropdownMenuContent>

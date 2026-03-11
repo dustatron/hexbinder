@@ -1,4 +1,4 @@
-import { Eye, Ear, Wind } from "lucide-react";
+import { FaEye, FaAssistiveListeningSystems, FaWind } from "react-icons/fa";
 
 interface FirstImpressionsProps {
   sight: string;
@@ -22,15 +22,15 @@ export function FirstImpressions({
       )}
       <ul className="space-y-1.5 text-sm">
         <li className="flex items-start gap-2 text-stone-300">
-          <Eye size={14} className="mt-0.5 shrink-0 text-amber-400" />
+          <FaEye size={14} className="mt-0.5 shrink-0 text-amber-400" />
           <span>{sight}</span>
         </li>
         <li className="flex items-start gap-2 text-stone-300">
-          <Ear size={14} className="mt-0.5 shrink-0 text-blue-400" />
+          <FaAssistiveListeningSystems size={14} className="mt-0.5 shrink-0 text-blue-400" />
           <span>{sound}</span>
         </li>
         <li className="flex items-start gap-2 text-stone-300">
-          <Wind size={14} className="mt-0.5 shrink-0 text-green-400" />
+          <FaWind size={14} className="mt-0.5 shrink-0 text-green-400" />
           <span>{smell}</span>
         </li>
       </ul>

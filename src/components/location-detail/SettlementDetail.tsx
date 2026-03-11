@@ -1,4 +1,5 @@
-import { RefreshCw, Users, Shield, Coins, AlertTriangle, ScrollText, MessageSquare, Building2, User, Flag, Map as MapIcon, ClipboardList, Calendar, BookOpen, Lock, ChevronDown, ChevronRight } from "lucide-react";
+import { FaSync, FaChevronDown, FaChevronRight } from "react-icons/fa";
+import { GiThreeFriends, GiShield, GiCoins, GiSpikedDragonHead, GiScrollUnfurled, GiConversation, GiTowerFlag, GiPerson, GiVerticalBanner, GiTreasureMap, GiChecklist, GiCalendar, GiSpellBook, GiPadlock } from "react-icons/gi";
 import type { Settlement, NPC, Faction, DayEvent, SettlementSite, WorldData, Hook, Dungeon, Location, Ruleset } from "~/models";
 import { isSpatialSettlement, isDungeon, isSettlement, type SpatialSettlement } from "~/models";
 
@@ -441,7 +442,7 @@ export function SettlementDetail({
                 {SIZE_LABELS[settlement.size]}
               </span>
               <span className="flex items-center gap-1 text-xs text-stone-400">
-                <Users size={12} />
+                <GiThreeFriends size={12} />
                 Pop.{" "}
                 <InlineEditText
                   value={String(settlement.population)}
@@ -451,7 +452,7 @@ export function SettlementDetail({
                 />
               </span>
               <span className="flex items-center gap-1 text-xs text-stone-400">
-                <Shield size={12} />
+                <GiShield size={12} />
                 <InlineEditSelect
                   value={settlement.defenses}
                   options={["none", "militia", "guards", "walls", "fortified"] as const}
@@ -520,7 +521,7 @@ export function SettlementDetail({
             />
           </span>
           <span className="flex items-center gap-1">
-            <Coins size={12} />
+            <GiCoins size={12} />
             {settlement.economyBase.join(", ")}
           </span>
         </div>
@@ -531,9 +532,9 @@ export function SettlementDetail({
       {(settlement.lore || settlement.trouble || settlement.quirk) && (
         <details className="group rounded-lg border border-stone-700 bg-stone-800/50">
           <summary className="flex cursor-pointer items-center gap-2 p-3 text-sm font-semibold text-stone-200 hover:bg-stone-700/50">
-            <BookOpen size={16} className="text-amber-400" />
+            <GiSpellBook size={16} className="text-amber-400" />
             <span>Settlement Lore</span>
-            <ChevronRight size={16} className="ml-auto text-stone-400 transition-transform group-open:rotate-90" />
+            <FaChevronRight size={16} className="ml-auto text-stone-400 transition-transform group-open:rotate-90" />
           </summary>
           <div className="border-t border-stone-700 p-3 space-y-3">
             {/* Trouble & Quirk - now inside lore */}
@@ -618,7 +619,7 @@ export function SettlementDetail({
       {/* Today's Events - Priority section */}
       {todayEvents.length > 0 && (
         <section className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3">
-          <SectionHeader icon={AlertTriangle} title="Today's Events" />
+          <SectionHeader icon={GiSpikedDragonHead} title="Today's Events" />
           <ul className="space-y-2">
             {todayEvents.map((event) => (
               <li
@@ -646,7 +647,7 @@ export function SettlementDetail({
               : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
           }`}
         >
-          <Building2 size={18} />
+          <GiTowerFlag size={18} />
           <span className="rounded-full bg-stone-600 px-1.5 text-xs">{settlement.sites.length + npcs.length}</span>
         </button>
         <button
@@ -658,7 +659,7 @@ export function SettlementDetail({
               : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
           }`}
         >
-          <MessageSquare size={18} />
+          <GiConversation size={18} />
           <span className="rounded-full bg-stone-600 px-1.5 text-xs">{settlement.rumors.length}</span>
         </button>
         <button
@@ -670,7 +671,7 @@ export function SettlementDetail({
               : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
           }`}
         >
-          <ClipboardList size={18} />
+          <GiChecklist size={18} />
           <span className="rounded-full bg-stone-600 px-1.5 text-xs">{settlement.notices.length}</span>
         </button>
         <button
@@ -682,7 +683,7 @@ export function SettlementDetail({
               : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
           }`}
         >
-          <Calendar size={18} />
+          <GiCalendar size={18} />
         </button>
       </div>
 
@@ -695,7 +696,7 @@ export function SettlementDetail({
             {isSpatialSettlement(settlement) && (
               <section className="space-y-3 lg:sticky lg:top-4 lg:self-start">
                 <div className="flex items-center gap-2">
-                  <MapIcon className="h-4 w-4 text-stone-400" />
+                  <GiTreasureMap className="h-4 w-4 text-stone-400" />
                   <h3 className="text-sm font-semibold text-stone-200">Town Map</h3>
                 </div>
                 <TownMap
@@ -726,9 +727,9 @@ export function SettlementDetail({
                 return (
                   <details className="group rounded-lg border border-stone-700 bg-stone-800/50">
                     <summary className="flex cursor-pointer items-center gap-2 p-3 text-sm font-semibold text-stone-200 hover:bg-stone-700/50">
-                      <Coins size={16} className="text-amber-400" />
+                      <GiCoins size={16} className="text-amber-400" />
                       <span>Available Services ({allServices.length})</span>
-                      <ChevronRight size={16} className="ml-auto text-stone-400 transition-transform group-open:rotate-90" />
+                      <FaChevronRight size={16} className="ml-auto text-stone-400 transition-transform group-open:rotate-90" />
                     </summary>
                     <div className="border-t border-stone-700 p-3">
                       <div className="grid gap-1.5">
@@ -753,7 +754,7 @@ export function SettlementDetail({
               {/* Key Locations (Sites) */}
               {settlement.sites.length > 0 && (
                 <section>
-                  <SectionHeader icon={Building2} title="Key Locations" />
+                  <SectionHeader icon={GiTowerFlag} title="Key Locations" />
                   <div className="grid gap-2">
                     {settlement.sites.map((site) => {
                       const owner = site.ownerId ? npcs.find((n) => n.id === site.ownerId) : undefined;
@@ -785,7 +786,7 @@ export function SettlementDetail({
                             </span>
                             {site.secret && (
                               <span title="Has secret">
-                                <Lock size={12} className="text-amber-500" />
+                                <GiPadlock size={12} className="text-amber-500" />
                               </span>
                             )}
                           </div>
@@ -832,7 +833,7 @@ export function SettlementDetail({
                               onClick={(e) => e.stopPropagation()}
                             >
                               <summary className="cursor-pointer text-xs text-amber-500 hover:text-amber-400">
-                                <Lock size={10} className="mr-1 inline" />
+                                <GiPadlock size={10} className="mr-1 inline" />
                                 Secret (GM only)
                               </summary>
                               <p className="mt-1 rounded bg-amber-500/10 p-2 text-xs text-amber-300">
@@ -854,7 +855,7 @@ export function SettlementDetail({
           {/* NPCs */}
           {npcs.length > 0 && (
             <section>
-              <SectionHeader icon={User} title="NPCs" />
+              <SectionHeader icon={GiPerson} title="NPCs" />
               <div className="columns-1 md:columns-2 lg:columns-3 gap-3 space-y-3">
                 {[...npcs].sort((a, b) => a.name.localeCompare(b.name)).map((npc) => {
                   const faction = npcFactionMap.get(npc.id);
@@ -952,7 +953,7 @@ export function SettlementDetail({
           {/* Faction Presence */}
           {presentFactions.length > 0 && (
             <section>
-              <SectionHeader icon={Flag} title="Faction Presence" />
+              <SectionHeader icon={GiVerticalBanner} title="Faction Presence" />
               <div className="grid gap-2">
                 {presentFactions.map((faction) => {
                   const isHQ = faction.headquartersId === settlement.id;
@@ -1013,7 +1014,7 @@ export function SettlementDetail({
               className="flex items-center gap-1 rounded px-2 py-1 text-sm text-stone-400 hover:bg-stone-600 hover:text-stone-200"
               title="Generate new rumors"
             >
-              <RefreshCw size={14} />
+              <FaSync size={14} />
               Regenerate
             </button>
           </div>
@@ -1104,7 +1105,7 @@ export function SettlementDetail({
               }}
               className="flex items-center gap-1 rounded px-2 py-1 text-xs text-stone-400 hover:bg-stone-600 hover:text-stone-200"
             >
-              <RefreshCw size={12} />
+              <FaSync size={12} />
               Regenerate
             </button>
           </div>
@@ -1251,9 +1252,9 @@ export function SettlementDetail({
           {settlement.lore && settlement.lore.secrets.length > 0 && (
             <details className="group rounded-lg border border-stone-700 bg-stone-800/50">
               <summary className="flex cursor-pointer items-center gap-2 p-3 text-sm font-semibold text-stone-200 hover:bg-stone-700/50">
-                <Lock size={16} className="text-amber-500" />
+                <GiPadlock size={16} className="text-amber-500" />
                 <span>Town Secrets ({settlement.lore.secrets.length})</span>
-                <ChevronRight size={16} className="ml-auto text-stone-400 transition-transform group-open:rotate-90" />
+                <FaChevronRight size={16} className="ml-auto text-stone-400 transition-transform group-open:rotate-90" />
               </summary>
               <div className="border-t border-stone-700 p-3 space-y-3">
                 {settlement.lore.secrets.map((secret) => {

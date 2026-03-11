@@ -1,10 +1,8 @@
 import { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import {
-  X, ChevronRight, MapPin, Eye, EyeOff, Menu, Check,
-  Swords, Skull, Compass, Scroll, Home,
-} from "lucide-react";
+import { FaTimes, FaChevronRight, FaMapMarkerAlt, FaEye, FaEyeSlash, FaBars, FaCheck } from "react-icons/fa";
+import { GiCrossedSwords, GiSkullCrossedBones, GiCompass, GiScrollUnfurled, GiHut } from "react-icons/gi";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -166,7 +164,7 @@ export function LocationPanel({
               onClick={onClose}
               className="rounded p-1 text-stone-400 hover:bg-stone-700 hover:text-stone-200 shrink-0"
             >
-              <X size={18} />
+              <FaTimes size={18} />
             </button>
           </div>
 
@@ -200,7 +198,7 @@ export function LocationPanel({
             {hexId && (
               <DropdownMenu>
                 <DropdownMenuTrigger className="rounded-lg bg-stone-700 px-2.5 py-1.5 text-stone-300 transition-colors hover:bg-stone-600">
-                  <Menu size={16} />
+                  <FaBars size={16} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="min-w-[140px]">
                   <DropdownMenuItem
@@ -208,11 +206,11 @@ export function LocationPanel({
                     disabled={isCurrent}
                     className={isCurrent ? "opacity-50" : ""}
                   >
-                    {isCurrent ? <Check size={14} /> : <MapPin size={14} />}
+                    {isCurrent ? <FaCheck size={14} /> : <FaMapMarkerAlt size={14} />}
                     {isCurrent ? "Current" : "Set Current"}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => onToggleVisited(hexId)}>
-                    {isVisited ? <EyeOff size={14} /> : <Eye size={14} />}
+                    {isVisited ? <FaEyeSlash size={14} /> : <FaEye size={14} />}
                     {isVisited ? "Unmark" : "Mark Visited"}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -228,7 +226,7 @@ export function LocationPanel({
               className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-amber-600 px-3 py-1.5 text-sm font-medium text-stone-900 hover:bg-amber-500"
             >
               View Details
-              <ChevronRight size={14} />
+              <FaChevronRight size={14} />
             </Link>
           </div>
         </motion.div>
@@ -313,7 +311,7 @@ function WildernessDetails({
           {/* Encounter */}
           {hasEncounter && hex.encounter && (
             <div className="flex items-start gap-2 rounded-lg bg-stone-900/50 px-3 py-2">
-              <Swords size={14} className="mt-0.5 shrink-0 text-red-400" />
+              <GiCrossedSwords size={14} className="mt-0.5 shrink-0 text-red-400" />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium text-stone-200">
@@ -333,7 +331,7 @@ function WildernessDetails({
           {/* Defeated encounter */}
           {hex.encounter?.defeated && (
             <div className="flex items-center gap-2 rounded-lg bg-stone-900/50 px-3 py-2">
-              <Skull size={14} className="shrink-0 text-stone-500" />
+              <GiSkullCrossedBones size={14} className="shrink-0 text-stone-500" />
               <span className="text-sm text-stone-500 line-through">
                 {hex.encounter.creature} &times;{hex.encounter.count}
               </span>
@@ -344,7 +342,7 @@ function WildernessDetails({
           {/* Feature */}
           {hasFeature && hex.feature && (
             <div className="flex items-start gap-2 rounded-lg bg-stone-900/50 px-3 py-2">
-              <Compass size={14} className={`mt-0.5 shrink-0 ${hex.feature.cleared ? "text-stone-500" : "text-amber-400"}`} />
+              <GiCompass size={14} className={`mt-0.5 shrink-0 ${hex.feature.cleared ? "text-stone-500" : "text-amber-400"}`} />
               <div className="min-w-0 flex-1">
                 <span className={`text-sm font-medium ${hex.feature.cleared ? "text-stone-500 line-through" : "text-stone-200"}`}>
                   {hex.feature.name}
@@ -358,7 +356,7 @@ function WildernessDetails({
           {/* Quest Object */}
           {hasQuest && hex.questObject && (
             <div className="flex items-start gap-2 rounded-lg bg-stone-900/50 px-3 py-2">
-              <Scroll size={14} className="mt-0.5 shrink-0 text-purple-400" />
+              <GiScrollUnfurled size={14} className="mt-0.5 shrink-0 text-purple-400" />
               <div className="min-w-0 flex-1">
                 <span className="text-sm font-medium text-stone-200">{hex.questObject.name}</span>
                 <p className="mt-0.5 text-xs text-stone-400 line-clamp-1">{hex.questObject.description}</p>
@@ -369,7 +367,7 @@ function WildernessDetails({
           {/* Dwelling */}
           {hasDwelling && dwelling && (
             <div className="flex items-start gap-2 rounded-lg bg-stone-900/50 px-3 py-2">
-              <Home size={14} className="mt-0.5 shrink-0 text-emerald-400" />
+              <GiHut size={14} className="mt-0.5 shrink-0 text-emerald-400" />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium text-stone-200">{dwelling.name}</span>

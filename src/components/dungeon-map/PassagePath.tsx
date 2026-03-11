@@ -1,4 +1,4 @@
-import { AlertTriangle } from "lucide-react";
+import { GiSpikedDragonHead } from "react-icons/gi";
 import type { Passage, DungeonTheme } from "~/models";
 import { THEME_COLORS, CELL_SIZE, PASSAGE_WIDTH } from "./theme-colors";
 
@@ -115,7 +115,7 @@ function TrapMarker({ x, y }: TrapMarkerProps) {
       height={12}
     >
       <div className="flex items-center justify-center w-full h-full">
-        <AlertTriangle size={10} className="text-orange-400" />
+        <GiSpikedDragonHead size={10} className="text-orange-400" />
       </div>
     </foreignObject>
   );

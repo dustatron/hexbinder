@@ -1,16 +1,5 @@
-import {
-  DoorOpen,
-  LogOut,
-  ArrowRight,
-  Square,
-  Sparkles,
-  Gem,
-  Lock,
-  Skull,
-  AlertTriangle,
-  Swords,
-  Coins,
-} from "lucide-react";
+import { GiDoorway, GiSpikedDragonHead, GiFireGem, GiPadlock, GiSkullCrossedBones, GiCrossedSwords, GiCoins, GiSparkles } from "react-icons/gi";
+import { FaArrowRight, FaSquare, FaSignOutAlt } from "react-icons/fa";
 import type { SpatialRoom, DungeonTheme, RoomType } from "~/models";
 import { THEME_COLORS, CELL_SIZE, SPECIAL_ROOM_COLORS } from "./theme-colors";
 
@@ -23,15 +12,15 @@ interface RoomRectProps {
 }
 
 const ROOM_ICONS: Record<RoomType, React.ComponentType<{ size?: number; className?: string }>> = {
-  entrance: DoorOpen,
-  exit: LogOut,
-  corridor: ArrowRight,
-  chamber: Square,
-  shrine: Sparkles,
-  treasury: Gem,
-  prison: Lock,
-  lair: Skull,
-  trap_room: AlertTriangle,
+  entrance: GiDoorway,
+  exit: FaSignOutAlt,
+  corridor: FaArrowRight,
+  chamber: FaSquare,
+  shrine: GiSparkles,
+  treasury: GiFireGem,
+  prison: GiPadlock,
+  lair: GiSkullCrossedBones,
+  trap_room: GiSpikedDragonHead,
 };
 
 export function RoomRect({ room, theme, selected, onClick, roomNumber }: RoomRectProps) {
@@ -102,7 +91,7 @@ export function RoomRect({ room, theme, selected, onClick, roomNumber }: RoomRec
           height={12}
         >
           <div className="flex items-center justify-center w-full h-full">
-            <Swords size={10} className="text-red-400" />
+            <GiCrossedSwords size={10} className="text-red-400" />
           </div>
         </foreignObject>
       )}
@@ -115,7 +104,7 @@ export function RoomRect({ room, theme, selected, onClick, roomNumber }: RoomRec
           height={12}
         >
           <div className="flex items-center justify-center w-full h-full">
-            <Coins size={10} className="text-yellow-400" />
+            <GiCoins size={10} className="text-yellow-400" />
           </div>
         </foreignObject>
       )}
@@ -129,7 +118,7 @@ export function RoomRect({ room, theme, selected, onClick, roomNumber }: RoomRec
           height={12}
         >
           <div className="flex items-center justify-center w-full h-full">
-            <AlertTriangle size={10} className="text-orange-400" />
+            <GiSpikedDragonHead size={10} className="text-orange-400" />
           </div>
         </foreignObject>
       )}

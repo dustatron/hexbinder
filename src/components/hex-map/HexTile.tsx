@@ -1,26 +1,32 @@
 import {
-  Castle,
-  Crown,
-  Skull,
-  Swords,
-  Moon,
-  Wand2,
-  Anchor,
-  Footprints,
-  Mountain,
-  Church,
-  Pickaxe,
-  Shield,
-  type LucideIcon,
-} from "lucide-react";
+  GiCastle,
+  GiElvenCastle,
+  GiCrown,
+  GiHut,
+  GiHutsVillage,
+  GiVillage,
+  GiSkullCrossedBones,
+  GiCrossedSwords,
+  GiMoonBats,
+  GiMagicSwirl,
+  GiAnchor,
+  GiFootprint,
+  GiMountainCave,
+  GiTempleGate,
+  GiMining,
+  GiShield,
+} from "react-icons/gi";
+import type { IconType } from "react-icons";
 import type { Hex as HexType } from "honeycomb-grid";
-import type { Hex, HexCoord, LocationType, DungeonTheme } from "~/models";
+import type { Hex, HexCoord, LocationType, DungeonTheme, SettlementSize } from "~/models";
 import {
   hexToPolygonPoints,
   hexToCenter,
   TERRAIN_COLORS,
   TERRAIN_BORDER_COLORS,
+  HEX_SIZE,
 } from "~/lib/hex-utils";
+import { getVariantIconPath } from "~/lib/terrain-variants";
 
 interface HexTileProps {
   honeycombHex: HexType;
@@ -28,6 +34,7 @@ interface HexTileProps {
   locationType?: LocationType;
   locationName?: string;
   dungeonTheme?: DungeonTheme;
+  settlementSize?: SettlementSize;
   isCapital?: boolean;
   isSelected: boolean;
   isCurrent?: boolean; // Party is currently here
@@ -39,29 +46,37 @@ interface HexTileProps {
   iconOnly?: boolean;
 }
 
-const LOCATION_ICONS: Record<LocationType, LucideIcon> = {
-  settlement: Castle,
-  dungeon: Skull,
-  landmark: Castle,
-  wilderness: Castle,
+const LOCATION_ICONS: Record<LocationType, IconType> = {
+  settlement: GiCastle,
+  dungeon: GiSkullCrossedBones,
+  landmark: GiCastle,
+  wilderness: GiCastle,
 };
 
-const DUNGEON_ICONS: Partial<Record<DungeonTheme, LucideIcon>> = {
-  tomb: Skull,
-  cave: Mountain,
-  temple: Church,
-  mine: Pickaxe,
-  fortress: Shield,
-  sewer: Skull,
-  crypt: Skull,
-  lair: Footprints,
+const SETTLEMENT_ICONS: Record<SettlementSize, IconType> = {
+  thorpe: GiHut,
+  hamlet: GiHutsVillage,
+  village: GiVillage,
+  town: GiCastle,
+  city: GiElvenCastle,
+};
+
+const DUNGEON_ICONS: Partial<Record<DungeonTheme, IconType>> = {
+  tomb: GiSkullCrossedBones,
+  cave: GiMountainCave,
+  temple: GiTempleGate,
+  mine: GiMining,
+  fortress: GiShield,
+  sewer: GiSkullCrossedBones,
+  crypt: GiSkullCrossedBones,
+  lair: GiFootprint,
   // Wilderness themes
-  bandit_hideout: Swords,
-  cultist_lair: Moon,
-  witch_hut: Wand2,
-  sea_cave: Anchor,
-  beast_den: Footprints,
-  floating_keep: Castle,
+  bandit_hideout: GiCrossedSwords,
+  cultist_lair: GiMoonBats,
+  witch_hut: GiMagicSwirl,
+  sea_cave: GiAnchor,
+  beast_den: GiFootprint,
+  floating_keep: GiCastle,
 };
 
 export function HexTile({
@@ -70,6 +85,7 @@ export function HexTile({
   locationType,
   locationName,
   dungeonTheme,
+  settlementSize,
   isCapital,
   isSelected,
   isCurrent = false,
@@ -95,11 +111,13 @@ export function HexTile({
 
   // Use dungeon-specific icon if available, otherwise fall back to location icon
   // Capitals get Crown icon
-  let Icon: LucideIcon | null = null;
+  let Icon: IconType | null = null;
   if (isCapital) {
-    Icon = Crown;
+    Icon = GiCrown;
   } else if (locationType === "dungeon" && dungeonTheme) {
-    Icon = DUNGEON_ICONS[dungeonTheme] ?? Skull;
+    Icon = DUNGEON_ICONS[dungeonTheme] ?? GiSkullCrossedBones;
+  } else if (locationType === "settlement" && settlementSize) {
+    Icon = SETTLEMENT_ICONS[settlementSize] ?? GiCastle;
   } else if (locationType) {
     Icon = LOCATION_ICONS[locationType];
   }
@@ -111,18 +129,17 @@ export function HexTile({
   if (iconOnly) {
     if (!Icon) return null;
     return (
-      <Icon
+      <foreignObject
         x={center.x - 12}
         y={center.y - 12}
         width={24}
         height={24}
-        stroke="#1c1917"
-        strokeWidth={2}
-        fill={iconFill}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer", overflow: "visible" }}
         onClick={() => onClick(hexData.coord)}
         onDoubleClick={() => onDoubleClick?.(hexData.coord)}
-      />
+      >
+        <Icon size={24} color="#1c1917" style={{ filter: iconFill !== "none" ? `drop-shadow(0 0 0 ${iconFill})` : undefined }} />
+      </foreignObject>
     );
   }
 
@@ -145,6 +162,25 @@ export function HexTile({
         stroke={strokeColor}
         strokeWidth={isSelected || isCurrent ? 3 : 1}
       />
+      {hexData.variant && (
+        <>
+          <defs>
+            <clipPath id={`hex-clip-${hexData.coord.q}-${hexData.coord.r}`}>
+              <polygon points={points} />
+            </clipPath>
+          </defs>
+          <image
+            href={getVariantIconPath(hexData.variant)}
+            x={center.x - HEX_SIZE * 0.75}
+            y={center.y - HEX_SIZE * 0.75}
+            width={HEX_SIZE * 1.5}
+            height={HEX_SIZE * 1.5}
+            clipPath={`url(#hex-clip-${hexData.coord.q}-${hexData.coord.r})`}
+            preserveAspectRatio="xMidYMid slice"
+            style={{ pointerEvents: "none" }}
+          />
+        </>
+      )}
       {/* Current location: pulsing green ring */}
       {isCurrent && (
         <circle
@@ -170,15 +206,15 @@ export function HexTile({
         />
       )}
       {showIcon && Icon && (
-        <Icon
+        <foreignObject
           x={center.x - 12}
           y={center.y - 12}
           width={24}
           height={24}
-          stroke="#1c1917" // stone-900
-          strokeWidth={2}
-          fill={iconFill}
-        />
+          style={{ overflow: "visible" }}
+        >
+          <Icon size={24} color="#1c1917" style={{ filter: iconFill !== "none" ? `drop-shadow(0 0 0 ${iconFill})` : undefined }} />
+        </foreignObject>
       )}
       {showLabel && locationName && (
         <text

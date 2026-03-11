@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { formatDistanceToNow } from "date-fns";
-import { Plus, Download, Upload, Trash2, Map, Globe } from "lucide-react";
+import { FaPlus, FaDownload, FaUpload, FaTrash, FaGlobe } from "react-icons/fa";
+import { GiTreasureMap } from "react-icons/gi";
 
 import { Button } from "~/components/ui/button";
 import { SidebarTrigger } from "~/components/ui/sidebar";
@@ -174,7 +175,7 @@ function HomePage() {
             }}
             className="flex items-center gap-2"
           >
-            <Plus size={18} />
+            <FaPlus size={18} />
             New World
           </Button>
           <Button
@@ -183,12 +184,12 @@ function HomePage() {
             variant="outline"
             className="flex items-center gap-2"
           >
-            <Globe size={18} />
+            <FaGlobe size={18} />
             {loadingDefault ? "Loading..." : "Obojima"}
           </Button>
           <label className="cursor-pointer">
             <span className="inline-flex h-9 items-center gap-2 rounded-md border border-stone-600 bg-stone-800 px-3 text-sm font-medium hover:bg-stone-700">
-              <Upload size={18} />
+              <FaUpload size={18} />
               Import
             </span>
             <input
@@ -414,7 +415,7 @@ function HomePage() {
                   }
                 >
                   <div className="flex items-center gap-3">
-                    <Map className="text-amber-500" size={24} />
+                    <GiTreasureMap className="text-amber-500" size={24} />
                     <div>
                       <h3 className="font-semibold">{world.name}</h3>
                       <p className="text-sm text-stone-400">
@@ -450,7 +451,7 @@ function HomePage() {
                     onClick={() => handleExport(world.id)}
                     title="Export"
                   >
-                    <Download size={18} />
+                    <FaDownload size={18} />
                   </Button>
                   <Button
                     variant="ghost"
@@ -459,7 +460,7 @@ function HomePage() {
                     title="Delete"
                     className="text-red-400 hover:text-red-300"
                   >
-                    <Trash2 size={18} />
+                    <FaTrash size={18} />
                   </Button>
                 </div>
               </div>

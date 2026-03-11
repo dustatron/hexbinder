@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { RefreshCw } from "lucide-react";
+import { FaSync } from "react-icons/fa";
 import { SeededRandom } from "~/generators/SeededRandom";
 import { getRandomMonster } from "~/lib/monsters";
 import { getMonsterStats, type MonsterStats } from "~/lib/monster-stats";
@@ -109,7 +109,7 @@ export function EncounterTable({ seed, terrain, ruleset = "shadowdark", onReroll
             onClick={onReroll}
             className="flex items-center gap-1 rounded px-2 py-1 text-xs text-stone-400 hover:bg-stone-700 hover:text-stone-200"
           >
-            <RefreshCw size={12} />
+            <FaSync size={12} />
             Re-roll
           </button>
         )}

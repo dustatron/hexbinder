@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
-import { Cloud, Sun, CloudRain, ChevronRight, Tag } from "lucide-react";
+import { FaCloud, FaSun, FaCloudRain, FaChevronRight, FaTag } from "react-icons/fa";
 import { SidebarTrigger } from "~/components/ui/sidebar";
 import { HexMap } from "~/components/hex-map";
 import { LocationPanel } from "~/components/location-panel";
@@ -21,11 +21,11 @@ export const Route = createFileRoute("/world/$worldId")({
   component: WorldPage,
 });
 
-const WEATHER_ICONS: Partial<Record<WeatherCondition, typeof Sun>> = {
-  clear: Sun,
-  cloudy: Cloud,
-  rain_light: CloudRain,
-  rain_heavy: CloudRain,
+const WEATHER_ICONS: Partial<Record<WeatherCondition, typeof FaSun>> = {
+  clear: FaSun,
+  cloudy: FaCloud,
+  rain_light: FaCloudRain,
+  rain_heavy: FaCloudRain,
 };
 
 function WorldPage() {
@@ -103,7 +103,7 @@ function WorldPage() {
       ? world.dwellings.find((d) => d.id === selectedHex.dwellingId)
       : null;
 
-  const WeatherIcon = WEATHER_ICONS[world.state.weather.condition] || Sun;
+  const WeatherIcon = WEATHER_ICONS[world.state.weather.condition] || FaSun;
 
   // Get today's events from calendar (exclude weather - already shown in header)
   const todayRecord = world.state.calendar.find((r) => r.day === world.state.day);
@@ -147,7 +147,7 @@ function WorldPage() {
                 className="rounded bg-stone-700 p-1 hover:bg-stone-600"
                 title="Advance to next day"
               >
-                <ChevronRight size={16} />
+                <FaChevronRight size={16} />
               </button>
             </div>
             <div className="flex items-center gap-1 md:gap-2 text-sm text-stone-400">
@@ -180,7 +180,7 @@ function WorldPage() {
             }`}
             title={showLabels ? "Hide location labels" : "Show location labels"}
           >
-            <Tag size={16} />
+            <FaTag size={16} />
           </button>
         </div>
 

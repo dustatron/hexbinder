@@ -23,11 +23,36 @@ export type TerrainType =
   | "swamp"
   | "desert";
 
+export type TerrainVariant =
+  // plains
+  | "grassland" | "grasslandpoor" | "cultivatedfarmland" | "savanna"
+  | "shrubland" | "moor" | "snowfields" | "hillsgrassland"
+  // forest
+  | "lightforest" | "heavyforest" | "mixedforest" | "mixedforestheavy"
+  | "evergreen" | "heavyevergreen" | "jungle" | "heavyjungle" | "deadforest"
+  // hills
+  | "hills" | "grassyhills" | "forestedhills" | "forestedmixedhills"
+  | "evergreenhills" | "junglehills" | "deadforesthills" | "shrublandhills"
+  // mountains
+  | "mountain" | "mountains" | "mountainsnowcapped" | "mountainssnowcapped"
+  | "forestedmountain" | "forestedmountains" | "forestedmixedmountain"
+  | "forestedmixedmountains" | "evergreenmountain" | "evergreenmountains"
+  | "junglemountain" | "junglemountains" | "deadforestmountain"
+  | "deadforestmountains" | "glacier" | "volcano" | "volcanodormant"
+  // water
+  | "kelp" | "kelpheavy" | "reefs"
+  // swamp
+  | "swamp" | "marsh" | "deadforestwetlands" | "forestwetlands" | "wetlandsjungle"
+  // desert
+  | "sandydesert" | "rockydesert" | "dunes" | "cactus" | "heavycactus"
+  | "badlands" | "brokenlands";
+
 // === Hex ===
 
 export interface Hex {
   coord: HexCoord;
   terrain: TerrainType;
+  variant?: TerrainVariant;
   locationId?: string;
   // NEW: hex content layers
   feature?: HexFeature;

@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { MapPin, Eye, EyeOff, Menu, Check, RefreshCw } from "lucide-react";
+import { FaMapMarkerAlt, FaEye, FaEyeSlash, FaBars, FaCheck, FaSync } from "react-icons/fa";
 import { SidebarTrigger } from "~/components/ui/sidebar";
 import { loadWorld, saveWorld } from "~/lib/storage";
 import { regenerateHex, type RegenerationType, type RegenerateOptions } from "~/lib/hex-regenerate";
@@ -196,7 +196,7 @@ function HexDetailPage() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-8 w-8 text-stone-400 hover:text-stone-100">
-                <Menu size={18} />
+                <FaBars size={18} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="min-w-[180px]">
@@ -205,16 +205,16 @@ function HexDetailPage() {
                 disabled={isCurrent}
                 className={isCurrent ? "opacity-50" : ""}
               >
-                {isCurrent ? <Check size={14} /> : <MapPin size={14} />}
+                {isCurrent ? <FaCheck size={14} /> : <FaMapMarkerAlt size={14} />}
                 {isCurrent ? "Current Location" : "Set as Current"}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleToggleVisited}>
-                {isVisited ? <EyeOff size={14} /> : <Eye size={14} />}
+                {isVisited ? <FaEyeSlash size={14} /> : <FaEye size={14} />}
                 {isVisited ? "Unmark Visited" : "Mark as Visited"}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setShowRegenerateModal(true)}>
-                <RefreshCw size={14} />
+                <FaSync size={14} />
                 Regenerate
               </DropdownMenuItem>
             </DropdownMenuContent>
