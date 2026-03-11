@@ -1,7 +1,7 @@
 import { useRef, useMemo, useCallback } from "react";
 import { useGesture } from "@use-gesture/react";
 import { motion, useMotionValue } from "framer-motion";
-import { Plus, Minus, RotateCcw } from "lucide-react";
+import { FaPlus, FaMinus, FaUndo } from "react-icons/fa";
 import type { SpatialSettlement } from "~/models";
 import { WardPolygon } from "./WardPolygon";
 import { StreetPath } from "./StreetPath";
@@ -191,21 +191,21 @@ export function TownMap({
           className="rounded bg-stone-800/80 p-1.5 text-stone-300 hover:bg-stone-700 hover:text-stone-100"
           title="Zoom in"
         >
-          <Plus size={16} />
+          <FaPlus size={16} />
         </button>
         <button
           onClick={zoomOut}
           className="rounded bg-stone-800/80 p-1.5 text-stone-300 hover:bg-stone-700 hover:text-stone-100"
           title="Zoom out"
         >
-          <Minus size={16} />
+          <FaMinus size={16} />
         </button>
         <button
           onClick={resetView}
           className="rounded bg-stone-800/80 p-1.5 text-stone-300 hover:bg-stone-700 hover:text-stone-100"
           title="Reset view"
         >
-          <RotateCcw size={14} />
+          <FaUndo size={14} />
         </button>
       </div>
     </div>

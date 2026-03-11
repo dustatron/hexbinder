@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useGesture } from "@use-gesture/react";
-import { Plus, Minus, RotateCcw } from "lucide-react";
+import { FaPlus, FaMinus, FaUndo } from "react-icons/fa";
 import type { Hex, HexCoord, Location, HexEdge, Dungeon, Settlement } from "~/models";
 import { Tile, HEX_SIZE } from "~/lib/hex-utils";
 import { HexTile } from "./HexTile";
@@ -223,21 +223,21 @@ export function HexMap({
           className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
           title="Zoom In"
         >
-          <Plus size={16} />
+          <FaPlus size={16} />
         </button>
         <button
           onClick={handleZoomOut}
           className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
           title="Zoom Out"
         >
-          <Minus size={16} />
+          <FaMinus size={16} />
         </button>
         <button
           onClick={handleReset}
           className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
           title="Reset View"
         >
-          <RotateCcw size={16} />
+          <FaUndo size={16} />
         </button>
       </div>
       <svg
@@ -266,6 +266,11 @@ export function HexMap({
                 ? (location as Settlement).isCapital
                 : false;
 
+            const settlementSize =
+              location?.type === "settlement"
+                ? (location as Settlement).size
+                : undefined;
+
             const isCurrent = currentHexId === coordKey;
             const isVisited = visitedSet.has(coordKey);
 
@@ -276,6 +281,7 @@ export function HexMap({
                 hexData={hexData}
                 locationType={location?.type}
                 dungeonTheme={dungeonTheme}
+                settlementSize={settlementSize}
                 isCapital={isCapital}
                 isSelected={isSelected}
                 isCurrent={isCurrent}

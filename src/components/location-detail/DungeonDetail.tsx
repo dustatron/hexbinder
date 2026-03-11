@@ -1,8 +1,6 @@
 import { useState, useMemo, useRef } from "react";
-import {
-  CheckCircle2, Skull, Gem, MapPin, User, Map as MapIcon, ScrollText,
-  BookOpen, Users, Ghost, AlertTriangle, Footprints, Key, DoorOpen
-} from "lucide-react";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { GiCheckMark, GiSkullCrossedBones, GiFireGem, GiPerson, GiTreasureMap, GiScrollUnfurled, GiSpellBook, GiThreeFriends, GiGhost, GiSpikedDragonHead, GiFootprint, GiKey, GiDoorway } from "react-icons/gi";
 import type { Dungeon, Hook, DungeonTheme, NPC, SpatialDungeon, DungeonNPC, KeyLockPair, Faction, ExitPoint, Ruleset } from "~/models";
 import { isSpatialDungeon } from "~/models";
 
@@ -173,7 +171,7 @@ export function DungeonDetail({
               </span>
               {dungeon.cleared && (
                 <span className="flex items-center gap-1 rounded bg-green-900 px-2 py-0.5 text-xs font-medium text-green-300">
-                  <CheckCircle2 className="h-3 w-3" />
+                  <GiCheckMark className="h-3 w-3" />
                   Cleared
                 </span>
               )}
@@ -190,7 +188,7 @@ export function DungeonDetail({
       {hasSpatialLayout && (dungeon as SpatialDungeon).ecology && (
         <div className="rounded-lg border border-stone-700 bg-stone-800/50 p-4 space-y-3">
           <div className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-stone-400" />
+            <GiSpellBook className="h-4 w-4 text-stone-400" />
             <h3 className="text-sm font-semibold text-stone-200">Dungeon Lore</h3>
           </div>
           <p className="text-sm text-stone-300 italic">
@@ -240,7 +238,7 @@ export function DungeonDetail({
               : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
           }`}
         >
-          <MapIcon size={16} />
+          <GiTreasureMap size={16} />
           Map & Rooms
           <span className="rounded-full bg-stone-600 px-1.5 text-xs">{stats.totalRooms}</span>
         </button>
@@ -252,7 +250,7 @@ export function DungeonDetail({
               : "text-stone-400 hover:bg-stone-700/50 hover:text-stone-200"
           }`}
         >
-          <ScrollText size={16} />
+          <GiScrollUnfurled size={16} />
           Overview
         </button>
       </div>
@@ -264,7 +262,7 @@ export function DungeonDetail({
       {linkedNPCs.length > 0 && (
         <div className="rounded-lg border border-blue-700/50 bg-blue-950/30 p-4 space-y-3">
           <div className="flex items-center gap-2">
-            <User className="h-4 w-4 text-blue-400" />
+            <GiPerson className="h-4 w-4 text-blue-400" />
             <h3 className="text-sm font-semibold text-blue-300">Linked NPCs</h3>
           </div>
           <ul className="space-y-2">
@@ -299,7 +297,7 @@ export function DungeonDetail({
       {hook && (
         <div className="rounded-lg border border-amber-700/50 bg-amber-950/30 p-4 space-y-2">
           <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-amber-500" />
+            <FaMapMarkerAlt className="h-4 w-4 text-amber-500" />
             <h3 className="text-sm font-semibold text-amber-300">Active Hook</h3>
             <span className={`ml-auto rounded px-2 py-0.5 text-xs font-medium ${
               hook.status === "active" ? "bg-amber-700 text-amber-100" :
@@ -343,14 +341,14 @@ export function DungeonDetail({
           </div>
           <div>
             <div className="flex items-center justify-center gap-1 text-2xl font-bold text-red-400">
-              <Skull className="h-5 w-5" />
+              <GiSkullCrossedBones className="h-5 w-5" />
               {stats.monstersRemaining}
             </div>
             <div className="text-xs text-stone-500">Monsters Left</div>
           </div>
           <div>
             <div className="flex items-center justify-center gap-1 text-2xl font-bold text-emerald-400">
-              <Gem className="h-5 w-5" />
+              <GiFireGem className="h-5 w-5" />
               {stats.treasureRemaining}
             </div>
             <div className="text-xs text-stone-500">Treasure Left</div>
@@ -362,7 +360,7 @@ export function DungeonDetail({
       {controllingFaction && (
         <div className="rounded-lg border border-amber-900/50 bg-amber-950/30 p-4 space-y-2">
           <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-amber-400" />
+            <GiThreeFriends className="h-4 w-4 text-amber-400" />
             <h3 className="text-sm font-semibold text-amber-300">Faction Lair</h3>
           </div>
           <div className="flex items-center justify-between">
@@ -386,7 +384,7 @@ export function DungeonDetail({
       {hasSpatialLayout && (dungeon as SpatialDungeon).dungeonNPCs && (dungeon as SpatialDungeon).dungeonNPCs!.length > 0 && (
         <div className="rounded-lg border border-purple-900/50 bg-purple-950/30 p-4 space-y-3">
           <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-purple-400" />
+            <GiThreeFriends className="h-4 w-4 text-purple-400" />
             <h3 className="text-sm font-semibold text-purple-300">Dungeon Denizens</h3>
           </div>
           <div className="space-y-2">
@@ -401,12 +399,12 @@ export function DungeonDetail({
       {hasSpatialLayout && (dungeon as SpatialDungeon).keyLockPairs && (dungeon as SpatialDungeon).keyLockPairs!.length > 0 && (
         <div className="rounded-lg border border-amber-900/50 bg-amber-950/30 p-4 space-y-3">
           <div className="flex items-center gap-2">
-            <Key className="h-4 w-4 text-amber-400" />
+            <GiKey className="h-4 w-4 text-amber-400" />
             <h3 className="text-sm font-semibold text-amber-300">Keys & Locks</h3>
           </div>
           <div className="space-y-2">
             {(dungeon as SpatialDungeon).keyLockPairs?.map((pair: KeyLockPair) => (
-              <KeyLockCard key={pair.keyId} pair={pair} roomNumberMap={roomNumberMap} passages={(dungeon as SpatialDungeon).passages} />
+              <GiKeyLockCard key={pair.keyId} pair={pair} roomNumberMap={roomNumberMap} passages={(dungeon as SpatialDungeon).passages} />
             ))}
           </div>
         </div>
@@ -426,7 +424,7 @@ export function DungeonDetail({
         return (
           <div className="rounded-lg border border-amber-900/50 bg-amber-950/30 p-4 space-y-3">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-amber-400" />
+              <GiSpikedDragonHead className="h-4 w-4 text-amber-400" />
               <h3 className="text-sm font-semibold text-amber-300">
                 Traps & Hazards ({totalTraps})
               </h3>
@@ -443,7 +441,7 @@ export function DungeonDetail({
                   return (
                     <div key={passage.id} className="rounded bg-stone-800 p-3 space-y-2">
                       <div className="flex items-center gap-2">
-                        <AlertTriangle className="h-3 w-3 text-amber-500" />
+                        <GiSpikedDragonHead className="h-3 w-3 text-amber-500" />
                         <span className="text-sm font-medium text-stone-200">{trap.name}</span>
                         {trap.targetAttribute && (
                           <span className="text-xs px-1 py-0.5 rounded bg-red-900/50 text-red-300">
@@ -523,7 +521,7 @@ export function DungeonDetail({
       {hasSpatialLayout && (dungeon as SpatialDungeon).exitPoints && (dungeon as SpatialDungeon).exitPoints!.length > 0 && (
         <div className="rounded-lg border border-cyan-900/50 bg-cyan-950/30 p-4 space-y-3">
           <div className="flex items-center gap-2">
-            <DoorOpen className="h-4 w-4 text-cyan-400" />
+            <GiDoorway className="h-4 w-4 text-cyan-400" />
             <h3 className="text-sm font-semibold text-cyan-300">Exit Points</h3>
           </div>
           <p className="text-xs text-stone-400">
@@ -547,7 +545,7 @@ export function DungeonDetail({
           <section className="space-y-4 lg:sticky lg:top-4 lg:self-start">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <MapIcon className="h-4 w-4 text-stone-400" />
+                <GiTreasureMap className="h-4 w-4 text-stone-400" />
                 <h3 className="text-sm font-semibold text-stone-200">Dungeon Map</h3>
               </div>
               <DungeonMap
@@ -608,16 +606,16 @@ export function DungeonDetail({
 }
 
 // NPC category display config
-const NPC_CATEGORY_CONFIG: Record<string, { icon: typeof User; color: string; label: string }> = {
-  rival_party: { icon: Users, color: "text-amber-400", label: "Rival Adventurers" },
-  prisoner: { icon: User, color: "text-blue-400", label: "Prisoner" },
-  hermit: { icon: User, color: "text-green-400", label: "Hermit" },
-  ghost: { icon: Ghost, color: "text-purple-400", label: "Ghost" },
-  refugee: { icon: User, color: "text-cyan-400", label: "Refugee" },
-  faction_leader: { icon: Skull, color: "text-red-400", label: "Faction Leader" },
-  faction_lieutenant: { icon: Users, color: "text-orange-400", label: "Faction Lieutenant" },
-  faction_member: { icon: User, color: "text-orange-300", label: "Faction Member" },
-  rival_scout: { icon: AlertTriangle, color: "text-yellow-400", label: "Rival Scout" },
+const NPC_CATEGORY_CONFIG: Record<string, { icon: typeof GiPerson; color: string; label: string }> = {
+  rival_party: { icon: GiThreeFriends, color: "text-amber-400", label: "Rival Adventurers" },
+  prisoner: { icon: GiPerson, color: "text-blue-400", label: "Prisoner" },
+  hermit: { icon: GiPerson, color: "text-green-400", label: "Hermit" },
+  ghost: { icon: GiGhost, color: "text-purple-400", label: "Ghost" },
+  refugee: { icon: GiPerson, color: "text-cyan-400", label: "Refugee" },
+  faction_leader: { icon: GiSkullCrossedBones, color: "text-red-400", label: "Faction Leader" },
+  faction_lieutenant: { icon: GiThreeFriends, color: "text-orange-400", label: "Faction Lieutenant" },
+  faction_member: { icon: GiPerson, color: "text-orange-300", label: "Faction Member" },
+  rival_scout: { icon: GiSpikedDragonHead, color: "text-yellow-400", label: "Rival Scout" },
 };
 
 interface DungeonNPCCardProps {
@@ -626,7 +624,7 @@ interface DungeonNPCCardProps {
 }
 
 function DungeonNPCCard({ npc, roomNumberMap }: DungeonNPCCardProps) {
-  const config = NPC_CATEGORY_CONFIG[npc.category] ?? { icon: User, color: "text-stone-400", label: npc.category };
+  const config = NPC_CATEGORY_CONFIG[npc.category] ?? { icon: GiPerson, color: "text-stone-400", label: npc.category };
   const Icon = config.icon;
   const roomNum = roomNumberMap.get(npc.roomId);
 
@@ -663,13 +661,13 @@ function DungeonNPCCard({ npc, roomNumberMap }: DungeonNPCCardProps) {
       )}
       {npc.wantsRescue && (
         <span className="inline-flex items-center gap-1 rounded bg-blue-900/50 px-1.5 py-0.5 text-xs text-blue-300">
-          <AlertTriangle className="h-3 w-3" />
+          <GiSpikedDragonHead className="h-3 w-3" />
           Needs rescue
         </span>
       )}
       {npc.scoutingFor && (
         <span className="inline-flex items-center gap-1 rounded bg-yellow-900/50 px-1.5 py-0.5 text-xs text-yellow-300">
-          <AlertTriangle className="h-3 w-3" />
+          <GiSpikedDragonHead className="h-3 w-3" />
           Spying for rival faction
         </span>
       )}
@@ -708,7 +706,7 @@ function KeyLockCard({ pair, roomNumberMap, passages }: KeyLockCardProps) {
   return (
     <div className="rounded border border-amber-800/50 bg-stone-800/50 p-2 space-y-1">
       <div className="flex items-center gap-2">
-        <Key className="h-4 w-4 text-amber-400" />
+        <GiKey className="h-4 w-4 text-amber-400" />
         <span className="text-sm font-medium text-amber-200">{pair.keyName}</span>
       </div>
       <div className="flex items-center gap-3 text-xs">
@@ -739,7 +737,7 @@ function ExitPointCard({ exit, roomNumberMap }: ExitPointCardProps) {
         : "border-stone-700 bg-stone-800/50"
     }`}>
       <div className="flex items-center gap-2">
-        <DoorOpen className={`h-4 w-4 ${exit.discovered ? "text-cyan-400" : "text-stone-500"}`} />
+        <GiDoorway className={`h-4 w-4 ${exit.discovered ? "text-cyan-400" : "text-stone-500"}`} />
         <span className="text-sm font-medium text-stone-200">
           Exit to Hex ({exit.destinationCoord.q}, {exit.destinationCoord.r})
         </span>
@@ -778,7 +776,7 @@ function WanderingMonstersSection({ dungeon, ruleset }: WanderingMonstersSection
     <div className="rounded-lg border border-red-900/50 bg-red-950/30 p-4 space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Footprints className="h-4 w-4 text-red-400" />
+          <GiFootprint className="h-4 w-4 text-red-400" />
           <h3 className="text-sm font-semibold text-red-300">Wandering Monsters</h3>
         </div>
         <span className="rounded bg-red-900/50 px-2 py-0.5 text-xs font-medium text-red-300">

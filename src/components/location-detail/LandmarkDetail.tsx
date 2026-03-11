@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { MapPin, Compass, Users, Swords } from "lucide-react";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { GiCompass, GiThreeFriends, GiCrossedSwords } from "react-icons/gi";
 import type { Location, NPC, Faction, Hex, Ruleset } from "~/models";
 
 interface LandmarkDetailProps {
@@ -36,7 +37,7 @@ export function LandmarkDetail({
       {/* Location info */}
       <section className="flex flex-wrap gap-2 text-xs">
         <span className="flex items-center gap-1 rounded bg-stone-800 px-2 py-1 text-stone-400">
-          <MapPin size={12} />
+          <FaMapMarkerAlt size={12} />
           Hex ({hex.coord.q}, {hex.coord.r})
         </span>
         <span className="rounded bg-stone-800 px-2 py-1 capitalize text-stone-400">
@@ -56,7 +57,7 @@ export function LandmarkDetail({
       {faction && (
         <section className="space-y-2">
           <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-cyan-400">
-            <Users size={14} />
+            <GiThreeFriends size={14} />
             Associated Faction
           </h3>
           <Link
@@ -74,7 +75,7 @@ export function LandmarkDetail({
       {landmark.encounters && landmark.encounters.length > 0 && (
         <section className="space-y-3">
           <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-amber-400">
-            <Compass size={14} />
+            <GiCompass size={14} />
             Points of Interest
           </h3>
           <ul className="space-y-2">
@@ -83,7 +84,7 @@ export function LandmarkDetail({
                 key={i}
                 className="rounded border border-stone-700 bg-stone-800/50 px-3 py-2 text-sm text-stone-300"
               >
-                <Swords size={12} className="mr-2 inline text-amber-500" />
+                <GiCrossedSwords size={12} className="mr-2 inline text-amber-500" />
                 {enc}
               </li>
             ))}
@@ -95,7 +96,7 @@ export function LandmarkDetail({
       {landmarkNpcs.length > 0 && (
         <section className="space-y-3">
           <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-stone-400">
-            <Users size={14} />
+            <GiThreeFriends size={14} />
             Notable Figures
           </h3>
           <ul className="space-y-2">

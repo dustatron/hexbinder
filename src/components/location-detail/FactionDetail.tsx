@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Building2, MapPin, Crown } from "lucide-react";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { GiTowerFlag, GiCrown } from "react-icons/gi";
 import type { Faction, Clock, NPC, Location, Hook, SignificantItem, Ruleset } from "~/models";
 import { NPCStatLine } from "~/components/npc/NPCStatLine";
 
@@ -163,7 +164,7 @@ export function FactionDetail({
       {leaderNpcs.length > 0 && (
         <section className="space-y-2">
           <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-amber-400">
-            <Crown size={14} />
+            <GiCrown size={14} />
             {leaderNpcs.length === 1 ? "Leader" : "Leaders"}
           </h3>
           <div className="space-y-2">
@@ -185,7 +186,7 @@ export function FactionDetail({
       {seneschal && leaderNpcs.length === 0 && (
         <section className="space-y-2">
           <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-amber-400">
-            <Crown size={14} />
+            <GiCrown size={14} />
             Seneschal
           </h3>
           <div className="rounded border border-amber-500/30 bg-amber-900/20 px-3 py-2">
@@ -203,13 +204,13 @@ export function FactionDetail({
       {(headquarters || lairDungeon || faction.lair?.hexCoord) && (
         <section className="space-y-3">
           <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-cyan-400">
-            <Building2 size={14} />
+            <GiTowerFlag size={14} />
             Base of Operations
           </h3>
           <div className="space-y-2">
             {headquarters && (
               <div className="flex items-start gap-2 rounded bg-stone-800 px-3 py-2">
-                <Building2 size={16} className="mt-0.5 shrink-0 text-cyan-400" />
+                <GiTowerFlag size={16} className="mt-0.5 shrink-0 text-cyan-400" />
                 <div>
                   <div className="flex items-center gap-2">
                     <Link
@@ -227,7 +228,7 @@ export function FactionDetail({
             )}
             {lairDungeon && (
               <div className="flex items-start gap-2 rounded bg-stone-800 px-3 py-2">
-                <MapPin size={16} className="mt-0.5 shrink-0 text-red-400" />
+                <FaMapMarkerAlt size={16} className="mt-0.5 shrink-0 text-red-400" />
                 <div>
                   <div className="flex items-center gap-2">
                     <Link
@@ -245,7 +246,7 @@ export function FactionDetail({
             )}
             {faction.lair?.hexCoord && !lairDungeon && (
               <div className="flex items-center gap-2 rounded bg-stone-800 px-3 py-2 text-sm text-stone-300">
-                <MapPin size={16} className="shrink-0 text-red-400" />
+                <FaMapMarkerAlt size={16} className="shrink-0 text-red-400" />
                 <span>
                   Lair at hex ({faction.lair.hexCoord.q}, {faction.lair.hexCoord.r})
                 </span>
@@ -550,7 +551,7 @@ export function FactionDetail({
                       params={{ worldId: worldId, locationId: loc.id }}
                       className="text-xs text-cyan-400 hover:underline"
                     >
-                      <MapPin size={10} className="mr-0.5 inline" />
+                      <FaMapMarkerAlt size={10} className="mr-0.5 inline" />
                       {loc.name}
                     </Link>
                   ) : null;

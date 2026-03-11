@@ -1,4 +1,5 @@
-import { ChevronDown, ChevronRight, Eye, EyeOff, Skull, AlertTriangle, Gem, Lock, ScrollText, History, BookOpen } from "lucide-react";
+import { FaChevronDown, FaChevronRight, FaEye, FaEyeSlash } from "react-icons/fa";
+import { GiSkullCrossedBones, GiSpikedDragonHead, GiFireGem, GiPadlock, GiScrollUnfurled, GiSandsOfTime, GiSpellBook } from "react-icons/gi";
 import type { DungeonRoom, SpatialRoom, RoomSize, Discovery, Ruleset } from "~/models";
 import { getMonsterStats } from "~/lib/monster-stats";
 import { MonsterCard } from "~/components/encounter-table/MonsterCard";
@@ -39,9 +40,9 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
         className="w-full flex items-center gap-3 p-3 hover:bg-stone-800 transition-colors text-left"
       >
         {expanded ? (
-          <ChevronDown className="h-4 w-4 text-stone-500 flex-shrink-0" />
+          <FaChevronDown className="h-4 w-4 text-stone-500 flex-shrink-0" />
         ) : (
-          <ChevronRight className="h-4 w-4 text-stone-500 flex-shrink-0" />
+          <FaChevronRight className="h-4 w-4 text-stone-500 flex-shrink-0" />
         )}
 
         {/* Room number */}
@@ -56,12 +57,12 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
 
         {/* Status indicators */}
         <div className="flex items-center gap-1">
-          {hasMonsters && <Skull className="h-4 w-4 text-red-500" />}
-          {hasHazards && <AlertTriangle className="h-4 w-4 text-amber-500" />}
-          {hasTreasure && <Gem className="h-4 w-4 text-emerald-500" />}
-          {hasSecrets && <Lock className="h-4 w-4 text-purple-500" />}
-          {hasDiscoveries && <ScrollText className="h-4 w-4 text-blue-500" />}
-          {hasHistoricalClues && <History className="h-4 w-4 text-stone-400" />}
+          {hasMonsters && <GiSkullCrossedBones className="h-4 w-4 text-red-500" />}
+          {hasHazards && <GiSpikedDragonHead className="h-4 w-4 text-amber-500" />}
+          {hasTreasure && <GiFireGem className="h-4 w-4 text-emerald-500" />}
+          {hasSecrets && <GiPadlock className="h-4 w-4 text-purple-500" />}
+          {hasDiscoveries && <GiScrollUnfurled className="h-4 w-4 text-blue-500" />}
+          {hasHistoricalClues && <GiSandsOfTime className="h-4 w-4 text-stone-400" />}
         </div>
 
         {/* Size badge */}
@@ -75,9 +76,9 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
           className="flex items-center gap-1 text-xs text-stone-500"
         >
           {room.explored ? (
-            <Eye className="h-4 w-4 text-green-500" />
+            <FaEye className="h-4 w-4 text-green-500" />
           ) : (
-            <EyeOff className="h-4 w-4 text-stone-600" />
+            <FaEyeSlash className="h-4 w-4 text-stone-600" />
           )}
         </div>
       </button>
@@ -173,7 +174,7 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
                     className={`rounded bg-stone-800 p-2 text-sm ${item.looted ? "opacity-50" : ""}`}
                   >
                     <div className={`flex items-center gap-2 ${item.looted ? "line-through" : ""}`}>
-                      <Gem className={`h-4 w-4 flex-shrink-0 ${
+                      <GiFireGem className={`h-4 w-4 flex-shrink-0 ${
                         item.type === "magic_item" ? "text-purple-500" :
                         item.type === "gems" ? "text-cyan-500" :
                         item.type === "art" ? "text-pink-500" :
@@ -192,7 +193,7 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
                     )}
                     {item.backstory && (
                       <div className="mt-2 flex items-start gap-2">
-                        <BookOpen className="h-3 w-3 text-amber-600 flex-shrink-0 mt-0.5" />
+                        <GiSpellBook className="h-3 w-3 text-amber-600 flex-shrink-0 mt-0.5" />
                         <p className="text-xs text-stone-400 italic">{item.backstory}</p>
                       </div>
                     )}
@@ -231,7 +232,7 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
                   >
                     {/* Header */}
                     <div className="flex items-center gap-2">
-                      <AlertTriangle className={`h-4 w-4 flex-shrink-0 ${hazard.disarmed ? "text-stone-600" : "text-amber-500"}`} />
+                      <GiSpikedDragonHead className={`h-4 w-4 flex-shrink-0 ${hazard.disarmed ? "text-stone-600" : "text-amber-500"}`} />
                       <span className="font-medium text-stone-200">{hazard.name}</span>
                       {hazard.targetAttribute && (
                         <span className="text-xs px-1.5 py-0.5 rounded bg-red-900/50 text-red-300">
@@ -325,7 +326,7 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
                     className={`rounded bg-stone-800 p-2 text-sm ${secret.discovered ? "opacity-50" : ""}`}
                   >
                     <div className="flex items-center gap-2">
-                      <Lock className={`h-4 w-4 ${secret.discovered ? "text-stone-600" : "text-purple-500"}`} />
+                      <GiPadlock className={`h-4 w-4 ${secret.discovered ? "text-stone-600" : "text-purple-500"}`} />
                       <span className="text-stone-200">{secret.description}</span>
                       {secret.discovered && (
                         <span className="text-xs text-stone-600">(found)</span>
@@ -358,7 +359,7 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
                     className={`rounded bg-stone-800 p-2 text-sm ${discovery.found ? "opacity-50" : ""}`}
                   >
                     <div className="flex items-center gap-2">
-                      <ScrollText className={`h-4 w-4 ${
+                      <GiScrollUnfurled className={`h-4 w-4 ${
                         discovery.type === "document" ? "text-blue-500" :
                         discovery.type === "evidence" ? "text-red-400" :
                         discovery.type === "clue" ? "text-amber-500" :
@@ -395,7 +396,7 @@ export function RoomCard({ room, roomNumber, ruleset, expanded = false, selected
               <ul className="space-y-1">
                 {(room.historicalClues ?? []).map((clue, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm">
-                    <History className="h-4 w-4 text-stone-500 flex-shrink-0 mt-0.5" />
+                    <GiSandsOfTime className="h-4 w-4 text-stone-500 flex-shrink-0 mt-0.5" />
                     <span className="text-stone-400 italic">{clue}</span>
                   </li>
                 ))}

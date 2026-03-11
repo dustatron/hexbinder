@@ -1,5 +1,6 @@
 import { useCallback } from "react";
-import { MapPin, Sparkles, Home } from "lucide-react";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { GiSparkles, GiHut } from "react-icons/gi";
 import type { Dwelling, DwellingType, EncounterOverrides, Hex, HexFeature, QuestObject, TerrainType, Ruleset, WorldData } from "~/models";
 import { ImprovedEncounterTable } from "~/components/encounter-table/ImprovedEncounterTable";
 import { InlineEditText } from "~/components/ui/inline-edit";
@@ -126,7 +127,7 @@ export function WildernessDetail({
       {feature && (
         <section className="space-y-3">
           <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-stone-400">
-            <MapPin size={14} />
+            <FaMapMarkerAlt size={14} />
             Feature
           </h3>
           <div className="rounded-lg border border-stone-700 bg-stone-800 p-3">
@@ -173,7 +174,7 @@ export function WildernessDetail({
       {questObject && (
         <section className="space-y-3">
           <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-stone-400">
-            <Sparkles size={14} />
+            <GiSparkles size={14} />
             Quest Object
           </h3>
           <div className="rounded-lg border border-stone-700 bg-stone-800 p-3">
@@ -207,7 +208,7 @@ export function WildernessDetail({
       {dwelling && (
         <section className="space-y-3">
           <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-stone-400">
-            <Home size={14} />
+            <GiHut size={14} />
             Dwelling
           </h3>
           <div className="rounded-lg border border-stone-700 bg-stone-800 p-3">

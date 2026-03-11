@@ -49,6 +49,7 @@ import { generateSignificantItems, placeItemInLocation } from "./SignificantItem
 import { addTreasureBackstories } from "./dungeon/TreasureBackstoryGenerator";
 import { generateSettlementHistory, generateSensoryImpressions } from "./settlement/SettlementHistoryGenerator";
 import { generateSettlementSecrets } from "./settlement/SettlementSecretsGenerator";
+import { pickVariantForTerrain } from "~/lib/terrain-variants";
 
 export interface WorldGeneratorOptions {
   name: string;
@@ -427,6 +428,13 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   updatedHexes = updatedHexes.map((hex) => ({
     ...hex,
     description: generateTerrainDescription(hex.terrain, terrainRng),
+  }));
+
+  // Step 14b: Assign terrain icon variants
+  const variantRng = new SeededRandom(`${seed}-variants`);
+  updatedHexes = updatedHexes.map((hex) => ({
+    ...hex,
+    variant: pickVariantForTerrain(hex.terrain, variantRng),
   }));
 
   // Step 15: Generate NPCs

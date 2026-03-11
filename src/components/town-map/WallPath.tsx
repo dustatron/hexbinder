@@ -1,4 +1,5 @@
-import { Circle, Shield } from "lucide-react";
+import { FaCircle } from "react-icons/fa";
+import { GiShield } from "react-icons/gi";
 import type { TownWall } from "~/models";
 import { WALL_COLOR, SCALE } from "./theme-colors";
 
@@ -68,7 +69,7 @@ export function WallPath({ wall }: WallPathProps) {
             height={12}
           >
             <div className="flex items-center justify-center w-full h-full">
-              <Shield size={8} className="text-stone-900" />
+              <GiShield size={8} className="text-stone-900" />
             </div>
           </foreignObject>
         </g>
@@ -92,7 +93,7 @@ export function WallPath({ wall }: WallPathProps) {
             height={12}
           >
             <div className="flex items-center justify-center w-full h-full">
-              <Circle size={8} className="text-amber-100" />
+              <FaCircle size={8} className="text-amber-100" />
             </div>
           </foreignObject>
         </g>

@@ -1,5 +1,6 @@
 import { useMemo, useState, useCallback } from "react";
-import { RefreshCw, Sparkles } from "lucide-react";
+import { FaSync } from "react-icons/fa";
+import { GiSparkles } from "react-icons/gi";
 import type { EncounterOverrides, EncounterType, Reaction, Ruleset, TerrainType } from "~/models";
 import {
   generateImprovedEncounter,
@@ -156,7 +157,7 @@ export function ImprovedEncounterTable({
           <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Sparkles size={16} className="text-amber-400" />
+                <GiSparkles size={16} className="text-amber-400" />
                 <span className="font-medium text-amber-200">{summaryText}</span>
                 {result.hasOverrides && (
                   <span className="text-xs text-stone-500">(GM override)</span>
@@ -167,7 +168,7 @@ export function ImprovedEncounterTable({
                 className="flex items-center gap-1 rounded px-2 py-1 text-xs text-stone-400 hover:bg-stone-700 hover:text-stone-200"
                 title="Re-roll everything"
               >
-                <RefreshCw size={12} />
+                <FaSync size={12} />
                 Re-roll All
               </button>
             </div>
@@ -300,7 +301,7 @@ function TableSection({
           className="rounded p-1 text-stone-400 hover:bg-stone-700 hover:text-stone-200"
           title="Re-roll this table"
         >
-          <RefreshCw size={12} />
+          <FaSync size={12} />
         </button>
       </div>
       <div className="divide-y divide-stone-700/50">{children}</div>
@@ -372,7 +373,7 @@ function ResultDetail({ result, ruleset, onRerollSubTable }: ResultDetailProps) 
             className="rounded p-1 text-stone-400 hover:bg-stone-600 hover:text-stone-200"
             title="Re-roll this result"
           >
-            <RefreshCw size={12} />
+            <FaSync size={12} />
           </button>
         )}
       </div>

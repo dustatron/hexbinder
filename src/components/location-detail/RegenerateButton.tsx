@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { RefreshCw, Shuffle } from "lucide-react";
+import { FaSync, FaRandom } from "react-icons/fa";
 import { nanoid } from "nanoid";
 import type { RegenerationType, RegenerateOptions } from "~/lib/hex-regenerate";
 import type { DungeonSize } from "~/models";
@@ -141,7 +141,7 @@ export function RegenerateModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
       <div className="w-full max-w-md rounded-lg border border-stone-700 bg-stone-900 p-4 shadow-xl max-h-[90vh] overflow-y-auto">
         <div className="mb-4 flex items-center gap-2">
-          <RefreshCw size={18} className="text-stone-400" />
+          <FaSync size={18} className="text-stone-400" />
           <h3 className="text-lg font-semibold text-stone-100">Regenerate Location</h3>
         </div>
 
@@ -213,7 +213,7 @@ export function RegenerateModal({
               className="rounded-md border border-stone-700 bg-stone-800 px-2 py-1.5 text-stone-400 hover:border-stone-600 hover:text-stone-200 transition-colors"
               title="Randomize seed"
             >
-              <Shuffle size={16} />
+              <FaRandom size={16} />
             </button>
           </div>
           <p className="text-xs text-stone-500">
@@ -232,7 +232,7 @@ export function RegenerateModal({
             onClick={handleConfirm}
             className={selectedType === "clear" ? "bg-red-600 hover:bg-red-700" : "bg-amber-600 hover:bg-amber-700"}
           >
-            <RefreshCw size={14} className="mr-1.5" />
+            <FaSync size={14} className="mr-1.5" />
             {selectedType === "clear" ? "Clear Hex" : "Regenerate"}
           </Button>
         </div>
@@ -258,7 +258,7 @@ export function RegenerateButton({
         onClick={() => setShowModal(true)}
         className="border-stone-600 bg-stone-800 text-stone-200 hover:bg-stone-700 hover:text-stone-100"
       >
-        <RefreshCw size={14} className="mr-1.5" />
+        <FaSync size={14} className="mr-1.5" />
         Regenerate
       </Button>
 

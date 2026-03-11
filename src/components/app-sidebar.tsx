@@ -1,16 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import {
-  Map,
-  Calendar,
-  Footprints,
-  Users,
-  Castle,
-  Skull,
-  Home,
-  Hexagon,
-  MapPin,
-} from "lucide-react";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { GiTreasureMap, GiCalendar, GiFootprint, GiThreeFriends, GiCastle, GiSkullCrossedBones, GiHut, GiHexagonalNut } from "react-icons/gi";
 import {
   Sidebar,
   SidebarContent,
@@ -62,13 +53,13 @@ type AtlasTab = "events" | "travel" | "factions" | "settlements" | "dungeons";
 const ATLAS_TABS: {
   id: AtlasTab;
   label: string;
-  icon: typeof Calendar;
+  icon: typeof GiCalendar;
 }[] = [
-  { id: "events", label: "Events", icon: Calendar },
-  { id: "travel", label: "Travel", icon: Footprints },
-  { id: "factions", label: "Factions", icon: Users },
-  { id: "settlements", label: "Settlements", icon: Castle },
-  { id: "dungeons", label: "Dungeons", icon: Skull },
+  { id: "events", label: "Events", icon: GiCalendar },
+  { id: "travel", label: "Travel", icon: GiFootprint },
+  { id: "factions", label: "Factions", icon: GiThreeFriends },
+  { id: "settlements", label: "Settlements", icon: GiCastle },
+  { id: "dungeons", label: "Dungeons", icon: GiSkullCrossedBones },
 ];
 
 function WorldSidebar({ worldId }: { worldId: string }) {
@@ -125,7 +116,7 @@ function WorldSidebar({ worldId }: { worldId: string }) {
               render={<Link to="/world/$worldId" params={{ worldId }} />}
             >
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                <Hexagon className="size-4" />
+                <GiHexagonalNut className="size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
                 <span className="font-semibold">{worldName}</span>
@@ -144,14 +135,14 @@ function WorldSidebar({ worldId }: { worldId: string }) {
                   isActive={isOnMap}
                   render={<Link to="/world/$worldId" params={{ worldId }} />}
                 >
-                  <Map />
+                  <GiTreasureMap />
                   <span>Map</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               {routeHexId && !isCurrent && (
                 <SidebarMenuItem>
                   <SidebarMenuButton onClick={handleSetCurrent}>
-                    <MapPin />
+                    <FaMapMarkerAlt />
                     <span>Set as Current</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -159,7 +150,7 @@ function WorldSidebar({ worldId }: { worldId: string }) {
               {routeHexId && isCurrent && (
                 <SidebarMenuItem>
                   <SidebarMenuButton className="text-green-500" disabled>
-                    <MapPin />
+                    <FaMapMarkerAlt />
                     <span>Current Location</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -202,7 +193,7 @@ function WorldSidebar({ worldId }: { worldId: string }) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton render={<Link to="/" />}>
-              <Home />
+              <GiHut />
               <span>All Worlds</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -220,7 +211,7 @@ function HomeSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" render={<Link to="/" />}>
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                <Hexagon className="size-4" />
+                <GiHexagonalNut className="size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
                 <span className="font-semibold">Hexbinder</span>
@@ -235,7 +226,7 @@ function HomeSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton isActive render={<Link to="/" />}>
-                  <Home />
+                  <GiHut />
                   <span>Worlds</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>

@@ -1,7 +1,7 @@
 import { useRef, useMemo } from "react";
 import { useGesture } from "@use-gesture/react";
 import { motion, useMotionValue } from "framer-motion";
-import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { FaPlus, FaMinus, FaUndo } from "react-icons/fa";
 import type { SpatialDungeon } from "~/models";
 import { RoomRect } from "./RoomRect";
 import { PassagePath } from "./PassagePath";
@@ -124,21 +124,21 @@ export function DungeonMap({
           className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
           title="Zoom In"
         >
-          <ZoomIn size={16} />
+          <FaPlus size={16} />
         </button>
         <button
           onClick={handleZoomOut}
           className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
           title="Zoom Out"
         >
-          <ZoomOut size={16} />
+          <FaMinus size={16} />
         </button>
         <button
           onClick={handleReset}
           className="p-1.5 rounded bg-stone-800/90 hover:bg-stone-700 border border-stone-600 text-stone-300 hover:text-white transition-colors"
           title="Reset View"
         >
-          <RotateCcw size={16} />
+          <FaUndo size={16} />
         </button>
       </div>
       <motion.svg
