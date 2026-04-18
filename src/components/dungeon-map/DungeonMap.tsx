@@ -2,7 +2,7 @@ import { useRef, useMemo } from "react";
 import { useGesture } from "@use-gesture/react";
 import { motion, useMotionValue } from "framer-motion";
 import { FaPlus, FaMinus, FaUndo } from "react-icons/fa";
-import type { SpatialDungeon } from "~/models";
+import type { SpatialDungeon, DungeonNPC } from "~/models";
 import { RoomRect } from "./RoomRect";
 import { PassagePath } from "./PassagePath";
 import { CELL_SIZE } from "./theme-colors";
@@ -26,6 +26,17 @@ export function DungeonMap({
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const scale = useMotionValue(1);
+
+  // Create lookup of NPCs by room ID
+  const npcsByRoom = useMemo(() => {
+    const map = new Map<string, DungeonNPC[]>();
+    for (const npc of dungeon.dungeonNPCs ?? []) {
+      const existing = map.get(npc.roomId) ?? [];
+      existing.push(npc);
+      map.set(npc.roomId, existing);
+    }
+    return map;
+  }, [dungeon.dungeonNPCs]);
 
   // Calculate tight viewBox from actual room positions
   const viewBox = useMemo(() => {
@@ -196,6 +207,7 @@ export function DungeonMap({
               selected={room.id === selectedRoomId}
               onClick={() => onRoomClick(room.id)}
               roomNumber={roomNumberMap.get(room.id) ?? 0}
+              npcs={npcsByRoom.get(room.id)}
             />
           ))}
         </g>

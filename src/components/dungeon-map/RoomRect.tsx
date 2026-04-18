@@ -1,6 +1,6 @@
-import { GiDoorway, GiSpikedDragonHead, GiFireGem, GiPadlock, GiSkullCrossedBones, GiCrossedSwords, GiCoins, GiSparkles } from "react-icons/gi";
+import { GiDoorway, GiSpikedDragonHead, GiFireGem, GiPadlock, GiSkullCrossedBones, GiCrossedSwords, GiCoins, GiSparkles, GiPerson } from "react-icons/gi";
 import { FaArrowRight, FaSquare, FaSignOutAlt } from "react-icons/fa";
-import type { SpatialRoom, DungeonTheme, RoomType } from "~/models";
+import type { SpatialRoom, DungeonTheme, RoomType, DungeonNPC, DungeonNPCDisposition } from "~/models";
 import { THEME_COLORS, CELL_SIZE, SPECIAL_ROOM_COLORS } from "./theme-colors";
 
 interface RoomRectProps {
@@ -9,7 +9,15 @@ interface RoomRectProps {
   selected: boolean;
   onClick: () => void;
   roomNumber: number;
+  npcs?: DungeonNPC[];
 }
+
+const NPC_DISPOSITION_COLORS: Record<DungeonNPCDisposition, string> = {
+  hostile: "text-red-400",
+  wary: "text-orange-400",
+  neutral: "text-yellow-400",
+  friendly: "text-green-400",
+};
 
 const ROOM_ICONS: Record<RoomType, React.ComponentType<{ size?: number; className?: string }>> = {
   entrance: GiDoorway,
@@ -23,7 +31,7 @@ const ROOM_ICONS: Record<RoomType, React.ComponentType<{ size?: number; classNam
   trap_room: GiSpikedDragonHead,
 };
 
-export function RoomRect({ room, theme, selected, onClick, roomNumber }: RoomRectProps) {
+export function RoomRect({ room, theme, selected, onClick, roomNumber, npcs }: RoomRectProps) {
   // Use special colors for entrance/exit rooms
   const isEntrance = room.type === "entrance";
   const isExit = room.type === "exit";
@@ -48,6 +56,15 @@ export function RoomRect({ room, theme, selected, onClick, roomNumber }: RoomRec
   const hasMonsters = room.encounters.some((e) => !e.defeated);
   const hasTreasure = room.treasure.some((t) => !t.looted);
   const hasActiveTraps = room.hazards.some((h) => !h.disarmed);
+  const hasNPCs = npcs && npcs.length > 0;
+
+  // Get the "most friendly" NPC disposition for color (prefer showing friendlier option)
+  const npcDisposition: DungeonNPCDisposition | null = hasNPCs
+    ? (npcs.find(n => n.disposition === "friendly")?.disposition ??
+       npcs.find(n => n.disposition === "neutral")?.disposition ??
+       npcs.find(n => n.disposition === "wary")?.disposition ??
+       npcs[0].disposition)
+    : null;
 
   const Icon = ROOM_ICONS[room.type] ?? Square;
 
@@ -83,9 +100,24 @@ export function RoomRect({ room, theme, selected, onClick, roomNumber }: RoomRec
       </foreignObject>
 
       {/* Status indicators in top corners */}
-      {hasMonsters && (
+      {/* NPC indicator - person icon with disposition color */}
+      {hasNPCs && npcDisposition && (
         <foreignObject
           x={pixelX + 2}
+          y={pixelY + 2}
+          width={12}
+          height={12}
+        >
+          <div className="flex items-center justify-center w-full h-full">
+            <GiPerson size={10} className={NPC_DISPOSITION_COLORS[npcDisposition]} />
+          </div>
+        </foreignObject>
+      )}
+
+      {/* Monster indicator - crossed swords, offset if NPC also present */}
+      {hasMonsters && (
+        <foreignObject
+          x={pixelX + (hasNPCs ? 14 : 2)}
           y={pixelY + 2}
           width={12}
           height={12}
