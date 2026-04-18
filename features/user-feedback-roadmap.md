@@ -7,7 +7,7 @@ Collected from user testing session. Prioritized by impact and effort.
 ## Bugs
 
 ### B1: Terrain Generation Limited to Forest/Mountains/Plains
-**Status:** Investigated  
+**Status:** FIXED  
 **Priority:** High  
 **Effort:** Medium  
 
@@ -47,7 +47,7 @@ Seed points force compass directions to specific terrains but NO desert seed:
 ## Quick Wins
 
 ### Q1: Dungeon Map Icons - NPCs vs Creatures
-**Status:** Not started  
+**Status:** FIXED  
 **Priority:** High  
 **Effort:** Small (1-2 hours)  
 
@@ -59,7 +59,7 @@ Currently hard to distinguish rooms with NPCs you can talk to vs creatures you m
 - Check `DungeonMap.tsx` and room rendering logic
 
 ### Q2: Creature Theming per Dungeon Type
-**Status:** Not started  
+**Status:** FIXED  
 **Priority:** Medium  
 **Effort:** Small  
 
