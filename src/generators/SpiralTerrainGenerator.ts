@@ -61,21 +61,23 @@ function getTerrainAtIndex(index: number): TerrainType {
  * Returns terrain and whether this hex is a Point of Interest.
  */
 function rollNewHex(rng: SeededRandom, parentTerrain: TerrainType): { terrain: TerrainType; isPOI: boolean } {
-  const roll = rng.between(1, 10);
+  const roll = rng.between(1, 20);
   const parentIndex = getTerrainIndex(parentTerrain);
 
   let shift: number;
   let isPOI = false;
 
-  // 60% same, 20% +1, 15% -1, 5% POI with shift
-  if (roll <= 6) {
-    shift = 0;  // Same terrain (60%)
-  } else if (roll <= 8) {
-    shift = 1;  // Shift forward (20%)
-  } else if (roll === 9) {
-    shift = -1; // Shift back (10%)
+  // More variety: 40% same, 25% +1, 20% -1, 10% +2/-2 jump, 5% POI
+  if (roll <= 8) {
+    shift = 0;  // Same terrain (40%)
+  } else if (roll <= 13) {
+    shift = 1;  // Shift forward (25%)
+  } else if (roll <= 17) {
+    shift = -1; // Shift back (20%)
+  } else if (roll <= 19) {
+    shift = rng.pick([-2, 2]);  // Jump for variety (10%)
   } else {
-    shift = rng.pick([-1, 1]);  // POI with shift (10%)
+    shift = rng.pick([-1, 1, -2, 2]);  // POI with shift (5%)
     isPOI = true;
   }
 
@@ -161,12 +163,18 @@ export function generateSpiralTerrain(options: SpiralTerrainOptions): SpiralTerr
   const hexMap = new Map<string, Hex>();
   const poiCoords: HexCoord[] = [];
 
-  // Seed some varied terrain at compass points for biome diversity
+  // Seed varied terrain at compass points for biome diversity
+  // Using 8 compass directions to ensure all terrain types appear
+  const halfRadius = Math.floor(radius / 2);
   const seedPoints: { coord: HexCoord; terrain: TerrainType }[] = [
-    { coord: { q: 0, r: -radius + 1 }, terrain: "hills" },      // North
-    { coord: { q: radius - 1, r: 0 }, terrain: "forest" },      // East
-    { coord: { q: 0, r: radius - 1 }, terrain: "swamp" },       // South
-    { coord: { q: -radius + 1, r: 0 }, terrain: "mountains" },  // West
+    { coord: { q: 0, r: -radius + 1 }, terrain: "hills" },           // North
+    { coord: { q: radius - 1, r: -halfRadius }, terrain: "desert" }, // Northeast
+    { coord: { q: radius - 1, r: 0 }, terrain: "forest" },           // East
+    { coord: { q: halfRadius, r: halfRadius }, terrain: "water" },   // Southeast
+    { coord: { q: 0, r: radius - 1 }, terrain: "swamp" },            // South
+    { coord: { q: -halfRadius, r: radius - 1 }, terrain: "desert" }, // Southwest
+    { coord: { q: -radius + 1, r: 0 }, terrain: "mountains" },       // West
+    { coord: { q: -halfRadius, r: -halfRadius }, terrain: "hills" }, // Northwest
   ];
   const seedKeys = new Set(seedPoints.map(s => coordKey(s.coord)));
 

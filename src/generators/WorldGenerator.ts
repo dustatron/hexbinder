@@ -47,6 +47,7 @@ import { generateDwellings } from "./DwellingGenerator";
 import { generateQuestObjects } from "./QuestObjectGenerator";
 import { generateSignificantItems, placeItemInLocation } from "./SignificantItemGenerator";
 import { addTreasureBackstories } from "./dungeon/TreasureBackstoryGenerator";
+import { getBlueprint } from "./dungeon/DungeonBlueprints";
 import { generateSettlementHistory, generateSensoryImpressions } from "./settlement/SettlementHistoryGenerator";
 import { generateSettlementSecrets } from "./settlement/SettlementSecretsGenerator";
 import { pickVariantForTerrain } from "~/lib/terrain-variants";
@@ -284,11 +285,13 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
         faction.headquartersId = result.dungeon.id;
         faction.lair.dungeonId = result.dungeon.id;
 
-        // Populate rooms with standard content
+        // Populate rooms with theme-appropriate creatures
+        const blueprint = getBlueprint(result.dungeon.theme);
         result.dungeon.rooms = populateSpatialDungeonRooms(
           `${seed}-faction-lair-${faction.id}`,
           result.dungeon.rooms,
-          result.dungeon.depth
+          result.dungeon.depth,
+          blueprint.creaturePool
         );
 
         // Add backstories to treasure items
@@ -337,8 +340,9 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   for (let i = 0; i < dungeonCount; i++) {
     const result = placeDungeon({ seed: `${seed}-dungeon-${i}`, hexes });
     if (result) {
-      // Populate dungeon rooms with encounters and treasure
-      result.dungeon.rooms = populateSpatialDungeonRooms(seed, result.dungeon.rooms, result.dungeon.depth);
+      // Populate dungeon rooms with theme-appropriate creatures and treasure
+      const blueprint = getBlueprint(result.dungeon.theme);
+      result.dungeon.rooms = populateSpatialDungeonRooms(seed, result.dungeon.rooms, result.dungeon.depth, blueprint.creaturePool);
 
       // Add backstories to treasure items
       for (const room of result.dungeon.rooms) {
@@ -357,7 +361,8 @@ export function generateWorld(options: WorldGeneratorOptions): GeneratedWorld {
   for (let i = 0; i < wildernessLairCount; i++) {
     const result = placeWildernessLair({ seed: `${seed}-wilderness-${i}`, hexes });
     if (result) {
-      result.dungeon.rooms = populateSpatialDungeonRooms(seed, result.dungeon.rooms, result.dungeon.depth);
+      const blueprint = getBlueprint(result.dungeon.theme);
+      result.dungeon.rooms = populateSpatialDungeonRooms(seed, result.dungeon.rooms, result.dungeon.depth, blueprint.creaturePool);
 
       // Add backstories to treasure items
       for (const room of result.dungeon.rooms) {

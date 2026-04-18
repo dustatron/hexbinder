@@ -12,7 +12,8 @@ import { SeededRandom, createWeightedTable } from "./SeededRandom";
 
 // === Encounter Tables ===
 
-const ENCOUNTER_CREATURES_BY_DEPTH: Record<number, string[]> = {
+// Fallback creatures by depth (only used if no theme creature pool provided)
+const FALLBACK_CREATURES_BY_DEPTH: Record<number, string[]> = {
   0: ["giant_rat", "kobold", "goblin", "skeleton", "spider"],
   1: ["orc", "zombie", "hobgoblin", "wolf", "stirge"],
   2: ["bugbear", "ghoul", "ogre", "wight", "shadow"],
@@ -126,13 +127,14 @@ export interface RoomContentOptions {
   seed: string;
   room: DungeonRoom;
   dungeonDepth?: number;
+  creaturePool?: string[];  // Theme-specific creatures to use
 }
 
 /**
  * Generate encounters for a dungeon room.
  */
 export function generateRoomEncounters(options: RoomContentOptions): Encounter[] {
-  const { seed, room, dungeonDepth = 1 } = options;
+  const { seed, room, dungeonDepth = 1, creaturePool } = options;
   const rng = new SeededRandom(`${seed}-encounter-${room.id}`);
 
   const encounters: Encounter[] = [];
@@ -148,9 +150,14 @@ export function generateRoomEncounters(options: RoomContentOptions): Encounter[]
     return encounters;
   }
 
-  // Determine creature tier based on room depth and dungeon depth
-  const effectiveDepth = Math.min(room.depth + dungeonDepth - 1, 4);
-  const creatures = ENCOUNTER_CREATURES_BY_DEPTH[effectiveDepth] ?? ENCOUNTER_CREATURES_BY_DEPTH[0];
+  // Use theme creature pool if provided, otherwise fall back to depth-based
+  let creatures: string[];
+  if (creaturePool && creaturePool.length > 0) {
+    creatures = creaturePool;
+  } else {
+    const effectiveDepth = Math.min(room.depth + dungeonDepth - 1, 4);
+    creatures = FALLBACK_CREATURES_BY_DEPTH[effectiveDepth] ?? FALLBACK_CREATURES_BY_DEPTH[0];
+  }
   const creatureType = rng.pick(creatures);
 
   // Count based on room size
@@ -316,6 +323,7 @@ export interface SpatialRoomContentOptions {
   seed: string;
   room: SpatialRoom;
   dungeonDepth?: number;
+  creaturePool?: string[];  // Theme-specific creatures to use
 }
 
 /**
@@ -354,7 +362,7 @@ function isTreasureThemedRoom(room: SpatialRoom | DungeonRoom): boolean {
  * Generate encounters for a spatial dungeon room.
  */
 export function generateSpatialRoomEncounters(options: SpatialRoomContentOptions): Encounter[] {
-  const { seed, room, dungeonDepth = 1 } = options;
+  const { seed, room, dungeonDepth = 1, creaturePool } = options;
   const rng = new SeededRandom(`${seed}-encounter-${room.id}`);
 
   const encounters: Encounter[] = [];
@@ -370,9 +378,14 @@ export function generateSpatialRoomEncounters(options: SpatialRoomContentOptions
     return encounters;
   }
 
-  // Determine creature tier based on room depth and dungeon depth
-  const effectiveDepth = Math.min(room.depth + dungeonDepth - 1, 4);
-  const creatures = ENCOUNTER_CREATURES_BY_DEPTH[effectiveDepth] ?? ENCOUNTER_CREATURES_BY_DEPTH[0];
+  // Use theme creature pool if provided, otherwise fall back to depth-based
+  let creatures: string[];
+  if (creaturePool && creaturePool.length > 0) {
+    creatures = creaturePool;
+  } else {
+    const effectiveDepth = Math.min(room.depth + dungeonDepth - 1, 4);
+    creatures = FALLBACK_CREATURES_BY_DEPTH[effectiveDepth] ?? FALLBACK_CREATURES_BY_DEPTH[0];
+  }
   const creatureType = rng.pick(creatures);
 
   // Count based on room size
@@ -480,9 +493,10 @@ export function populateSpatialRoom(options: SpatialRoomContentOptions): Spatial
 export function populateSpatialDungeonRooms(
   seed: string,
   rooms: SpatialRoom[],
-  dungeonDepth: number
+  dungeonDepth: number,
+  creaturePool?: string[]
 ): SpatialRoom[] {
   return rooms.map((room) =>
-    populateSpatialRoom({ seed, room, dungeonDepth })
+    populateSpatialRoom({ seed, room, dungeonDepth, creaturePool })
   );
 }
